@@ -11,16 +11,34 @@ myTechLogs
    :caption: Contents:
 
 
-
-Indices and tables
+Sphinx
 ==================
 
 .. toctree::
    :maxdepth: 2
-   :caption: OverView
+   :caption: How to start
    :numbered:
 
-   test/test1
-   test/test2
-   test/test3
+   Sphinx/quickStart
+   Sphinx/githubPages
 
+AWS Services
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Knowledge
+   :numbered:
+
+   AWS/ECS
+   AWS/CodeSeries
+
+Java Spring
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Knowledge & Tips
+   :numbered:
+
+   Java/tutorial1
