@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to my_sphinx's documentation!
+myTechLogs
 =====================================
 
 .. toctree::
@@ -11,10 +11,34 @@ Welcome to my_sphinx's documentation!
    :caption: Contents:
 
 
-
-Indices and tables
+Sphinx
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 2
+   :caption: How to start
+   :numbered:
+
+   Sphinx/quickStart
+   Sphinx/githubPages
+
+AWS Services
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Knowledge
+   :numbered:
+
+   AWS/ECS
+   AWS/CodeSeries
+
+Java Spring
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Knowledge & Tips
+   :numbered:
+
+   Java/tutorial1
