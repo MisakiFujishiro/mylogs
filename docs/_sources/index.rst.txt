@@ -4,12 +4,22 @@
    contain the root `toctree` directive.
 
 
+TODO
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 手の動かせるレベルまでタスクを落とし込む
+   :numbered:
+
+   TODO/todo
+
+
 Sphinx
 ==================
 
 .. toctree::
    :maxdepth: 2
-   :caption: How to start
    :numbered:
 
    Sphinx/quickStart
@@ -20,7 +30,6 @@ AWS Services
 
 .. toctree::
    :maxdepth: 2
-   :caption: Knowledge
    :numbered:
 
    AWS/ECS
@@ -31,7 +40,7 @@ Java Spring
 
 .. toctree::
    :maxdepth: 2
-   :caption: Knowledge & Tips
    :numbered:
 
+   Java/env
    Java/tutorial1

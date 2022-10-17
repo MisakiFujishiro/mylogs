@@ -48,11 +48,6 @@ Sphinx
    Sphinx/githubPages
 ```
 
-
-<img src="img/sphinx_dir.png" width="200">
-
-
-
 ![ディレクトリの様子](img/sphinx_dir.png)
 ![インデックスの様子](img/sphinx_index.png)
 
