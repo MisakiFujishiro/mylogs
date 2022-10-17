@@ -33,7 +33,6 @@ AWS Services
    :numbered:
 
    AWS/ECS
-   AWS/CodeSeries
 
 Java Spring
 ==================

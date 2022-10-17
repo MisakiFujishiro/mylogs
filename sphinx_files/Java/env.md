@@ -11,7 +11,7 @@ Springの公式ツールでEclipseベースのIDE
 ### mavenとは
 POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。
 プロジェクトに関わる情報はPOMに集約する。
-- [M参考　avenとは何ぞや](https://qiita.com/ASHITSUBO/items/6c2aa8dd55043781c6b4)
+- [参考　Mavenとは何ぞや](https://qiita.com/ASHITSUBO/items/6c2aa8dd55043781c6b4)
 ### インストール
 インストールできるApach Maveを確認
 > brew search maven
