@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. テスト" href="../AWS/ECS.html" />
+    <link rel="next" title="1. ECS" href="../AWS/ECS.html" />
     <link rel="prev" title="1. Sphinx プロジェクトの立ち上げ方" href="quickStart.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../AWS/ECS.html" title="1. テスト"
+          <a href="../AWS/ECS.html" title="1. ECS"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="quickStart.html" title="1. Sphinx プロジェクトの立ち上げ方"
@@ -49,12 +49,71 @@
 <h1><span class="section-number">2. </span>github Pagesとの連携<a class="headerlink" href="#github-pages" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="git">
 <h2><span class="section-number">2.1. </span>git リポジトリの作成<a class="headerlink" href="#git" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="id1">
-<h2><span class="section-number">2.2. </span>github Pagesの設定<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>githubに登録して、リポジトリを作成する。<br />git pagesを公開するためには、作成するときにprivateではなくて<code class="docutils literal notranslate"><span class="pre">public</span></code>を設定する。</p>
 </section>
 <section id="sphinx">
-<h2><span class="section-number">2.3. </span>Sphinx の設定変更（出力先変更）<a class="headerlink" href="#sphinx" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.2. </span>Sphinx の設定変更（出力先変更）<a class="headerlink" href="#sphinx" title="この見出しへのパーマリンク">¶</a></h2>
+<ol class="simple">
+<li><p>リポジトリをgit cloneして、sphinxのプロジェクトを作成。</p></li>
+</ol>
+<blockquote>
+<div><p>git clone REPOSITORY_URL</p>
+</div></blockquote>
+<ol class="simple">
+<li><p>githubPagesで公開するために、HTMLファイルの出力先をdocsフォルダに変更する。</p>
+<ol class="simple">
+<li><p>docフォルダ作成</p></li>
+<li><p>filesフォルダを作成（sphinxプロジェクトはこちらに移動）</p></li>
+<li><p>Makefileを編集</p></li>
+</ol>
+</li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>SPHINXOPTS    ?=
+SPHINXBUILD   ?= sphinx-build
+SOURCEDIR     = .
+BUILDDIR      = ../docs
+
+
+# Put it first so that &quot;make&quot; without argument is like &quot;make help&quot;.
+help:
+	@$(SPHINXBUILD) -b help &quot;$(SOURCEDIR)&quot; &quot;$(BUILDDIR)&quot; $(SPHINXOPTS) $(O)
+
+.PHONY: help Makefile
+
+# Catch-all target: route all unknown targets to Sphinx using the new
+# &quot;make mode&quot; option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
+%: Makefile
+	@$(SPHINXBUILD) -b $@ &quot;$(SOURCEDIR)&quot; &quot;$(BUILDDIR)&quot; $(SPHINXOPTS) $(O)
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>htmlファイルの出力<br />以下を実行して、docフォルダ配下にindex.htmlなどが生成されることを確認</p></li>
+</ol>
+<blockquote>
+<div><p>make html</p>
+</div></blockquote>
+</section>
+<section id="id1">
+<h2><span class="section-number">2.3. </span>github Pagesの設定<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>リポジトリ/Settiong/Pages<br />Sourceで<code class="docutils literal notranslate"><span class="pre">Deploy</span> <span class="pre">from</span> <span class="pre">branch</span></code>を設定<br />Branchで<code class="docutils literal notranslate"><span class="pre">main/docs</span></code>を設定</p>
+<p><img alt="githubPages" src="../_images/githubpages.png" /></p>
+</section>
+<section id="tips">
+<h2><span class="section-number">2.4. </span>Tips<a class="headerlink" href="#tips" title="この見出しへのパーマリンク">¶</a></h2>
+<p>files配下に以下をsave.shとして保存しておくと、ファイル確認が簡単になる</p>
+<blockquote>
+<div><p>sh save.sh</p>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># make clean</span>
+<span class="n">make</span> <span class="n">html</span>
+<span class="n">cd</span> <span class="o">../</span><span class="n">docs</span><span class="o">/</span>
+<span class="c1"># git add .</span>
+<span class="c1"># git status</span>
+<span class="c1"># git commit -m &quot;shellによるプッシュ&quot;</span>
+<span class="c1"># git push origin main</span>
+<span class="nb">open</span> <span class="n">index</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -70,8 +129,9 @@
     <ul>
 <li><a class="reference internal" href="#">2. github Pagesとの連携</a><ul>
 <li><a class="reference internal" href="#git">2.1. git リポジトリの作成</a></li>
-<li><a class="reference internal" href="#id1">2.2. github Pagesの設定</a></li>
-<li><a class="reference internal" href="#sphinx">2.3. Sphinx の設定変更（出力先変更）</a></li>
+<li><a class="reference internal" href="#sphinx">2.2. Sphinx の設定変更（出力先変更）</a></li>
+<li><a class="reference internal" href="#id1">2.3. github Pagesの設定</a></li>
+<li><a class="reference internal" href="#tips">2.4. Tips</a></li>
 </ul>
 </li>
 </ul>
@@ -85,7 +145,7 @@
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="../AWS/ECS.html"
-                          title="次の章へ"><span class="section-number">1. </span>テスト</a></p>
+                          title="次の章へ"><span class="section-number">1. </span>ECS</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -115,7 +175,7 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../AWS/ECS.html" title="1. テスト"
+          <a href="../AWS/ECS.html" title="1. ECS"
              >次へ</a> |</li>
         <li class="right" >
           <a href="quickStart.html" title="1. Sphinx プロジェクトの立ち上げ方"
