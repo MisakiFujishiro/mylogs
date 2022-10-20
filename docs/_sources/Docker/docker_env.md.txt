@@ -1,0 +1,153 @@
+# 環境構築（MacOS）
+## Dockerとは
+コンテナ型アプリケーション実行環境。  
+DockerではIaC(ミドルウェアのインストールや各種環境設定をコード化して管理すること)が可能。  
+別環境でも容易に立ち上げることが可能なので、スクラップ・ビルドが容易で開発速度を高めることができる。
+
+## インストール
+[Docker公式サイト](https://docs.docker.com/desktop/install/mac-install/)からダウンロードする。  
+MACOSの場合、CPUがIntelチップかM1チップで選択が異なる。  
+PCの🍎マークから「このマックについて」を選択。プロセッサに「Intel」や「M1」の記載から判断する。自分のPCはM1なのでM1をDL
+パスワードなどを入力して、上部にDockerのアイコンが表示されたら成功
+
+## Springのプロジェクトをコンテナ化する
+最終的なフォルダ構成
+```
+├── src/main/java
+    └── helloController.java
+├── src/main/resources
+    └── index.html
+├── Dockerfile
+└── pom.xml
+```
+
+### Spring BootでHello World
+- ナビゲーションペインから、Create new Spring Starter Projectを選択
+- Nameはdemoに設定
+- TypeをMavePJに変更
+- WebからSpringWebを選択
+- src/main/java配下にHelloControllerを作成
+  - src/main/javaを右クリックして、NewからClassを選択
+helloController.java
+```
+package com.example.demo;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HelloController {
+
+    @GetMapping("/hello")
+	private String hello(){
+		return "/index.html";
+	}
+}
+  ```
+
+- src/main/resourcesにindex.htmlを作成
+    - src/main/resourcesを右クリックしてNewからFile選択してindex.htmlを作成
+
+- SpringPJの実行
+  - DashBoard（左下）からHellowWorldPJを選択して、Restart
+
+- 起動確認
+  - [http://localhost:8080/hello](http://localhost:8080/hello)にアクセス
+
+
+### Hello WorldをDockerコンテナにする
+- pomファイルを以下で記述
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>demo</name>
+	<description>Demo project for Spring Boot</description>
+	
+	<properties>
+		<java.version>11</java.version>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+    <build>
+        <finalName>app</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+```
+
+- Dockerfileの作成  
+`docker build`を実行すると、Dockerfileの内容が順次実行される
+
+```
+FROM maven:3.6.3-jdk-11 AS builder
+WORKDIR /tmp
+COPY ./src ./src
+COPY ./pom.xml .
+RUN mvn package
+FROM adoptopenjdk/openjdk11:debianslim-jre
+COPY --from=builder /tmp/target/app.jar /app/app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+Dockerfileで利用できる各種コマンドとその説明
+
+| コマンド       | 内容                   |
+|------------|----------------------|
+| FROM       | コンテナのベースイメージ         |
+| WORKDIR    | 作業を行うディレクトリ          |
+| COPY       | コンテナイメージ内に追加したいファイル  |
+| RUN        | コンテナイメージ作成時に実行するコマンド |
+| EXPOSE     | コンテナがListenするポート     |
+| ENTRYPOINT | コンテナ内で実行するコマンド       |
+
+- docker buildの実行
+> docker image build -t [Docker Hubのユーザー名（任意）]/[イメージ名（必須）]:[タグ（任意）] [Dockerfileパス]
+
+今回は以下で実行
+> docker image build -t spring-docker-demo:0.0.1 ./
+
+- buildが完了したら、作成されたimageの確認
+> docker images
+
+- 作成したdockerを実行
+> docker run -it -p [ホスト側のポート番号]:[コンテナのポート番号] [イメージ名]:[タグ]
+
+今回は以下で実行
+> docker run -it -p 8080:8080 spring-docker-demo:0.0.1
+
+
+## References
+- [Dockerとは](https://knowledge.sakura.ad.jp/13265/)
+- [Dockerのインストール](https://style.potepan.com/articles/34060.html#Docker_Visual_Studio_Code)
+- [SpringでHelloWorld](https://searchman.info/java_eclipse/1130.html)
+- [SpringをDockerImageに固める](https://qiita.com/saitoshi/items/a931399e81e63e8e4f1e)
