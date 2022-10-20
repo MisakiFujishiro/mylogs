@@ -106,10 +106,23 @@
 </div></blockquote>
 </section>
 </section>
+<section id="markdown">
+<h3><span class="section-number">1.3.4. </span>markdownで表を扱えるようにする<a class="headerlink" href="#markdown" title="この見出しへのパーマリンク">¶</a></h3>
+<blockquote>
+<div><p>pip install sphinx-markdown-tables</p>
+</div></blockquote>
+<p>conf.pyに以下を追加する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;sphinx_markdown_tables&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="references">
 <h2><span class="section-number">1.4. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
+<li><p><a class="reference external" href="https://qiita.com/ka2taka/items/8741ebe9724b210ae65e">Markdownでマニュアル作成環境を整える（Sphinx+ sphinx_rtd_theme+recommonmark編）</a></p></li>
 <li><p><a class="reference external" href="https://www.kimoton.com/entry/20181009/1539049414">Sphinxでドキュメント作成 - github.ioでの公開まで</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/kinpira/items/505bccacb2fba89c0ff0">sphinx でドキュメント作成からWeb公開までをやってみた</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/tutuz/items/88a32d94d700b33dc3ea">SphinxとGitHub Pagesで技術ノートを公開しよう！</a></p></li>
@@ -137,6 +150,7 @@
 <li><a class="reference internal" href="#md">1.3.3.1. 対象のドキュメントファイルにmdを追加する</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#markdown">1.3.4. markdownで表を扱えるようにする</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#references">1.4. References</a></li>

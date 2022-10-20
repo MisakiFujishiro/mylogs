@@ -121,14 +121,14 @@ ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 ```
 Dockerfileで利用できる各種コマンドとその説明
 
-| コマンド       | 内容                   |
-|------------|----------------------|
-| FROM       | コンテナのベースイメージ         |
-| WORKDIR    | 作業を行うディレクトリ          |
-| COPY       | コンテナイメージ内に追加したいファイル  |
-| RUN        | コンテナイメージ作成時に実行するコマンド |
-| EXPOSE     | コンテナがListenするポート     |
-| ENTRYPOINT | コンテナ内で実行するコマンド       |
+| コマンド       | 内容                    |
+|------------|-----------------------|
+| FROM       | コンテナのベースイメージ          |
+| WORKDIR    | 作業を行うディレクトリ           |
+| COPY       | ホストからコンテナへのファイルコピー    |
+| EXPOSE     | コンテナがListenするポート      |
+| RUN        | docker buildに実行するコマンド |
+| ENTRYPOINT | docker runに実行するコマンド   |
 
 - docker buildの実行
 > docker image build -t [Docker Hubのユーザー名（任意）]/[イメージ名（必須）]:[タグ（任意）] [Dockerfileパス]
@@ -144,7 +144,6 @@ Dockerfileで利用できる各種コマンドとその説明
 
 今回は以下で実行
 > docker run -it -p 8080:8080 spring-docker-demo:0.0.1
-
 
 ## References
 - [Dockerとは](https://knowledge.sakura.ad.jp/13265/)
