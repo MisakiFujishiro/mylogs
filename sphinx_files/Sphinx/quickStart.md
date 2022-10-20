@@ -59,7 +59,15 @@ conf.pyに以下を追加
 > source_parsers = {'.md': 'recommonmark.parser.CommonMarkParser', }  
 > extensions = ['recommonmark']
 
+### markdownで表を扱えるようにする
+> pip install sphinx-markdown-tables
 
+conf.pyに以下を追加する
+```
+extensions = [
+    'sphinx_markdown_tables',
+]
+```
 
 
 
