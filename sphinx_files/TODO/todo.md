@@ -1,13 +1,10 @@
 # チュートリアル
-## 開発環境
-- ~~sphinx環境構築~~
-- ~~githubアカウント作成~~
-- ~~javaspringは私用のパソコンでstsを構築~~
-- ~~dockerコンテナ環境構築~~
+## DONE
+- sphinx環境構築
+- githubアカウント作成
+- javaspringは私用のパソコンでstsを構築
+- dockerコンテナ環境構築
 - java環境をdockerコンテナに固める手順整理
-  - [Spring Bootアプリケーションのコンテナ化を試してみた](https://qiita.com/saitoshi/items/a931399e81e63e8e4f1e)
-  - [Docker × Java シンプルすぎる開発環境構築](https://qiita.com/A-Kira/items/0dda255e00771f556e2a)
-  - [Dockerのコンテナ内でJavaのソフトウェア開発をしてみよう](https://style.potepan.com/articles/34060.html#Docker_Visual_Studio_Code)
 - 開発環境図整理
 
 ## AWS
@@ -22,4 +19,3 @@
 ## java
 - TERASOLNAのチュートリアル（私用
 - SpringBootチュートリアル（社内環境
-

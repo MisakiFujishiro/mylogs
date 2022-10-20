@@ -72,6 +72,7 @@ extensions = [
 
 
 ## References
+- [Markdownでマニュアル作成環境を整える（Sphinx+ sphinx_rtd_theme+recommonmark編）](https://qiita.com/ka2taka/items/8741ebe9724b210ae65e)
 - [Sphinxでドキュメント作成 - github.ioでの公開まで](https://www.kimoton.com/entry/20181009/1539049414)
 - [sphinx でドキュメント作成からWeb公開までをやってみた](https://qiita.com/kinpira/items/505bccacb2fba89c0ff0)
 - [SphinxとGitHub Pagesで技術ノートを公開しよう！](https://qiita.com/tutuz/items/88a32d94d700b33dc3ea)

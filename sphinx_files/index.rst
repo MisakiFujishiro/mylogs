@@ -52,6 +52,6 @@ Java Spring
    :maxdepth: 2
    :numbered:
 
-   Java/env
+   Java/java_env
    Java/tutorial1
 
