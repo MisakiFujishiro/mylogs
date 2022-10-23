@@ -43,7 +43,7 @@ AWS Services
    :numbered:
 
    AWS/CodeSeries
-   AWS/ECS
+   AWS/S3
 
 Java Spring
 ==================

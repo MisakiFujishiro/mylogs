@@ -22,8 +22,17 @@ POM(Project Object Model)という考え方に基づいて、プロジェクト�
 > mvn --version
 
 ### mavenの各コマンド
-> mvn packege
+#### mvn compile
+src/main/java/配下のソースファイルのコンパイルが行われます。
+コンパイルにより作成されたクラスファイルはtarger/classesディレクトリに出力されます。
 
+#### mvn test
+デフォルてで、以下のパターンにマッチするファイルが実行される
+- ＊＊/Test＊.java
+- ＊＊/＊Test.java
+- ＊＊/＊TestCase.java
+
+#### mvn packege
 成功すると、targetディレクトリに**.jarファイルが作成される。  
 作成されるjarファイルの名前はpom.xmlに記述されているartifactIdとversionできまる。
 
