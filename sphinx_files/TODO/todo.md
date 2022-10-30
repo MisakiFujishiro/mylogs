@@ -1,4 +1,21 @@
-# チュートリアル
+# 塾の活動
+## week5(10/31-)
+### java チュートリアル
+動作確認まで完了。mvnarchetype:generateコマンドやMVCの基本を整理
+controllerのRequestMappingについても理解。
+
+
+### code artifact勉強
+
+### H4B ECS
+
+### わからなかったこと
+- requestMappingのviewResolverってどこで設定しているの？
+- sts4でやったからか、run on serverがなくて困った
+
+
+
+# TODO
 ## DONE
 - sphinx環境構築
 - githubアカウント作成

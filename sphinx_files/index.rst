@@ -53,5 +53,6 @@ Java Spring
    :numbered:
 
    Java/java_env
+   Java/knowledge
    Java/tutorial1
 
