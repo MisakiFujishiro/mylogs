@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>1. チュートリアル &#8212; my_sphinx  ドキュメント</title>
+    <title>1. 塾の活動 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -36,7 +36,7 @@
           <a href="../index.html" title="TODO"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>チュートリアル</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>塾の活動</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,58 @@
           <div class="body" role="main">
             
   <section id="id1">
-<h1><span class="section-number">1. </span>チュートリアル<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">1. </span>塾の活動<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="week5-10-31">
+<h2><span class="section-number">1.1. </span>week5(10/31-)<a class="headerlink" href="#week5-10-31" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="java-7h">
+<h3><span class="section-number">1.1.1. </span>java チュートリアル 7h<a class="headerlink" href="#java-7h" title="この見出しへのパーマリンク">¶</a></h3>
+<p>動作確認まで完了。mvnarchetype:generateコマンドやMVCの基本を整理
+sts4.xをインストールしていることに気づいて、sts3.xをインストール
+ここで、立ち上がらない問題やrun on serverがでないなどのトラブルで時間をだいぶ使った。
+javaのバージョンを変えたりstsのiniファイル編集したりして対応
+serverがでなかったのはワークスペースの設定も悪かった？？</p>
+<p>tutorialでドメイン部分の作成まで完了。Appの方も少しだけ作成して、一覧表示まではできた。
+今までは何もわかっていなかったところからお作法とかは少しずつわかってきた。
+細かいアノテーションの意味とかは調べつつ。。。わからないところはメモしている</p>
+<p><img alt="../_images/20221104-1.png" src="../_images/20221104-1.png" /></p>
+</section>
+<section id="aws-code-artifact-3h">
+<h3><span class="section-number">1.1.2. </span>AWS code artifact勉強(3h)<a class="headerlink" href="#aws-code-artifact-3h" title="この見出しへのパーマリンク">¶</a></h3>
+<p>じつ業務の方で利用する機会があったので勉強した。<br />jarファイルなどの成果物を共有することができるリポジトリ。<br />curlコマンドでアップロードはできたが、mvn deployはできていない。
+実際のアプリの時に使ってみて、使い方を整理したい。</p>
+</section>
+<section id="id2">
+<h3><span class="section-number">1.1.3. </span>わからなかったこと<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<ol class="simple">
+<li><p>sts4でやったからか、run on serverがなくて困った【解決】</p>
+<ul class="simple">
+<li><p>sts3をインストールし直して、javaのバージョンも1.8に変えた</p></li>
+<li><p>PJを開く場所をデフォルトにしたらうまくいった</p></li>
+</ul>
+</li>
+<li><p>CodeArtifactへの登録をmvn deployからできなかった【宿題】</p></li>
+</ol>
+<ul class="simple">
+<li><p>stsだとmvn deployはどこからするの？</p></li>
+</ul>
+<ol class="simple">
+<li><p>repositoryとserviceで定義するメソッドについて【確認】</p></li>
+</ol>
+<ul class="simple">
+<li><p>repositoryはCRUD処理のうちで使うもの</p></li>
+<li><p>serviceは業務ロジックとして使うもの？チュートリアルはいいけど何を作るのかの定義が大事？</p></li>
+</ul>
+<ol class="simple">
+<li><p>&#64;injectって何？いくつか記事を読んでみたけど、まだよくわからない。【不明】</p></li>
+<li><p>&#64;modelAttributeでTodoFormの設定している部分はよくわからない【不明】<br />　　&#64;ModelAttributeでmodelを作成して、formというvalueがtodoFormとしてAttributeに追加されている。<br />このtodoFormはまだ使われていないだけ？</p></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="todo">
+<h1><span class="section-number">2. </span>TODO<a class="headerlink" href="#todo" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="done">
-<h2><span class="section-number">1.1. </span>DONE<a class="headerlink" href="#done" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.1. </span>DONE<a class="headerlink" href="#done" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>sphinx環境構築</p></li>
 <li><p>githubアカウント作成</p></li>
@@ -57,10 +106,11 @@
 <li><p>java環境をdockerコンテナに固める手順整理</p></li>
 <li><p>開発環境図整理</p></li>
 <li><p>H4B CICD</p></li>
+<li><p>CodeArtifactの勉強</p></li>
 </ul>
 </section>
 <section id="aws">
-<h2><span class="section-number">1.2. </span>AWS<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.2. </span>AWS<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>H4B ECS</p></li>
 <li><p>H4B SystemManager</p></li>
@@ -70,7 +120,7 @@
 </ul>
 </section>
 <section id="java">
-<h2><span class="section-number">1.3. </span>java<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.3. </span>java<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>TERASOLNAのチュートリアル（私用</p></li>
 <li><p>SpringBootチュートリアル（社内環境</p></li>
@@ -88,10 +138,19 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">1. チュートリアル</a><ul>
-<li><a class="reference internal" href="#done">1.1. DONE</a></li>
-<li><a class="reference internal" href="#aws">1.2. AWS</a></li>
-<li><a class="reference internal" href="#java">1.3. java</a></li>
+<li><a class="reference internal" href="#">1. 塾の活動</a><ul>
+<li><a class="reference internal" href="#week5-10-31">1.1. week5(10/31-)</a><ul>
+<li><a class="reference internal" href="#java-7h">1.1.1. java チュートリアル 7h</a></li>
+<li><a class="reference internal" href="#aws-code-artifact-3h">1.1.2. AWS code artifact勉強(3h)</a></li>
+<li><a class="reference internal" href="#id2">1.1.3. わからなかったこと</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo">2. TODO</a><ul>
+<li><a class="reference internal" href="#done">2.1. DONE</a></li>
+<li><a class="reference internal" href="#aws">2.2. AWS</a></li>
+<li><a class="reference internal" href="#java">2.3. java</a></li>
 </ul>
 </li>
 </ul>
@@ -141,7 +200,7 @@
           <a href="../index.html" title="TODO"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>チュートリアル</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>塾の活動</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

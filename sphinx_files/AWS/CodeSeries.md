@@ -84,6 +84,125 @@ CodeCommitとの連携を設定し、検知するリポジトリやブランチ�
 3. デプロイステージ設定  
 デプロイ先を設定する。 S3への直接デプロイや、ECS/EC2へのデプロイが可能
 
+## Code Artifact
+アーティファクトを管理することができるリポジトリ   
+AWS常にプライベートなリポジトリを作成して、自作のパッケージを共有できるという魅力がある  
+ソースコードをビルドして生成されたパッケージを管理してくれる。  
+対応はnpm(js),PyPI(python),maven(java)
+
+### AWS CodeArtifactの設定
+domainとdomain配下にrepositoryを作れば準備は完了。  
+repositoryは各種アーティファクトのエンドポイントになる  
+domainはrepositoryを集約する概念
+- domainを作成（これは共通して１つで利用することが多い）
+- repositoryを作成（これは機能ごとに作成する）
+
+
+### Code Artifactへアーティファクトを登録する（curlから）
+サードパーティのjarファイルなどをcodeArtifactで管理するしたい場合、localのjarファイルをcurlコマンドでcodeArtifactに登録できる
+
+1. Cloud Shellを起動する
+2. Cloud Shellへファイルをアップロードする
+
+![](img/cloudshell.png)
+
+3. CodeArtifactの認証トークン取得（12時間期限あり
+> export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain [MY_DOMAIN] --query authorizationToken --output text`
+
+4. CodeArtifactへのアップロード  
+以下の情報を設定する※登録するjarファイル名をアプリとバージョンの形にすること
+    - MY_DOMAIN：CodeArtifactで作成したドメイン名
+    - MY_REPOSITORY：CodeArtifactで作成したリポジトリ
+    - MY_AWS_ID：自分のアカウントの12桁のID
+    - MY-APP:登録するアプリのファイル名
+    - VER：バージョン(1.0.0)
+    - LOCAL-MY-APP：登録するファイル名
+> curl --request PUT https://[MY_DOMAIN]-[MY_AWS_ID].d.codeartifact.ap-northeast-1.amazonaws.com/maven/[MY_REPOSITORY]/com/[MY_COMPANY]/app/[MY_APP]/[VER]/[MY_APP]-[VER].jar \
+     --user "aws:$CODEARTIFACT_TOKEN" --header "Content-Type: application/octet-stream" \
+     --data-binary @[LOCAL-MY-APP].jar
+
+5. 公開設定  
+curlコマンドで登録すると公開sれていないので、登録されたアーティファクトからアクションを選択して発行する。  
+この発行をしないとアーティファクトを利用することができない点に注意
+
+
+![](img/codeartifact_publish.png)
+
+
+### Code Artifactへアーティファクトを登録する（mvnから）★実際にやりたい
+mvnからライブラリをcodeArtifactに登録する場合、pom.xmlにdistributionManagerのセクションを追加して、codeartifactの情報を付与する。
+codeartifactの認証情報はsettings.xmlに追記して、deploy時に指定する。
+
+1. AWS CodeArtifactのTOKENの取得  
+exportして環境変数として登録する（再掲）  
+CICDの時はbuildspec.ymlのprebuildに記載
+> export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain [MY_DOMAIN] --query authorizationToken --output text`
+
+
+
+2. pom.xmlの修正  
+distributionManagerにCodeArtifactの情報を記述。IDやNameは利用する際に使う。
+```
+<distributionManagement>
+  <repository>
+    <id>CODE_ARTIFACT_ID</id>
+    <name>CODE_ARTIFACT_NAME</name>
+    <url>https://[MY_DOMAIN]-[AWS_ID].d.codeartifact.ap-northeast-1.amazonaws.com/maven/[MY_REPOSITORY]/</url>
+  </repository>
+</distributionManagement>
+```
+3. settings.xmlの修正
+CodeArtifactの認証情報を追加
+```
+<servers>
+  <server>
+    <id>CODE_ARTIFACT_ID</id>
+    <username>aws</username>
+    <password>${env.CODEARTIFACT_AUTH_TOKEN}</password>
+  </server>
+</servers>
+```
+4. mvn deploy
+> mvn deploy -s settings.xml
+
+5. AWSのマネジメントコンソールからアップロード資材を確認する
+
+
+### Code Artifactの資材を呼び出してビルドする
+codeArtifactに格納したライブラリの依存関係と接続先をpomに記述 
+
+1. pom.xmlに接続先を記述
+```
+<profiles>
+  <profile>
+    <id>CODE_ARTIFACT_ID</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+    <repositories>
+      <repository>
+        <id>CODE_ARTIFACT_ID</id>
+        <url>https://[MY_DOMAIN]-[AWS_ID].d.codeartifact.ap-northeast-1.amazonaws.com/maven/[MY_REPOSITORY]/</url>
+      </repository>
+    </repositories>
+  </profile>
+</profiles>
+
+```
+2. codeArtifactに依存関係を記述（codeArtifactのライブラリ)
+AWSのConsoleを見ながら、設定する
+```
+<dependencies>
+    <dependency>
+        <groupId>com.[CodeArtifact].[App].[Path]</groupId>
+        <artifactId>[Artifact]</artifactId>
+        <version>[VER]</version>
+    </dependency>
+</dependencies>
+```
+
+
+
 
 ## S3へのCICD
 - S3に静的ウェブサイトホスティングを設定
@@ -302,3 +421,6 @@ localにgithubのリポジトリをcloneして、新しいブランチを作っ�
 - [Codebuild の buildspec.yaml](https://qiita.com/leomaro7/items/1eca2b814930f98f3ff9)
 - [Codedeploy の 概要や appspec.yaml](https://qiita.com/leomaro7/items/40f126a4f0c23d511e88)
 - [“Too Many Requests.” でビルドが失敗する](https://dev.classmethod.jp/articles/codebuild-has-to-use-dockerhub-login-to-avoid-ip-gacha/)
+- [codeArtifactの利用方法](https://qiita.com/charon/items/057da67e810a0ba96fed)
+- [codeArtifactのCICD](https://qiita.com/neruneruo/items/c231d64bb1eb52ca8fa9)
+- [codeArtifactのcurlコマンド](https://docs.aws.amazon.com/ja_jp/codeartifact/latest/ug/maven-curl.html)

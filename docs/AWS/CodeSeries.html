@@ -140,8 +140,135 @@
 </ol>
 </section>
 </section>
+<section id="code-artifact">
+<h2><span class="section-number">1.5. </span>Code Artifact<a class="headerlink" href="#code-artifact" title="この見出しへのパーマリンク">¶</a></h2>
+<p>アーティファクトを管理することができるリポジトリ<br />AWS常にプライベートなリポジトリを作成して、自作のパッケージを共有できるという魅力がある<br />ソースコードをビルドして生成されたパッケージを管理してくれる。<br />対応はnpm(js),PyPI(python),maven(java)</p>
+<section id="aws-codeartifact">
+<h3><span class="section-number">1.5.1. </span>AWS CodeArtifactの設定<a class="headerlink" href="#aws-codeartifact" title="この見出しへのパーマリンク">¶</a></h3>
+<p>domainとdomain配下にrepositoryを作れば準備は完了。<br />repositoryは各種アーティファクトのエンドポイントになる<br />domainはrepositoryを集約する概念</p>
+<ul class="simple">
+<li><p>domainを作成（これは共通して１つで利用することが多い）</p></li>
+<li><p>repositoryを作成（これは機能ごとに作成する）</p></li>
+</ul>
+</section>
+<section id="code-artifact-curl">
+<h3><span class="section-number">1.5.2. </span>Code Artifactへアーティファクトを登録する（curlから）<a class="headerlink" href="#code-artifact-curl" title="この見出しへのパーマリンク">¶</a></h3>
+<p>サードパーティのjarファイルなどをcodeArtifactで管理するしたい場合、localのjarファイルをcurlコマンドでcodeArtifactに登録できる</p>
+<ol class="simple">
+<li><p>Cloud Shellを起動する</p></li>
+<li><p>Cloud Shellへファイルをアップロードする</p></li>
+</ol>
+<p><img alt="../_images/cloudshell.png" src="../_images/cloudshell.png" /></p>
+<ol class="simple">
+<li><p>CodeArtifactの認証トークン取得（12時間期限あり</p></li>
+</ol>
+<blockquote>
+<div><p>export CODEARTIFACT_TOKEN=<code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">codeartifact</span> <span class="pre">get-authorization-token</span> <span class="pre">--domain</span> <span class="pre">[MY_DOMAIN]</span> <span class="pre">--query</span> <span class="pre">authorizationToken</span> <span class="pre">--output</span> <span class="pre">text</span></code></p>
+</div></blockquote>
+<ol class="simple">
+<li><p>CodeArtifactへのアップロード<br />以下の情報を設定する※登録するjarファイル名をアプリとバージョンの形にすること</p>
+<ul class="simple">
+<li><p>MY_DOMAIN：CodeArtifactで作成したドメイン名</p></li>
+<li><p>MY_REPOSITORY：CodeArtifactで作成したリポジトリ</p></li>
+<li><p>MY_AWS_ID：自分のアカウントの12桁のID</p></li>
+<li><p>MY-APP:登録するアプリのファイル名</p></li>
+<li><p>VER：バージョン(1.0.0)</p></li>
+<li><p>LOCAL-MY-APP：登録するファイル名</p></li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<div><p>curl --request PUT https://[MY_DOMAIN]-[MY_AWS_ID].d.codeartifact.ap-northeast-1.amazonaws.com/maven/[MY_REPOSITORY]/com/[MY_COMPANY]/app/[MY_APP]/[VER]/[MY_APP]-[VER].jar <br />--user &quot;aws:$CODEARTIFACT_TOKEN&quot; --header &quot;Content-Type: application/octet-stream&quot; <br />--data-binary &#64;[LOCAL-MY-APP].jar</p>
+</div></blockquote>
+<ol class="simple">
+<li><p>公開設定<br />curlコマンドで登録すると公開sれていないので、登録されたアーティファクトからアクションを選択して発行する。<br />この発行をしないとアーティファクトを利用することができない点に注意</p></li>
+</ol>
+<p><img alt="../_images/codeartifact_publish.png" src="../_images/codeartifact_publish.png" /></p>
+</section>
+<section id="code-artifact-mvn">
+<h3><span class="section-number">1.5.3. </span>Code Artifactへアーティファクトを登録する（mvnから）★実際にやりたい<a class="headerlink" href="#code-artifact-mvn" title="この見出しへのパーマリンク">¶</a></h3>
+<p>mvnからライブラリをcodeArtifactに登録する場合、pom.xmlにdistributionManagerのセクションを追加して、codeartifactの情報を付与する。
+codeartifactの認証情報はsettings.xmlに追記して、deploy時に指定する。</p>
+<ol class="simple">
+<li><p>AWS CodeArtifactのTOKENの取得<br />exportして環境変数として登録する（再掲）<br />CICDの時はbuildspec.ymlのprebuildに記載</p></li>
+</ol>
+<blockquote>
+<div><p>export CODEARTIFACT_TOKEN=<code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">codeartifact</span> <span class="pre">get-authorization-token</span> <span class="pre">--domain</span> <span class="pre">[MY_DOMAIN]</span> <span class="pre">--query</span> <span class="pre">authorizationToken</span> <span class="pre">--output</span> <span class="pre">text</span></code></p>
+</div></blockquote>
+<ol class="simple">
+<li><p>pom.xmlの修正<br />distributionManagerにCodeArtifactの情報を記述。IDやNameは利用する際に使う。</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">distributionManagement</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">repository</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="n">CODE_ARTIFACT_ID</span><span class="o">&lt;/</span><span class="nb">id</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="n">CODE_ARTIFACT_NAME</span><span class="o">&lt;/</span><span class="n">name</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">url</span><span class="o">&gt;</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">MY_DOMAIN</span><span class="p">]</span><span class="o">-</span><span class="p">[</span><span class="n">AWS_ID</span><span class="p">]</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">codeartifact</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">maven</span><span class="o">/</span><span class="p">[</span><span class="n">MY_REPOSITORY</span><span class="p">]</span><span class="o">/&lt;/</span><span class="n">url</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">repository</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">distributionManagement</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>settings.xmlの修正
+CodeArtifactの認証情報を追加</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;servers&gt;
+  &lt;server&gt;
+    &lt;id&gt;CODE_ARTIFACT_ID&lt;/id&gt;
+    &lt;username&gt;aws&lt;/username&gt;
+    &lt;password&gt;${env.CODEARTIFACT_AUTH_TOKEN}&lt;/password&gt;
+  &lt;/server&gt;
+&lt;/servers&gt;
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>mvn deploy</p></li>
+</ol>
+<blockquote>
+<div><p>mvn deploy -s settings.xml</p>
+</div></blockquote>
+<ol class="simple">
+<li><p>AWSのマネジメントコンソールからアップロード資材を確認する</p></li>
+</ol>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.5.4. </span>Code Artifactの資材を呼び出してビルドする<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>codeArtifactに格納したライブラリの依存関係と接続先をpomに記述</p>
+<ol class="simple">
+<li><p>pom.xmlに接続先を記述</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">profiles</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">profile</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="n">CODE_ARTIFACT_ID</span><span class="o">&lt;/</span><span class="nb">id</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">activation</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">activeByDefault</span><span class="o">&gt;</span><span class="n">true</span><span class="o">&lt;/</span><span class="n">activeByDefault</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">activation</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">repositories</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">repository</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="n">CODE_ARTIFACT_ID</span><span class="o">&lt;/</span><span class="nb">id</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">url</span><span class="o">&gt;</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">MY_DOMAIN</span><span class="p">]</span><span class="o">-</span><span class="p">[</span><span class="n">AWS_ID</span><span class="p">]</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">codeartifact</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">maven</span><span class="o">/</span><span class="p">[</span><span class="n">MY_REPOSITORY</span><span class="p">]</span><span class="o">/&lt;/</span><span class="n">url</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="n">repository</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">repositories</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">profile</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">profiles</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>codeArtifactに依存関係を記述（codeArtifactのライブラリ)
+AWSのConsoleを見ながら、設定する</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependencies</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="p">[</span><span class="n">CodeArtifact</span><span class="p">]</span><span class="o">.</span><span class="p">[</span><span class="n">App</span><span class="p">]</span><span class="o">.</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="p">[</span><span class="n">Artifact</span><span class="p">]</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">[</span><span class="n">VER</span><span class="p">]</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependencies</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="s3cicd">
-<h2><span class="section-number">1.5. </span>S3へのCICD<a class="headerlink" href="#s3cicd" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.6. </span>S3へのCICD<a class="headerlink" href="#s3cicd" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>S3に静的ウェブサイトホスティングを設定</p></li>
 <li><p>codecommitではビルドステージはスキップ</p></li>
@@ -149,11 +276,11 @@
 </ul>
 </section>
 <section id="ec2cicd">
-<h2><span class="section-number">1.6. </span>EC2へのCICD<a class="headerlink" href="#ec2cicd" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.7. </span>EC2へのCICD<a class="headerlink" href="#ec2cicd" title="この見出しへのパーマリンク">¶</a></h2>
 <p>EC2の設定、buildspec.ymlではcodedeployのアプリケーションとの連携。
 codedeployではappspec.ymlの作成が必要</p>
 <section id="ec2">
-<h3><span class="section-number">1.6.1. </span>EC2の作成<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.7.1. </span>EC2の作成<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>artifactの格納場所作成(S3のバケット作成</p></li>
 <li><p>タグ名でCICDの対象を設定できるので、タグ名を設定しておくと良い</p></li>
@@ -163,8 +290,8 @@ codedeployではappspec.ymlの作成が必要</p>
 <div><p>wget https://aws-codedeploy-ap-northeast-1.s3.ap-northeast-1.amazonaws.com/latest/install</p>
 </div></blockquote>
 </section>
-<section id="id5">
-<h3><span class="section-number">1.6.2. </span>buildspec.ymlの作成<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id6">
+<h3><span class="section-number">1.7.2. </span>buildspec.ymlの作成<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>aws deploy pushでcodedeployのアプリケーションの対象設定をする。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">version</span><span class="p">:</span> <span class="mf">0.2</span>
 
@@ -180,7 +307,7 @@ codedeployではappspec.ymlの作成が必要</p>
 </div>
 </section>
 <section id="appspec-yml">
-<h3><span class="section-number">1.6.3. </span>appspec.ymlの作成<a class="headerlink" href="#appspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.7.3. </span>appspec.ymlの作成<a class="headerlink" href="#appspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
 <p>フォルダ構成</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|-</span><span class="n">src</span>
 <span class="o">|</span>  <span class="o">|---</span><span class="n">index</span><span class="o">.</span><span class="n">html</span>
@@ -205,8 +332,8 @@ codedeployではappspec.ymlの作成が必要</p>
 </pre></div>
 </div>
 </section>
-<section id="id6">
-<h3><span class="section-number">1.6.4. </span>トラブルシューティング<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id7">
+<h3><span class="section-number">1.7.4. </span>トラブルシューティング<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>codeBuildを手動で実行するとエラー</p></li>
 </ul>
@@ -224,11 +351,11 @@ codedeployではappspec.ymlの作成が必要</p>
 </section>
 </section>
 <section id="ecrcicd">
-<h2><span class="section-number">1.7. </span>ECRへのCICD<a class="headerlink" href="#ecrcicd" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.8. </span>ECRへのCICD<a class="headerlink" href="#ecrcicd" title="この見出しへのパーマリンク">¶</a></h2>
 <p>buildspec.ymlではimagedefinitions.jsonを作成する設定が必要。
 ECSにデプロイするための、Serviceロールの追加が必要。</p>
 <section id="codebuild">
-<h3><span class="section-number">1.7.1. </span>CodeBuildの設定<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.8.1. </span>CodeBuildの設定<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>buildspec.ymlの作成</p>
 <ul>
@@ -267,7 +394,7 @@ files: imagedefinitions.json
 </pre></div>
 </div>
 <section id="java">
-<h4><span class="section-number">1.7.1.1. </span>javaをデプロイする場合の各種設定情報<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.8.1.1. </span>javaをデプロイする場合の各種設定情報<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>javaを利用する場合のOSはUbuntsuを選択。</p></li>
 <li><p>ランタイムはスタンダート</p></li>
@@ -276,20 +403,20 @@ files: imagedefinitions.json
 </section>
 </section>
 <section id="codedeploy">
-<h3><span class="section-number">1.7.2. </span>codedeployの設定<a class="headerlink" href="#codedeploy" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.8.2. </span>codedeployの設定<a class="headerlink" href="#codedeploy" title="この見出しへのパーマリンク">¶</a></h3>
 <p>codepipelineから順次設定をして、デプロイステージにおいて、クラスター名やサービス名を選択するだけ。</p>
 </section>
 <section id="too-many-requests">
-<h3><span class="section-number">1.7.3. </span>トラブルシューティング：Too Many Requests. でビルドが失敗する<a class="headerlink" href="#too-many-requests" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.8.3. </span>トラブルシューティング：Too Many Requests. でビルドが失敗する<a class="headerlink" href="#too-many-requests" title="この見出しへのパーマリンク">¶</a></h3>
 <blockquote>
 <div><p>error pulling image configuration: toomanyrequests: Too Many Requests. Please see https://docs.docker.com/docker-hub/download-rate-limit/</p>
 </div></blockquote>
-<section id="id7">
-<h4><span class="section-number">1.7.3.1. </span>原因<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id8">
+<h4><span class="section-number">1.8.3.1. </span>原因<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
 <p>2020年8月に Docker Hub ではコンテナイメージの Pull 回数にレート制限を設けることを発表している。<br />CodeBuild を非 VPC 環境のプロジェクトとして作成している場合、CodeBuild のグローバル IP は共通アドレスが利用されているため、 自分のビルド環境が 6 時間以内で 1 回目の pull だったとしても、そのときに割り当てられていた CodeBuild のグローバル IP が 6時間以内で 101 回目の pull であった場合、そのリクエストは Too Many Requests. になります。</p>
 </section>
 <section id="builddockerhub">
-<h4><span class="section-number">1.7.3.2. </span>対策:build中に、dockerhubにログインする<a class="headerlink" href="#builddockerhub" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.8.3.2. </span>対策:build中に、dockerhubにログインする<a class="headerlink" href="#builddockerhub" title="この見出しへのパーマリンク">¶</a></h4>
 <ol class="simple">
 <li><p>SecretsManagerにdockerhubのログインIDとPasswordを設定（例えばusernameとpassword)※ログインIDは一律で小文字にしないとエラーが出る</p></li>
 <li><p>codebuildの環境変数でsecretManagerとの連携を設定する</p></li>
@@ -312,7 +439,7 @@ files: imagedefinitions.json
 </section>
 </section>
 <section id="githubcodecommit">
-<h2><span class="section-number">1.8. </span>githubとCodeCommitのミラーリング<a class="headerlink" href="#githubcodecommit" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.9. </span>githubとCodeCommitのミラーリング<a class="headerlink" href="#githubcodecommit" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>公開鍵・秘密鍵の作成<br />LocalPCで以下を実行</p></li>
 </ul>
@@ -373,13 +500,16 @@ jobs:
 </ul>
 </section>
 <section id="references">
-<h2><span class="section-number">1.9. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.10. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://chibinfra-techblog.com/github-with-aws-codecommit/">GitHubをCodeCommitにミラーリングする</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/s_ryota/items/803b44caacac12fd2439">buildspec.ymlコマンド</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/leomaro7/items/1eca2b814930f98f3ff9">Codebuild の buildspec.yaml</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/leomaro7/items/40f126a4f0c23d511e88">Codedeploy の 概要や appspec.yaml</a></p></li>
 <li><p><a class="reference external" href="https://dev.classmethod.jp/articles/codebuild-has-to-use-dockerhub-login-to-avoid-ip-gacha/">“Too Many Requests.” でビルドが失敗する</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/charon/items/057da67e810a0ba96fed">codeArtifactの利用方法</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/neruneruo/items/c231d64bb1eb52ca8fa9">codeArtifactのCICD</a></p></li>
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/codeartifact/latest/ug/maven-curl.html">codeArtifactのcurlコマンド</a></p></li>
 </ul>
 </section>
 </section>
@@ -412,29 +542,36 @@ jobs:
 <li><a class="reference internal" href="#id4">1.4.1. 設定手順</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#s3cicd">1.5. S3へのCICD</a></li>
-<li><a class="reference internal" href="#ec2cicd">1.6. EC2へのCICD</a><ul>
-<li><a class="reference internal" href="#ec2">1.6.1. EC2の作成</a></li>
-<li><a class="reference internal" href="#id5">1.6.2. buildspec.ymlの作成</a></li>
-<li><a class="reference internal" href="#appspec-yml">1.6.3. appspec.ymlの作成</a></li>
-<li><a class="reference internal" href="#id6">1.6.4. トラブルシューティング</a></li>
+<li><a class="reference internal" href="#code-artifact">1.5. Code Artifact</a><ul>
+<li><a class="reference internal" href="#aws-codeartifact">1.5.1. AWS CodeArtifactの設定</a></li>
+<li><a class="reference internal" href="#code-artifact-curl">1.5.2. Code Artifactへアーティファクトを登録する（curlから）</a></li>
+<li><a class="reference internal" href="#code-artifact-mvn">1.5.3. Code Artifactへアーティファクトを登録する（mvnから）★実際にやりたい</a></li>
+<li><a class="reference internal" href="#id5">1.5.4. Code Artifactの資材を呼び出してビルドする</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ecrcicd">1.7. ECRへのCICD</a><ul>
-<li><a class="reference internal" href="#codebuild">1.7.1. CodeBuildの設定</a><ul>
-<li><a class="reference internal" href="#java">1.7.1.1. javaをデプロイする場合の各種設定情報</a></li>
+<li><a class="reference internal" href="#s3cicd">1.6. S3へのCICD</a></li>
+<li><a class="reference internal" href="#ec2cicd">1.7. EC2へのCICD</a><ul>
+<li><a class="reference internal" href="#ec2">1.7.1. EC2の作成</a></li>
+<li><a class="reference internal" href="#id6">1.7.2. buildspec.ymlの作成</a></li>
+<li><a class="reference internal" href="#appspec-yml">1.7.3. appspec.ymlの作成</a></li>
+<li><a class="reference internal" href="#id7">1.7.4. トラブルシューティング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#codedeploy">1.7.2. codedeployの設定</a></li>
-<li><a class="reference internal" href="#too-many-requests">1.7.3. トラブルシューティング：Too Many Requests. でビルドが失敗する</a><ul>
-<li><a class="reference internal" href="#id7">1.7.3.1. 原因</a></li>
-<li><a class="reference internal" href="#builddockerhub">1.7.3.2. 対策:build中に、dockerhubにログインする</a></li>
+<li><a class="reference internal" href="#ecrcicd">1.8. ECRへのCICD</a><ul>
+<li><a class="reference internal" href="#codebuild">1.8.1. CodeBuildの設定</a><ul>
+<li><a class="reference internal" href="#java">1.8.1.1. javaをデプロイする場合の各種設定情報</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#codedeploy">1.8.2. codedeployの設定</a></li>
+<li><a class="reference internal" href="#too-many-requests">1.8.3. トラブルシューティング：Too Many Requests. でビルドが失敗する</a><ul>
+<li><a class="reference internal" href="#id8">1.8.3.1. 原因</a></li>
+<li><a class="reference internal" href="#builddockerhub">1.8.3.2. 対策:build中に、dockerhubにログインする</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#githubcodecommit">1.8. githubとCodeCommitのミラーリング</a></li>
-<li><a class="reference internal" href="#references">1.9. References</a></li>
+<li><a class="reference internal" href="#githubcodecommit">1.9. githubとCodeCommitのミラーリング</a></li>
+<li><a class="reference internal" href="#references">1.10. References</a></li>
 </ul>
 </li>
 </ul>

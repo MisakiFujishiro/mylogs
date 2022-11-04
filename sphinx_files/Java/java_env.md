@@ -4,10 +4,28 @@
 Springの公式ツールでEclipseベースのIDE
 
 ### インストール
-[公式サイト](https://spring.io/tools)からDL  
+sts4.xは、[公式サイト](https://spring.io/tools)    
+sts3.xは、[公式サイト](https://dist.springsource.com/release/STS/index.html)
 
-## mavenのインストール
-### mavenとは
+### 3.xの場合
+stsをDLして、展開すると３つappがあるので全部Applicationにいれる。
+
+![](img/sts3_dl.png)
+
+Applicationのstsを開こうとするとVMが作成できないエラーが出る場合がある。
+sts.appを右クリック、パッケージ内容を表示して、` /Applications/STS.app/Contents/Eclipse/STS.ini `を編集
+
+```
+-vm
+/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin
+```
+javaのパスについては以下の手順で確認
+1. javaのバージョン確認`/usr/libexec/java_home -V`でパスは確認
+2. javaの切り替え`export JAVA_HOME="/usr/libexec/java_home -v 1.8.0_292"`
+
+
+
+## maven
 POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。
 プロジェクトに関わる情報はPOMに集約する。
 ### インストール
@@ -36,7 +54,11 @@ src/main/java/配下のソースファイルのコンパイルが行われます
 成功すると、targetディレクトリに**.jarファイルが作成される。  
 作成されるjarファイルの名前はpom.xmlに記述されているartifactIdとversionできまる。
 
+
+
 ## 参考
 - [Spring Tool Suite (STS)の環境構築(for Mac)](https://zenn.dev/nakohama/articles/7ed3953bae7f33)
 - [Mavenとは何ぞや](https://qiita.com/ASHITSUBO/items/6c2aa8dd55043781c6b4)
 - [初心者必見】Mavenまとめ](https://qiita.com/enzen/items/8546357f4e67357fe730)
+- [java複数バージョンの切り替え](https://style.potepan.com/articles/16344.html)
+- [pomの設定](http://www.code-magagine.com/?p=2346)

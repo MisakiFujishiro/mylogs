@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>2. java spring &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="3. チュートリアル１：TODOアプリケーション" href="tutorial1.html" />
+    <link rel="prev" title="1. 環境構築手順" href="java_env.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="tutorial1.html" title="3. チュートリアル１：TODOアプリケーション"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="java_env.html" title="1. 環境構築手順"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>java spring</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="java-spring">
+<h1><span class="section-number">2. </span>java spring<a class="headerlink" href="#java-spring" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="mvc">
+<h2><span class="section-number">2.1. </span>MVCとは<a class="headerlink" href="#mvc" title="この見出しへのパーマリンク">¶</a></h2>
+<p>アプリケーションフレームワークの一つ。アプリケーションの処理を Model/View/Controllerの３つに分ける。</p>
+<section id="model">
+<h3><span class="section-number">2.1.1. </span>Model<a class="headerlink" href="#model" title="この見出しへのパーマリンク">¶</a></h3>
+<p>データやDBへのアクセスなどを担う</p>
+</section>
+<section id="view">
+<h3><span class="section-number">2.1.2. </span>View<a class="headerlink" href="#view" title="この見出しへのパーマリンク">¶</a></h3>
+<p>クライアントからの入力やクライアントへの出力などを担う</p>
+</section>
+<section id="controller">
+<h3><span class="section-number">2.1.3. </span>Controller<a class="headerlink" href="#controller" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ModelとViewをつなぐ。
+Viewが受け取るクライアントからの入力をModelへ渡して処理を行い、Viewへ処理内容を連携する。</p>
+</section>
+</section>
+<section id="spring">
+<h2><span class="section-number">2.2. </span>Springとは<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
+<p>MVCの考え方からSpring MVCという考え方が生まれる。
+SpringMVCはライブラリなどが多くて、扱いが難しかった。
+SpringMVCを使いやすくしたフレームワークとしてSpringBootが生まれた。</p>
+<section id="di">
+<h3><span class="section-number">2.2.1. </span>DI（依存性の注入とは）<a class="headerlink" href="#di" title="この見出しへのパーマリンク">¶</a></h3>
+<p>クラス間にある依存関係をコードに書くのではなくて、実行時に解決していく。
+クラス間の依存度を低くしてくれる。<br /><a class="reference external" href="https://engineering.linecorp.com/ja/blog/spring-boot-job-report/">参考</a></p>
+</section>
+</section>
+<section id="pom">
+<h2><span class="section-number">2.3. </span>pomとは<a class="headerlink" href="#pom" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Project Object Modelの略<br />プロジェクトのビルド内容を設定するファイル</p>
+<section id="id1">
+<h3><span class="section-number">2.3.1. </span>基本設定項目<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ルートノードで、POMのバージョン指定や読み込み、XMLスキーマの指定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">project</span> <span class="n">xmlns</span><span class="o">=</span><span class="s2">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+        <span class="n">xmlns</span><span class="p">:</span><span class="n">xsi</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+        <span class="n">xsi</span><span class="p">:</span><span class="n">schemaLocation</span><span class="o">=</span><span class="s2">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Mavenモデルのバージョン指定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">modelVersion</span><span class="o">&gt;</span><span class="mf">4.0.0</span><span class="o">&lt;/</span><span class="n">modelVersion</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>プロジェクトの情報</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">TEST</span><span class="o">.</span><span class="n">PJ</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span> <span class="c1">#プロジェクトの開発者ID</span>
+  <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">TESTPJ</span><span class="o">-</span><span class="n">APP</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span> <span class="c1">#プロジェクトのID</span>
+  <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span> <span class="c1"># プロジェクトのバージョン</span>
+  <span class="o">&lt;</span><span class="n">packaging</span><span class="o">&gt;</span><span class="n">jar</span><span class="o">&lt;/</span><span class="n">packaging</span><span class="o">&gt;</span> <span class="c1"># パッケージ化する場合の種別</span>
+  <span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="n">TEST</span><span class="o">-</span><span class="n">app</span><span class="o">&lt;/</span><span class="n">name</span><span class="o">&gt;</span> <span class="c1"># アプリケーション名（自由）</span>
+  <span class="o">&lt;</span><span class="n">url</span><span class="o">&gt;</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">maven</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="o">&lt;/</span><span class="n">url</span><span class="o">&gt;</span> <span class="c1"># プロジェクトのWebサイト</span>
+</pre></div>
+</div>
+<p>pomで利用される属性</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">properties</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">sourceEncoding</span><span class="o">&gt;</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span><span class="o">&lt;/</span><span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">sourceEncoding</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">properties</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3><span class="section-number">2.3.2. </span>依存するライブラリの設定項目<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>このプログラムがどのプログラムに依存しているかの記述を行う</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">dependencies</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">junit</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>  <span class="c1"># 必須：依存するグループID</span>
+      <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">junit</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="c1"># 必須：依存するアーティファクトID</span>
+      <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">3.8.1</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>　<span class="c1"># 任意：指定しないと最新版</span>
+      <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span> <span class="c1"># テストの場合にのみ指定</span>
+    <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">dependencies</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id3">
+<h2><span class="section-number">2.4. </span>アノテーション整理<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id4">
+<h3><span class="section-number">2.4.1. </span>&#64;Controller<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SpringBootにおいてControllerのクラスであることを認識させる</p>
+<section id="requestmappng">
+<h4><span class="section-number">2.4.1.1. </span>&#64;RequestMappng<a class="headerlink" href="#requestmappng" title="この見出しへのパーマリンク">¶</a></h4>
+<p>クライアントからのリクエストに対して、メソッドなどの対応付ができる<br /><code class="docutils literal notranslate"><span class="pre">return</span></code>で返却されるStringはViewResolverでファイル名に変換されてクライアントに返却される。</p>
+</section>
+</section>
+<section id="service">
+<h3><span class="section-number">2.4.2. </span>&#64;Service<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ServiceImplに記述する。Serviceであることを認識させる。
+DIの対象(bean)となり、DIコンテナに登録される</p>
+</section>
+<section id="repository">
+<h3><span class="section-number">2.4.3. </span>&#64;Repository<a class="headerlink" href="#repository" title="この見出しへのパーマリンク">¶</a></h3>
+<p>RepositoryImplに記述する。 Repositoryであることを認識させる。</p>
+</section>
+<section id="override">
+<h3><span class="section-number">2.4.4. </span>&#64;Override<a class="headerlink" href="#override" title="この見出しへのパーマリンク">¶</a></h3>
+<p>親クラスのメソッドをオーバーライドするときに記述する。
+オーバーライドするつもりでできていない。していないつもりでしていたというミスを防げる。</p>
+</section>
+<section id="inject">
+<h3><span class="section-number">2.4.5. </span>&#64;inject<a class="headerlink" href="#inject" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="transactional">
+<h3><span class="section-number">2.4.6. </span>&#64;Transactional<a class="headerlink" href="#transactional" title="この見出しへのパーマリンク">¶</a></h3>
+<p>トランザクション管理が行われる。
+メソッド開始時と正常終了時にコミットが行われ、例外時にはロールバックされる。</p>
+</section>
+</section>
+<section id="references">
+<h2><span class="section-number">2.5. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiita.com/TEBASAKI/items/267c261db17f178e33eb">MVCとSpring・コントローラーのアノテーション</a></p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">2. java spring</a><ul>
+<li><a class="reference internal" href="#mvc">2.1. MVCとは</a><ul>
+<li><a class="reference internal" href="#model">2.1.1. Model</a></li>
+<li><a class="reference internal" href="#view">2.1.2. View</a></li>
+<li><a class="reference internal" href="#controller">2.1.3. Controller</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spring">2.2. Springとは</a><ul>
+<li><a class="reference internal" href="#di">2.2.1. DI（依存性の注入とは）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pom">2.3. pomとは</a><ul>
+<li><a class="reference internal" href="#id1">2.3.1. 基本設定項目</a></li>
+<li><a class="reference internal" href="#id2">2.3.2. 依存するライブラリの設定項目</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">2.4. アノテーション整理</a><ul>
+<li><a class="reference internal" href="#id4">2.4.1. &#64;Controller</a><ul>
+<li><a class="reference internal" href="#requestmappng">2.4.1.1. &#64;RequestMappng</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#service">2.4.2. &#64;Service</a></li>
+<li><a class="reference internal" href="#repository">2.4.3. &#64;Repository</a></li>
+<li><a class="reference internal" href="#override">2.4.4. &#64;Override</a></li>
+<li><a class="reference internal" href="#inject">2.4.5. &#64;inject</a></li>
+<li><a class="reference internal" href="#transactional">2.4.6. &#64;Transactional</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">2.5. References</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="java_env.html"
+                          title="前の章へ"><span class="section-number">1. </span>環境構築手順</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="tutorial1.html"
+                          title="次の章へ"><span class="section-number">3. </span>チュートリアル１：TODOアプリケーション</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Java/knowledge.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="tutorial1.html" title="3. チュートリアル１：TODOアプリケーション"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="java_env.html" title="1. 環境構築手順"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>java spring</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>
