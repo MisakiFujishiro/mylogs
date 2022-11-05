@@ -14,6 +14,8 @@
 - artifactId:作成するJavaPJの名称
 - version:PJのバージョン名
 
+※terminalで実行する場合は、¥で改行するようにしないとエラーが出た
+
 ```
 mvn archetype:generate -B\
  -DarchetypeGroupId=org.terasoluna.gfw.blank\
@@ -29,33 +31,27 @@ STSでImportする。
 詳細は[チュートリアル](http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/TutorialTodo.html#id13)に有り
 
 ### PJ構成
-javaのPJ構成とそれぞれの役割
-- src/main/java：ここにModel操作やControllerのjavaクラスを格納
-- src/main/resources：Viewに当たるリソースを置く
-  - static:cssやjsを置く
-  - template:htmlを置く
-  - application.proparties：ポートの設定など
 ```
 src
   └main
-      ├java... (1)
+      ├java
       │  └com
       │    └example
       │      └todo
-      │        ├ app 
-      │        │   └todo
-      │        └domain 
-      │            ├model 
-      │            ├repository 
+      │        ├ app ・・・アプリケーション層
+      │        │   └todo・・・コントローラー
+      │        └domain ・・・ドメイン層
+      │            ├model ・・・モデル（データ定義
+      │            ├repository ・・・リポジトリ（データにアクセス
       │            │   └todo
-      │            └service 
+      │            └service ・・・サービス（業務処理
       │                └todo
-      ├resources... (2)
+      ├resources
       │  └META-INF
       │      └spring 
       └wepapp
           └WEB-INF
-              └views 
+              └views ・・・jspなどのビュー
 ```
 
 ### PJの動作確認
@@ -120,21 +116,24 @@ public class HelloController {
 
 ## Todoアプリケーションの作成
 ドメイン層とアプリケーション層のステップで作成する。  
-ドメイン層では、Model、Repository、Serviceを作成する。
-Modelは変数定義を記述 。
-RepositoryはInterfaceとImplementを作成して、中身としては業務を含まないCRUD処理を記述。
-Serviceは業務まで含んだ、エラーメッセージのハンドリングまで含めて記述。
 
-アプリケーション層では、ControllerとViewを作成する。
-Controllerでは、pathごとのメソッド作成や、viewとやり取りするmodelへのAttributeの追加などを記述。
-Viewでは、JSPを記述して画面表示する内容を記述。
+ドメイン層  
+Model、Repository、Serviceを作成する。
+- Modelは変数定義を記述 。
+- RepositoryはInterfaceとImplementを作成して、中身としては業務を含まないデータへのアクセス処理を記述
+- Serviceは業務まで含んだ、エラーメッセージのハンドリングまで含めて記述。
+
+アプリケーション層  
+ControllerとViewを作成する。
+- Controllerでは、pathとメソッドの紐付け、viewとやり取りするためにmodelへのAttributeの追加などを記述。
+- Viewでは、JSPなどを記述して画面表示する内容を記述。
 
 
 ### Domain層の作成
-ドメイン層では、Model、Repository、Serviceを作成する。
-Modelは変数定義を記述 。
-RepositoryはInterfaceとImplementを作成して、中身としては業務を含まないCRUD処理を記述。
-Serviceは業務まで含んだ、エラーメッセージのハンドリングまで含めて記述。
+Model、Repository、Serviceを作成する。
+- Modelは変数定義を記述 。
+- RepositoryはInterfaceとImplementを作成して、中身としては業務を含まないデータへのアクセス処理を記述
+- Serviceは業務まで含んだ、エラーメッセージのハンドリングまで含めて記述。
 
 
 
@@ -358,10 +357,10 @@ src/main/java/com/example/todo/service/todo配下にTodoServiceImpl.javaを作�
 ServiceImpl側でアノテーションを付与する
 
 ★2  
-@Transactionalはトランザクション管理で、３章のみを行う処理にreadOnly=trueを付与する
+@Transactionalはトランザクション管理で、参照のみを行う処理にreadOnly=trueを付与する
 
 ★3  
-@InjectでRepositoryで実装した機能を利用する
+@InjectでRepositoryで実装したメソッドのインスタンス注入されるので利用できるようになる。
 
 ```
 package com.example.todo.domain.service.todo;
@@ -460,10 +459,10 @@ public class TodoServiceImpl implements TodoService {
 }
 ```
 
-### アプリケーション層の作成
-アプリケーション層では、ControllerとViewを作成する。
-Controllerでは、pathごとのメソッド作成や、viewとやり取りするmodelへのAttributeの追加などを記述。
-Viewでは、JSPを記述して画面表示する内容を記述。
+### アプリケーション層の作成 
+ControllerとViewを作成する。
+- Controllerでは、pathとメソッドの紐付け、viewとやり取りするためにmodelへのAttributeの追加などを記述。
+- Viewでは、JSPなどを記述して画面表示する内容を記述。
 
 
 #### Controllerの作成
@@ -489,7 +488,12 @@ public class TodoController {
 #### Show all Todoの作成
 新規作成フォームとTODOの全件表示の機能を実装
 
+##### TodoFormを作成する。
+Controllerで扱う、プロパティをここで定義して、最終的にはDomainに追加するような形。
+
 src/main/java/com/example/todo/app/todo配下にTodoForm.javaを作成する。
+
+内容としては todoTitleに関するプロパティ定義
 ```
 package com.example.todo.app.todo;
 
@@ -511,37 +515,19 @@ public class TodoForm implements Serializable {
 }
 ```
 
-##### TodoFormを作成する
-TodoTitleのプロパティを追加する。
-```
-package com.example.todo.app.todo;
 
-import java.io.Serializable;
-
-public class TodoForm implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private String todoTitle;
-
-    public String getTodoTitle() {
-        return todoTitle;
-    }
-
-    public void setTodoTitle(String todoTitle) {
-        this.todoTitle = todoTitle;
-    }
-
-}
-```
 ##### Controllerの修正
-@modelAttributeで画面側に渡す変数を設定。
+@GetMappingで/todo/listへのGETメソッドに対しての処理を記述
 
 ★1  
-@ModelAttributeでmodelを作成して、formというvalueがtodoFormとしてAttributeに追加されている。
+@ModelAttributeを定義すると、クラス名を小文字化したもの（todoForm)をkey,返り値をvalueとして、modelに追加される。  
+すなわち、TodoControllerの各処理で、model.Attribute("todoForm",form)を実装するのと同じ  
+TodoFormの中身が、modelに追加される。
 
 
 ★2  
-@GetMapping("list")の設定により todo/listへのアクセスがあると、findallの結果をattributeに追加して、画面はtodo/listに遷移
+@GetMapping("list")の設定により todo/listへのアクセスがあると、list関数が走って、findallの結果をattributeに追加して、 todo/listに遷移させる。  
+
 
 ```
 package com.example.todo.app.todo;
@@ -587,7 +573,7 @@ public class TodoController {
 
 
 ##### jspの修正
-Controllerで受け取った変数を展開して、TODOのタイトルを表示する
+Controllerjから受け取ったmodelの中身を使って、TODOのタイトルを表示する
 
 src/main/webapp/WEB-INF-views/todo配下にlist.jspを作成する。
 
@@ -629,7 +615,436 @@ model.Attributeで渡されてtodosについてfor文で展開して、画面表
 </body>
 </html>
 ```
+### Create Todoの作成
+#### TodoFormの修正
+TodoTitleについて、nullの禁止と文字数制限を設定
+```
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+    @NotNull // ★★★★★
+    @Size(min = 1, max = 30) // ★★★★★
+    private String todoTitle;
 
+```
+
+#### controllerの修正
+##### beanMapperによるtodoFormオブジェクトをtodoオブジェクトに変換
+
+★1  
+todoFormは、todoTitleの情報を持っている。
+Controller側でtodoTitleに関わる処理を終えたらtodoに変換する。  
+これによって、todoTitleが入ったtodoオブジェクトを作って、次の createに流す。
+
+```
+@Inject
+Mapper beanMapper;
+// ★★★★★1★★★★★
+Todo todo = beanMapper.map(todoForm, Todo.class);
+```
+
+##### postメソッドによるcreate処理
+
+★1  
+todo/createというパスのポストメソッドに対しては、createメソッドが走る。
+
+★2  
+TodoFormに対して、入力チェックが走る。
+
+★3  
+入力チェックの結果が格納される
+
+★4  
+正常に作成が完了すると、リダイレクトされる  
+リダイレクト先への情報を格納するために、引数にRedirectAttributesを加える。
+
+```
+@PostMapping("create") // ★★★★★1★★★★★
+public String create(@Valid TodoForm todoForm,// ★★★★★2★★★★★ 
+                            BindingResult bindingResult, // ★★★★★3★★★★★
+                            Model model, 
+                            RedirectAttributes attributes// ★★★★★4★★★★★) { /
+
+```
+
+#### Create処理詳細
+エラーがあれば一覧表示。エラーがなければ、正常終了でリダイレクト。
+
+★1  
+@validの部分でエラーがあった場合は一覧表示に戻る。  
+JSP側で`<form:errors path="todoTitle" />`として、TodoFormのプロパティであるtodoTititleのエラーを表示させている。
+
+★2  
+todoServiceのcreateを呼び出して実行  
+todoService→todoRepositoryのcreateが実行されて、Todo_Mapにtodoが追加される。
+
+★3  
+serviceに記述された個数の制限などに引っかかるとcatchされる。  
+エラーメッセージはmodelに格納されるし、modelAttributeでmodelにtodoFornも格納されていると思う。
+
+★4  
+全ての処理がうまくいった場合は、ResultMessagesに成功のメッセージを追加して、listへリダイレクトする。
+
+
+```
+   // ★★★★★1★★★★★
+    if (bindingResult.hasErrors()) {
+        return list(model);
+    }
+
+    //★★★★★2★★★★★
+    try {
+        todoService.create(todo);
+    } catch (BusinessException e) {
+        // ★★★★★3★★★★★
+        model.addAttribute(e.getResultMessages());
+        return list(model);
+    }
+
+    // ★★★★★4★★★★★
+    attributes.addFlashAttribute(ResultMessages.success().add(
+            ResultMessage.fromText("Created successfully!")));
+    return "redirect:/todo/list";
+}
+
+```
+
+
+#### jspの修正
+★1  
+<t:messagesPanel />
+org.terasoluna.gfw.common.message.ResultMessageに持っている情報を表示する。todoServiceで出力されたエラーか、正常終了のエラーが表示される。
+
+★2  
+modelAttributeには、@modelAttributeで指定した名前をつける
+
+★3  
+プロパティ名を指定するので、Formのプロパティ名を指定する。
+
+★4  
+入力エラーがあった場合に表示する。path属性の値は、Formのプロパティ名を指定
+
+
+```
+<div id="todoForm">
+    <!-- ★1 -->
+    <t:messagesPanel />
+
+    <!-- ★2 -->
+    <form:form
+       action="${pageContext.request.contextPath}/todo/create"
+        method="post" modelAttribute="todoForm">
+        <!-- ★3 -->
+        <form:input path="todoTitle" />
+        <!-- ★4 -->
+        <form:errors path="todoTitle" cssClass="text-error" />
+        
+        <form:button>Create Todo</form:button>
+    </form:form>
+</div>
+```
+### Finish Todoの作成
+#### todoFormの修正
+Finishの処理を追加する。FinishはtodoIdを使って、処理を行う。
+CreateとFinishでは利用するプロパティが異なり、Createの時にはtodoTitleを使いFinishの時はtodoIdを使いたい。  
+groups属性を利用して、入力チェックの制御を行う。
+
+
+★1  
+入力チェックのために、インターフェースを追加
+
+★2  
+todoIdはFinishで入力チェックをして、todoTitleはCreateで入力チェックをする。
+
+```
+package com.example.todo.app.todo;
+
+import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class TodoForm implements Serializable {
+    
+    // ★★★★★1★★★★★
+    public static interface TodoCreate {
+    };
+    public static interface TodoFinish {
+    };
+
+    private static final long serialVersionUID = 1L;
+
+    // ★★★★★2★★★★★
+    @NotNull(groups = { TodoFinish.class })
+    private String todoId;
+
+    // ★★★★★2★★★★★
+    @NotNull(groups = { TodoCreate.class })
+    @Size(min = 1, max = 30, groups = { TodoCreate.class })
+    private String todoTitle;
+
+    public String getTodoId() {
+        return todoId;
+    }
+
+    public void setTodoId(String todoId) {
+        this.todoId = todoId;
+    }
+
+    public String getTodoTitle() {
+        return todoTitle;
+    }
+
+    public void setTodoTitle(String todoTitle) {
+        this.todoTitle = todoTitle;
+    }
+
+}
+```
+
+#### todoControllerの修正
+groups属性を追加したので@Validではなく、@Validatedを利用する。
+
+★1  
+グループ化した入力チェックルールを適用するために、@Validアノテーションを@Validatedアノテーションに変更する
+適用する入力チェックルールのグループ(グループインタフェース)を指定する。
+Default.classは、グループ化されていない入力チェックルールを適用するために用意されているグループインタフェースである
+
+★2  
+PostMappping("finish")でtodo/finishへのPOSTメソッドに対する処理を記載する。
+基本的な処理はcreateと同じで、エラーを捌きつつ、正常終了したら、Service→Repositoryで定義されたfinishを実行する。
+処理の中身としては、対象のIdのfinishフラグの値を変更して、updateをかける。
+
+
+```
+@PostMapping("create")
+public String create(
+        // ★★★★★1★★★★★
+        @Validated({ Default.class, TodoCreate.class }) TodoForm todoForm, 
+        BindingResult bindingResult, Model model,
+        RedirectAttributes attributes) {
+
+// ★★★★★2★★★★★
+@PostMapping("finish") 
+public String finish(
+        @Validated({ Default.class, TodoFinish.class }) TodoForm form, 
+        BindingResult bindingResult, Model model,
+        RedirectAttributes attributes) {
+    if (bindingResult.hasErrors()) {
+        return list(model);
+    }
+    try {
+        todoService.finish(form.getTodoId());
+    } catch (BusinessException e) {
+        model.addAttribute(e.getResultMessages());
+        return list(model);
+    }
+    attributes.addFlashAttribute(ResultMessages.success().add(
+            ResultMessage.fromText("Finished successfully!")));
+    return "redirect:/todo/list";
+}
+```
+
+#### jspファイルの変更
+hiddenでtodoのtodoIdをPOSTする。
+```
+<!-- (1) -->
+<form:form
+    action="${pageContext.request.contextPath}/todo/finish"
+    method="post"
+    modelAttribute="todoForm"
+    cssClass="inline">
+    <!-- (2) -->
+    <form:hidden path="todoId"
+        value="${f:h(todo.todoId)}" />
+    <form:button>Finish</form:button>
+</form:form>
+```
+
+### Delete Todoの作成
+Finishと基本的には同じ修正を加える。
+
+## MyBatis3を利用したTODOアプリ
+### プロジェクトの作成
+以下を実行（別のフォルダで）
+```
+mvn archetype:generate -B¥
+ -DarchetypeGroupId=org.terasoluna.gfw.blank¥
+ -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis3-archetype¥
+ -DarchetypeVersion=5.7.0.RELEASE¥
+ -DgroupId=com.example.todo¥
+ -DartifactId=todo¥
+ -Dversion=1.0.0-SNAPSHOT
+```
+
+すでに作成した、src配下のRepositoryImpl以外のファイルをコピーしてくる。
+- domain/model/Todo.java
+- domain/repository/todo/TodoRepository.java
+- domain/service/todo/TodoService.java
+- domain/service/todo/TodoServiceImpl.java
+- app/todo/TodoController.java
+- app/todo/TodoForm.java
+- src/main/webapp/WEB-INF/views/todo/list.jsp
+
+
+### DataBaseのセットアップ
+APサーバ起動時にH2 Database上にテーブルが作成されるようにする。
+TBLを作成するためのDDLは以下
+```
+create table if not exists todo (
+    todo_id varchar(36) primary key,
+    todo_title varchar(30),
+    finished boolean,
+    created_at timestamp
+)
+```
+これを `src/main/resources/META-INF/spring/todo-infra.properties`に追加。
+```
+database=H2
+
+# (1)
+database.url=jdbc:h2:mem:todo;DB_CLOSE_DELAY=-1;INIT=create table if not exists todo(todo_id varchar(36) primary key, todo_title varchar(30), finished boolean, created_at timestamp)
+
+database.username=sa
+database.password=
+database.driverClassName=org.h2.Driver
+# connection pool
+cp.maxActive=96
+cp.maxIdle=16
+cp.minIdle=0
+cp.maxWait=60000
+```
+
+### インフラストラクチャ層の実装
+RepositoryImplにあたる部分を作成する。  
+RepositoryImplを作成するのではなく、Repositoryインターフェースが呼び出された時に、実行するSQLを定義するためのMapperファイルを作成する。
+
+`todo/src/main/resources/com/example/todo/domain/repository/todo`配下に`TodoRepository.xml`を作成する。
+
+
+★1  
+RepositoryのインターフェースのFQCNを指定する
+
+★2  
+今回の検索結果(ResultSet)とDomain/modelの紐付けをおこなっている。
+Repository内部で指定するtodoResultMapと、domain/model配下のtodo.javaの紐付けを行うという宣言。
+
+★3  
+idでの指定はPrimaryKeyの指定している。
+Repositoryの変数todoIdとテーブルのtodo_idを紐付けている。
+
+★4  
+resultの指定はそのほかの要素に関する指定
+Repositoryの変数todoTitleとテーブルのtodo_titleなどを紐付けている。
+
+★5-10  
+処理自体はSQLとして記述している。
+idの部分で、Repositoryインターフェースのメソッドとのマッピングをしている。
+
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ★★★★★1★★★★★ -->
+<mapper namespace="com.example.todo.domain.repository.todo.TodoRepository">
+
+    <!-- ★★★★★2★★★★★ -->
+    <resultMap id="todoResultMap" type="Todo">
+        <!-- ★★★★★3★★★★★ -->
+        <id property="todoId" column="todo_id" />
+        <!-- ★★★★★4★★★★★ -->
+        <result property="todoTitle" column="todo_title" />
+        <result property="finished" column="finished" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <!-- ★★★★★5★★★★★ -->
+    <select id="findById" parameterType="String" resultMap="todoResultMap">
+    <![CDATA[
+        SELECT
+            todo_id,
+            todo_title,
+            finished,
+            created_at
+        FROM
+            todo
+        WHERE
+            todo_id = #{todoId}
+    ]]>
+    </select>
+
+    <!-- ★★★★★6★★★★★ -->
+    <select id="findAll" resultMap="todoResultMap">
+    <![CDATA[
+        SELECT
+            todo_id,
+            todo_title,
+            finished,
+            created_at
+        FROM
+            todo
+    ]]>
+    </select>
+
+    <!-- ★★★★★7★★★★★ -->
+    <insert id="create" parameterType="Todo">
+    <![CDATA[
+        INSERT INTO todo
+        (
+            todo_id,
+            todo_title,
+            finished,
+            created_at
+        )
+        VALUES
+        (
+            #{todoId},
+            #{todoTitle},
+            #{finished},
+            #{createdAt}
+        )
+    ]]>
+    </insert>
+
+    <!-- ★★★★★8★★★★★ -->
+    <update id="update" parameterType="Todo">
+    <![CDATA[
+        UPDATE todo
+        SET
+            todo_title = #{todoTitle},
+            finished = #{finished},
+            created_at = #{createdAt}
+        WHERE
+            todo_id = #{todoId}
+    ]]>
+    </update>
+
+    <!-- ★★★★★9★★★★★ -->
+    <delete id="delete" parameterType="Todo">
+    <![CDATA[
+        DELETE FROM
+            todo
+        WHERE
+            todo_id = #{todoId}
+    ]]>
+    </delete>
+
+    <!-- ★★★★★10★★★★★ -->
+    <select id="countByFinished" parameterType="Boolean"
+        resultType="Long">
+    <![CDATA[
+        SELECT
+            COUNT(*)
+        FROM
+            todo
+        WHERE
+            finished = #{finished}
+    ]]>
+    </select>
+
+</mapper>
+```
 
 
 ## References

@@ -20,9 +20,12 @@ sts.appを右クリック、パッケージ内容を表示して、` /Applicatio
 /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin
 ```
 javaのパスについては以下の手順で確認
-1. javaのバージョン確認`/usr/libexec/java_home -V`でパスは確認
-2. javaの切り替え`export JAVA_HOME="/usr/libexec/java_home -v 1.8.0_292"`
+1. javaのバージョン確認
+> /usr/libexec/java_home -V
 
+2. javaの切り替え
+> export JAVA_HOME=`/usr/libexec/java_home -v "1.8.0_292"`
+> PATH=$JAVA_HOME/bin:$PATH
 
 
 ## maven

@@ -69,9 +69,18 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 </div>
 <p>javaのパスについては以下の手順で確認</p>
 <ol class="simple">
-<li><p>javaのバージョン確認<code class="docutils literal notranslate"><span class="pre">/usr/libexec/java_home</span> <span class="pre">-V</span></code>でパスは確認</p></li>
-<li><p>javaの切り替え<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">JAVA_HOME=&quot;/usr/libexec/java_home</span> <span class="pre">-v</span> <span class="pre">1.8.0_292&quot;</span></code></p></li>
+<li><p>javaのバージョン確認</p></li>
 </ol>
+<blockquote>
+<div><p>/usr/libexec/java_home -V</p>
+</div></blockquote>
+<ol class="simple">
+<li><p>javaの切り替え</p></li>
+</ol>
+<blockquote>
+<div><p>export JAVA_HOME=<code class="docutils literal notranslate"><span class="pre">/usr/libexec/java_home</span> <span class="pre">-v</span> <span class="pre">&quot;1.8.0_292&quot;</span></code>
+PATH=$JAVA_HOME/bin:$PATH</p>
+</div></blockquote>
 </section>
 </section>
 <section id="maven">
