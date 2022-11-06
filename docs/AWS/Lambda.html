@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>4. Lambda &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. 環境構築手順" href="../Java/java_env.html" />
+    <link rel="prev" title="3. ECS" href="ECS.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../Java/java_env.html" title="1. 環境構築手順"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="ECS.html" title="3. ECS"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>Lambda</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="lambda">
+<h1><span class="section-number">4. </span>Lambda<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h1>
+<p>サーバーのプロビジョニングや管理なしでプログラムを実行できるサービス</p>
+<section id="id1">
+<h2><span class="section-number">4.1. </span>Lambdaのメリット<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>コードの実行やスケーリングをLambada側で実施するので、開発者はコーディングに集中できる。</p>
+</section>
+<section id="id2">
+<h2><span class="section-number">4.2. </span>Lambdaの呼び出しかた分類<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Lambdaは呼び出し元のサービスによって、呼び出され方が異なる。</p>
+<p><img alt="../_images/lambda_call.png" src="../_images/lambda_call.png" /></p>
+<p>４つの種別については、以下のような分類がある。</p>
+<p><img alt="../_images/lambda_call_detail.png" src="../_images/lambda_call_detail.png" />
+大きな分類手である、ポーリングとはLambdaがイベントを取りに行くのか、呼ばれるのかの分類である。</p>
+<section id="id3">
+<h3><span class="section-number">4.2.1. </span>①Lambda関数を同期的に呼び出す<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaを呼び出したら、その実行が完了するのを待つ。<br />イベント元に実行結果を返す。</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">4.2.2. </span>②Lambda関数を非同期的に呼び出す<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaを呼び出すと、一旦LambdaないのQueueに格納されてからLambdaが実行される。
+イベントソースには、キューへの格納成功だけが返されるので、結果は返されない。
+エラー時の挙動はリトライ設定ができる。</p>
+<p><img alt="../_images/lambda_call_ansync.png" src="../_images/lambda_call_ansync.png" /></p>
+</section>
+<section id="id5">
+<h3><span class="section-number">4.2.3. </span>③Lambdaがイベントを読み取る<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaが新しいイベントがないがないかポーリングする。</p>
+</section>
+</section>
+<section id="lambdaaws">
+<h2><span class="section-number">4.3. </span>Lambdaと各種AWSサービスの連携<a class="headerlink" href="#lambdaaws" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="h4b">
+<h3><span class="section-number">4.3.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">H4B：AWS LambdaとAWS AI Servicesを組み合わせて作る音声文字起こし&amp;感情分析パイプライン</a>
+の内容を踏まえてLambadaの手順などを整理する。</p>
+<section id="id6">
+<h4><span class="section-number">4.3.1.1. </span>全体構成<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<p>S3に音声データをアップロードするとS3のイベントが発出され、Lambdaがそれを受け取る。<br />LambdaがTranscribeを呼び出して、テキストデータに変換し、そのデータをS3にアップロードする。<br />テキストのアップロードを契機として、再度Lambdaを呼び出して、ポジネガ判定を行う。</p>
+<ul class="simple">
+<li><p>Polly:テキストから音声を生成するAIサービス</p></li>
+<li><p>Transcribe:音声からテキストを生成するAIサービス</p></li>
+<li><p>comprehend:文章のポジネガ判定を行うAIサービス</p></li>
+<li><p><img alt="../_images/lambda_archie.png" src="../_images/lambda_archie.png" /></p></li>
+</ul>
+</section>
+<section id="s3lambda">
+<h4><span class="section-number">4.3.1.2. </span>S3とLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<p><a class="reference internal" href="S3.html"><span class="doc">S3の手順書</span></a>に記載</p>
+</section>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">4. Lambda</a><ul>
+<li><a class="reference internal" href="#id1">4.1. Lambdaのメリット</a></li>
+<li><a class="reference internal" href="#id2">4.2. Lambdaの呼び出しかた分類</a><ul>
+<li><a class="reference internal" href="#id3">4.2.1. ①Lambda関数を同期的に呼び出す</a></li>
+<li><a class="reference internal" href="#id4">4.2.2. ②Lambda関数を非同期的に呼び出す</a></li>
+<li><a class="reference internal" href="#id5">4.2.3. ③Lambdaがイベントを読み取る</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lambdaaws">4.3. Lambdaと各種AWSサービスの連携</a><ul>
+<li><a class="reference internal" href="#h4b">4.3.1. H4b</a><ul>
+<li><a class="reference internal" href="#id6">4.3.1.1. 全体構成</a></li>
+<li><a class="reference internal" href="#s3lambda">4.3.1.2. S3とLambdaの連携</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="ECS.html"
+                          title="前の章へ"><span class="section-number">3. </span>ECS</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../Java/java_env.html"
+                          title="次の章へ"><span class="section-number">1. </span>環境構築手順</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/AWS/Lambda.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../Java/java_env.html" title="1. 環境構築手順"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="ECS.html" title="3. ECS"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>Lambda</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

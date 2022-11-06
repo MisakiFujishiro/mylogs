@@ -1,7 +1,10 @@
 # S3
 
-## 基本操作
-バケット名はグローバルに一意にする
+## 基本情報
+高い耐久性で、イレブンナインの耐久性がある。（3つのAZにデータが格納される
+
+バケット名はグローバルに一意にする必要がある。
+
 
 
 ## 静的ウェブサイトホスティング
@@ -37,3 +40,67 @@ S3にアップロードしたHTMLサイトなどの静的なウェブサイト�
   ]
 }
 ```
+
+## S3のイベントとLambdaの連携
+### H4bの全体像
+[AWS Lambda と AWS AI Services を組み合わせて作る音声文字起こし & 感情分析パイプライン](https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html)
+にていおてS3のイベントを起因としたLambdaの呼び出しが実装されているので、こちらを参考に手順を整理する。
+
+![](img/lambda_s3_archie.png)
+
+##### S3の作成
+バケット名はユニークにする。
+
+Lambdaの設定後、Lambdaを起動するイベントを変更したい場合、バケット、プロパティ、イベント通知から変更が可能
+
+![](img/s3-event-edit.png)
+##### Lambdaの作成
+関数の作成で、設計図の使用をして、pythonのGet-S3-Objectを選択する。
+
+![](img/lambda_s3_event_lambda.png)
+
+関数の詳細設定においてS3のトリガーの設定でバケットやイベントタイプを指定する。
+- イベントタイプ：LambdaをキックすS3イベントを指定できる。
+- Prefix：イベントの対象とする先頭の対象制限（ディレクトリ制限など）
+- Suffix：イベントの対象とする後尾の対象制限（拡張子制限など）
+
+![](img/lambda_s3_trigger.png)
+
+
+Lambdaのコードでは、eventから、バケット名やオブジェクト名を取得している。
+```
+import json
+import urllib.parse
+import boto3
+
+print('Loading function')
+
+# PythonからAWSのサービスを連携できるboto3を使っている
+s3 = boto3.client('s3')
+
+
+def lambda_handler(event, context):
+    #print("Received event: " + json.dumps(event, indent=2))
+
+    # eventからbucket名を取得
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    # eventからオブジェクト名を取得
+    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    
+    # コンテンツタイプを取得している→ここの部分を要件に合わせて修正する。
+    try:
+        response = s3.get_object(Bucket=bucket, Key=key)
+        print("CONTENT TYPE: " + response['ContentType'])
+        return response['ContentType']
+    except Exception as e:
+        print(e)
+        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+        raise e
+
+```
+
+試しに、S3にファイルをアップロードすると、CloudWatchのログにコンテントタイプが出力される。
+
+
+
+- [参考サイト](https://qiita.com/sugimount-a/items/bffb03f8882d5abd90f0)

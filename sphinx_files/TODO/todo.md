@@ -196,7 +196,8 @@ DIコンテナの中にBeanがないのではないか？
 - H4B ECS 
 
 ## AWS
-- H4B AI+Lambda Series
+- H4B S3+AI+Lambda Series
+- AutoScaling
 - [AWSで作るクラウドネイティブアプリケーションの基本](https://news.mynavi.jp/techplus/series/AWS/)
 - [AWSで実践! 基盤構築・デプロイ自動化](https://news.mynavi.jp/techplus/series/AWSAuto/)
 

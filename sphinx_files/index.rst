@@ -45,6 +45,7 @@ AWS Services
    AWS/CodeSeries
    AWS/S3
    AWS/ECS
+   AWS/Lambda
 
 Java Spring
 ==================

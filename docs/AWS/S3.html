@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. 環境構築手順" href="../Java/java_env.html" />
+    <link rel="next" title="3. ECS" href="ECS.html" />
     <link rel="prev" title="1. Code Series" href="CodeSeries.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. 環境構築手順"
+          <a href="ECS.html" title="3. ECS"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="CodeSeries.html" title="1. Code Series"
@@ -48,8 +48,9 @@
   <section id="s3">
 <h1><span class="section-number">2. </span>S3<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id1">
-<h2><span class="section-number">2.1. </span>基本操作<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
-<p>バケット名はグローバルに一意にする</p>
+<h2><span class="section-number">2.1. </span>基本情報<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>高い耐久性で、イレブンナインの耐久性がある。（3つのAZにデータが格納される</p>
+<p>バケット名はグローバルに一意にする必要がある。</p>
 </section>
 <section id="id2">
 <h2><span class="section-number">2.2. </span>静的ウェブサイトホスティング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
@@ -83,6 +84,67 @@
 </div>
 </section>
 </section>
+<section id="s3lambda">
+<h2><span class="section-number">2.3. </span>S3のイベントとLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="h4b">
+<h3><span class="section-number">2.3.1. </span>H4bの全体像<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">AWS Lambda と AWS AI Services を組み合わせて作る音声文字起こし &amp; 感情分析パイプライン</a>
+にていおてS3のイベントを起因としたLambdaの呼び出しが実装されているので、こちらを参考に手順を整理する。</p>
+<p><img alt="../_images/lambda_s3_archie.png" src="../_images/lambda_s3_archie.png" /></p>
+<section id="id4">
+<h4><span class="section-number">2.3.1.1. </span>S3の作成<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<p>バケット名はユニークにする。</p>
+<p>Lambdaの設定後、Lambdaを起動するイベントを変更したい場合、バケット、プロパティ、イベント通知から変更が可能</p>
+<p><img alt="../_images/s3-event-edit.png" src="../_images/s3-event-edit.png" /></p>
+</section>
+<section id="lambda">
+<h4><span class="section-number">2.3.1.2. </span>Lambdaの作成<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<p>関数の作成で、設計図の使用をして、pythonのGet-S3-Objectを選択する。</p>
+<p><img alt="../_images/lambda_s3_event_lambda.png" src="../_images/lambda_s3_event_lambda.png" /></p>
+<p>関数の詳細設定においてS3のトリガーの設定でバケットやイベントタイプを指定する。</p>
+<ul class="simple">
+<li><p>イベントタイプ：LambdaをキックすS3イベントを指定できる。</p></li>
+<li><p>Prefix：イベントの対象とする先頭の対象制限（ディレクトリ制限など）</p></li>
+<li><p>Suffix：イベントの対象とする後尾の対象制限（拡張子制限など）</p></li>
+</ul>
+<p><img alt="../_images/lambda_s3_trigger.png" src="../_images/lambda_s3_trigger.png" /></p>
+<p>Lambdaのコードでは、eventから、バケット名やオブジェクト名を取得している。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">urllib.parse</span>
+<span class="kn">import</span> <span class="nn">boto3</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading function&#39;</span><span class="p">)</span>
+
+<span class="c1"># PythonからAWSのサービスを連携できるboto3を使っている</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1">#print(&quot;Received event: &quot; + json.dumps(event, indent=2))</span>
+
+    <span class="c1"># eventからbucket名を取得</span>
+    <span class="n">bucket</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;bucket&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    <span class="c1"># eventからオブジェクト名を取得</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># コンテンツタイプを取得している→ここの部分を要件に合わせて修正する。</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CONTENT TYPE: &quot;</span> <span class="o">+</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ContentType&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ContentType&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error getting object </span><span class="si">{}</span><span class="s1"> from bucket </span><span class="si">{}</span><span class="s1">. Make sure they exist and your bucket is in the same region as this function.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bucket</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">e</span>
+</pre></div>
+</div>
+<p>試しに、S3にファイルをアップロードすると、CloudWatchのログにコンテントタイプが出力される。</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiita.com/sugimount-a/items/bffb03f8882d5abd90f0">参考サイト</a></p></li>
+</ul>
+</section>
+</section>
+</section>
 </section>
 
 
@@ -96,9 +158,17 @@
     <h3><a href="../index.html">目次</a></h3>
     <ul>
 <li><a class="reference internal" href="#">2. S3</a><ul>
-<li><a class="reference internal" href="#id1">2.1. 基本操作</a></li>
+<li><a class="reference internal" href="#id1">2.1. 基本情報</a></li>
 <li><a class="reference internal" href="#id2">2.2. 静的ウェブサイトホスティング</a><ul>
 <li><a class="reference internal" href="#id3">2.2.1. 手順</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#s3lambda">2.3. S3のイベントとLambdaの連携</a><ul>
+<li><a class="reference internal" href="#h4b">2.3.1. H4bの全体像</a><ul>
+<li><a class="reference internal" href="#id4">2.3.1.1. S3の作成</a></li>
+<li><a class="reference internal" href="#lambda">2.3.1.2. Lambdaの作成</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -113,8 +183,8 @@
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../Java/java_env.html"
-                          title="次の章へ"><span class="section-number">1. </span>環境構築手順</a></p>
+    <p class="topless"><a href="ECS.html"
+                          title="次の章へ"><span class="section-number">3. </span>ECS</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -144,7 +214,7 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. 環境構築手順"
+          <a href="ECS.html" title="3. ECS"
              >次へ</a> |</li>
         <li class="right" >
           <a href="CodeSeries.html" title="1. Code Series"
