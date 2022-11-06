@@ -83,7 +83,9 @@ TODOアプリの作成
 
 
 ### AWS ECSのH4B
-
+今までもやったことがあったが、良い復習になった。
+fargateからの起動方法が新規で理解できた。
+task定義とサービス定義でFargateで起動する設定を行う。
 
 ### わからなかったところ
 #### Mapper beanMapperの役割について  
@@ -191,12 +193,10 @@ DIコンテナの中にBeanがないのではないか？
 - 開発環境図整理
 - H4B CICD
 - CodeArtifactの勉強
-
+- H4B ECS 
 
 ## AWS
-- H4B ECS 
-- H4B SystemManager
-- H4B AI Series
+- H4B AI+Lambda Series
 - [AWSで作るクラウドネイティブアプリケーションの基本](https://news.mynavi.jp/techplus/series/AWS/)
 - [AWSで実践! 基盤構築・デプロイ自動化](https://news.mynavi.jp/techplus/series/AWSAuto/)
 
