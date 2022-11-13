@@ -46,6 +46,7 @@ AWS Services
    AWS/S3
    AWS/ECS
    AWS/Lambda
+   AWS/AI
 
 Java Spring
 ==================

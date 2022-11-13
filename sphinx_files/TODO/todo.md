@@ -56,8 +56,9 @@ curlコマンドでアップロードはできたが、mvn deployはできてい
 アプリケーション検討【12-2月】
 1. 使ってみたいサービスリストアップ
    - Cognito
-   - AWS CodeArtifact
-2. アプリケーション検討
+   - AWS Codepipeline CodeArtifact
+   - ECS
+2. アプリケーション検討→最近のサーバーレス・コンテナサービスの需要とAWSサービスの対応付けと簡易Handson？
 3. 全体構成検討
 4. CICD基盤作成
 5. アプリケーションの本格作成
@@ -82,12 +83,23 @@ TODOアプリの作成
 ![](img/20221104-2.png)
 
 
-### AWS ECSのH4B
+### AWS ECSのH4B(4h)
 今までもやったことがあったが、良い復習になった。
 fargateからの起動方法が新規で理解できた。
 task定義とサービス定義でFargateで起動する設定を行う。
 
+### AWS LambdaのH4B 他サービスの連携(3h)
+S3アップロードをイベントを契機として、Lambdaで他のサービスと連携するHandsOn
+
+
+
+
+
 ### わからなかったところ
+#### ECS
+ECSのEC2・FargateそれぞれでメモリやCPUがどのように配分されるかは整理しても良いかなと思った。
+
+
 #### Mapper beanMapperの役割について  
 TodoControllerの実装中で登場するbeanMapper君が何者かわからない。
 
