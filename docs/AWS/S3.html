@@ -58,10 +58,14 @@
 <section id="id3">
 <h3><span class="section-number">2.2.1. </span>手順<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
-<li><p>バケットのブロックパブリックアクセス設定で、ブロックをオフにする
-<img alt="静的ホスティング" src="../_images/s3_static_hosting.png" /></p></li>
-<li><p>静的ウェブサイトホスティングを許可する<br />バケット&gt;プロパティ&gt;静的ウェブサイトホスティング<br />「有効にする」をせんてくして、最初に表示するインデックスドキュメントを選択
-<img alt="静的ホスティング設定" src="../_images/s3_static_setting.png" /></p></li>
+<li><p>バケットのブロックパブリックアクセス設定で、ブロックをオフにする</p></li>
+</ol>
+<p><img alt="静的ホスティング" src="../_images/s3_static_hosting.png" /></p>
+<ol class="simple">
+<li><p>静的ウェブサイトホスティングを許可する<br />バケット&gt;プロパティ&gt;静的ウェブサイトホスティング<br />「有効にする」をせんてくして、最初に表示するインデックスドキュメントを選択</p></li>
+</ol>
+<p><img alt="静的ホスティング設定" src="../_images/s3_static_setting.png" /></p>
+<ol class="simple">
 <li><p>アクセスポリシー<br />バケット&gt;アクセス許可&gt;バケットポリシーの設定</p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -94,8 +98,6 @@
 <section id="id4">
 <h4><span class="section-number">2.3.1.1. </span>S3の作成<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
 <p>バケット名はユニークにする。</p>
-<p>Lambdaの設定後、Lambdaを起動するイベントを変更したい場合、バケット、プロパティ、イベント通知から変更が可能</p>
-<p><img alt="../_images/s3-event-edit.png" src="../_images/s3-event-edit.png" /></p>
 </section>
 <section id="lambda">
 <h4><span class="section-number">2.3.1.2. </span>Lambdaの作成<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
@@ -127,8 +129,9 @@
     <span class="c1"># eventからオブジェクト名を取得</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
     
-    <span class="c1"># コンテンツタイプを取得している→ここの部分を要件に合わせて修正する。</span>
+    
     <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># ここの部分を要件に合わせて修正する。</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CONTENT TYPE: &quot;</span> <span class="o">+</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ContentType&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ContentType&#39;</span><span class="p">]</span>
@@ -139,6 +142,11 @@
 </pre></div>
 </div>
 <p>試しに、S3にファイルをアップロードすると、CloudWatchのログにコンテントタイプが出力される。</p>
+</section>
+<section id="id5">
+<h4><span class="section-number">2.3.1.3. </span>S3イベントの変更<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Lambdaの設定後、Lambdaを起動するイベントを変更したい場合、バケット、プロパティ、イベント通知から変更が可能</p>
+<p><img alt="../_images/s3-event-edit.png" src="../_images/s3-event-edit.png" /></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://qiita.com/sugimount-a/items/bffb03f8882d5abd90f0">参考サイト</a></p></li>
 </ul>
@@ -167,6 +175,7 @@
 <li><a class="reference internal" href="#h4b">2.3.1. H4bの全体像</a><ul>
 <li><a class="reference internal" href="#id4">2.3.1.1. S3の作成</a></li>
 <li><a class="reference internal" href="#lambda">2.3.1.2. Lambdaの作成</a></li>
+<li><a class="reference internal" href="#id5">2.3.1.3. S3イベントの変更</a></li>
 </ul>
 </li>
 </ul>

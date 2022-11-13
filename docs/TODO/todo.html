@@ -123,10 +123,11 @@ serverがでなかったのはワークスペースの設定も悪かった？�
 <li><p>使ってみたいサービスリストアップ</p>
 <ul class="simple">
 <li><p>Cognito</p></li>
-<li><p>AWS CodeArtifact</p></li>
+<li><p>AWS Codepipeline CodeArtifact</p></li>
+<li><p>ECS</p></li>
 </ul>
 </li>
-<li><p>アプリケーション検討</p></li>
+<li><p>アプリケーション検討→最近のサーバーレス・コンテナサービスの需要とAWSサービスの対応付けと簡易Handson？</p></li>
 <li><p>全体構成検討</p></li>
 <li><p>CICD基盤作成</p></li>
 <li><p>アプリケーションの本格作成</p></li>
@@ -142,16 +143,24 @@ serverがでなかったのはワークスペースの設定も悪かった？�
 実装完了(MyBatisを利用したインフラ層実装まで)</p>
 <p><img alt="../_images/20221104-2.png" src="../_images/20221104-2.png" /></p>
 </section>
-<section id="aws-ecsh4b">
-<h3><span class="section-number">1.2.3. </span>AWS ECSのH4B<a class="headerlink" href="#aws-ecsh4b" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="aws-ecsh4b-4h">
+<h3><span class="section-number">1.2.3. </span>AWS ECSのH4B(4h)<a class="headerlink" href="#aws-ecsh4b-4h" title="この見出しへのパーマリンク">¶</a></h3>
 <p>今までもやったことがあったが、良い復習になった。
 fargateからの起動方法が新規で理解できた。
 task定義とサービス定義でFargateで起動する設定を行う。</p>
 </section>
+<section id="aws-lambdah4b-3h">
+<h3><span class="section-number">1.2.4. </span>AWS LambdaのH4B 他サービスの連携(3h)<a class="headerlink" href="#aws-lambdah4b-3h" title="この見出しへのパーマリンク">¶</a></h3>
+<p>S3アップロードをイベントを契機として、Lambdaで他のサービスと連携するHandsOn</p>
+</section>
 <section id="id5">
-<h3><span class="section-number">1.2.4. </span>わからなかったところ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.5. </span>わからなかったところ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="ecs">
+<h4><span class="section-number">1.2.5.1. </span>ECS<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ECSのEC2・FargateそれぞれでメモリやCPUがどのように配分されるかは整理しても良いかなと思った。</p>
+</section>
 <section id="mapper-beanmapper">
-<h4><span class="section-number">1.2.4.1. </span>Mapper beanMapperの役割について<a class="headerlink" href="#mapper-beanmapper" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.2.5.2. </span>Mapper beanMapperの役割について<a class="headerlink" href="#mapper-beanmapper" title="この見出しへのパーマリンク">¶</a></h4>
 <p>TodoControllerの実装中で登場するbeanMapper君が何者かわからない。</p>
 <p>多分処理的には、object型の変換をしている
 todoFormはtodoTitleを持っていて、Todo.classにもあるからObjectを変換している。
@@ -165,7 +174,7 @@ todoFormはtodoTitleを持っていて、Todo.classにもあるからObjectを�
 </div>
 </section>
 <section id="controllerjsp">
-<h4><span class="section-number">1.2.4.2. </span>Controllerとjspでの変数のやり取りについて<a class="headerlink" href="#controllerjsp" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.2.5.3. </span>Controllerとjspでの変数のやり取りについて<a class="headerlink" href="#controllerjsp" title="この見出しへのパーマリンク">¶</a></h4>
 <p>①titleのnullチェックは文字数チェックのエラー結果はbindingResultにある</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bindingResult</span><span class="o">.</span><span class="n">hasErrors</span><span class="p">()</span>
 </pre></div>
@@ -202,7 +211,7 @@ todoFormはtodoTitleを持っていて、Todo.classにもあるからObjectを�
 <p>Q4.todoTitleのValidチェックがform:errorsでエラーで結果を表示できるの？？</p>
 </section>
 <section id="mybats">
-<h4><span class="section-number">1.2.4.3. </span>Mybatsを利用した実装<a class="headerlink" href="#mybats" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.2.5.4. </span>Mybatsを利用した実装<a class="headerlink" href="#mybats" title="この見出しへのパーマリンク">¶</a></h4>
 <p>RepositoryImplでは&#64;RepositoryでBeanにしていたからコンテナでDIしてくれていたけど、</p>
 <p>Q5. Repository.xmlでは&#64;付与をしていないのでは？勝手にBeanにしてくれるの？</p>
 <p>TodoServiceImplでInjectしているけど、&#64;Repositoryがなくなったので、
@@ -283,11 +292,13 @@ DIコンテナの中にBeanがないのではないか？</p>
 <li><a class="reference internal" href="#week6-11-4">1.2. week6(11/4-)</a><ul>
 <li><a class="reference internal" href="#id3">1.2.1. 全体の計画見直し</a></li>
 <li><a class="reference internal" href="#id4">1.2.2. java チュートリアル (7h)</a></li>
-<li><a class="reference internal" href="#aws-ecsh4b">1.2.3. AWS ECSのH4B</a></li>
-<li><a class="reference internal" href="#id5">1.2.4. わからなかったところ</a><ul>
-<li><a class="reference internal" href="#mapper-beanmapper">1.2.4.1. Mapper beanMapperの役割について</a></li>
-<li><a class="reference internal" href="#controllerjsp">1.2.4.2. Controllerとjspでの変数のやり取りについて</a></li>
-<li><a class="reference internal" href="#mybats">1.2.4.3. Mybatsを利用した実装</a></li>
+<li><a class="reference internal" href="#aws-ecsh4b-4h">1.2.3. AWS ECSのH4B(4h)</a></li>
+<li><a class="reference internal" href="#aws-lambdah4b-3h">1.2.4. AWS LambdaのH4B 他サービスの連携(3h)</a></li>
+<li><a class="reference internal" href="#id5">1.2.5. わからなかったところ</a><ul>
+<li><a class="reference internal" href="#ecs">1.2.5.1. ECS</a></li>
+<li><a class="reference internal" href="#mapper-beanmapper">1.2.5.2. Mapper beanMapperの役割について</a></li>
+<li><a class="reference internal" href="#controllerjsp">1.2.5.3. Controllerとjspでの変数のやり取りについて</a></li>
+<li><a class="reference internal" href="#mybats">1.2.5.4. Mybatsを利用した実装</a></li>
 </ul>
 </li>
 </ul>

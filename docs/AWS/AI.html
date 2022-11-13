@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>5. AIサービス &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. 環境構築手順" href="../Java/java_env.html" />
+    <link rel="prev" title="4. Lambda" href="Lambda.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../Java/java_env.html" title="1. 環境構築手順"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="Lambda.html" title="4. Lambda"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>AIサービス</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ai">
+<h1><span class="section-number">5. </span>AIサービス<a class="headerlink" href="#ai" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="amazon-transcribe">
+<h2><span class="section-number">5.1. </span>Amazon Transcribe<a class="headerlink" href="#amazon-transcribe" title="この見出しへのパーマリンク">¶</a></h2>
+<p>音声をテキストに変換する文字起こしサービス
+日本語に対応しているが、リアルタイム変換は日本語未対応</p>
+<section id="id1">
+<h3><span class="section-number">5.1.1. </span>使い方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<p>amazon transcribeのページからjobを作成</p>
+<ul class="simple">
+<li><p>Name:ジョブの名前(ユニークにする必要がある)</p></li>
+<li><p>Language:扱う言語</p></li>
+<li><p>Input data:s3にあるオブジェクトのURI</p></li>
+<li><p>Output data:Customer specifedを選択して、s3オブジェクトのURI</p></li>
+</ul>
+<p><img alt="../_images/ai-transcribe1.png" src="../_images/ai-transcribe1.png" /></p>
+<p><img alt="../_images/ai-transcribe2.png" src="../_images/ai-transcribe2.png" /></p>
+<p>Inputで指定した音声ファイルを文字起こししてOutputのフォルダにjsonファイルを出力する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+	<span class="s2">&quot;jobName&quot;</span><span class="p">:</span> <span class="s2">&quot;transcribe-h4b-job&quot;</span><span class="p">,</span>
+	<span class="s2">&quot;accountId&quot;</span><span class="p">:</span> <span class="s2">&quot;448323740997&quot;</span><span class="p">,</span>
+	<span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">{</span>
+		<span class="s2">&quot;transcripts&quot;</span><span class="p">:</span> <span class="p">[</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;ハンズオン順調ですか手を動かすの楽しいですよね&quot;</span>
+			<span class="p">}</span>
+		<span class="p">],</span>
+		<span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;0.72&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;0.9941&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;ハンズオン&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;0.72&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;1.23&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;順調&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;1.23&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;1.5&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;です&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;1.5&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;1.74&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;か&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;2.16&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;2.32&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;0.9835&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;手&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;2.32&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;2.53&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;を&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;2.53&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;3.02&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;動かす&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;3.02&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;3.2&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;の&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;3.39&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;3.94&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;0.8797&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;楽しい&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;3.94&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4.22&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;です&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4.22&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4.39&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;よ&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4.39&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4.62&quot;</span><span class="p">,</span>
+				<span class="s2">&quot;alternatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="s2">&quot;0.9965&quot;</span><span class="p">,</span>
+						<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;ね&quot;</span>
+					<span class="p">}</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pronunciation&quot;</span>
+			<span class="p">}</span>
+		<span class="p">]</span>
+	<span class="p">},</span>
+	<span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;COMPLETED&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="amazon-polly">
+<h2><span class="section-number">5.2. </span>Amazon Polly<a class="headerlink" href="#amazon-polly" title="この見出しへのパーマリンク">¶</a></h2>
+<p>テキストを音声に変換するサービス<br />SSMLというマークアップ言語で指定すると、音声に変換してくれる。<br />アクセントの変更はLexiconで設定できる。</p>
+<p>SSMLの例文、タグで囲むことで囁きや声量を変更できる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;speak&gt;
+   &lt;amazon:effect name=&quot;whispered&quot; &gt;こんにちは&lt;/amazon:effect&gt;
+   ミズキです。
+   &lt;prosody volume=&quot;x-loud&quot;&gt;読みたいテキストをここに入力してください。&lt;/prosody&gt;
+&lt;/speak&gt;
+</pre></div>
+</div>
+<p>作成した音声ファイルは、画面の「S3に保存」からS3に格納できる</p>
+</section>
+<section id="amazon-comprehend">
+<h2><span class="section-number">5.3. </span>Amazon Comprehend<a class="headerlink" href="#amazon-comprehend" title="この見出しへのパーマリンク">¶</a></h2>
+<p>キーフレーズの取得やエンティティ取得、感情分析(Sentiment)を行う。</p>
+<p><img alt="../_images/ai_comprehend.png" src="../_images/ai_comprehend.png" /></p>
+<p>Lambdaから呼び出す時の関数の設定方法は<a class="reference external" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/comprehend.html#Comprehend.Client.detect_sentiment">リファレンス</a>参照<br />今回は感情を分析する<code class="docutils literal notranslate"><span class="pre">detect_sentiment</span></code>の例</p>
+<p>インプットの形式</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">detect_sentiment</span><span class="p">(</span>
+    <span class="n">Text</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="n">LanguageCode</span><span class="o">=</span><span class="s1">&#39;en&#39;</span><span class="o">|</span><span class="s1">&#39;es&#39;</span><span class="o">|</span><span class="s1">&#39;fr&#39;</span><span class="o">|</span><span class="s1">&#39;de&#39;</span><span class="o">|</span><span class="s1">&#39;it&#39;</span><span class="o">|</span><span class="s1">&#39;pt&#39;</span><span class="o">|</span><span class="s1">&#39;ar&#39;</span><span class="o">|</span><span class="s1">&#39;hi&#39;</span><span class="o">|</span><span class="s1">&#39;ja&#39;</span><span class="o">|</span><span class="s1">&#39;ko&#39;</span><span class="o">|</span><span class="s1">&#39;zh&#39;</span><span class="o">|</span><span class="s1">&#39;zh-TW&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>アウトプットの形式</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;Sentiment&#39;</span><span class="p">:</span> <span class="s1">&#39;POSITIVE&#39;</span><span class="o">|</span><span class="s1">&#39;NEGATIVE&#39;</span><span class="o">|</span><span class="s1">&#39;NEUTRAL&#39;</span><span class="o">|</span><span class="s1">&#39;MIXED&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SentimentScore&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Positive&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
+        <span class="s1">&#39;Negative&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
+        <span class="s1">&#39;Neutral&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
+        <span class="s1">&#39;Mixed&#39;</span><span class="p">:</span> <span class="o">...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">5. AIサービス</a><ul>
+<li><a class="reference internal" href="#amazon-transcribe">5.1. Amazon Transcribe</a><ul>
+<li><a class="reference internal" href="#id1">5.1.1. 使い方</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#amazon-polly">5.2. Amazon Polly</a></li>
+<li><a class="reference internal" href="#amazon-comprehend">5.3. Amazon Comprehend</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="Lambda.html"
+                          title="前の章へ"><span class="section-number">4. </span>Lambda</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../Java/java_env.html"
+                          title="次の章へ"><span class="section-number">1. </span>環境構築手順</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/AWS/AI.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../Java/java_env.html" title="1. 環境構築手順"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="Lambda.html" title="4. Lambda"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>AIサービス</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>
