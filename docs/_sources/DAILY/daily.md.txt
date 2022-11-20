@@ -1,0 +1,212 @@
+# 塾の活動
+
+## DONE
+- sphinx環境構築
+- githubアカウント作成
+- javaspringは私用のパソコンでstsを構築
+- dockerコンテナ環境構築
+- java環境をdockerコンテナに固める手順整理
+- 開発環境図整理
+---
+- TERASOLNA チュートリアル11.1実施
+- H4B CICD
+- CodeArtifactの勉強
+---
+- テーマについて考える
+- H4B ECS 
+- H4B Lambda+S3+AI
+- H4B AutoScaling
+- TERASOLNA チュートリアル11.1完了
+---
+
+## テーマ
+テーマ「」  
+マイクロサービスを構築する上でのニーズとそのニーズを満たすAWSサービスや機能の対応とその実装上の注意を整理する。  
+自分で実装するもしくは、HandsOnのような形式にして、他の人に展開できるようにする。
+
+自分の興味  
+新しいことを理解したい。理解したことを整理したい。理解したことを難しいことをやっていないことを伝えたい。
+
+やる価値  
+マイクロサービスアーキテクチャをサーバーレスサービスやコンテナサービスを使ってAWS上で構築することはニーズとして多い。  
+やりたいけど、どう始めればいいかわからない。案件としては進んでいるけど、自分自身の理解が薄いという人って多いのでは？少なくとも自分もそうだった。  
+マイクロサービスにおける技術的なニーズを満たすために、AWSはサービスを拡充している面もあるはず。  
+マイクロサービスに必要な機能とそれを実装するときのベストプラクティス（デファクトスタンダード）的なAWSサービスを整理して提供することは、そういった案件に効果的にも効率的にも寄与しえるのでは？
+
+## 実行計画
+### 11月：チュートリアル期間
+- TERASOLNA チュートリアル完了
+- H4B 興味あるもの
+
+### 12月：チュートリアル期間＋テーマに沿った調査
+- クラウドネイティブアプリケーションの基本
+- マイクロサービスについての整理
+  - メリット
+  - 必須要件(認証認可とか・・・？
+  - 周辺要件（CICDとか・・・？
+
+### 1月：テーマに沿った実装期間
+- 12月で調べたマイクロサービスの情報とAWSサービスの紐付けとサービスの利用法調査
+- AWSで作るマイクロサービス（上の手助けになる？
+
+### 2月：バッファ
+多分上記が計画通りにいかない
+
+### 3月：報告準備期間
+バッファ＋報告準備
+
+## week5(10/31-)
+### java チュートリアル 7h
+動作確認まで完了。mvnarchetype:generateコマンドやMVCの基本を整理
+sts4.xをインストールしていることに気づいて、sts3.xをインストール
+ここで、立ち上がらない問題やrun on serverがでないなどのトラブルで時間をだいぶ使った。
+javaのバージョンを変えたりstsのiniファイル編集したりして対応
+serverがでなかったのはワークスペースの設定も悪かった？？
+
+tutorialでドメイン部分の作成まで完了。Appの方も少しだけ作成して、一覧表示まではできた。
+今までは何もわかっていなかったところからお作法とかは少しずつわかってきた。
+細かいアノテーションの意味とかは調べつつ。。。わからないところはメモしている
+
+![](img/20221104-1.png)
+
+### AWS code artifact勉強(3h)
+じつ業務の方で利用する機会があったので勉強した。  
+jarファイルなどの成果物を共有することができるリポジトリ。   
+curlコマンドでアップロードはできたが、mvn deployはできていない。
+実際のアプリの時に使ってみて、使い方を整理したい。
+### わからなかったこと
+1. sts4でやったからか、run on serverがなくて困った【解決】
+    - sts3をインストールし直して、javaのバージョンも1.8に変えた
+    - PJを開く場所をデフォルトにしたらうまくいった
+2. CodeArtifactへの登録をmvn deployからできなかった【宿題】
+  - stsだとmvn deployはどこからするの？
+3. repositoryとserviceで定義するメソッドについて【解決】→[アプリケーションのレイヤと役割](https://terasolunaorg.github.io/guideline/5.5.1.RELEASE/ja/Overview/ApplicationLayering.html)
+  - repositoryはCRUD処理のうちで使うもの
+  - serviceは業務ロジックとして使うもの？チュートリアルはいいけど何を作るのかの定義が大事？
+4. @injectって何？いくつか記事を読んでみたけど、まだよくわからない。【解決】→- [DIとAOPの神動画](https://www.youtube.com/watch?v=LGtdpsmMfvI)
+
+
+---
+## week6(11/4-)
+### java チュートリアル (7h)
+DIとAOPの理解
+[動画](https://www.youtube.com/watch?v=LGtdpsmMfvI)見てだいぶスッキリした。  
+DIはコンテナでBean（インスタンス）を管理して、インスタンスの受け渡しを担うことでメソッド間を疎結合にする。という理解。  
+あとは、実際に使いながら理解を深める
+
+TODOアプリの作成
+実装完了(MyBatisを利用したインフラ層実装まで)  
+
+![](img/20221104-2.png)
+
+
+### AWS ECSのH4B(4h)
+今までもやったことがあったが、良い復習になった。
+fargateからの起動方法が新規で理解できた。
+task定義とサービス定義でFargateで起動する設定を行う。
+
+### AWS LambdaのH4B 他サービスの連携(3h)
+S3アップロードをイベントを契機として、Lambdaで他のサービスと連携するHandsOn
+
+
+
+
+
+### わからなかったところ
+#### ECS
+ECSのEC2・FargateそれぞれでメモリやCPUがどのように配分されるかは整理しても良いかなと思った。
+
+
+#### Mapper beanMapperの役割について  
+TodoControllerの実装中で登場するbeanMapper君が何者かわからない。
+
+
+多分処理的には、object型の変換をしている
+todoFormはtodoTitleを持っていて、Todo.classにもあるからObjectを変換している。
+他のプロパティは空っぽで変換してくれて、後続のcreateメソッドでプロパティを追加しているっぽい。  
+
+Q1.なんでInjectしているのか不明。。。import で使うのとは別なの？？
+```
+@Inject
+ Mapper beanMapper;
+
+  Todo todo = beanMapper.map(todoForm, Todo.class);
+
+```
+
+#### Controllerとjspでの変数のやり取りについて
+
+①titleのnullチェックは文字数チェックのエラー結果はbindingResultにある
+```
+bindingResult.hasErrors()
+```
+
+②serviceに書かれた業務エラー（５個以上のTodo）はmodelにある  
+Q2.modelってkey-valueな気がするのに、keyを指定しない理由がわからない
+
+```
+try {
+   todoService.create(todo);
+} catch (BusinessException e) {
+   // (7)
+   model.addAttribute(e.getResultMessages());
+   return list(model);
+}
+```
+
+③処理成功はattributesにある  
+```
+// (8)
+attributes.addFlashAttribute(ResultMessages.success().add(
+       ResultMessage.fromText("Created successfully!")));
+return "redirect:/todo/list";
+}
+```
+
+jsp側での処理では、messagePanelがResultMessagesを表示させるので、②と③は表示されるらしい。
+```
+<t:messagesPanel />
+```
+Q3. modelとAttribute違う場所にあるけど、jspに渡ってきているの？
+しかも異なる変数のなか（modelとattribute)にあるResultMessagesから勝手にみてきてくれるの？
+
+
+
+①の表示はform:errorsが担っているっぽい
+```
+<form:errors path="todoTitle" /><!-- (4) -->
+```
+@modelAttributeで指定したtodoFormのプロパティにtodoTitleがある。
+
+Q4.todoTitleのValidチェックがform:errorsでエラーで結果を表示できるの？？
+
+
+
+#### Mybatsを利用した実装  
+RepositoryImplでは@RepositoryでBeanにしていたからコンテナでDIしてくれていたけど、
+
+Q5. Repository.xmlでは@付与をしていないのでは？勝手にBeanにしてくれるの？
+
+
+TodoServiceImplでInjectしているけど、@Repositoryがなくなったので、
+コンポーネントスキャンされていない。
+DIコンテナの中にBeanがないのではないか？
+```
+ @Inject// (3)
+ TodoRepository todoRepository;
+```
+
+ここの部分は、SQLの結果とDomain/modelのプロパティを紐づけているだけっぽいし
+```
+ <resultMap id="todoResultMap" type="Todo">
+        <id property="todoId" column="todo_id" />
+        <result property="todoTitle" column="todo_title" />
+        <result property="finished" column="finished" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+```
+この辺の処理は、Interfaceとの紐付けをおこなっているだけっぽい。
+```
+<select id="findById" parameterType="String" resultMap="todoResultMap">
+```
+

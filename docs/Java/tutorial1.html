@@ -77,8 +77,9 @@
 <section id="id2">
 <h3><span class="section-number">3.1.3. </span>PJ構成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>src
+  └pom.xml
   └main
-      ├java
+      ├java・・・ソースコードを置くことがルール
       │  └com
       │    └example
       │      └todo
@@ -90,7 +91,7 @@
       │            │   └todo
       │            └service ・・・サービス（業務処理
       │                └todo
-      ├resources
+      ├resources・・・設定ファイルをおくことがルール
       │  └META-INF
       │      └spring 
       └wepapp
@@ -98,6 +99,9 @@
               └views ・・・jspなどのビュー
 </pre></div>
 </div>
+<p>src/main/javaのフォルダとpom.xmlが上記なような構成があるだけで、mvnPJと呼ぶことができる。
+昔は自由に決めることができていたけど、新規参画者が酷い目にあったので、ルールが画一化された。
+結果として、src/main/java配下にあるソースをコンパイルしてくれる。</p>
 </section>
 <section id="id3">
 <h3><span class="section-number">3.1.4. </span>PJの動作確認<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>

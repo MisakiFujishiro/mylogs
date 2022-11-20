@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. 環境構築手順" href="../Java/java_env.html" />
+    <link rel="next" title="4. Lambda" href="Lambda.html" />
     <link rel="prev" title="2. S3" href="S3.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. 環境構築手順"
+          <a href="Lambda.html" title="4. Lambda"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="S3.html" title="2. S3"
@@ -78,12 +78,13 @@
 <h3><span class="section-number">3.2.2. </span>タスク定義<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>タスクを構成するコンテナ郡の定義<br />コンテナとして利用するイメージや、割り当てるCPU/メモリ、タスクに割り当てるIAM Roleといった設定を行う。</p>
 <p>設定内容はタスク定義名、利用するコンテナイメージのURI、タスクを立てる環境のインフラ設定など。
-ECSでコンテナを稼働させる環境はEC2とFargateがあるが、今回はFargateを採用する。</p>
+ECSでコンテナを稼働させる環境はEC2とFargateがあるが、今回はFargateを採用する。<br />タスク定義でEC2かFargateを選択し、サービスでの起動タイプと一致させておく必要がある。</p>
 <p>タスク定義は更新されるたびに新しいリビジョンが作成されて、サービスからタスク定義とリビジョンを選択することでどのようなタスク定義でタスクを作成するかを指定する。</p>
 </section>
 <section id="id4">
 <h3><span class="section-number">3.2.3. </span>サービス<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
-<p>タスクの管理を行う。</p>
+<p>タスクの管理を行う。
+こちらでも起動タイプを選択する。</p>
 <p>タスクの実行数の定義や、実行中のタスク実行数の維持を行う。<br />また、ELBとの連携もサービスが管理する。</p>
 </section>
 <section id="id5">
@@ -329,8 +330,8 @@ ECSでコンテナを稼働させる環境はEC2とFargateがあるが、今回�
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../Java/java_env.html"
-                          title="次の章へ"><span class="section-number">1. </span>環境構築手順</a></p>
+    <p class="topless"><a href="Lambda.html"
+                          title="次の章へ"><span class="section-number">4. </span>Lambda</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -360,7 +361,7 @@ ECSでコンテナを稼働させる環境はEC2とFargateがあるが、今回�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. 環境構築手順"
+          <a href="Lambda.html" title="4. Lambda"
              >次へ</a> |</li>
         <li class="right" >
           <a href="S3.html" title="2. S3"

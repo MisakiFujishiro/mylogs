@@ -320,8 +320,96 @@ DIの対象(bean)となり、DIコンテナに登録される</p>
 メソッド開始時と正常終了時にコミットが行われ、例外時にはロールバックされる。</p>
 </section>
 </section>
+<section id="id18">
+<h2><span class="section-number">2.8. </span>技統本レクリャー<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id19">
+<h3><span class="section-number">2.8.1. </span>20221116<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h4><span class="section-number">2.8.1.1. </span>プロジェクトを作成する<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<p>javaにはたくさんのライブラリが存在している。awsのAPIを呼ぶものやjsonやgithubなど、など。
+javaが標準で提供しているものはjavaやjavaxという接頭辞がついている。
+面倒なのはクラスライブラリは他のライブラリをいろいろ呼んでいる</p>
+<p>pomのdependencyで使いたいライブラリを設定すると、mavenがライブラリを勝手に取ってきてくれる。
+取ってきてくれるライブラリについては、ローカルに.m2フォルダが作成されて、ネットから拾ってきたライブラリを格納する。
+この中に追加いたライブラリのjarファイルがある。
+dependencyで指定すれば、関連するものは全て自動で撮ってくるので、細かく全部指定する必要はない
+mvnにかくとImportするか見たいな確認が来るのでOKすると、必要なのを裏で取ってくる
+<a class="reference external" href="https://mvnrepository.com/">mvn repository</a>からdependencyのタグを取ってくることもできる。</p>
+<p>mvnにはいくつかのステージがある
+packageはjar入るを作ってくれる。targetフォルダを作成して、中に、コンパイルしたクラスやjarファイルが出てくる
+jarファイルはzipファイルのようなものなので、その中に必要なライブラリのjarファイルを入れ手おいてくれる。</p>
+</section>
+<section id="id21">
+<h4><span class="section-number">2.8.1.2. </span>springでアプリケーションを作る<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<p>pomでbuildでspring-boot-maven-pluginを入れておくと、tomcatを仕込んでおいてくれる。</p>
+<p>public static void mainが最初に走るのだけど、SpringApplication.runを実行する。
+SpringApplication.runでDIコンテナとかを最初に作ってくれる。
+&#64;SpringBootApplicationを指定しておかないといけない。</p>
+</section>
+<section id="src-main-java">
+<h4><span class="section-number">2.8.1.3. </span>src/main/javaの配下のディレクトリ構成<a class="headerlink" href="#src-main-java" title="この見出しへのパーマリンク">¶</a></h4>
+<p>設定系のデータはConfigにしておく（川畑ルール
+必要なライブラリをインポートして、オーバーライドするようなところをConfig配下にかく</p>
+<p>&#64;SpringBootApplicationを実行すると、同階層以下のパッケージについて、 &#64;Configurationがついているものを設定クラスとして認識する。
+&#64;ComponentScanは、指定したパッケージ配下をスキャンするようになる。
+アノテーションをつけることで、Springがスキャンしてきたときにどういった機能なのかを明示的に提示する
+&#64;Controllerとして登録しておくと、Spring君もControllerとして扱ってくれる。
+&#64;Serviceを協会としてトランザクションを切り替えたりする
+&#64;ComponentはUtilクラスとか、他のAPIにアクセスしたいような時に&#64;Componentでつけたりする。
+Springが認識しているアノテーションを付与したパッケージが認識されて使えるようになる。
+Springが認識しているアノテーションを付与したパッケージ君はDIコンテナに入れられて使えるようになる。</p>
+</section>
+<section id="id22">
+<h4><span class="section-number">2.8.1.4. </span>コンパイルは何をしている<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Beanに詰めて、tomcat起動してというのがみれる
+Springで作成するやつはやってみても良いかも</p>
+</section>
+<section id="id23">
+<h4><span class="section-number">2.8.1.5. </span>総括<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
+<p>プロジェクト作って、必要なライブラリを準備して、実装していくプロセスを理解することができれば、Appの全体設計ができれば実装することができていく。
+最初に何をすれば良いのかという雛形を理解していく！そしたら独り立ちできるはず。</p>
+</section>
+</section>
+<section id="aws">
+<h3><span class="section-number">2.8.2. </span>20221118　AWSで作るマイクロサービスアーキテクチャ<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h3>
+<p>マイクロサービスは2014年くらいから言われていて、もう10年くらい
+マイクロサービスは独立性が一番の目的
+独立性のメリット →疎結合性。多機能との調整が必要だったのを解消する。
+Tokenとセットにして、バックエンドに問い合わせをしていくのが基本の動き。認証認可に従って、バックエンドは処理を返していく</p>
+<section id="id24">
+<h4><span class="section-number">2.8.2.1. </span>サービスの分け方<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h4>
+<p>サービスを分けるのが難しいし、トランザクション管理とかも難しい
+Cognitoに関するOIDCとかの文脈は別機械で</p>
+</section>
+<section id="springsecurity">
+<h4><span class="section-number">2.8.2.2. </span>SpringSecurity<a class="headerlink" href="#springsecurity" title="この見出しへのパーマリンク">¶</a></h4>
+<p>HandsONを試すとSpiringSecurityでログインとログアウトするだけのページが作成することができる。
+Appのなかに、認証認可の仕組みを組み込むことができる。
+OICDの認証認可も設定だけでできる！ただし設定項目は多い・・・
+この設定さえ理解できれば、Cognitoでも、KeyCloakでもOktaでも良い
+この記事の中にgithubがあって、ブランチが切れているので、セクションごとに分かれている
+&#64;Configurationを持っているやつをピックアップして、設定クラスと認定して、その配下にあるやつを対象にアプリを構築する
+MVCConfigについては、WebMvcConfigurerを継承しているので、これを継承するだけで、SpringMVCに含まれる全てを使える
+いろいろたくさん設定しないといけないのに、Bootのなかで組み込んでくれているので、設定をしてくれるのが便利だよ</p>
+<p>コントローラーの&#64;getMappinによって、&#64;timeleafの仕様でhtmlファイルのファイル名を指定すれば、その対象ファイルを表示するようにコントロールしてくれる</p>
+<p>SpringSecurityを使うための設定は二つ</p>
+<ol class="simple">
+<li><p>pomにspring-boot-starter-securityなど３つdependencyを追加</p></li>
+<li><p>securityのConfiguretionを作成する</p>
+<ul class="simple">
+<li><p>&#64;EnableWebSecurityのアノテーションを追加する（実質こいつは&#64;Configurerationの機能を含んでいる</p></li>
+<li><p>WebSecurityConfigurerAdapterの関数を継承することで、こいつは設定をいろいろ読み込んでおいてくれる</p></li>
+</ul>
+</li>
+</ol>
+<p>web.ignoring().anMatchersは、Springの認証認可の対象から外す対象を決めることを意味する。
+CustomUserDetaiol→ユーザーデータ
+SuccessHandlerはログインが成功した時の挙動</p>
+</section>
+</section>
+</section>
 <section id="references">
-<h2><span class="section-number">2.8. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.9. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.youtube.com/watch?v=LGtdpsmMfvI">DIとAOPの神動画</a></p></li>
 <li><p><a class="reference external" href="https://terasolunaorg.github.io/guideline/5.5.1.RELEASE/ja/Overview/ApplicationLayering.html">アプリケーションのレイヤと役割</a></p></li>
@@ -405,7 +493,23 @@ DIの対象(bean)となり、DIコンテナに登録される</p>
 <li><a class="reference internal" href="#transactional">2.7.6. &#64;Transactional</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#references">2.8. References</a></li>
+<li><a class="reference internal" href="#id18">2.8. 技統本レクリャー</a><ul>
+<li><a class="reference internal" href="#id19">2.8.1. 20221116</a><ul>
+<li><a class="reference internal" href="#id20">2.8.1.1. プロジェクトを作成する</a></li>
+<li><a class="reference internal" href="#id21">2.8.1.2. springでアプリケーションを作る</a></li>
+<li><a class="reference internal" href="#src-main-java">2.8.1.3. src/main/javaの配下のディレクトリ構成</a></li>
+<li><a class="reference internal" href="#id22">2.8.1.4. コンパイルは何をしている</a></li>
+<li><a class="reference internal" href="#id23">2.8.1.5. 総括</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#aws">2.8.2. 20221118　AWSで作るマイクロサービスアーキテクチャ</a><ul>
+<li><a class="reference internal" href="#id24">2.8.2.1. サービスの分け方</a></li>
+<li><a class="reference internal" href="#springsecurity">2.8.2.2. SpringSecurity</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">2.9. References</a></li>
 </ul>
 </li>
 </ul>
