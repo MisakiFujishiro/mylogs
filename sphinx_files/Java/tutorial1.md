@@ -31,10 +31,12 @@ STSでImportする。
 詳細は[チュートリアル](http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/TutorialTodo.html#id13)に有り
 
 ### PJ構成
+
 ```
 src
+  └pom.xml
   └main
-      ├java
+      ├java・・・ソースコードを置くことがルール
       │  └com
       │    └example
       │      └todo
@@ -46,13 +48,20 @@ src
       │            │   └todo
       │            └service ・・・サービス（業務処理
       │                └todo
-      ├resources
+      ├resources・・・設定ファイルをおくことがルール
       │  └META-INF
       │      └spring 
       └wepapp
           └WEB-INF
               └views ・・・jspなどのビュー
 ```
+src/main/javaのフォルダとpom.xmlが上記なような構成があるだけで、mvnPJと呼ぶことができる。
+昔は自由に決めることができていたけど、新規参画者が酷い目にあったので、ルールが画一化された。
+結果として、src/main/java配下にあるソースをコンパイルしてくれる。
+
+
+
+
 
 ### PJの動作確認
 `src/main/java/com/example/todo/app/welcome/HelloController.java`のプロジェクトはトップページが準備されている。

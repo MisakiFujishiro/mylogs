@@ -4,15 +4,14 @@
    contain the root `toctree` directive.
 
 
-TODO
+DAILY
 ==================
 
 .. toctree::
    :maxdepth: 2
-   :caption: 手の動かせるレベルまでタスクを落とし込む
    :numbered:
 
-   TODO/todo
+   DAILY/daily
 
 
 Sphinx
@@ -47,6 +46,7 @@ AWS Services
    AWS/ECS
    AWS/Lambda
    AWS/AI
+   AWS/AutoScaling
 
 Java Spring
 ==================
