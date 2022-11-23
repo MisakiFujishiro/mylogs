@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>4. チュートリアル11.2：RESTでのTODOアプリケーション &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="prev" title="3. チュートリアル11.1：TODOアプリケーション" href="tutorial11.1.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="tutorial11.1.html" title="3. チュートリアル11.1：TODOアプリケーション"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>チュートリアル11.2：RESTでのTODOアプリケーション</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="resttodo">
+<h1><span class="section-number">4. </span>チュートリアル11.2：RESTでのTODOアプリケーション<a class="headerlink" href="#resttodo" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="rest-api-representational-state-transfer">
+<h2><span class="section-number">4.1. </span>REST API(REpresentational State Transfer)<a class="headerlink" href="#rest-api-representational-state-transfer" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Webシステムの設計思想であり、RESTであるための原則は4つ</p>
+<ul class="simple">
+<li><p>統一インターフェース<br />情報のやり取りについてあらかじめ定義されていること
+「GET／POST／DELETE／PUT」などのHTTPリクエストを利用することやJSON形式であることなどを決めている。</p></li>
+<li><p>アドレス可能性<br />全ての情報がURIを持つこと</p></li>
+<li><p>接続性<br />各エンドポイント間で接続できること</p></li>
+<li><p>ステートレス性<br />やり取りが一回ずつで完結すること</p></li>
+</ul>
+</section>
+<section id="id1">
+<h2><span class="section-number">4.2. </span>チュートリアルでやりたいこと<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>全件取得・一件取得・削除・完了状態などをRESTで設定できるようにする。</p>
+<ul class="simple">
+<li><p>GET api/v1/todos：全件取得</p></li>
+<li><p>GET api/v1/todos/{id}:一件取得</p></li>
+<li><p>POST api/v1/todos:新規作成</p></li>
+<li><p>Put api/v1/todos/{id}:完了状態</p></li>
+<li><p>DELETE api/v1/todos/{id}:削除</p></li>
+</ul>
+<p>エラーメッセージもHTTPのレスポンスで返すようにする。エラーコードをキーとしてプロパティファイルから取得</p>
+</section>
+<section id="id2">
+<h2><span class="section-number">4.3. </span>実装<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="dispatcherservlet">
+<h3><span class="section-number">4.3.1. </span>DispatcherServletの設定<a class="headerlink" href="#dispatcherservlet" title="この見出しへのパーマリンク">¶</a></h3>
+<p>DispatherServletは、フロントでリクエストを受け取って裏側のjavaたちに処理を流していく。</p>
+<p><img alt="../_images/tutorial11.2_dispatcher.png" src="../_images/tutorial11.2_dispatcher.png" /></p>
+<section id="web-xml">
+<h4><span class="section-number">4.3.1.1. </span>web.xmlの修正<a class="headerlink" href="#web-xml" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/web.xml</span></code>に設定を追加する
+REST用のMVC設定ファイルを<code class="docutils literal notranslate"><span class="pre">META-INF/spring/spring-mvc-rest.xml</span></code>に書き込むことを指定する。<br />DispatcherServletにマッピングするURLを指定する。今回は<code class="docutils literal notranslate"><span class="pre">/api/v1/*</span></code>へのURLはDispathcerServletにマッピングする。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;servlet&gt;
+    &lt;servlet-name&gt;restApiServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;!-- ApplicationContext for Spring MVC (REST) --&gt;
+        &lt;param-value&gt;classpath*:META-INF/spring/spring-mvc-rest.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;restApiServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/api/v1/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</pre></div>
+</div>
+</section>
+<section id="rest">
+<h4><span class="section-number">4.3.1.2. </span>rest用の設定ファイルの作成<a class="headerlink" href="#rest" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">META-INF/spring/spring-mvc-rest.xml</span></code>を作成<br />component-scanの対象などを指定する。<code class="docutils literal notranslate"><span class="pre">com.example.todo.api</span></code>配下を指定して、apiの開発はこちらで実施する。</p>
+</section>
+</section>
+<section id="rest-api">
+<h3><span class="section-number">4.3.2. </span>REST APIのパッケージ作成<a class="headerlink" href="#rest-api" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">com.example.todo.api.todo</span></code>というパッケージを作成する。<br />api.todoパッケージの配下として作成するクラスは以下</p>
+<ul class="simple">
+<li><p>[NAME]Resource</p></li>
+<li><p>[NAME]RestController</p></li>
+<li><p>[NAME]Helper(必要なら)</p></li>
+</ul>
+</section>
+<section id="todoresource">
+<h3><span class="section-number">4.3.3. </span>TodoResourceの実装<a class="headerlink" href="#todoresource" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/todo/api/todo/TodoResource.java</span></code>を作成する</p>
+<p>Domain層で作成した<code class="docutils literal notranslate"><span class="pre">com.example.todo.domain.model</span></code>のTodo.javaと同様の指定に見えるが、TodoResoueceではクライアントとのやり取りの中で扱う情報が定義されている。
+Todo.javaで定義するのは、業務処理の中で扱うデータであるので、ここは明確に分ける。</p>
+</section>
+<section id="todorestcontroller">
+<h3><span class="section-number">4.3.4. </span>TodoRestControllerの実装<a class="headerlink" href="#todorestcontroller" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/todo/api/todo/TodoRestController.java</span></code>を作成する</p>
+<p>この中で、各RESTの処理を記述していく</p>
+<section id="get">
+<h4><span class="section-number">4.3.4.1. </span>GETメソッド<a class="headerlink" href="#get" title="この見出しへのパーマリンク">¶</a></h4>
+</section>
+<section id="post">
+<h4><span class="section-number">4.3.4.2. </span>POSTメソッド<a class="headerlink" href="#post" title="この見出しへのパーマリンク">¶</a></h4>
+</section>
+<section id="put">
+<h4><span class="section-number">4.3.4.3. </span>PUTメソッド<a class="headerlink" href="#put" title="この見出しへのパーマリンク">¶</a></h4>
+</section>
+<section id="delete">
+<h4><span class="section-number">4.3.4.4. </span>DELETEメソッド<a class="headerlink" href="#delete" title="この見出しへのパーマリンク">¶</a></h4>
+</section>
+</section>
+<section id="id3">
+<h3><span class="section-number">4.3.5. </span>例外ハンドリングの実装<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">4. チュートリアル11.2：RESTでのTODOアプリケーション</a><ul>
+<li><a class="reference internal" href="#rest-api-representational-state-transfer">4.1. REST API(REpresentational State Transfer)</a></li>
+<li><a class="reference internal" href="#id1">4.2. チュートリアルでやりたいこと</a></li>
+<li><a class="reference internal" href="#id2">4.3. 実装</a><ul>
+<li><a class="reference internal" href="#dispatcherservlet">4.3.1. DispatcherServletの設定</a><ul>
+<li><a class="reference internal" href="#web-xml">4.3.1.1. web.xmlの修正</a></li>
+<li><a class="reference internal" href="#rest">4.3.1.2. rest用の設定ファイルの作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rest-api">4.3.2. REST APIのパッケージ作成</a></li>
+<li><a class="reference internal" href="#todoresource">4.3.3. TodoResourceの実装</a></li>
+<li><a class="reference internal" href="#todorestcontroller">4.3.4. TodoRestControllerの実装</a><ul>
+<li><a class="reference internal" href="#get">4.3.4.1. GETメソッド</a></li>
+<li><a class="reference internal" href="#post">4.3.4.2. POSTメソッド</a></li>
+<li><a class="reference internal" href="#put">4.3.4.3. PUTメソッド</a></li>
+<li><a class="reference internal" href="#delete">4.3.4.4. DELETEメソッド</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">4.3.5. 例外ハンドリングの実装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="tutorial11.1.html"
+                          title="前の章へ"><span class="section-number">3. </span>チュートリアル11.1：TODOアプリケーション</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Java/tutorial11.2.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="tutorial11.1.html" title="3. チュートリアル11.1：TODOアプリケーション"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>チュートリアル11.2：RESTでのTODOアプリケーション</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

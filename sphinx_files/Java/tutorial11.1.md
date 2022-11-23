@@ -1,4 +1,4 @@
-# チュートリアル１：TODOアプリケーション
+# チュートリアル11.1：TODOアプリケーション
 [実施内容](http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/index.html)
 
 ## 環境構築
@@ -57,10 +57,7 @@ src
 ```
 src/main/javaのフォルダとpom.xmlが上記なような構成があるだけで、mvnPJと呼ぶことができる。
 昔は自由に決めることができていたけど、新規参画者が酷い目にあったので、ルールが画一化された。
-結果として、src/main/java配下にあるソースをコンパイルしてくれる。
-
-
-
+結果として、mavenは自動で、src/main/java配下にあるソースをコンパイルしてくれる。
 
 
 ### PJの動作確認

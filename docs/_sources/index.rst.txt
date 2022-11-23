@@ -12,6 +12,7 @@ DAILY
    :numbered:
 
    DAILY/daily
+   DAILY/microservice_archi
 
 
 Sphinx
@@ -57,5 +58,6 @@ Java Spring
 
    Java/java_env
    Java/knowledge
-   Java/tutorial1
+   Java/tutorial11.1
+   Java/tutorial11.2
 
