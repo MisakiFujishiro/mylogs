@@ -45,6 +45,9 @@
 <h1><span class="section-number">4. </span>チュートリアル11.2：RESTでのTODOアプリケーション<a class="headerlink" href="#resttodo" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="rest-api-representational-state-transfer">
 <h2><span class="section-number">4.1. </span>REST API(REpresentational State Transfer)<a class="headerlink" href="#rest-api-representational-state-transfer" title="この見出しへのパーマリンク">¶</a></h2>
+<p>クライアントとサーバーでデータをやり取りするためのアーキテクチャスタイルの一つ。<br />RESTにはいくつかの原則があり、それらを原則に従っているシステムをRESTfulと呼ばれる。</p>
+<p>REST</p>
+<p><img alt="../_images/tutorial11.2_restful.png" src="../_images/tutorial11.2_restful.png" /></p>
 <p>Webシステムの設計思想であり、RESTであるための原則は4つ</p>
 <ul class="simple">
 <li><p>統一インターフェース<br />情報のやり取りについてあらかじめ定義されていること
@@ -96,7 +99,7 @@ REST用のMVC設定ファイルを<code class="docutils literal notranslate"><sp
 </section>
 <section id="rest">
 <h4><span class="section-number">4.3.1.2. </span>rest用の設定ファイルの作成<a class="headerlink" href="#rest" title="この見出しへのパーマリンク">¶</a></h4>
-<p><code class="docutils literal notranslate"><span class="pre">META-INF/spring/spring-mvc-rest.xml</span></code>を作成<br />component-scanの対象などを指定する。<code class="docutils literal notranslate"><span class="pre">com.example.todo.api</span></code>配下を指定して、apiの開発はこちらで実施する。</p>
+<p><code class="docutils literal notranslate"><span class="pre">META-INF/spring/spring-mvc-rest.xml</span></code>を作成<br />component-scanの対象などを指定する。<code class="docutils literal notranslate"><span class="pre">com.example.todo.api</span></code>配下を指定して、apiの開発はこちらで実施する。<br />詳細はチュートリアルページ参照</p>
 </section>
 </section>
 <section id="rest-api">
@@ -112,28 +115,134 @@ REST用のMVC設定ファイルを<code class="docutils literal notranslate"><sp
 <h3><span class="section-number">4.3.3. </span>TodoResourceの実装<a class="headerlink" href="#todoresource" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/todo/api/todo/TodoResource.java</span></code>を作成する</p>
 <p>Domain層で作成した<code class="docutils literal notranslate"><span class="pre">com.example.todo.domain.model</span></code>のTodo.javaと同様の指定に見えるが、TodoResoueceではクライアントとのやり取りの中で扱う情報が定義されている。
-Todo.javaで定義するのは、業務処理の中で扱うデータであるので、ここは明確に分ける。</p>
+Todo.javaで定義するのは、業務処理の中で扱うデータであるので、ここは明確に分ける。<br />詳細はチュートリアルページ参照</p>
 </section>
 <section id="todorestcontroller">
 <h3><span class="section-number">4.3.4. </span>TodoRestControllerの実装<a class="headerlink" href="#todorestcontroller" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/todo/api/todo/TodoRestController.java</span></code>を作成する</p>
 <p>この中で、各RESTの処理を記述していく</p>
-<section id="get">
-<h4><span class="section-number">4.3.4.1. </span>GETメソッド<a class="headerlink" href="#get" title="この見出しへのパーマリンク">¶</a></h4>
-</section>
-<section id="post">
-<h4><span class="section-number">4.3.4.2. </span>POSTメソッド<a class="headerlink" href="#post" title="この見出しへのパーマリンク">¶</a></h4>
-</section>
-<section id="put">
-<h4><span class="section-number">4.3.4.3. </span>PUTメソッド<a class="headerlink" href="#put" title="この見出しへのパーマリンク">¶</a></h4>
-</section>
-<section id="delete">
-<h4><span class="section-number">4.3.4.4. </span>DELETEメソッド<a class="headerlink" href="#delete" title="この見出しへのパーマリンク">¶</a></h4>
-</section>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@RestController</span>
+<span class="nd">@RequestMapping</span><span class="p">(</span><span class="s2">&quot;todos&quot;</span><span class="p">)</span> <span class="o">//</span> <span class="o">&lt;</span><span class="n">ContentPath</span><span class="o">&gt;/</span><span class="n">api</span><span class="o">/</span><span class="n">todo</span><span class="o">/</span><span class="n">todosに対してマッピング</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">TodoRestController</span> <span class="p">{</span>
+
+    <span class="nd">@Inject</span>
+    <span class="n">TodoService</span> <span class="n">todoService</span><span class="p">;</span>
+    <span class="nd">@Inject</span>
+    <span class="n">Mapper</span> <span class="n">beanMapper</span><span class="p">;</span>
+
+    <span class="o">//</span> <span class="n">全件取得</span>
+    <span class="nd">@GetMapping</span> <span class="o">//</span><span class="n">GETメソッドに対するマッピング</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span> <span class="o">//</span> <span class="n">HTTPステータス200を返す</span>
+    <span class="n">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TodoResource</span><span class="o">&gt;</span> <span class="n">getTodos</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">Collection</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span> <span class="n">todos</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">findAll</span><span class="p">();</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">TodoResource</span><span class="o">&gt;</span> <span class="n">todoResources</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span> <span class="p">:</span> <span class="n">todos</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">todoResources</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">todo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">));</span> <span class="o">//</span><span class="n">todoResouces型に変換</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">todoResources</span><span class="p">;</span> <span class="o">//</span> <span class="n">todoResouces型はJSONに変換される</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">新規作成</span>
+    <span class="nd">@PostMapping</span> <span class="o">//</span><span class="n">POSTメソッドに対するマッピング</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">)</span> <span class="o">//</span> <span class="n">HTTPステータス201</span> <span class="n">CREATEDを返す</span>
+    <span class="n">public</span> <span class="n">TodoResource</span> <span class="n">postTodos</span><span class="p">(</span><span class="nd">@RequestBody</span> <span class="nd">@Validated</span> <span class="n">TodoResource</span> <span class="n">todoResource</span><span class="p">)</span> <span class="p">{</span> <span class="o">//</span><span class="n">todoResourceで受け取る</span>
+        <span class="n">Todo</span> <span class="n">createdTodo</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">todoResource</span><span class="p">,</span> <span class="n">Todo</span><span class="o">.</span><span class="n">class</span><span class="p">));</span> <span class="o">//</span><span class="n">todoResourceをtodo型に変換して処理を実行</span>
+        <span class="n">TodoResource</span> <span class="n">createdTodoResponse</span> <span class="o">=</span> <span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">createdTodo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">);</span> <span class="o">//</span><span class="n">todoResouces型に変換</span>
+        <span class="k">return</span> <span class="n">createdTodoResponse</span><span class="p">;</span> <span class="o">//</span> <span class="n">todoResouces型はJSONに変換される</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="mi">1</span><span class="n">件取得</span>
+    <span class="nd">@GetMapping</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{todoId}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">//</span><span class="n">IDまで指定された場合のGETメソッドに対するマッピング</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">TodoResource</span> <span class="n">getTodo</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="p">(</span><span class="s2">&quot;todoId&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">todoId</span><span class="p">)</span> <span class="p">{</span> <span class="o">//</span> <span class="n">PathVariableでパスに含まれる変数を取得する</span>
+        <span class="n">Todo</span> <span class="n">todo</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">findOne</span><span class="p">(</span><span class="n">todoId</span><span class="p">);</span> <span class="o">//</span><span class="n">findOneはtodoServiceに定義しておく</span>
+        <span class="n">TodoResource</span> <span class="n">todoResource</span> <span class="o">=</span> <span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">todo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">todoResource</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">更新</span>
+    <span class="nd">@PutMapping</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{todoId}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">TodoResource</span> <span class="n">putTodo</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="p">(</span><span class="s2">&quot;todoId&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">todoId</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Todo</span> <span class="n">finishedTodo</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="n">todoId</span><span class="p">);</span>
+        <span class="n">TodoResource</span> <span class="n">finishedTodoResource</span> <span class="o">=</span> <span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">finishedTodo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">finishedTodoResource</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">削除</span>
+    <span class="nd">@DeleteMapping</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{todoId}</span><span class="s2">&quot;</span><span class="p">)</span> 
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span><span class="p">)</span> <span class="o">//</span> <span class="n">HTTPステータス</span>　<span class="mi">204</span> <span class="n">No</span> <span class="n">Contentを返す</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">deleteTodo</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="p">(</span><span class="s2">&quot;todoId&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">todoId</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="n">todoService</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">todoId</span><span class="p">);</span> 
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="id3">
 <h3><span class="section-number">4.3.5. </span>例外ハンドリングの実装<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>これまでは、エラーメッセージをtodoServiceでハードコーディングしていたが、プロパティファイルからメッセージを取得する実装に変更する。<br />最終的には、プロパティファイルからエラーメッセージがまとめられていて、Serviceからはエラーコードを渡し、エラーのハンドリングはerroe用のパッケージを準備する。</p>
+<section id="service">
+<h4><span class="section-number">4.3.5.1. </span>Serviceの修正<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h4>
+<p>エラーメッセージをハードコーディングしていた部分を、エラーコードを渡す処理に変更</p>
+<p>変更前</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Override</span>
+<span class="n">public</span> <span class="n">Todo</span> <span class="n">create</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">...</span>
+        <span class="n">ResultMessages</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">ResultMessages</span><span class="o">.</span><span class="n">error</span><span class="p">();</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ResultMessage</span>
+                <span class="o">.</span><span class="n">fromText</span><span class="p">(</span><span class="s2">&quot;[E001] The count of un-finished Todo must not be over &quot;</span>
+                        <span class="o">+</span> <span class="n">MAX_UNFINISHED_COUNT</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">));</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>変更後</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Override</span>
+<span class="n">public</span> <span class="n">Todo</span> <span class="n">create</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">...</span>
+        <span class="n">ResultMessages</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">ResultMessages</span><span class="o">.</span><span class="n">error</span><span class="p">();</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;E001&quot;</span><span class="p">,</span> <span class="n">MAX_UNFINISHED_COUNT</span><span class="p">);</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
 </section>
+<section id="id4">
+<h4><span class="section-number">4.3.5.2. </span>プロパティファイルの作成<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<p>処理結果に関するエラーメッセージを管理するプロパティファイル<code class="docutils literal notranslate"><span class="pre">src/main/resources/i18n/application-messages.properties</span></code>配下にアプリ用のエラーメッセージを追加する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># For this tutorial</span>
+<span class="n">E001</span> <span class="o">=</span> <span class="p">[</span><span class="n">E001</span><span class="p">]</span> <span class="n">The</span> <span class="n">count</span> <span class="n">of</span> <span class="n">un</span><span class="o">-</span><span class="n">finished</span> <span class="n">Todo</span> <span class="n">must</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">over</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="o">.</span>
+<span class="n">E002</span> <span class="o">=</span> <span class="p">[</span><span class="n">E002</span><span class="p">]</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">Todo</span> <span class="ow">is</span> <span class="n">already</span> <span class="n">finished</span><span class="o">.</span> <span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">})</span>
+<span class="n">E400</span> <span class="o">=</span> <span class="p">[</span><span class="n">E400</span><span class="p">]</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">Todo</span> <span class="n">contains</span> <span class="n">invalid</span> <span class="n">values</span><span class="o">.</span>
+<span class="n">E404</span> <span class="o">=</span> <span class="p">[</span><span class="n">E404</span><span class="p">]</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">Todo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">found</span><span class="o">.</span> <span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">})</span>
+<span class="n">E500</span> <span class="o">=</span> <span class="p">[</span><span class="n">E500</span><span class="p">]</span> <span class="n">System</span> <span class="n">error</span> <span class="n">occurred</span><span class="o">.</span>
+<span class="n">E999</span> <span class="o">=</span> <span class="p">[</span><span class="n">E999</span><span class="p">]</span> <span class="n">Error</span> <span class="n">occurred</span><span class="o">.</span> <span class="n">Caused</span> <span class="n">by</span> <span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>入力チェック用のエラーコードに対応するエラーメッセージを管理するプロパティファイル<code class="docutils literal notranslate"><span class="pre">src/main/resources/ValidationMessages.properties</span></code> 配下に追加する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">javax</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">NotNull</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="n">may</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">null</span><span class="o">.</span>
+<span class="n">javax</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">Size</span><span class="o">.</span><span class="n">message</span>    <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="n">size</span> <span class="n">must</span> <span class="n">be</span> <span class="n">between</span> <span class="p">{</span><span class="nb">min</span><span class="p">}</span> <span class="ow">and</span> <span class="p">{</span><span class="nb">max</span><span class="p">}</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="error">
+<h4><span class="section-number">4.3.5.3. </span>errorパッケージの作成<a class="headerlink" href="#error" title="この見出しへのパーマリンク">¶</a></h4>
+<p>エラーハンドリング用のパッケージ<code class="docutils literal notranslate"><span class="pre">com.example.todo.api.common.error</span></code>を作成する</p>
+<p>実装は、<code class="docutils literal notranslate"><span class="pre">ResponseEntityExceptionHandler</span></code>を継承した<code class="docutils literal notranslate"><span class="pre">com.example.todo.api.common.error.RestGlobalExceptionHandler</span></code>クラスを作成して行う。<br />このクラスに実装していくことで、HTTPレスポンスBODYにエラー情報が出力される。
+詳細はチュートリアル参照</p>
+<p>REST APIで発生したエラー情報を保持するクラスとして、<code class="docutils literal notranslate"><span class="pre">ApiError</span></code>クラスを<code class="docutils literal notranslate"><span class="pre">com.example.todo.api.common.error</span></code>パッケージに作成する。
+ApiErrorクラスがJSONに変換されて、クライアントに応答される。<br />詳細はチュートリアル参照</p>
+<p><img alt="../_images/tutorial11.2_errorClass.png" src="../_images/tutorial11.2_errorClass.png" /></p>
+</section>
+</section>
+</section>
+<section id="id5">
+<h2><span class="section-number">4.4. </span>参考<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/ArchitectureInDetail/WebServiceDetail/REST.html#restoverviewhypermedialinkstorelatedresourceshttp://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/ArchitectureInDetail/WebServiceDetail/REST.html#restoverviewhypermedialinkstorelatedresources">RESTful Web Service¶</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -158,16 +267,16 @@ Todo.javaで定義するのは、業務処理の中で扱うデータである�
 </li>
 <li><a class="reference internal" href="#rest-api">4.3.2. REST APIのパッケージ作成</a></li>
 <li><a class="reference internal" href="#todoresource">4.3.3. TodoResourceの実装</a></li>
-<li><a class="reference internal" href="#todorestcontroller">4.3.4. TodoRestControllerの実装</a><ul>
-<li><a class="reference internal" href="#get">4.3.4.1. GETメソッド</a></li>
-<li><a class="reference internal" href="#post">4.3.4.2. POSTメソッド</a></li>
-<li><a class="reference internal" href="#put">4.3.4.3. PUTメソッド</a></li>
-<li><a class="reference internal" href="#delete">4.3.4.4. DELETEメソッド</a></li>
+<li><a class="reference internal" href="#todorestcontroller">4.3.4. TodoRestControllerの実装</a></li>
+<li><a class="reference internal" href="#id3">4.3.5. 例外ハンドリングの実装</a><ul>
+<li><a class="reference internal" href="#service">4.3.5.1. Serviceの修正</a></li>
+<li><a class="reference internal" href="#id4">4.3.5.2. プロパティファイルの作成</a></li>
+<li><a class="reference internal" href="#error">4.3.5.3. errorパッケージの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id3">4.3.5. 例外ハンドリングの実装</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id5">4.4. 参考</a></li>
 </ul>
 </li>
 </ul>

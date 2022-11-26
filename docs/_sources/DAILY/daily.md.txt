@@ -19,6 +19,10 @@
 - TERASOLNA チュートリアル11.1完了
 - TERASOLNA チュートリアル11.2実施中
 ---
+- TERASOLNA チュートリアル11.2(REST)完了
+- TERASOLNA チュートリアル11.4(SECURITY)着手
+- マイクロサービスアーキテクチャについて整理
+- 取り上げたいサービスをピックアップ
 
 ## テーマ
 テーマ「コンテナサービスおよびサーバレスサービスを活用した高速なアプリケーション開発環境の構築の整理」  
@@ -216,4 +220,25 @@ DIコンテナの中にBeanがないのではないか？
 ```
 <select id="findById" parameterType="String" resultMap="todoResultMap">
 ```
+
+## week7(11/25-)
+### TERASOLNA 11.2
+
+
+
+### TERASOLNA 11.2
+
+
+### マイクロサービスに関する整理
+
+
+
+### 取り上げたいサービス
+- Cognito
+- ECS/EKS
+- CodeSeries
+- X-ray
+
+
+
 
