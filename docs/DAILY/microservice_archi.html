@@ -54,24 +54,114 @@
 <section id="id3">
 <h2><span class="section-number">2.2. </span>マイクロサービスアーキテクチャのメリット<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>マイクロサービス一番の目的はサービス間の独立性</p>
-<p>疎結合となることで、機能間のソフトウェア的な組織的な独立性を高めて、開発速度向上を高める。</p>
+<p>疎結合となることで、機能間のソフトウェア的な組織的な独立性を高めて、開発速度向上を高める。
+「開発速度を高めることができる」を深掘りするとコンテナサービスやCICDの文脈が語れると思う。</p>
 </section>
 <section id="id4">
 <h2><span class="section-number">2.3. </span>基本的な動き<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <p>認証認可のサーバーからTOKENを受け取って、 バックエンド機能に問い合わせをしていくのが基本の動き。
 認可の情報に従って、提供するサービスを制御してバックエンドは処理を返していく</p>
 </section>
+<section id="oath2-0openidconnect">
+<h2><span class="section-number">2.4. </span>Oath2.0やOpenIDConnect勉強<a class="headerlink" href="#oath2-0openidconnect" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="oath2-0">
+<h3><span class="section-number">2.4.1. </span>Oath2.0<a class="headerlink" href="#oath2-0" title="この見出しへのパーマリンク">¶</a></h3>
+<p>HTTP上で、認可を行うための仕様</p>
+<p>正確にに書くと</p>
+<blockquote>
+<div><p>OAuth 2.0 とは、サービスのユーザーが、サービス上にホストされている自分のデータへのアクセスを、自分のクレデンシャルズ (ID &amp; パスワード) を渡すことなく、第三者のアプリケーションに許可するためのフレームワークである。</p>
+</div></blockquote>
+<p>具体例で書くと</p>
+<blockquote>
+<div><p>あるサイトAの機能（FaceBookの写真投稿）を、サイトB（Instagram）から実行するために、
+ユーザーがサイトBに許可を与えて、サイトAにアクセスすることを認めること。</p>
+</div></blockquote>
+<p>ユーザーがサイトBでサイトAについて認可すると、サイトBの認可チケットをサイトAへわたす。
+そうすると、サイトAにサイトBの認証情報をおかないで、サイトAへ認可することができる。</p>
+<p><img alt="../_images/oauth_flow.png" src="../_images/oauth_flow.png" /></p>
+<p>Oathが流行っている理由</p>
+<ol class="simple">
+<li><p>パスワードをサードパーティのアプリに渡すことなくAPIを利用できる</p></li>
+<li><p>どのリソースにアクセス可能かを細かくユーザーに認可させることができる</p></li>
+</ol>
+<section id="id5">
+<h4><span class="section-number">2.4.1.1. </span>トークンの発行フロー<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Authorization Code GrantとImplicit Grantの２つがある。</p>
+<section id="authorization-code-grant">
+<h5><span class="section-number">2.4.1.1.1. </span>Authorization Code Grant<a class="headerlink" href="#authorization-code-grant" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Authrozation CodeはサイトAのTokenをユーザーには渡さない
+代わりに、認可コードをWebアプリケーションに渡す。</p>
+<p><img alt="../_images/code_grant.png" src="../_images/code_grant.png" /></p>
+</section>
+<section id="implicit-grant">
+<h5><span class="section-number">2.4.1.1.2. </span>Implicit Grant<a class="headerlink" href="#implicit-grant" title="この見出しへのパーマリンク">¶</a></h5>
+<p>一番の違いはImplicit GrandはサイトAのTokenを一度ユーザーに渡す点</p>
+<p><img alt="../_images/implicit_grant.png" src="../_images/implicit_grant.png" /></p>
+</section>
+</section>
+</section>
+<section id="oath">
+<h3><span class="section-number">2.4.2. </span>Oath認証<a class="headerlink" href="#oath" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Oathを使って、認証までしてしまおうという流れ。
+本来Oathは認証ではなくて認可の使用なので、間違って使うと脆弱性が生まれる。</p>
+<p>認可は「誰が、誰に、何を」提供するかを定義するものであり、 その中の「誰が」は認証をしているものなので、話がややこしい。
+このOathの認可の中で認証をしているので、これを認証として扱ってしまおうというのが「Oath認証」</p>
+<p>![](img/Certification Authorization.png)</p>
+<p>本来認証ではない行為を使って認証をしている。マンションの合鍵を持ってきて、本人確認をする。
+OAuth Server（Twitter）とかで悪さすることができるので、合鍵をばら撒くのは好ましくない・・・</p>
+<p><img alt="../_images/oath.png" src="../_images/oath.png" /></p>
+<p>セキュリティ的なレベルの低さはあったが、手軽さのおかげで普及した</p>
+<section id="id6">
+<h4><span class="section-number">2.4.2.1. </span>セキュリティホール<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<p>セキュリティホールは、 access_tokenをUserAgentに渡すということは、UAはaccess_tokenを使いまわせる点にある。
+サイトAが悪役で、渡したTokenが盗まれたとすると、そのTokenを使うことで、認証せずに、サイトBがAのふりをできる。</p>
+<p><img alt="../_images/security_hole_1.png" src="../_images/security_hole_1.png" />
+<img alt="../_images/security_hole_2.png" src="../_images/security_hole_2.png" /></p>
+</section>
+</section>
+<section id="openid">
+<h3><span class="section-number">2.4.3. </span>OpenID<a class="headerlink" href="#openid" title="この見出しへのパーマリンク">¶</a></h3>
+<p>異なるWebサービス間でユーザーの認証情報を受け渡す方法</p>
+<p>認証：紹介状を使って本人確認をしているイメージ
+紹介状はIdentity Provider（Googleとか）に書いてもらう</p>
+<p><img alt="../_images/openid.png" src="../_images/openid.png" /></p>
+<p>登場人物は３人</p>
+<ul class="simple">
+<li><p>EndUser</p></li>
+<li><p>OpenID Provider(ユーザー認証を行う)</p></li>
+<li><p>Relying Party（ユーザーの許可のもと、OPから認証情報をもらう）</p></li>
+</ul>
+</section>
+<section id="openid-connect">
+<h3><span class="section-number">2.4.4. </span>OpenID Connect<a class="headerlink" href="#openid-connect" title="この見出しへのパーマリンク">¶</a></h3>
+<p>認証の仕様</p>
+<p>上記のOathの課題観を解決するためにOpenID Connctを開発。 OathとOpenIDを組み合わせて、認証を提供する
+基本アイデアはOathで渡す鍵を紹介状が入っているロッカーの鍵にすること
+このロッカーを「UserInfo （ユーザ情報）Endpoint」と呼ぶ
+紹介状の中には、どのような認証をしたのかというメタ情報もある。この紹介状のことを、OpenIDトークンと呼ぶ</p>
+<p><img alt="../_images/openid_connect.png" src="../_images/openid_connect.png" /></p>
+</section>
+</section>
 <section id="cognito">
-<h2><span class="section-number">2.4. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.5. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="esc-eks">
-<h2><span class="section-number">2.5. </span>ESC/EKS<a class="headerlink" href="#esc-eks" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.6. </span>ESC/EKS<a class="headerlink" href="#esc-eks" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="codeseries">
-<h2><span class="section-number">2.6. </span>CodeSeries<a class="headerlink" href="#codeseries" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.7. </span>CodeSeries<a class="headerlink" href="#codeseries" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="x-ray">
-<h2><span class="section-number">2.7. </span>X-ray<a class="headerlink" href="#x-ray" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.8. </span>X-ray<a class="headerlink" href="#x-ray" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id7">
+<h2><span class="section-number">2.9. </span>参考<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://debugroom.github.io/technical-academy/forum/202104/cloudnative_app.html">塾長のマイクロサービス概要資料</a></p></li>
+<li><p><a class="reference external" href="https://www.sakimura.org/2011/05/1087/">OathとOpenIDの違い</a></p></li>
+<li><p><a class="reference external" href="https://www.slideshare.net/ph1ph2sa25/oauth20-46144252">Oathによる認可の流れ</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/f2a0d25a4f05790b3baa">OpenIDConnct誕生までの流れ</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -89,10 +179,28 @@
 <li><a class="reference internal" href="#id2">2.1. マイクロサービアーキテクチャとは</a></li>
 <li><a class="reference internal" href="#id3">2.2. マイクロサービスアーキテクチャのメリット</a></li>
 <li><a class="reference internal" href="#id4">2.3. 基本的な動き</a></li>
-<li><a class="reference internal" href="#cognito">2.4. Cognito</a></li>
-<li><a class="reference internal" href="#esc-eks">2.5. ESC/EKS</a></li>
-<li><a class="reference internal" href="#codeseries">2.6. CodeSeries</a></li>
-<li><a class="reference internal" href="#x-ray">2.7. X-ray</a></li>
+<li><a class="reference internal" href="#oath2-0openidconnect">2.4. Oath2.0やOpenIDConnect勉強</a><ul>
+<li><a class="reference internal" href="#oath2-0">2.4.1. Oath2.0</a><ul>
+<li><a class="reference internal" href="#id5">2.4.1.1. トークンの発行フロー</a><ul>
+<li><a class="reference internal" href="#authorization-code-grant">2.4.1.1.1. Authorization Code Grant</a></li>
+<li><a class="reference internal" href="#implicit-grant">2.4.1.1.2. Implicit Grant</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oath">2.4.2. Oath認証</a><ul>
+<li><a class="reference internal" href="#id6">2.4.2.1. セキュリティホール</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#openid">2.4.3. OpenID</a></li>
+<li><a class="reference internal" href="#openid-connect">2.4.4. OpenID Connect</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognito">2.5. Cognito</a></li>
+<li><a class="reference internal" href="#esc-eks">2.6. ESC/EKS</a></li>
+<li><a class="reference internal" href="#codeseries">2.7. CodeSeries</a></li>
+<li><a class="reference internal" href="#x-ray">2.8. X-ray</a></li>
+<li><a class="reference internal" href="#id7">2.9. 参考</a></li>
 </ul>
 </li>
 </ul>

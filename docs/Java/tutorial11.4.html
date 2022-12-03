@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>5. 作成するアプリケーション &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="prev" title="4. チュートリアル11.2：RESTでのTODOアプリケーション" href="tutorial11.2.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="tutorial11.2.html" title="4. チュートリアル11.2：RESTでのTODOアプリケーション"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>作成するアプリケーション</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1><span class="section-number">5. </span>作成するアプリケーション<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<p><img alt="../_images/tutorial11.4_arche.png" src="../_images/tutorial11.4_arche.png" /></p>
+<ul class="simple">
+<li><p>ログインページでID/Pass認証を行う。</p></li>
+<li><p>ID/PassはDBで管理しており、認証問い合わせを行う。(Spring Security)</p></li>
+<li><p>認証しないとアクセスできないウェルカムページがある。</p></li>
+<li><p>ログアウトすることができる。(Spring Security)</p></li>
+</ul>
+</section>
+<section id="spring-security">
+<h1><span class="section-number">6. </span>Spring Security<a class="headerlink" href="#spring-security" title="この見出しへのパーマリンク">¶</a></h1>
+<p>基本的な処理の流れは、</p>
+<ol class="simple">
+<li><p>usernameを画面から受け取り、ユーザー情報を検索</p></li>
+<li><p>ユーザー情報からusernameが見つかれば、passwordをハッシュ化したもので比較</p></li>
+<li><p>パスワード比較が一致すれば認証、ユーザー情報がなかったり、パスワード一致しないと認証失敗</p></li>
+</ol>
+</section>
+<section id="id2">
+<h1><span class="section-number">7. </span>アプリケーションの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h1>
+<p>プロジェクトを作成する。
+DBを利用するのでmybatisのプロジェクトとする</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
+ <span class="o">-</span><span class="n">DarchetypeGroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">terasoluna</span><span class="o">.</span><span class="n">gfw</span><span class="o">.</span><span class="n">blank</span>\
+ <span class="o">-</span><span class="n">DarchetypeArtifactId</span><span class="o">=</span><span class="n">terasoluna</span><span class="o">-</span><span class="n">gfw</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">blank</span><span class="o">-</span><span class="n">mybatis3</span><span class="o">-</span><span class="n">archetype</span>\
+ <span class="o">-</span><span class="n">DarchetypeVersion</span><span class="o">=</span><span class="mf">5.7.0</span><span class="o">.</span><span class="n">RELEASE</span>\
+ <span class="o">-</span><span class="n">DgroupId</span><span class="o">=</span><span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">security</span>\
+ <span class="o">-</span><span class="n">DartifactId</span><span class="o">=</span><span class="n">first</span><span class="o">-</span><span class="n">springsecurity</span>\
+ <span class="o">-</span><span class="n">Dversion</span><span class="o">=</span><span class="mf">1.0.0</span><span class="o">-</span><span class="n">SNAPSHOT</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h1><span class="section-number">8. </span>ドメイン層の実装<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h1>
+<p>Model/Repository/Serviceを作成する。</p>
+<section id="model">
+<h2><span class="section-number">8.1. </span>Modelの作成<a class="headerlink" href="#model" title="この見出しへのパーマリンク">¶</a></h2>
+<p>認証情報（usernameとpassword)を保持するAccountクラスを作成する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/model/Account.java</span></code></p>
+</section>
+<section id="repository">
+<h2><span class="section-number">8.2. </span>Repositoryの作成<a class="headerlink" href="#repository" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Accountのオブジェクトをデータベースに問い合わせる処理を実装する。</p>
+<p>まずは、Interfaceを実装する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/repository/account/AccountRepository.java</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">account</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">com.example.security.domain.model.Account</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Optional</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">interface</span> <span class="n">AccountRepository</span> <span class="p">{</span>
+    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Account</span><span class="o">&gt;</span> <span class="n">findById</span><span class="p">(</span><span class="n">String</span> <span class="n">username</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>次に、Implを実装する。Mybatisに問い合わせるSQLをMapperファイルに記述する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/reporitory/account/AccountRepository.xml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+    &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;com.example.security.domain.repository.account.AccountRepository&quot;&gt;
+
+    &lt;resultMap id=&quot;accountResultMap&quot; type=&quot;Account&quot;&gt;
+        &lt;id property=&quot;username&quot; column=&quot;username&quot; /&gt;
+        &lt;result property=&quot;password&quot; column=&quot;password&quot; /&gt;
+        &lt;result property=&quot;firstName&quot; column=&quot;first_name&quot; /&gt;
+        &lt;result property=&quot;lastName&quot; column=&quot;last_name&quot; /&gt;
+    &lt;/resultMap&gt;
+
+    &lt;select id=&quot;findById&quot; parameterType=&quot;String&quot; resultMap=&quot;accountResultMap&quot;&gt;
+        SELECT
+            username,
+            password,
+            first_name,
+            last_name
+        FROM
+            account
+        WHERE
+            username = #{username}
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</pre></div>
+</div>
+</section>
+<section id="service">
+<h2><span class="section-number">8.3. </span>Serviceの作成<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ユーザー名から、Accountオブジェクトを取得する処理を実装する。
+今回の処理は、SpirngSecurityの認証サービスから呼び出されるため、共通処理であるShareを名前につける</p>
+<p>業務処理的な中身を記述するので、usernameが見つからなかった場合にエラーメッセージを発行する。</p>
+<p>まずは、Interfaceを実装する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/service/account/AccountShareService.java</span></code></p>
+<p>次に、Implを実装する
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/service/account/AccountShareServiceImpl.java</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Service</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">AccountSharedServiceImpl</span> <span class="n">implements</span> <span class="n">AccountSharedService</span> <span class="p">{</span>
+    <span class="nd">@Inject</span>
+    <span class="n">AccountRepository</span> <span class="n">accountRepository</span><span class="p">;</span>
+
+    <span class="nd">@Transactional</span><span class="p">(</span><span class="n">readOnly</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">Account</span> <span class="n">findOne</span><span class="p">(</span><span class="n">String</span> <span class="n">username</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">//</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">accountRepository</span><span class="o">.</span><span class="n">findById</span><span class="p">(</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">orElseThrow</span><span class="p">(()</span> <span class="o">-&gt;</span> <span class="p">{</span>
+            <span class="n">ResultMessages</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">ResultMessages</span><span class="o">.</span><span class="n">error</span><span class="p">();</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ResultMessage</span><span class="o">.</span><span class="n">fromText</span><span class="p">(</span>
+                    <span class="s2">&quot;The given account is not found! username=&quot;</span> <span class="o">+</span> <span class="n">username</span><span class="p">));</span>
+            <span class="k">return</span> <span class="n">new</span> <span class="n">ResourceNotFoundException</span><span class="p">(</span><span class="n">messages</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2><span class="section-number">8.4. </span>認証サービスの作成<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="db">
+<h2><span class="section-number">8.5. </span>DB初期化スクリプト<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h2>
+<p>本チュートリアルでは、インメモリDBを利用しているのでプロジェクト実行時に、毎回DBを作成する必要がある。
+ブランクPJでは、<code class="docutils literal notranslate"><span class="pre">jdbc:initialize-database</span></code>が設定されているので、ここにDDLとDMLを設定すれば初期に実行される
+<code class="docutils literal notranslate"><span class="pre">src/main/resources/META-INF/spring/first-springsecurity-env.xml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jdbc</span><span class="p">:</span><span class="n">initialize</span><span class="o">-</span><span class="n">database</span> <span class="n">data</span><span class="o">-</span><span class="n">source</span><span class="o">=</span><span class="s2">&quot;dataSource&quot;</span>
+    <span class="n">ignore</span><span class="o">-</span><span class="n">failures</span><span class="o">=</span><span class="s2">&quot;ALL&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">jdbc</span><span class="p">:</span><span class="n">script</span> <span class="n">location</span><span class="o">=</span><span class="s2">&quot;classpath:/database/$</span><span class="si">{database}</span><span class="s2">-schema.sql&quot;</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">jdbc</span><span class="p">:</span><span class="n">script</span> <span class="n">location</span><span class="o">=</span><span class="s2">&quot;classpath:/database/$</span><span class="si">{database}</span><span class="s2">-dataload.sql&quot;</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span> <span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">jdbc</span><span class="p">:</span><span class="n">initialize</span><span class="o">-</span><span class="n">database</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/resouces/database/H2-schema.sql</span></code>にDDLを設定する。
+<code class="docutils literal notranslate"><span class="pre">src/main/resouces/database/H2-dataload.sql</span></code>にDMLを設定する。</p>
+</section>
+</section>
+<section id="id5">
+<h1><span class="section-number">9. </span>アプリケーション層の実装<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h1>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">5. 作成するアプリケーション</a></li>
+<li><a class="reference internal" href="#spring-security">6. Spring Security</a></li>
+<li><a class="reference internal" href="#id2">7. アプリケーションの作成</a></li>
+<li><a class="reference internal" href="#id3">8. ドメイン層の実装</a><ul>
+<li><a class="reference internal" href="#model">8.1. Modelの作成</a></li>
+<li><a class="reference internal" href="#repository">8.2. Repositoryの作成</a></li>
+<li><a class="reference internal" href="#service">8.3. Serviceの作成</a></li>
+<li><a class="reference internal" href="#id4">8.4. 認証サービスの作成</a></li>
+<li><a class="reference internal" href="#db">8.5. DB初期化スクリプト</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">9. アプリケーション層の実装</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="tutorial11.2.html"
+                          title="前の章へ"><span class="section-number">4. </span>チュートリアル11.2：RESTでのTODOアプリケーション</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Java/tutorial11.4.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="tutorial11.2.html" title="4. チュートリアル11.2：RESTでのTODOアプリケーション"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>作成するアプリケーション</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>
