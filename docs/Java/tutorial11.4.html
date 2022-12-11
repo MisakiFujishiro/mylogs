@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>5. 作成するアプリケーション &#8212; my_sphinx  ドキュメント</title>
+    <title>5. チュートリアル11.4：Spring Security &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -32,7 +32,7 @@
           <a href="tutorial11.2.html" title="4. チュートリアル11.2：RESTでのTODOアプリケーション"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>作成するアプリケーション</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>チュートリアル11.4：Spring Security</a></li> 
       </ul>
     </div>  
 
@@ -41,8 +41,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="id1">
-<h1><span class="section-number">5. </span>作成するアプリケーション<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+  <section id="spring-security">
+<h1><span class="section-number">5. </span>チュートリアル11.4：Spring Security<a class="headerlink" href="#spring-security" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id1">
+<h2><span class="section-number">5.1. </span>作成するアプリケーション<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p><img alt="../_images/tutorial11.4_arche.png" src="../_images/tutorial11.4_arche.png" /></p>
 <ul class="simple">
 <li><p>ログインページでID/Pass認証を行う。</p></li>
@@ -51,17 +53,16 @@
 <li><p>ログアウトすることができる。(Spring Security)</p></li>
 </ul>
 </section>
-<section id="spring-security">
-<h1><span class="section-number">6. </span>Spring Security<a class="headerlink" href="#spring-security" title="この見出しへのパーマリンク">¶</a></h1>
-<p>基本的な処理の流れは、</p>
+<section id="id2">
+<h2><span class="section-number">5.2. </span>基本的な処理の流れ<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <ol class="simple">
 <li><p>usernameを画面から受け取り、ユーザー情報を検索</p></li>
 <li><p>ユーザー情報からusernameが見つかれば、passwordをハッシュ化したもので比較</p></li>
 <li><p>パスワード比較が一致すれば認証、ユーザー情報がなかったり、パスワード一致しないと認証失敗</p></li>
 </ol>
 </section>
-<section id="id2">
-<h1><span class="section-number">7. </span>アプリケーションの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id3">
+<h2><span class="section-number">5.3. </span>アプリケーションの作成<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>プロジェクトを作成する。
 DBを利用するのでmybatisのプロジェクトとする</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
@@ -74,16 +75,16 @@ DBを利用するのでmybatisのプロジェクトとする</p>
 </pre></div>
 </div>
 </section>
-<section id="id3">
-<h1><span class="section-number">8. </span>ドメイン層の実装<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h1>
-<p>Model/Repository/Serviceを作成する。</p>
+<section id="id4">
+<h2><span class="section-number">5.4. </span>ドメイン層の実装<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Model・Repository・Serviceを作成する。</p>
 <section id="model">
-<h2><span class="section-number">8.1. </span>Modelの作成<a class="headerlink" href="#model" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">5.4.1. </span>Modelの作成<a class="headerlink" href="#model" title="この見出しへのパーマリンク">¶</a></h3>
 <p>認証情報（usernameとpassword)を保持するAccountクラスを作成する。
 <code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/model/Account.java</span></code></p>
 </section>
 <section id="repository">
-<h2><span class="section-number">8.2. </span>Repositoryの作成<a class="headerlink" href="#repository" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">5.4.2. </span>Repositoryの作成<a class="headerlink" href="#repository" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Accountのオブジェクトをデータベースに問い合わせる処理を実装する。</p>
 <p>まずは、Interfaceを実装する。
 <code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/repository/account/AccountRepository.java</span></code></p>
@@ -128,7 +129,7 @@ DBを利用するのでmybatisのプロジェクトとする</p>
 </div>
 </section>
 <section id="service">
-<h2><span class="section-number">8.3. </span>Serviceの作成<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">5.4.3. </span>Serviceの作成<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ユーザー名から、Accountオブジェクトを取得する処理を実装する。
 今回の処理は、SpirngSecurityの認証サービスから呼び出されるため、共通処理であるShareを名前につける</p>
 <p>業務処理的な中身を記述するので、usernameが見つからなかった場合にエラーメッセージを発行する。</p>
@@ -155,11 +156,65 @@ DBを利用するのでmybatisのプロジェクトとする</p>
 </pre></div>
 </div>
 </section>
-<section id="id4">
-<h2><span class="section-number">8.4. </span>認証サービスの作成<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id5">
+<h3><span class="section-number">5.4.4. </span>認証サービスの作成<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SpringSecurityで利用する、アカウント情報を保持するクラスを作成する。
+このクラスに、本プロジェクトで扱うアカウント情報が渡されると、SpringSecurityで利用するアカウント情報に変換してくれる。
+<code class="docutils literal notranslate"><span class="pre">src/main/com/example/security/domain/service/userdetails/SampleUserDetail.java</span></code></p>
+<p>★1<br />org.springframework.security.core.userdetails.Userを継承して、実装</p>
+<p>★2<br />親クラスのメソッドを呼び出して、SpringSecurityで扱うAccountオブジェクトを作成</p>
+<p>★3<br />getterを用意することで、ログインユーザーのAccountオブジェクトを取得</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import com.example.security.domain.model.Account;
+
+public class SampleUserDetails extends User { //★★★★★1
+    private static final long serialVersionUID = 1L;
+
+    private final Account account; 
+    
+    public SampleUserDetails(Account account) {
+        //★★★★★2
+        super(account.getUsername(), account.getPassword(), AuthorityUtils.createAuthorityList(&quot;ROLE_USER&quot;)); 
+        this.account = account;
+    }
+    
+     //★★★★★3
+    public Account getAccount() { 
+        return account;
+    }
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>Spring Securityで利用する認証ユーザーの情報を取得するサービスを作成する。
+このプロジェクトでは、UserShareServiceを利用して、usernameからアカウントを特定。
+アカウントをSampleUserDetailsを利用してSpringSecurityに利用できるアカウントに変換。
+<code class="docutils literal notranslate"><span class="pre">src/main/com/example/security/domain/service/userdetails/SampleUserDetailService.java</span></code></p>
+<p>★1<br />accountShareServiceを利用して、ユーザアカウントを特定</p>
+<p>★2<br />SampleUserDetailsに渡して、SpringSecurityで扱えるアカウント情報に変換</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@Service
+public class SampleUserDetailsService implements UserDetailsService { 
+    @Inject
+    AccountSharedService accountSharedService; 
+
+    @Transactional(readOnly=true)
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            //★★★★★1
+            Account account = accountSharedService.findOne(username);
+            //★★★★★2 
+            return new SampleUserDetails(account); 
+        } catch (ResourceNotFoundException e) {
+            throw new UsernameNotFoundException(&quot;user not found&quot;, e); 
+        }
+    }
+</pre></div>
+</div>
 </section>
 <section id="db">
-<h2><span class="section-number">8.5. </span>DB初期化スクリプト<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">5.4.5. </span>DB初期化スクリプト<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h3>
 <p>本チュートリアルでは、インメモリDBを利用しているのでプロジェクト実行時に、毎回DBを作成する必要がある。
 ブランクPJでは、<code class="docutils literal notranslate"><span class="pre">jdbc:initialize-database</span></code>が設定されているので、ここにDDLとDMLを設定すれば初期に実行される
 <code class="docutils literal notranslate"><span class="pre">src/main/resources/META-INF/spring/first-springsecurity-env.xml</span></code></p>
@@ -174,8 +229,97 @@ DBを利用するのでmybatisのプロジェクトとする</p>
 <code class="docutils literal notranslate"><span class="pre">src/main/resouces/database/H2-dataload.sql</span></code>にDMLを設定する。</p>
 </section>
 </section>
-<section id="id5">
-<h1><span class="section-number">9. </span>アプリケーション層の実装<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id6">
+<h2><span class="section-number">5.5. </span>アプリケーション層の実装<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id7">
+<h3><span class="section-number">5.5.1. </span>Spring Securityの設定<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Spring Securityの設定ファイルに認証認可の設定を書き込む。<br />各種URLの遷移制御や、認証に合わせた画面表示の認可の設定を行う。</p>
+<p><code class="docutils literal notranslate"><span class="pre">sec/main/resources/META-INF/spring/spring-security.xml</span></code></p>
+<p>★1<br />ログインフォームのURLと認証に失敗した場合の遷移先を設定</p>
+<p>★2<br />ログアウトした際の遷移先URLと削除するCookie名</p>
+<p>★3<br />認可の設定。isAuthenticatedがあると、認証しないとアクセスできない。</p>
+<p>★4<br />認証設定で、sampleUserDetailsServiceを利用することを設定。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!-- (1) --&gt;
+&lt;sec:form-login
+    login-page=&quot;/login/loginForm&quot;
+    authentication-failure-url=&quot;/login/loginForm?error=true&quot; /&gt;
+
+&lt;!-- (2) --&gt;
+&lt;sec:logout
+    logout-success-url=&quot;/&quot;
+    delete-cookies=&quot;JSESSIONID&quot; /&gt;
+
+&lt;!-- (3) --&gt;
+&lt;sec:intercept-url pattern=&quot;/login/**&quot; access=&quot;permitAll&quot; /&gt;
+&lt;sec:intercept-url pattern=&quot;/**&quot; access=&quot;isAuthenticated()&quot; /&gt;
+&lt;/sec:http&gt;
+
+&lt;!-- (4) --&gt;
+&lt;sec:authentication-provider user-service-ref=&quot;sampleUserDetailsService&quot; /&gt;
+&lt;/sec:authentication-manager&gt;
+</pre></div>
+</div>
+</section>
+<section id="loginformcontroller">
+<h3><span class="section-number">5.5.2. </span>LoginFormを返すControllerの作成<a class="headerlink" href="#loginformcontroller" title="この見出しへのパーマリンク">¶</a></h3>
+<p>loginのフォームに遷移させるControllerを作成
+<code class="docutils literal notranslate"><span class="pre">src/main/com/example/security/app/login/LoginController.java</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">)</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">LoginController</span> <span class="p">{</span>
+
+    <span class="nd">@GetMapping</span><span class="p">(</span><span class="s2">&quot;/loginForm&quot;</span><span class="p">)</span> 
+    <span class="n">public</span> <span class="n">String</span> <span class="n">view</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">&quot;login/loginForm&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Login用のJSPを作成
+<code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/views/login/loginForm.jsp</span></code></p>
+<p>セッションスコープに格納される認証エラーの例外オブジェクトをJSPから取得できるようにする。
+<code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/views/common/include.jsp</span></code></p>
+</section>
+<section id="welcome">
+<h3><span class="section-number">5.5.3. </span>Welcomeページの作成<a class="headerlink" href="#welcome" title="この見出しへのパーマリンク">¶</a></h3>
+<p>認証さればページで、ログインユーザーのオブジェクトにアクセスする。
+アカウント情報を使って、ログインユーザーにWelcomeしてみよう</p>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/views/welcome/home.jsp</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Home&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;${pageContext.request.contextPath}/resources/app/css/styles.css&quot;&gt;
+&lt;/head&gt;
+
+&lt;!-- 認証情報を取得 --&gt;
+&lt;sec:authentication property=&quot;principal.account&quot; var=&quot;account&quot; /&gt;
+
+&lt;body&gt;
+    &lt;div id=&quot;wrapper&quot;&gt;
+        &lt;h1&gt;Hello world!&lt;/h1&gt;
+        &lt;p&gt;The time on the server is ${serverTime}.&lt;/p&gt;
+        
+        &lt;!-- 取得した情報から名前を表示 --&gt;
+        &lt;p&gt;Welcome ${f:h(account.firstName)} ${f:h(account.lastName)} !!&lt;/p&gt;
+        
+        &lt;!-- ログアウト用のフォーム --&gt;
+        &lt;p&gt;
+            &lt;form:form action=&quot;${pageContext.request.contextPath}/logout&quot;&gt;
+                &lt;button type=&quot;submit&quot;&gt;Logout&lt;/button&gt;
+            &lt;/form:form&gt;
+        &lt;/p&gt;
+        &lt;ul&gt;
+            &lt;li&gt;&lt;a href=&quot;${pageContext.request.contextPath}/account&quot;&gt;view account&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -188,18 +332,26 @@ DBを利用するのでmybatisのプロジェクトとする</p>
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">5. 作成するアプリケーション</a></li>
-<li><a class="reference internal" href="#spring-security">6. Spring Security</a></li>
-<li><a class="reference internal" href="#id2">7. アプリケーションの作成</a></li>
-<li><a class="reference internal" href="#id3">8. ドメイン層の実装</a><ul>
-<li><a class="reference internal" href="#model">8.1. Modelの作成</a></li>
-<li><a class="reference internal" href="#repository">8.2. Repositoryの作成</a></li>
-<li><a class="reference internal" href="#service">8.3. Serviceの作成</a></li>
-<li><a class="reference internal" href="#id4">8.4. 認証サービスの作成</a></li>
-<li><a class="reference internal" href="#db">8.5. DB初期化スクリプト</a></li>
+<li><a class="reference internal" href="#">5. チュートリアル11.4：Spring Security</a><ul>
+<li><a class="reference internal" href="#id1">5.1. 作成するアプリケーション</a></li>
+<li><a class="reference internal" href="#id2">5.2. 基本的な処理の流れ</a></li>
+<li><a class="reference internal" href="#id3">5.3. アプリケーションの作成</a></li>
+<li><a class="reference internal" href="#id4">5.4. ドメイン層の実装</a><ul>
+<li><a class="reference internal" href="#model">5.4.1. Modelの作成</a></li>
+<li><a class="reference internal" href="#repository">5.4.2. Repositoryの作成</a></li>
+<li><a class="reference internal" href="#service">5.4.3. Serviceの作成</a></li>
+<li><a class="reference internal" href="#id5">5.4.4. 認証サービスの作成</a></li>
+<li><a class="reference internal" href="#db">5.4.5. DB初期化スクリプト</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id5">9. アプリケーション層の実装</a></li>
+<li><a class="reference internal" href="#id6">5.5. アプリケーション層の実装</a><ul>
+<li><a class="reference internal" href="#id7">5.5.1. Spring Securityの設定</a></li>
+<li><a class="reference internal" href="#loginformcontroller">5.5.2. LoginFormを返すControllerの作成</a></li>
+<li><a class="reference internal" href="#welcome">5.5.3. Welcomeページの作成</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
   </div>
@@ -239,7 +391,7 @@ DBを利用するのでmybatisのプロジェクトとする</p>
           <a href="tutorial11.2.html" title="4. チュートリアル11.2：RESTでのTODOアプリケーション"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>作成するアプリケーション</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>チュートリアル11.4：Spring Security</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -298,14 +298,25 @@ HTTPメソッドに対応するアノテーションがあるので、実装は�
 基本方針は、todoResource型でやり取りしつつ、処理はtodo型でやる。
 todoResource型はJSONに変換するように設定を入れているので、RESTFulにやり取りできるっぽい</p>
 </section>
-<section id="terasolna-11-3">
-<h3><span class="section-number">1.6.2. </span>TERASOLNA 11.3<a class="headerlink" href="#terasolna-11-3" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="terasolna-11-4">
+<h3><span class="section-number">1.6.2. </span>TERASOLNA 11.4<a class="headerlink" href="#terasolna-11-4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>深追いせずに、全体像を把握するように実装した。<br />全体的には理解できた気がするが、自分一人で実装ができる気はしない・・・
+実装されているものを解説みながら理解できるレベル感。
+認証認可の部分で、<code class="docutils literal notranslate"><span class="pre">/</span></code>と<code class="docutils literal notranslate"><span class="pre">welcome/home.jsp</span></code>の対応づけがどこで定義されているかよくわからない。</p>
 </section>
 <section id="id12">
-<h3><span class="section-number">1.6.3. </span>マイクロサービスに関する整理<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.6.3. </span>マイクロサービスに関する整理（認証認可<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<p>マイクロサービスの認証認可について勉強しようとOauthとOpenIDConnectの記事を漁る。
+Oathは認可の仕組みらしいが、Oath認証なるものが流行ったらしい。上手に使えないとセキュリティ的に怪しいからつかうべきでないっぽい。
+OpenIDConnectは認証の仕組みらしい。
+まだまだ、よくわからないし、マイクロサービスでの使われ方やAWSではどうやって実装するのかとかを整理したい。</p>
 </section>
 <section id="id13">
-<h3><span class="section-number">1.6.4. </span>取り上げたいサービス<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.6.4. </span>マイクロサービスに関する整理<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://www.amazon.co.jp/%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%81%8B%E3%82%89%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%B8-%E2%80%95%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%82%92%E9%80%B2%E5%8C%96%E3%81%95%E3%81%9B%E3%82%8B%E5%AE%9F%E8%B7%B5%E7%A7%BB%E8%A1%8C%E3%82%AC%E3%82%A4%E3%83%89-Sam-Newman/dp/4873119316">モノリスからマイクロサービスへ</a>のchap1を読んでいる。</p>
+</section>
+<section id="id14">
+<h3><span class="section-number">1.6.5. </span>取り上げたいサービス<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Cognito</p></li>
 <li><p>ECS/EKS</p></li>
@@ -358,9 +369,10 @@ todoResource型はJSONに変換するように設定を入れているので、R
 </li>
 <li><a class="reference internal" href="#week7-11-25">1.6. week7(11/25-)</a><ul>
 <li><a class="reference internal" href="#terasolna-11-2">1.6.1. TERASOLNA 11.2</a></li>
-<li><a class="reference internal" href="#terasolna-11-3">1.6.2. TERASOLNA 11.3</a></li>
-<li><a class="reference internal" href="#id12">1.6.3. マイクロサービスに関する整理</a></li>
-<li><a class="reference internal" href="#id13">1.6.4. 取り上げたいサービス</a></li>
+<li><a class="reference internal" href="#terasolna-11-4">1.6.2. TERASOLNA 11.4</a></li>
+<li><a class="reference internal" href="#id12">1.6.3. マイクロサービスに関する整理（認証認可</a></li>
+<li><a class="reference internal" href="#id13">1.6.4. マイクロサービスに関する整理</a></li>
+<li><a class="reference internal" href="#id14">1.6.5. 取り上げたいサービス</a></li>
 </ul>
 </li>
 </ul>

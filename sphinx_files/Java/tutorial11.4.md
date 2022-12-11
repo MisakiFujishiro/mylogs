@@ -1,3 +1,5 @@
+# チュートリアル11.4：Spring Security
+
 ## 作成するアプリケーション
 ![](img/tutorial11.4_arche.png)
 
@@ -6,8 +8,7 @@
 - 認証しないとアクセスできないウェルカムページがある。
 - ログアウトすることができる。(Spring Security)
 
-## Spring Security
-基本的な処理の流れは、
+## 基本的な処理の流れ
 1. usernameを画面から受け取り、ユーザー情報を検索
 2. ユーザー情報からusernameが見つかれば、passwordをハッシュ化したもので比較
 3. パスワード比較が一致すれば認証、ユーザー情報がなかったり、パスワード一致しないと認証失敗
@@ -26,7 +27,7 @@ mvn archetype:generate -B\
 ```
 
 ## ドメイン層の実装
-Model/Repository/Serviceを作成する。
+Model・Repository・Serviceを作成する。
 
 ### Modelの作成
 認証情報（usernameとpassword)を保持するAccountクラスを作成する。
@@ -111,11 +112,73 @@ public class AccountSharedServiceImpl implements AccountSharedService {
 ```
 
 ### 認証サービスの作成
+SpringSecurityで利用する、アカウント情報を保持するクラスを作成する。
+このクラスに、本プロジェクトで扱うアカウント情報が渡されると、SpringSecurityで利用するアカウント情報に変換してくれる。
+`src/main/com/example/security/domain/service/userdetails/SampleUserDetail.java`
 
+★1  
+org.springframework.security.core.userdetails.Userを継承して、実装
 
+★2  
+親クラスのメソッドを呼び出して、SpringSecurityで扱うAccountオブジェクトを作成
 
+★3  
+getterを用意することで、ログインユーザーのAccountオブジェクトを取得
 
+```
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import com.example.security.domain.model.Account;
 
+public class SampleUserDetails extends User { //★★★★★1
+    private static final long serialVersionUID = 1L;
+
+    private final Account account; 
+    
+    public SampleUserDetails(Account account) {
+        //★★★★★2
+        super(account.getUsername(), account.getPassword(), AuthorityUtils.createAuthorityList("ROLE_USER")); 
+        this.account = account;
+    }
+    
+     //★★★★★3
+    public Account getAccount() { 
+        return account;
+    }
+}
+```
+
+---
+Spring Securityで利用する認証ユーザーの情報を取得するサービスを作成する。
+このプロジェクトでは、UserShareServiceを利用して、usernameからアカウントを特定。
+アカウントをSampleUserDetailsを利用してSpringSecurityに利用できるアカウントに変換。
+`src/main/com/example/security/domain/service/userdetails/SampleUserDetailService.java`
+
+★1  
+accountShareServiceを利用して、ユーザアカウントを特定
+
+★2  
+SampleUserDetailsに渡して、SpringSecurityで扱えるアカウント情報に変換
+
+```
+@Service
+public class SampleUserDetailsService implements UserDetailsService { 
+    @Inject
+    AccountSharedService accountSharedService; 
+
+    @Transactional(readOnly=true)
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            //★★★★★1
+            Account account = accountSharedService.findOne(username);
+            //★★★★★2 
+            return new SampleUserDetails(account); 
+        } catch (ResourceNotFoundException e) {
+            throw new UsernameNotFoundException("user not found", e); 
+        }
+    }
+```
 
 
 ### DB初期化スクリプト
@@ -136,8 +199,102 @@ public class AccountSharedServiceImpl implements AccountSharedService {
 
 
 ## アプリケーション層の実装
+### Spring Securityの設定
+Spring Securityの設定ファイルに認証認可の設定を書き込む。  
+各種URLの遷移制御や、認証に合わせた画面表示の認可の設定を行う。
 
+`sec/main/resources/META-INF/spring/spring-security.xml`
 
+★1  
+ログインフォームのURLと認証に失敗した場合の遷移先を設定
 
+★2  
+ログアウトした際の遷移先URLと削除するCookie名
 
+★3  
+認可の設定。isAuthenticatedがあると、認証しないとアクセスできない。
 
+★4  
+認証設定で、sampleUserDetailsServiceを利用することを設定。
+
+```
+<!-- (1) -->
+<sec:form-login
+    login-page="/login/loginForm"
+    authentication-failure-url="/login/loginForm?error=true" />
+
+<!-- (2) -->
+<sec:logout
+    logout-success-url="/"
+    delete-cookies="JSESSIONID" />
+
+<!-- (3) -->
+<sec:intercept-url pattern="/login/**" access="permitAll" />
+<sec:intercept-url pattern="/**" access="isAuthenticated()" />
+</sec:http>
+
+<!-- (4) -->
+<sec:authentication-provider user-service-ref="sampleUserDetailsService" />
+</sec:authentication-manager>
+
+```
+
+### LoginFormを返すControllerの作成
+loginのフォームに遷移させるControllerを作成
+`src/main/com/example/security/app/login/LoginController.java`
+```
+@Controller
+@RequestMapping("/login")
+public class LoginController {
+
+    @GetMapping("/loginForm") 
+    public String view() {
+        return "login/loginForm";
+    }
+}
+```
+
+Login用のJSPを作成
+`src/main/webapp/WEB-INF/views/login/loginForm.jsp`
+
+セッションスコープに格納される認証エラーの例外オブジェクトをJSPから取得できるようにする。
+`src/main/webapp/WEB-INF/views/common/include.jsp`
+
+### Welcomeページの作成
+認証さればページで、ログインユーザーのオブジェクトにアクセスする。
+アカウント情報を使って、ログインユーザーにWelcomeしてみよう
+
+`src/main/webapp/WEB-INF/views/welcome/home.jsp`
+```
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Home</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/app/css/styles.css">
+</head>
+
+<!-- 認証情報を取得 -->
+<sec:authentication property="principal.account" var="account" />
+
+<body>
+    <div id="wrapper">
+        <h1>Hello world!</h1>
+        <p>The time on the server is ${serverTime}.</p>
+        
+        <!-- 取得した情報から名前を表示 -->
+        <p>Welcome ${f:h(account.firstName)} ${f:h(account.lastName)} !!</p>
+        
+        <!-- ログアウト用のフォーム -->
+        <p>
+            <form:form action="${pageContext.request.contextPath}/logout">
+                <button type="submit">Logout</button>
+            </form:form>
+        </p>
+        <ul>
+            <li><a href="${pageContext.request.contextPath}/account">view account</a></li>
+        </ul>
+    </div>
+</body>
+</html>
+```
