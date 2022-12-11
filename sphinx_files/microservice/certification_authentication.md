@@ -153,6 +153,8 @@ Cognitoユーザーの管理→認証
 ## 参考
 - [塾長のマイクロサービス概要資料](https://debugroom.github.io/technical-academy/forum/202104/cloudnative_app.html)
 - [OAuthとOIDCの全体像がわかる](https://atmarkit.itmedia.co.jp/ait/articles/1708/31/news011.html)
+- [★★★★★一番わかりやすいOAuth](https://qiita.com/TakahikoKawasaki/items/e37caf50776e00e733be)
+- [★★★★★一番わかりやすいOIDC](https://qiita.com/TakahikoKawasaki/items/498ca08bbfcc341691fe)
 - [OAuthとOpenIDの違い](https://www.sakimura.org/2011/05/1087/)
 - [OAuthによる認可の流れ](https://www.slideshare.net/ph1ph2sa25/oauth20-46144252)
 - [OpenIDConnct誕生までの流れ](https://qiita.com/TakahikoKawasaki/items/f2a0d25a4f05790b3baa)
