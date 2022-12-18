@@ -50,7 +50,8 @@
 <p>ソースコードの反映をトリガーとして、ビルドデプロイといった一連のデリバリーを支援するサービス群<br />ソースコード管理サービスのCode Commit、ビルドサービスのCode Build、デプロイサービスのCode Deploy、これらの一連の処理を連携するデリバリーサービスのCodePipelineの総称</p>
 <section id="code-commit">
 <h2><span class="section-number">1.1. </span>Code Commit<a class="headerlink" href="#code-commit" title="この見出しへのパーマリンク">¶</a></h2>
-<p>フルマネージドなソース管理（git repository）サービス<br />メリットとして、スケーラブルでセキュアであり、既存のgitツールともシームレスに連携</p>
+<p>フルマネージドなソース管理（git repository）サービス<br />メリットとして、スケーラブルでセキュアであり、既存のgitツールともシームレスに連携
+IAMベースでリポジトリに対する操作を生業することができる。</p>
 <section id="id1">
 <h3><span class="section-number">1.1.1. </span>設定手順<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
@@ -61,7 +62,8 @@
 </section>
 <section id="code-build">
 <h2><span class="section-number">1.2. </span>Code Build<a class="headerlink" href="#code-build" title="この見出しへのパーマリンク">¶</a></h2>
-<p>ソースコードをコンパイル・テスト実行して、デプロイ可能なSWパッケージを作成するフルマネージドなビルドサービス<br />メリットとして、ビルド用のサーバのプロビジョニング・管理が不要となる<br />codebuildの成果物はartifactと呼ばれる。</p>
+<p>ソースコードをコンパイル・テスト実行して、デプロイ可能なSWパッケージを作成するフルマネージドなビルドサービス
+メリットとして、ビルド用のサーバのプロビジョニング・管理が不要となる<br />codebuildの成果物はartifactと呼ばれる。</p>
 <section id="id2">
 <h3><span class="section-number">1.2.1. </span>設定手順<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
@@ -75,6 +77,11 @@
 </li>
 <li><p>buildspec.yamlの作成</p></li>
 </ol>
+</section>
+<section id="buildspec-uml">
+<h3><span class="section-number">1.2.2. </span>buildspec.uml<a class="headerlink" href="#buildspec-uml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ビルド処理をbuildspec.umlファイルに記述して、APPのソースコードPJのルートディレクトリに置いておく。
+環境変数や必要な環境のインストール処理、ビルド処理や生成するアプリケーションの定義を記載しておく。</p>
 <p>buildspec.ymlの記載項目</p>
 <ul class="simple">
 <li><p>version：buildspec.ymlファイルのバージョン指定0.2推奨</p></li>
@@ -95,7 +102,7 @@
 </ul>
 </section>
 <section id="buildspec-yml">
-<h3><span class="section-number">1.2.2. </span>buildspec.ymlにおける環境変数の設定<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.3. </span>buildspec.ymlにおける環境変数の設定<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
 <p>buildspec.ymlファイルに環境変数を設定する場合は、環境から環境変数を設定することができる。
 また、secretsManagerと連携して、SecretsManagerの値を環境変数として渡すことができる。<br />ただし、SecretManagerと連携するときはCodeBuildのServiceRoleにSecretManagerへのReadPolicyを追加する</p>
 <p>SecretsManager側でSecretsを作成</p>
@@ -118,6 +125,10 @@
 <li><p>codeDeploy用のRoleを作成する</p></li>
 <li><p>codeDeployのアプリケーション作成（詳細は各デプロイ先のセクション）</p></li>
 </ol>
+</section>
+<section id="appsepc-yml">
+<h3><span class="section-number">1.3.2. </span>appsepc.yml<a class="headerlink" href="#appsepc-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>デプロイの仕様を定義したファイルで、ファイルの配置先やデプロイのライフサイクルで実行するスクリプトを指定</p>
 </section>
 </section>
 <section id="code-pipeline">
@@ -531,11 +542,13 @@ jobs:
 </li>
 <li><a class="reference internal" href="#code-build">1.2. Code Build</a><ul>
 <li><a class="reference internal" href="#id2">1.2.1. 設定手順</a></li>
-<li><a class="reference internal" href="#buildspec-yml">1.2.2. buildspec.ymlにおける環境変数の設定</a></li>
+<li><a class="reference internal" href="#buildspec-uml">1.2.2. buildspec.uml</a></li>
+<li><a class="reference internal" href="#buildspec-yml">1.2.3. buildspec.ymlにおける環境変数の設定</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#code-deploy">1.3. Code Deploy</a><ul>
 <li><a class="reference internal" href="#id3">1.3.1. 設定手順</a></li>
+<li><a class="reference internal" href="#appsepc-yml">1.3.2. appsepc.yml</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#code-pipeline">1.4. Code Pipeline</a><ul>

@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>1. 認証認可 &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="2. テーマの整理" href="microservice_archi.html" />
+    <link rel="prev" title="5. チュートリアル11.4：Spring Security" href="../Java/tutorial11.4.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="microservice_archi.html" title="2. テーマの整理"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="../Java/tutorial11.4.html" title="5. チュートリアル11.4：Spring Security"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>認証認可</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1><span class="section-number">1. </span>認証認可<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<p>認証認可のサーバーからTOKENを受け取って、 バックエンド機能に問い合わせをしていくのが基本の動き。
+認可の情報に従って、提供するサービスを制御してバックエンドは処理を返していく</p>
+<section id="oauth2-0openidconnect">
+<h2><span class="section-number">1.1. </span>OAuth2.0やOpenIDConnect勉強<a class="headerlink" href="#oauth2-0openidconnect" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id2">
+<h3><span class="section-number">1.1.1. </span>認証認可<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id3">
+<h4><span class="section-number">1.1.1.1. </span>認証<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<p>あなたは誰と問うこと。なりすましは許さないための処理。以下の情報で判断</p>
+<ul class="simple">
+<li><p>What You Are：生体認証とか</p></li>
+<li><p>What You Have：トークンとか</p></li>
+<li><p>What You　Know：IDとか</p></li>
+</ul>
+</section>
+<section id="id4">
+<h4><span class="section-number">1.1.1.2. </span>認可<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<p>誰かに鍵を渡すこと。相手が誰かは意識していない。鍵を持っているなら誰でも錠を開けることを許す。</p>
+</section>
+</section>
+<section id="oauthoidc">
+<h3><span class="section-number">1.1.2. </span>マイクロサービスの認証認可・OAuthからOIDCの流れ<a class="headerlink" href="#oauthoidc" title="この見出しへのパーマリンク">¶</a></h3>
+<p>これまでの認証認可のアーキテクチャでは一つのサービスで認証した情報をセッションで持って、その情報で認可制御をしていた。
+マイクロサービスアーキテクチャでは、複数のサービスが強調して動作するので、認証認可のプロセスが煩雑になる。</p>
+<p>そこで、認証認可をサーバーから切り離して、認証情報や認可情報をAPIサーバー間でやりとりすることで管理を容易にしたい。
+認可情報をやりとりするためのプロトコルをAPIサーバー・エンドユーザー・認可プロバイダーで決めておく必要があり、それがOAuth</p>
+<p><img alt="../_images/oauth_motivation.png" src="../_images/oauth_motivation.png" /></p>
+<p>Oauthは認可の仕組みに過ぎず、認証の仕組みが仕様になっていない。
+そのため、トークンの横取りで攻撃されてしまうという問題があった。</p>
+<p>この問題に対応したのがOIDC。
+OIDCは、OAuthの認可に加えて「ID Token」という検証可能なトークンを利用
+ID Tokenは「JWT(Json Web Token)」という改ざん耐性のある仕組みを採用。</p>
+<p>OIDCを提供するOSSとしては、keycloakなどがある</p>
+</section>
+<section id="jwt">
+<h3><span class="section-number">1.1.3. </span>JWTって何<a class="headerlink" href="#jwt" title="この見出しへのパーマリンク">¶</a></h3>
+<p>任意のJSONデータを格納できるURLセーフな文字列
+中身には以下の３つのデータがある</p>
+<ul class="simple">
+<li><p>ヘッダー：トークンの形式や署名のバージョン</p></li>
+<li><p>クレーム：OIDCではここに認証情報を記述</p></li>
+<li><p>署名：正しい発行者が発行したID Tokenである証跡</p></li>
+</ul>
+<p>Googleから発行されたJWTのクレームを見てみると以下の情報が入っている</p>
+<ul class="simple">
+<li><p>iss (ISSuer)：トークンの発行者</p></li>
+<li><p>aud (AUDience)：トークンの受け手</p></li>
+<li><p>exp (EXPiration)：有効期限
+これらをサーバー側で検証することによって、「正しい発行者が」「自サイト向けに」「１時間以内に認証して発行された（Googleの場合）」IDトークン以外は受け付けないようにできます。</p></li>
+</ul>
+</section>
+<section id="oauth2-0">
+<h3><span class="section-number">1.1.4. </span>OAuth2.0<a class="headerlink" href="#oauth2-0" title="この見出しへのパーマリンク">¶</a></h3>
+<p>HTTP上で、認可を行うための仕様</p>
+<p>正確にに書くと</p>
+<blockquote>
+<div><p>OAuth 2.0 とは、サービスのユーザーが、サービス上にホストされている自分のデータへのアクセスを、自分のクレデンシャルズ (ID &amp; パスワード) を渡すことなく、第三者のアプリケーションに許可するためのフレームワークである。</p>
+</div></blockquote>
+<p>具体例で書くと</p>
+<blockquote>
+<div><p>あるサイトAの機能（FaceBookの写真投稿）を、サイトB（Instagram）から実行するために、
+ユーザーがサイトBに許可を与えて、サイトAにアクセスすることを認めること。</p>
+</div></blockquote>
+<p>ユーザーがサイトBでサイトAについて認可すると、サイトBの認可チケットをサイトAへわたす。
+そうすると、サイトAにサイトBの認証情報をおかないで、サイトAへ認可することができる。</p>
+<p><img alt="../_images/oauth_flow.png" src="../_images/oauth_flow.png" /></p>
+<p>OAuthが流行っている理由</p>
+<ol class="simple">
+<li><p>パスワードをサードパーティのアプリに渡すことなくAPIを利用できる</p></li>
+<li><p>どのリソースにアクセス可能かを細かくユーザーに認可させることができる</p></li>
+</ol>
+<section id="id5">
+<h4><span class="section-number">1.1.4.1. </span>トークンの発行フロー<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Authorization Code GrantとImplicit Grantの２つがある。</p>
+<section id="authorization-code-grant">
+<h5><span class="section-number">1.1.4.1.1. </span>Authorization Code Grant<a class="headerlink" href="#authorization-code-grant" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Authrozation CodeはサイトAのTokenをユーザーには渡さない
+代わりに、認可コードをWebアプリケーションに渡す。</p>
+<p><img alt="../_images/code_grant.png" src="../_images/code_grant.png" /></p>
+</section>
+<section id="implicit-grant">
+<h5><span class="section-number">1.1.4.1.2. </span>Implicit Grant<a class="headerlink" href="#implicit-grant" title="この見出しへのパーマリンク">¶</a></h5>
+<p>一番の違いはImplicit GrandはサイトAのTokenを一度ユーザーに渡す点</p>
+<p><img alt="../_images/implicit_grant.png" src="../_images/implicit_grant.png" /></p>
+</section>
+</section>
+</section>
+<section id="oauth">
+<h3><span class="section-number">1.1.5. </span>OAuth認証<a class="headerlink" href="#oauth" title="この見出しへのパーマリンク">¶</a></h3>
+<p>OAuthを使って、認証までしてしまおうという考え。
+本来OAuthは認証ではなくて認可の使用なので、間違って使うと脆弱性が生まれる。
+A君のロッカーを開ける鍵持っているということは、ちゃんとA君だよという認証してきたってことだよね。
+よしよし君はAだなという認証をしちゃう</p>
+<p>![](img/Certification Authorization.png)</p>
+<p>本来認証ではない行為を使って認証をしている。マンションの合鍵を持ってきて、本人確認をする。
+OAuth Server（Twitter）とかで悪さすることができるので、合鍵をばら撒くのは好ましくない・・・</p>
+<p><img alt="../_images/OAuth.png" src="../_images/OAuth.png" /></p>
+<p>セキュリティ的なレベルの低さはあったが、手軽さのおかげで普及した</p>
+<section id="id6">
+<h4><span class="section-number">1.1.5.1. </span>セキュリティホール<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<p>いつ」「どこで」「なんのために」作られたのか分からないいつ」「どこで」「なんのために」作られたのか分からない
+セキュリティホールは、 access_tokenをUserAgentに渡すということは、UAはaccess_tokenを使いまわせる点にある。
+サイトAが悪役で、渡したTokenが盗まれたとすると、そのTokenを使うことで、認証せずに、サイトBがAのふりをできる。</p>
+<p><img alt="../_images/security_hole_1.png" src="../_images/security_hole_1.png" />
+<img alt="../_images/security_hole_2.png" src="../_images/security_hole_2.png" /></p>
+</section>
+</section>
+<section id="openid">
+<h3><span class="section-number">1.1.6. </span>OpenID<a class="headerlink" href="#openid" title="この見出しへのパーマリンク">¶</a></h3>
+<p>異なるWebサービス間でユーザーの認証情報を受け渡す方法</p>
+<p>認証：紹介状を使って本人確認をしているイメージ
+紹介状はIdentity Provider（Googleとか）に書いてもらう</p>
+<p><img alt="../_images/openid.png" src="../_images/openid.png" /></p>
+<p>登場人物は３人</p>
+<ul class="simple">
+<li><p>EndUser</p></li>
+<li><p>OpenID Provider(ユーザー認証を行う)</p></li>
+<li><p>Relying Party（ユーザーの許可のもと、OPから認証情報をもらう）</p></li>
+</ul>
+</section>
+<section id="openid-connect">
+<h3><span class="section-number">1.1.7. </span>OpenID Connect<a class="headerlink" href="#openid-connect" title="この見出しへのパーマリンク">¶</a></h3>
+<p>認証の仕様</p>
+<p>上記のOAuthの課題観を解決するためにOpenID Connctを開発。
+OAuthとOpenIDを組み合わせて、認証を提供する
+OIDCで払い出されるIDトークンは偽造不可能な名前付きの合鍵。
+「いつ」「どこで」「なんのために」発行されたトークンなのかの情報を含んでおり、かつ署名されているため改ざんができない</p>
+<p>基本アイデアはOAuthで渡す鍵を紹介状が入っているロッカーの鍵にすること
+このロッカーを「UserInfo （ユーザ情報）Endpoint」と呼ぶ
+紹介状の中には、どのような認証をしたのかというメタ情報もある。この紹介状のことを、OpenIDトークンと呼ぶ</p>
+<p><img alt="../_images/openid_connect.png" src="../_images/openid_connect.png" /></p>
+</section>
+</section>
+<section id="cognito">
+<h2><span class="section-number">1.2. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<p>アプリケーションの認証認可を行うサービスで、アカウント管理と認可の付与をフルマネージドでサポート</p>
+<section id="id7">
+<h3><span class="section-number">1.2.1. </span>ユーザープール<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Cognitoユーザーの管理→認証</p>
+</section>
+<section id="id">
+<h3><span class="section-number">1.2.2. </span>IDプール<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザープールのアカウントに対して、IAMロールを付与する→認可</p>
+<p><a class="reference external" href="https://qiita.com/UpAllNight/items/ec522da70a6fe86a1d16">cognitoで認証認可</a></p>
+</section>
+</section>
+<section id="id8">
+<h2><span class="section-number">1.3. </span>参考<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://debugroom.github.io/technical-academy/forum/202104/cloudnative_app.html">塾長のマイクロサービス概要資料</a></p></li>
+<li><p><a class="reference external" href="https://atmarkit.itmedia.co.jp/ait/articles/1708/31/news011.html">OAuthとOIDCの全体像がわかる</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/e37caf50776e00e733be">★★★★★一番わかりやすいOAuth</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/498ca08bbfcc341691fe">★★★★★一番わかりやすいOIDC</a></p></li>
+<li><p><a class="reference external" href="https://www.sakimura.org/2011/05/1087/">OAuthとOpenIDの違い</a></p></li>
+<li><p><a class="reference external" href="https://www.slideshare.net/ph1ph2sa25/oauth20-46144252">OAuthによる認可の流れ</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/f2a0d25a4f05790b3baa">OpenIDConnct誕生までの流れ</a></p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">1. 認証認可</a><ul>
+<li><a class="reference internal" href="#oauth2-0openidconnect">1.1. OAuth2.0やOpenIDConnect勉強</a><ul>
+<li><a class="reference internal" href="#id2">1.1.1. 認証認可</a><ul>
+<li><a class="reference internal" href="#id3">1.1.1.1. 認証</a></li>
+<li><a class="reference internal" href="#id4">1.1.1.2. 認可</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oauthoidc">1.1.2. マイクロサービスの認証認可・OAuthからOIDCの流れ</a></li>
+<li><a class="reference internal" href="#jwt">1.1.3. JWTって何</a></li>
+<li><a class="reference internal" href="#oauth2-0">1.1.4. OAuth2.0</a><ul>
+<li><a class="reference internal" href="#id5">1.1.4.1. トークンの発行フロー</a><ul>
+<li><a class="reference internal" href="#authorization-code-grant">1.1.4.1.1. Authorization Code Grant</a></li>
+<li><a class="reference internal" href="#implicit-grant">1.1.4.1.2. Implicit Grant</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oauth">1.1.5. OAuth認証</a><ul>
+<li><a class="reference internal" href="#id6">1.1.5.1. セキュリティホール</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#openid">1.1.6. OpenID</a></li>
+<li><a class="reference internal" href="#openid-connect">1.1.7. OpenID Connect</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognito">1.2. Cognito</a><ul>
+<li><a class="reference internal" href="#id7">1.2.1. ユーザープール</a></li>
+<li><a class="reference internal" href="#id">1.2.2. IDプール</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">1.3. 参考</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="../Java/tutorial11.4.html"
+                          title="前の章へ"><span class="section-number">5. </span>チュートリアル11.4：Spring Security</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="microservice_archi.html"
+                          title="次の章へ"><span class="section-number">2. </span>テーマの整理</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/microservice/certification_authentication.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="microservice_archi.html" title="2. テーマの整理"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="../Java/tutorial11.4.html" title="5. チュートリアル11.4：Spring Security"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>認証認可</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

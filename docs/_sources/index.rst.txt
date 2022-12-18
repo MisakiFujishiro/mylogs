@@ -12,27 +12,18 @@ DAILY
    :numbered:
 
    DAILY/daily
-   DAILY/microservice_archi
 
 
-Sphinx
+
+Microservice
 ==================
 
 .. toctree::
    :maxdepth: 2
    :numbered:
 
-   Sphinx/quickStart
-   Sphinx/githubPages
-
-Docker
-==================
-
-.. toctree::
-   :maxdepth: 2
-   :numbered:
-
-   Docker/docker_env
+   microservice/certification_authentication
+   microservice/microservice_archi
 
 
 AWS Services
@@ -48,6 +39,8 @@ AWS Services
    AWS/Lambda
    AWS/AI
    AWS/AutoScaling
+   AWS/Netword
+   AWS/EnvAutomation
 
 Java Spring
 ==================
@@ -61,4 +54,26 @@ Java Spring
    Java/tutorial11.1
    Java/tutorial11.2
    Java/tutorial11.4
+   Java/tutorial11.3
 
+
+Docker
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   Docker/docker_env
+
+
+
+Sphinx
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   Sphinx/quickStart
+   Sphinx/githubPages

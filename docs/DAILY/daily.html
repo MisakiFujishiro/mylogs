@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. テーマの整理" href="microservice_archi.html" />
+    <link rel="next" title="1. 認証認可" href="../microservice/certification_authentication.html" />
     <link rel="prev" title="DAILY" href="../index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="microservice_archi.html" title="2. テーマの整理"
+          <a href="../microservice/certification_authentication.html" title="1. 認証認可"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="../index.html" title="DAILY"
@@ -77,7 +77,15 @@
 <li><p>TERASOLNA チュートリアル11.2(REST)完了</p></li>
 <li><p>TERASOLNA チュートリアル11.4(SECURITY)着手</p></li>
 <li><p>マイクロサービスアーキテクチャについて勉強（一旦OauthとかOPENID Connectとか勉強）</p></li>
-<li></li>
+<li><p>中間報告資料作成</p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p>マイクロサービスの全体像勉強→マイクロサービスからモノリスへを通読</p></li>
+<li><p>TERASOLNA11.3(セッション)完了</p></li>
+<li><p>AWS　ディベロッパーアソシエイト（第２章→ CICDとか構築自動化とか）</p></li>
+<li><p>CFNのH4BとSAMのH4B</p></li>
+<li><p>マイクロサービスの認証認可の勉強</p></li>
 </ul>
 </section>
 <section id="id2">
@@ -91,12 +99,12 @@
 <section id="id4">
 <h3><span class="section-number">1.3.1. </span>11月：チュートリアル期間<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
-<li><p>TERASOLNA チュートリアル【50%】</p>
+<li><p>TERASOLNA チュートリアル【75】</p>
 <ul>
 <li><p>11.1:完了</p></li>
-<li><p>11.2:50%</p></li>
+<li><p>11.2:完了</p></li>
 <li><p>11.4:0%</p></li>
-<li><p>11.3:0%</p></li>
+<li><p>11.3:完了</p></li>
 </ul>
 </li>
 <li><p>H4B 興味あるもの</p>
@@ -113,12 +121,24 @@
 <section id="id5">
 <h3><span class="section-number">1.3.2. </span>12月：チュートリアル期間＋テーマに沿った調査<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
-<li><p>クラウドネイティブアプリケーションの基本</p></li>
 <li><p>マイクロサービスについての整理</p>
 <ul>
+<li><p>全体像</p></li>
 <li><p>メリット</p></li>
-<li><p>必須要件(認証認可とか・・・？</p></li>
-<li><p>周辺要件（CICDとか・・・？</p></li>
+<li><p>デメリット</p></li>
+<li><p>必須要件</p>
+<ul>
+<li><p>認証認可</p></li>
+<li><p>コンテナサービス</p></li>
+</ul>
+</li>
+<li><p>周辺要件</p>
+<ul>
+<li><p>CICD</p></li>
+<li><p>監視サービス</p></li>
+<li><p>サービス間連携（GraphQL/BFF)</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -126,8 +146,8 @@
 <section id="id6">
 <h3><span class="section-number">1.3.3. </span>1月：テーマに沿った実装期間<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
-<li><p>12月で調べたマイクロサービスの情報とAWSサービスの紐付けとサービスの利用法調査</p></li>
-<li><p>AWSで作るマイクロサービス（上の手助けになる？</p></li>
+<li><p>コンテナサービス・CICD・認証認可を含めたチュートリアルを実装</p></li>
+<li><p>上記のチュートリアルとマイクロサービスの概念の紐付け（成果物作成</p></li>
 </ul>
 </section>
 <section id="id7">
@@ -289,8 +309,8 @@ DIコンテナの中にBeanがないのではないか？</p>
 </section>
 </section>
 </section>
-<section id="week7-11-25">
-<h2><span class="section-number">1.6. </span>week7(11/25-)<a class="headerlink" href="#week7-11-25" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="week7-11-25-12-16">
+<h2><span class="section-number">1.6. </span>week7(11/25-12/16)<a class="headerlink" href="#week7-11-25-12-16" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="terasolna-11-2">
 <h3><span class="section-number">1.6.1. </span>TERASOLNA 11.2<a class="headerlink" href="#terasolna-11-2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>深追いせずに、全体像を把握するように実装した。
@@ -307,13 +327,18 @@ todoResource型はJSONに変換するように設定を入れているので、R
 <section id="id12">
 <h3><span class="section-number">1.6.3. </span>マイクロサービスに関する整理（認証認可<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マイクロサービスの認証認可について勉強しようとOauthとOpenIDConnectの記事を漁る。
-Oathは認可の仕組みらしいが、Oath認証なるものが流行ったらしい。上手に使えないとセキュリティ的に怪しいからつかうべきでないっぽい。
-OpenIDConnectは認証の仕組みらしい。
-まだまだ、よくわからないし、マイクロサービスでの使われ方やAWSではどうやって実装するのかとかを整理したい。</p>
+OAuth2.0は認可の仕組みで認証しないところが問題点。OAuth認証なんてものをするとセキュリティホールが生まれるっぽい。
+そこを解決したのがOIDCで、ID Tokenで認証情報を改ざん不可能にしている。
+その辺まではなんとなくわかった。じゃあ、OIDCが単独でいい。となりそうだけど、そうなっていない感じがよくわからない。</p>
+<p>あとは、SSOとかSAMLとかkeycloakとかoktaとかCognitoは結局何物かは整理できていない。
+マイクロサービスではどう使えば良いのかとかCognitoを使えば、いい感じにできるよーみたいなことを確認したい。</p>
+<p>UA,SiteA,Authz,GraphAPIとかに、各マッピングしてみると良いかも</p>
 </section>
 <section id="id13">
 <h3><span class="section-number">1.6.4. </span>マイクロサービスに関する整理<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
-<p><a class="reference external" href="https://www.amazon.co.jp/%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%81%8B%E3%82%89%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%B8-%E2%80%95%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%82%92%E9%80%B2%E5%8C%96%E3%81%95%E3%81%9B%E3%82%8B%E5%AE%9F%E8%B7%B5%E7%A7%BB%E8%A1%8C%E3%82%AC%E3%82%A4%E3%83%89-Sam-Newman/dp/4873119316">モノリスからマイクロサービスへ</a>のchap1を読んでいる。</p>
+<p><a class="reference external" href="https://www.amazon.co.jp/%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%81%8B%E3%82%89%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%B8-%E2%80%95%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%82%92%E9%80%B2%E5%8C%96%E3%81%95%E3%81%9B%E3%82%8B%E5%AE%9F%E8%B7%B5%E7%A7%BB%E8%A1%8C%E3%82%AC%E3%82%A4%E3%83%89-Sam-Newman/dp/4873119316">モノリスからマイクロサービスへ</a>のchap1を読んでいる。
+マイクロサービスアーキテクチャとは独立デプロイできることを取り込むことが一番のポイント
+独立デプロイできる→ CICD→改善を繰り返して提供価値を上げる？→ フィードバックの機構とかって対象じゃないのかな？</p>
 </section>
 <section id="id14">
 <h3><span class="section-number">1.6.5. </span>取り上げたいサービス<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
@@ -323,6 +348,35 @@ OpenIDConnectは認証の仕組みらしい。
 <li><p>CodeSeries</p></li>
 <li><p>X-ray</p></li>
 </ul>
+</section>
+</section>
+<section id="id15">
+<h2><span class="section-number">1.7. </span>(12/17-1/6)<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id16">
+<h3><span class="section-number">1.7.1. </span>マイクロサービスの全体像勉強<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://www.amazon.co.jp/%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%81%8B%E3%82%89%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%B8-%E2%80%95%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%82%92%E9%80%B2%E5%8C%96%E3%81%95%E3%81%9B%E3%82%8B%E5%AE%9F%E8%B7%B5%E7%A7%BB%E8%A1%8C%E3%82%AC%E3%82%A4%E3%83%89-Sam-Newman/dp/4873119316">モノリスからマイクロサービスへ</a>のchap1を読んでいる。
+とりあえず通読。技術的なところは少なかったけど、マイクロサービスの定義とか、マイクロサービスのメリットは整理出来なので、報告資料のイントロら辺はかけそう。
+あとは、デメリットからどういった対策が必要かという流れでAWSのサービスの話に転じていけそう。
+サービス管理の話→コンテナオーケストレーション・分散するログの話から→ログ集約やトレーシング。
+DB周りの考え方についてはかなり根が深そうなので、別機会にした。</p>
+<p>引き続き、<a class="reference external" href="https://tatsu-zine.com/books/microservices-in-action">マイクロサービスインアクション</a>も読んでみて理解を深める。
+深掘りし過ぎずに、必要なポイントをつまむイメージで。</p>
+</section>
+<section id="terasolna11-3">
+<h3><span class="section-number">1.7.2. </span>TERASOLNA11.3(セッション)<a class="headerlink" href="#terasolna11-3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>全体像はざっくり読んで理解。
+まずはセッション管理の対象を洗い出して、本当にセッションが必要か、セッションが必要ならどのように管理・破棄するか決めてから実装する。</p>
+<p>実装しようとしたところで、importするとRun on Serverが出てこない・・・？
+一旦はチュートリアルおしまいで良いかな・・・</p>
+</section>
+<section id="aws-2">
+<h3><span class="section-number">1.7.3. </span>AWS　ディベロッパーアソシエイト（第２章）<a class="headerlink" href="#aws-2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CICDの部分は実装経験もあったので復習になった。
+CloudFormation・SAMは経験なかったのでHands-onを追加で受けてみた。
+ElasticBeanstalkはHands-onがないので違いが明確化されていないけど、アプリケーションの形になっているものをテンプレートから選ぶ形で、CloudFormationやSAMの方が自由度高く、自分が立ち上げたいものを作成できるイメージ</p>
+</section>
+<section id="id17">
+<h3><span class="section-number">1.7.4. </span>マイクロサービスの認証認可の勉強<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
 </section>
 </section>
@@ -367,12 +421,19 @@ OpenIDConnectは認証の仕組みらしい。
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#week7-11-25">1.6. week7(11/25-)</a><ul>
+<li><a class="reference internal" href="#week7-11-25-12-16">1.6. week7(11/25-12/16)</a><ul>
 <li><a class="reference internal" href="#terasolna-11-2">1.6.1. TERASOLNA 11.2</a></li>
 <li><a class="reference internal" href="#terasolna-11-4">1.6.2. TERASOLNA 11.4</a></li>
 <li><a class="reference internal" href="#id12">1.6.3. マイクロサービスに関する整理（認証認可</a></li>
 <li><a class="reference internal" href="#id13">1.6.4. マイクロサービスに関する整理</a></li>
 <li><a class="reference internal" href="#id14">1.6.5. 取り上げたいサービス</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id15">1.7. (12/17-1/6)</a><ul>
+<li><a class="reference internal" href="#id16">1.7.1. マイクロサービスの全体像勉強</a></li>
+<li><a class="reference internal" href="#terasolna11-3">1.7.2. TERASOLNA11.3(セッション)</a></li>
+<li><a class="reference internal" href="#aws-2">1.7.3. AWS　ディベロッパーアソシエイト（第２章）</a></li>
+<li><a class="reference internal" href="#id17">1.7.4. マイクロサービスの認証認可の勉強</a></li>
 </ul>
 </li>
 </ul>
@@ -387,8 +448,8 @@ OpenIDConnectは認証の仕組みらしい。
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="microservice_archi.html"
-                          title="次の章へ"><span class="section-number">2. </span>テーマの整理</a></p>
+    <p class="topless"><a href="../microservice/certification_authentication.html"
+                          title="次の章へ"><span class="section-number">1. </span>認証認可</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -418,7 +479,7 @@ OpenIDConnectは認証の仕組みらしい。
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="microservice_archi.html" title="2. テーマの整理"
+          <a href="../microservice/certification_authentication.html" title="1. 認証認可"
              >次へ</a> |</li>
         <li class="right" >
           <a href="../index.html" title="DAILY"
