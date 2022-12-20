@@ -152,6 +152,75 @@
 </ul>
 </section>
 </section>
+<section id="id6">
+<h3><span class="section-number">2.3.2. </span>S3間でオブジェクトをコピーする<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>基本的には、S3のバケットを二つ作成して、Lambdaに準備されている設計図からgetS3Objの設計図を作成する。</p>
+<p>Lambda側のコードに以下を設定する。<br />S3のイベントで設定したディレクトリへのアップロードを検知して、所定のS3へファイルをコピーする。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">urllib.parse</span>
+<span class="kn">import</span> <span class="nn">boto3</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading function&#39;</span><span class="p">)</span>
+
+<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1">#print(&quot;Received event: &quot; + json.dumps(event, indent=2))</span>
+
+    <span class="c1"># JSON形式で受け取ったデータより、バケット情報とkey情報の抜き出し</span>
+    <span class="n">from_bucket</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;bucket&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    <span class="n">from_key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+    <span class="c1"># コピー先のバケットとファイルパスを指定</span>
+    <span class="n">to_bucket</span> <span class="o">=</span> <span class="s1">&#39;s3-bucket-to-fujishiro&#39;</span>
+    <span class="n">from_directory</span> <span class="o">=</span> <span class="n">from_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">from_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">to_directory</span> <span class="o">=</span> <span class="s2">&quot;YOUR/OUTPUT/DIRECTORY/&quot;</span>
+    <span class="n">to_filepath</span> <span class="o">=</span>  <span class="n">to_directory</span> <span class="o">+</span> <span class="n">filename</span>
+
+    <span class="c1"># 各変数を出力</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">from_bucket</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">from_key</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">to_bucket</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">to_filepath</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># 上記で抜き出したバケット情報とkey情報よりアップロードファイルにアクセスし、コンテンツのタイプを出力する。</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">from_bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">from_key</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CONTENT TYPE: &quot;</span> <span class="o">+</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ContentType&#39;</span><span class="p">])</span>
+
+        <span class="c1"># 実際のコピーコマンド</span>
+        <span class="n">s3</span><span class="o">.</span><span class="n">copy_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">to_bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">to_filepath</span><span class="p">,</span> <span class="n">CopySource</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Bucket&#39;</span><span class="p">:</span> <span class="n">from_bucket</span><span class="p">,</span> <span class="s1">&#39;Key&#39;</span><span class="p">:</span> <span class="n">from_key</span><span class="p">})</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error getting object </span><span class="si">{}</span><span class="s1"> from bucket </span><span class="si">{}</span><span class="s1">. Make sure they exist and your bucket is in the same region as this function.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bucket</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">e</span>
+</pre></div>
+</div>
+<p>付与するバケットポリシー。
+自動作成される<code class="docutils literal notranslate"><span class="pre">AWSLambdaS3ExecutionRole-xxxxxx</span></code>に対して、以下を設定。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;s3:GetObject&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:PutObject&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:s3:::*&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiita.com/cobachan/items/1f952178a283ba9fb654">Lambdaのコードが参考になる</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/cobachan/items/1f952178a283ba9fb654">IAMの設定が参考になる</a></p></li>
+</ul>
+</section>
 </section>
 </section>
 
@@ -178,6 +247,7 @@
 <li><a class="reference internal" href="#id5">2.3.1.3. S3イベントの変更</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id6">2.3.2. S3間でオブジェクトをコピーする</a></li>
 </ul>
 </li>
 </ul>
