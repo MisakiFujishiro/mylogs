@@ -300,12 +300,98 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <section id="id20">
 <h3><span class="section-number">8.2.3. </span>Hands on<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の詳細説明については、<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-2-2022-reg-event.html?trk=aws_introduction_page">SAMのHandsOnBeginners</a>
-を参考にして、サンプルコードなどを例示する。<br />作成する環境は以下</p>
+を参考にして、サンプルコードなどを例示する。<br />作成する環境は以下で、構成としてはAPIGWで公開されているAPIに対してリクエストした文字列（JP）を翻訳して（EN）返すアプリケーションを作成する。</p>
 <p><img alt="../_images/sam_arche.png" src="../_images/sam_arche.png" /></p>
+<section id="s3">
+<h4><span class="section-number">8.2.3.1. </span>S3バケットの作成<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h4>
+<p>SAMではS3にある資材を利用する必要があるので、格納先のS3を作っておく</p>
+<p>AWS CLIがあれば以下のコマンドで作成可能</p>
+<blockquote>
+<div><p>aws s3 mb s3://<em>your-backet-name</em></p>
+</div></blockquote>
 </section>
 <section id="id21">
-<h3><span class="section-number">8.2.4. </span>ポリシーテンプレート<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Lambda関数に付与するIAMについてのポリシーを不要するテンプレートを簡易化したもの</p>
+<h4><span class="section-number">8.2.3.2. </span>samの作成<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<p><a class="reference external" href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html">SAMの公式リファレンス</a>を
+参照しながらLambdaを作成するSAMを作成する。</p>
+<p>作成するのは、SAMのテンプレートコードと作成するLambdaの関数。</p>
+<p>SAMで利用する資材はS3に置いておく必要がある。今回で言うとCodeUriに記述されているLambda関数の中身。<br />パッケージングをすることでSAM側で自動でS3に格納と、読み込み先の変換を処理してくれる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWSTemplateFormatVersion: &#39;2010-09-09&#39;
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Hands-on for Beginners - Serverless 2
+Resources:
+  
+  # Lambdaを作成
+  TranslateLambda: # 論理名
+    Type: AWS::Serverless::Function # Lambdaを作成する
+    Properties:
+      FunctionName: translate-function-2
+      CodeUri: ./translate-function # CodeUrlでLambda関数の格納場所を記載するか、InlineCoddeで直接コードを書く
+      Handler: translate-function.lambda_handler
+      Runtime: python3.7
+      Timeout: 5
+      MemorySize: 256
+      Policies: # 付与するポリシー
+        - TranslateFullAccess
+        - AmazonDynamoDBFullAccess
+      # Lambda側でAPI　GWとの連携について定義する
+      Events:
+        GetApi:
+          Type: Api
+          Properties:
+            Path: /translate
+            Method: get
+            RestApiId: !Ref TranslateAPI
+  
+  # API GateWayを作成
+  TranslateAPI: # 論理名 
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: translate-api-2
+      StageName: dev # 必須項目
+      EndpointConfiguration: REGIONAL
+      
+  # DynamoDBを作成
+   TranslateDynamoDbTbl: # 論理名
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: translate-history-2
+      PrimaryKey:
+        Name: timestamp
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+</pre></div>
+</div>
+</section>
+<section id="sampackage">
+<h4><span class="section-number">8.2.3.3. </span>SAMのpackage<a class="headerlink" href="#sampackage" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p>template-fileでSAMファイルを指定</p></li>
+<li><p>s3-bucketでappの出力先のs3を指定</p></li>
+<li><p>output-template-fileでappの読み込み先を変換したSAMファイルの出力名を指定</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">cloudformation</span> <span class="n">package</span> \
+     <span class="o">--</span><span class="n">template</span><span class="o">-</span><span class="n">file</span> <span class="n">template</span><span class="o">.</span><span class="n">yaml</span> \ 
+     <span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">bucket</span> <span class="o">*</span><span class="n">your</span><span class="o">-</span><span class="n">backet</span><span class="o">-</span><span class="n">name</span><span class="o">*</span> \
+     <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">template</span><span class="o">-</span><span class="n">file</span> <span class="n">packaged</span><span class="o">-</span><span class="n">template</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="samdeploy">
+<h4><span class="section-number">8.2.3.4. </span>SAMのdeploy<a class="headerlink" href="#samdeploy" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p>stack-name：cfnの作成されるスタック名</p></li>
+<li><p>capabilities：IAM関連の操作を許す</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">cloudformation</span> <span class="n">deploy</span> \
+     <span class="o">--</span><span class="n">template</span><span class="o">-</span><span class="n">file</span> <span class="o">./</span><span class="n">packaged</span><span class="o">-</span><span class="n">template</span><span class="o">.</span><span class="n">yaml</span> \
+     <span class="o">--</span><span class="n">stack</span><span class="o">-</span><span class="n">name</span> <span class="n">hands</span><span class="o">-</span><span class="n">on</span><span class="o">-</span><span class="n">serverless</span><span class="o">-</span><span class="mi">2</span> \
+     <span class="o">--</span><span class="n">capabilities</span> <span class="n">CAPABILITY_IAM</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 <section id="elastic-beanstalk">
@@ -404,8 +490,13 @@ PaaSを実現するサービス</p>
 <li><a class="reference internal" href="#globals">8.2.2.3. Globals</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id20">8.2.3. Hands on</a></li>
-<li><a class="reference internal" href="#id21">8.2.4. ポリシーテンプレート</a></li>
+<li><a class="reference internal" href="#id20">8.2.3. Hands on</a><ul>
+<li><a class="reference internal" href="#s3">8.2.3.1. S3バケットの作成</a></li>
+<li><a class="reference internal" href="#id21">8.2.3.2. samの作成</a></li>
+<li><a class="reference internal" href="#sampackage">8.2.3.3. SAMのpackage</a></li>
+<li><a class="reference internal" href="#samdeploy">8.2.3.4. SAMのdeploy</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#elastic-beanstalk">8.3. Elastic Beanstalk</a><ul>

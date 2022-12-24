@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. テーマの整理" href="microservice_archi.html" />
-    <link rel="prev" title="5. チュートリアル11.4：Spring Security" href="../Java/tutorial11.4.html" /> 
+    <link rel="next" title="2. マイクロサービアーキテクチャとは" href="microservice_archi.html" />
+    <link rel="prev" title="1. 塾の活動" href="../DAILY/daily.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,10 +30,10 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="microservice_archi.html" title="2. テーマの整理"
+          <a href="microservice_archi.html" title="2. マイクロサービアーキテクチャとは"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../Java/tutorial11.4.html" title="5. チュートリアル11.4：Spring Security"
+          <a href="../DAILY/daily.html" title="1. 塾の活動"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>認証認可</a></li> 
@@ -205,6 +205,61 @@ OIDCで払い出されるIDトークンは偽造不可能な名前付きの合�
 <li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/f2a0d25a4f05790b3baa">OpenIDConnct誕生までの流れ</a></p></li>
 </ul>
 </section>
+<section id="id9">
+<h2><span class="section-number">1.4. </span>塾長レクチャー<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id10">
+<h3><span class="section-number">1.4.1. </span>概要<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Oauth1.0は難しすぎて、流行らなかったので2010年初頭におしまいになった。</p>
+<p>OAuth2.0は認可サービス
+認証は済んだことは前提として、何をすることができるかという権限を与えるかという仕様
+簡単にいうと、AccessTokenを配る。Access Tokenを持っているからといって、認証に使うのは危険
+今のマイクロサービスでは当然のように使われている。</p>
+<p>OAuthを認証に使おうとすると、セキュリティホールを使うので注意！</p>
+<p>その対策がOIDC！OAuthを拡張して、認証までくっつけた。</p>
+</section>
+<section id="id11">
+<h3><span class="section-number">1.4.2. </span>フロー<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<p>基本的には<code class="docutils literal notranslate"><span class="pre">認可コードグラントフロー</span></code>を押さえておけばOK
+<code class="docutils literal notranslate"><span class="pre">インプリシットグラントフロー</span></code>はセキュリティ的に問題がある。</p>
+<section id="id12">
+<h4><span class="section-number">1.4.2.1. </span>登場人物<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<p>以下の登場人物を明確に把握しておく。リソースオーナーとクライアントAPを混合しないこと</p>
+<ul class="simple">
+<li><p>リソースオーナ→人間</p></li>
+<li><p>認可サーバー（Authorization Server）→ Access Tokenを発行する</p></li>
+<li><p>クライアントAP→ブラウザとかApp</p></li>
+<li><p>リソースサーバー→マイクロサービス（Access Tokenに従ってサービスを公開する）</p></li>
+</ul>
+</section>
+<section id="id13">
+<h4><span class="section-number">1.4.2.2. </span>認可コードグラントフロー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<p>やりたいこと
+クライアントAPからリソースサーバーにアクセスしたい！けどAccess Tokenがないから認可サーバーに問い合わせをするストーリー</p>
+<p>OAuthの特徴は、ユーザーのクレデンシャル（ID／PASS）を渡さずにAccessTokenを渡したいこと。
+そのために認可サーバーがいる。</p>
+<p>モバイルを使っているケースで、セキュリティホールが存在して、その対策がPKCEがある。
+セキュリティホール：モバイルアプリだと、認可コードごと盗んでしまう。</p>
+<p>AccessToken側でも、スコープを定めておくことが対策になる（魔法の鍵・盗賊の鍵・最後の鍵）</p>
+</section>
+<section id="id14">
+<h4><span class="section-number">1.4.2.3. </span>インプリシットグラントフロー<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<p>違いは認可コードが発行されないのが特徴
+悪意がある人にAccessTokenが渡されちゃう</p>
+<p>悪意のある人はクライアントAPが悪い人だとすると、奪ったAccessToken（合鍵）を使っていろんなサービスにアクセスしちゃう</p>
+</section>
+</section>
+<section id="oidc">
+<h3><span class="section-number">1.4.3. </span>OIDC<a class="headerlink" href="#oidc" title="この見出しへのパーマリンク">¶</a></h3>
+<p>OIDC = OAuth + Identity Layer</p>
+<p>OAuthは誰向けに発行されたのかということに無頓着な合鍵
+OIDCは、誰に向けて発行したものなのかまでくっつけている（ID TokenとUserInfo Endpoint)</p>
+</section>
+<section id="id15">
+<h3><span class="section-number">1.4.4. </span>Cognito<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<p>自分自身がユーザープールとして、ID/Passを持つこともできる
+外側のIDプロバイダーに認証を任せても良い。</p>
+</section>
+</section>
 </section>
 
 
@@ -248,6 +303,18 @@ OIDCで払い出されるIDトークンは偽造不可能な名前付きの合�
 </ul>
 </li>
 <li><a class="reference internal" href="#id8">1.3. 参考</a></li>
+<li><a class="reference internal" href="#id9">1.4. 塾長レクチャー</a><ul>
+<li><a class="reference internal" href="#id10">1.4.1. 概要</a></li>
+<li><a class="reference internal" href="#id11">1.4.2. フロー</a><ul>
+<li><a class="reference internal" href="#id12">1.4.2.1. 登場人物</a></li>
+<li><a class="reference internal" href="#id13">1.4.2.2. 認可コードグラントフロー</a></li>
+<li><a class="reference internal" href="#id14">1.4.2.3. インプリシットグラントフロー</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oidc">1.4.3. OIDC</a></li>
+<li><a class="reference internal" href="#id15">1.4.4. Cognito</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -255,13 +322,13 @@ OIDCで払い出されるIDトークンは偽造不可能な名前付きの合�
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../Java/tutorial11.4.html"
-                          title="前の章へ"><span class="section-number">5. </span>チュートリアル11.4：Spring Security</a></p>
+    <p class="topless"><a href="../DAILY/daily.html"
+                          title="前の章へ"><span class="section-number">1. </span>塾の活動</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="microservice_archi.html"
-                          title="次の章へ"><span class="section-number">2. </span>テーマの整理</a></p>
+                          title="次の章へ"><span class="section-number">2. </span>マイクロサービアーキテクチャとは</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -291,10 +358,10 @@ OIDCで払い出されるIDトークンは偽造不可能な名前付きの合�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="microservice_archi.html" title="2. テーマの整理"
+          <a href="microservice_archi.html" title="2. マイクロサービアーキテクチャとは"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../Java/tutorial11.4.html" title="5. チュートリアル11.4：Spring Security"
+          <a href="../DAILY/daily.html" title="1. 塾の活動"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>認証認可</a></li> 

@@ -208,6 +208,7 @@ AWSコンソールからGUIでテンプレートを作成できる機能
 CloudFormationの拡張機能で、サーバレスアプリケーションをより簡易的な記述で定義構築する。
 LambdaやAPIGWなどのサーバーレスサービスについては、CloudFormationでも記述構築できるがSAMの方が記述量少なくスマートにテンプレートを記述できる
 
+
 ### SAM実行の流れ
 1. コードの開発
 2. パッケージング（この段階でappをS3にアップロードしている）
@@ -230,23 +231,96 @@ SAM用のTypeが6つ準備されている
 #### Globals
 Globalsという複数リソースの設定をまとめて行う設定がある点が差分
 
-
-
 ### Hands on
 以下の詳細説明については、[SAMのHandsOnBeginners](https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-2-2022-reg-event.html?trk=aws_introduction_page)
 を参考にして、サンプルコードなどを例示する。  
-作成する環境は以下
+作成する環境は以下で、構成としてはAPIGWで公開されているAPIに対してリクエストした文字列（JP）を翻訳して（EN）返すアプリケーションを作成する。
 
 ![](img/sam_arche.png)
 
+#### S3バケットの作成
+SAMではS3にある資材を利用する必要があるので、格納先のS3を作っておく
 
+AWS CLIがあれば以下のコマンドで作成可能
+> aws s3 mb s3://*your-backet-name*
 
-### ポリシーテンプレート
-Lambda関数に付与するIAMについてのポリシーを不要するテンプレートを簡易化したもの
+#### samの作成
+[SAMの公式リファレンス](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html)を
+参照しながらLambdaを作成するSAMを作成する。  
 
+作成するのは、SAMのテンプレートコードと作成するLambdaの関数。  
 
+SAMで利用する資材はS3に置いておく必要がある。今回で言うとCodeUriに記述されているLambda関数の中身。  
+パッケージングをすることでSAM側で自動でS3に格納と、読み込み先の変換を処理してくれる
+```
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Hands-on for Beginners - Serverless 2
+Resources:
+  
+  # Lambdaを作成
+  TranslateLambda: # 論理名
+    Type: AWS::Serverless::Function # Lambdaを作成する
+    Properties:
+      FunctionName: translate-function-2
+      CodeUri: ./translate-function # CodeUrlでLambda関数の格納場所を記載するか、InlineCoddeで直接コードを書く
+      Handler: translate-function.lambda_handler
+      Runtime: python3.7
+      Timeout: 5
+      MemorySize: 256
+      Policies: # 付与するポリシー
+        - TranslateFullAccess
+        - AmazonDynamoDBFullAccess
+      # Lambda側でAPI　GWとの連携について定義する
+      Events:
+        GetApi:
+          Type: Api
+          Properties:
+            Path: /translate
+            Method: get
+            RestApiId: !Ref TranslateAPI
+  
+  # API GateWayを作成
+  TranslateAPI: # 論理名 
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: translate-api-2
+      StageName: dev # 必須項目
+      EndpointConfiguration: REGIONAL
+      
+  # DynamoDBを作成
+   TranslateDynamoDbTbl: # 論理名
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: translate-history-2
+      PrimaryKey:
+        Name: timestamp
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+```
 
+#### SAMのpackage
+- template-fileでSAMファイルを指定
+- s3-bucketでappの出力先のs3を指定
+- output-template-fileでappの読み込み先を変換したSAMファイルの出力名を指定
+```
+aws cloudformation package \
+     --template-file template.yaml \ 
+     --s3-bucket *your-backet-name* \
+     --output-template-file packaged-template.yaml
+```
 
+#### SAMのdeploy
+- stack-name：cfnの作成されるスタック名
+- capabilities：IAM関連の操作を許す
+```
+aws cloudformation deploy \
+     --template-file ./packaged-template.yaml \
+     --stack-name hands-on-serverless-2 \
+     --capabilities CAPABILITY_IAM
+```
 
 ## Elastic Beanstalk 
 典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
