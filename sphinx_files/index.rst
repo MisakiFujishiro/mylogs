@@ -39,8 +39,10 @@ AWS Services
    AWS/Lambda
    AWS/AI
    AWS/AutoScaling
-   AWS/Netword
+   AWS/Network
+   AWS/security
    AWS/EnvAutomation
+   AWS/AWS-Dev-associ
 
 Java Spring
 ==================

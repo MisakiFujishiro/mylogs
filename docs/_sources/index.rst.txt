@@ -41,6 +41,7 @@ AWS Services
    AWS/AutoScaling
    AWS/Netword
    AWS/EnvAutomation
+   AWS/AWS-Dev-associ
 
 Java Spring
 ==================

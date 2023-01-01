@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. 環境構築手順" href="../Java/java_env.html" />
+    <link rel="next" title="9. AWS デベロッパーアソシエイト" href="AWS-Dev-associ.html" />
     <link rel="prev" title="7. AWSのネットワーク" href="Netword.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. 環境構築手順"
+          <a href="AWS-Dev-associ.html" title="9. AWS デベロッパーアソシエイト"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="Netword.html" title="7. AWSのネットワーク"
@@ -77,25 +77,55 @@
 <h3><span class="section-number">8.1.3. </span>基本動作<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>作成は設定したリソースを自動で作成することができ、依存関係は自動で解決してくれる。
 削除に関しても依存関係は自動で解決してくれる。</p>
+<section id="id5">
+<h4><span class="section-number">8.1.3.1. </span>テンプレートとスタック<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>JSONやYMLでテンプレートを作成することができ、CloudFormationによってリソースが作成される。
+作成されたリソースはスタックと呼ばれる。
+作成が失敗した場合、ロールバックする。</p>
+</section>
+<section id="id6">
+<h4><span class="section-number">8.1.3.2. </span>テンプレートの基本<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<p>必須項目は<code class="docutils literal notranslate"><span class="pre">Resources</span></code>のみ。Resourcesに作成するサービスの詳細を記述していく。
+作成するサービスには論理名（表示名）を付与するが、一つのCFN内でユニークである必要がある。</p>
+</section>
+<section id="id7">
+<h4><span class="section-number">8.1.3.3. </span>テンプレートの文法<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>環境ごとに作成するか否かの条件分岐を行う際には<code class="docutils literal notranslate"><span class="pre">Condistion</span></code>を利用する。</p>
+<ul class="simple">
+<li><p>Parametersセクションで設定するvalueを定義</p></li>
+<li><p>Conditionsセクションで条件の論理名と真偽判定</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Conditions:
+  IsProduction: !Equals [!Ref Env, &quot;production&quot;]
+  IsEC2Role: !Not [!Equals [!Ref EC2Role, &quot;&quot;]]
+  IsPublic: !Equals [!Ref Scope, &quot;public&quot;]
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Resourcesセクションで確認するConditionと作成するリソース情報を定義</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Resources</span><span class="p">:</span>
+  <span class="n">MyEC2</span><span class="p">:</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">AWS</span><span class="p">::</span><span class="n">EC2</span><span class="p">::</span><span class="n">Instance</span>
+    <span class="n">Condition</span><span class="p">:</span> <span class="n">IsProduction</span>
+    <span class="n">Properties</span><span class="p">:</span>
+      <span class="o">...</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://oreout.hatenablog.com/entry/aws/cloudformation/6">こちらのサイト</a>がわかりやすい</p>
+</section>
 </section>
 <section id="hands-on">
 <h3><span class="section-number">8.1.4. </span>Hands on<a class="headerlink" href="#hands-on" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の詳細説明については、<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-cfn-2022-reg-event.html?trk=aws_introduction_page">CFのHandsOnBeginners</a>
 を参考にして、サンプルコードなどを例示する。<br />作成する環境は以下</p>
 <p><img alt="../_images/cf_arche.png" src="../_images/cf_arche.png" /></p>
-<section id="id5">
-<h4><span class="section-number">8.1.4.1. </span>テンプレートとスタック<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
-<p>JSONやYMLでテンプレートを作成することができ、CloudFormationによってリソースが作成される。
-作成されたリソースはスタックと呼ばれる。
-作成が失敗した場合、ロールバックする。</p>
-</section>
-</section>
-<section id="id6">
-<h3><span class="section-number">8.1.5. </span>テンプレート<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id8">
+<h4><span class="section-number">8.1.4.1. </span>テンプレート<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
 <p>作成するスタックの設計図</p>
 <p>細かい利用方法などは<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/template-reference.html">テンプレートリファレンス</a>を参照する。</p>
 <section id="vpc">
-<h4><span class="section-number">8.1.5.1. </span>VPC作成のテンプレート例<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h4>
+<h5><span class="section-number">8.1.4.1.1. </span>VPC作成のテンプレート例<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h5>
 <p>Resourcesは必須設定で、作成するリソースを記述し、その内部で必要な値を設定する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AWSTemplateFormatVersion</span><span class="p">:</span> <span class="mi">2010</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">09</span> <span class="c1"># versionは現在2010-09-09のみ</span>
 <span class="n">Description</span><span class="p">:</span> <span class="n">Hands</span><span class="o">-</span><span class="n">on</span> <span class="n">template</span> <span class="k">for</span> <span class="n">VPC</span> <span class="c1"># テンプレートのコメント</span>
@@ -115,7 +145,7 @@
 </div>
 </section>
 <section id="ec2">
-<h4><span class="section-number">8.1.5.2. </span>EC2作成のテンプレート例<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h4>
+<h5><span class="section-number">8.1.4.1.2. </span>EC2作成のテンプレート例<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h5>
 <p>EC2の設定では、vpcで作成したサブネットの設定やユーザーデータの設定もPropertiesから設定できる。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Resources:
   EC2WebServer01:
@@ -139,7 +169,7 @@
 </div>
 </section>
 <section id="securitygroup">
-<h4><span class="section-number">8.1.5.3. </span>SecurityGroup作成のテンプレート例<a class="headerlink" href="#securitygroup" title="この見出しへのパーマリンク">¶</a></h4>
+<h5><span class="section-number">8.1.4.1.3. </span>SecurityGroup作成のテンプレート例<a class="headerlink" href="#securitygroup" title="この見出しへのパーマリンク">¶</a></h5>
 <p>紐付けるVPCの設定やインバウンド・アウトバウンドの設定を記述する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">EC2SG</span><span class="p">:</span>
     <span class="n">Type</span><span class="p">:</span> <span class="n">AWS</span><span class="p">::</span><span class="n">EC2</span><span class="p">::</span><span class="n">SecurityGroup</span>
@@ -156,10 +186,10 @@
 </div>
 </section>
 </section>
-<section id="id7">
-<h3><span class="section-number">8.1.6. </span>テンプレートの詳細説明<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
-<section id="id8">
-<h4><span class="section-number">8.1.6.1. </span>組み込み関数<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id9">
+<h4><span class="section-number">8.1.4.2. </span>テンプレートの詳細説明<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id10">
+<h5><span class="section-number">8.1.4.2.1. </span>組み込み関数<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h5>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -174,7 +204,7 @@
 </div>
 </section>
 <section id="parameters">
-<h4><span class="section-number">8.1.6.2. </span>Parameters<a class="headerlink" href="#parameters" title="この見出しへのパーマリンク">¶</a></h4>
+<h5><span class="section-number">8.1.4.2.2. </span>Parameters<a class="headerlink" href="#parameters" title="この見出しへのパーマリンク">¶</a></h5>
 <p>Resourcesで利用するための変数を設定しておく</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Parameters</span><span class="p">:</span>
   <span class="n">VPCStack</span><span class="p">:</span>
@@ -187,8 +217,9 @@
 </div>
 </section>
 <section id="outputs">
-<h4><span class="section-number">8.1.6.3. </span>Outputs<a class="headerlink" href="#outputs" title="この見出しへのパーマリンク">¶</a></h4>
-<p>他のテンプレート から呼び出される、リソースが出力する値を記述するのに使う</p>
+<h5><span class="section-number">8.1.4.2.3. </span>Outputs<a class="headerlink" href="#outputs" title="この見出しへのパーマリンク">¶</a></h5>
+<p>他のテンプレート から呼び出される、リソースが出力する値を記述するのに使う。
+あるテンプレートで作成したスタックの情報を別のテンプレートから参照する<code class="docutils literal notranslate"><span class="pre">クロススタックリファレンス</span></code>ではOUTPUTの定義が必須。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Outputs:
   EC2WebServer01:
     Value: !Ref EC2WebServer01
@@ -198,14 +229,11 @@
 </div>
 </section>
 </section>
-<section id="id9">
-<h3><span class="section-number">8.1.7. </span>スタック<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
-<p>AWSリソースのコレクションで、スタックを削除するとコレクションのすべてのリソースが削除される</p>
 </section>
-<section id="id10">
-<h3><span class="section-number">8.1.8. </span>環境構築方法<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">8.1.5. </span>環境構築方法<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="aws">
-<h4><span class="section-number">8.1.8.1. </span>AWSコンソールからの実行<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.1.5.1. </span>AWSコンソールからの実行<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h4>
 <p>GUIなので何をしているのかが分かり易いのがメリット、繰り返し実行や試行錯誤はし難い</p>
 <p>作成したテンプレートをAWSのマネジメントコンソールからアップロードして利用<br />cfnの「スタックを作成」から、「新しいリソースを利用（標準）」</p>
 <p><img alt="../_images/cfn_make.png" src="../_images/cfn_make.png" /></p>
@@ -214,16 +242,16 @@
 </section>
 </section>
 <section id="aws-cli">
-<h3><span class="section-number">8.1.9. </span>AWS CLIからの実行<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.1.6. </span>AWS CLIからの実行<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CLIなので、繰り返し実行や試行錯誤がやり易い<br />H4Bでは、AWS-CLI設定済のCloud9からの実行している。</p>
-<section id="id11">
-<h4><span class="section-number">8.1.9.1. </span>スタックの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id12">
+<h4><span class="section-number">8.1.6.1. </span>スタックの作成<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
 <blockquote>
 <div><p>aws cloudformation create-stack --stack-name [YOUR_STACK_NAME] --template-body file://[YOUR_TEMPLATE_FILE]</p>
 </div></blockquote>
 </section>
-<section id="id12">
-<h4><span class="section-number">8.1.9.2. </span>作成したスタックの更新<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id13">
+<h4><span class="section-number">8.1.6.2. </span>作成したスタックの更新<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
 <p>作成したテンプレートファイルの文法チェック</p>
 <blockquote>
 <div><p>aws cloudformation validate-template --template-body file://[YOUR_TEMPLATE_FILE]</p>
@@ -241,23 +269,39 @@
 </div></blockquote>
 </section>
 </section>
-<section id="id13">
-<h3><span class="section-number">8.1.10. </span>深掘り機能<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id14">
-<h4><span class="section-number">8.1.10.1. </span>ネストッドスタック<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
-<p>複数のテンプレートで親子関係を構成することができる。</p>
-</section>
+<h3><span class="section-number">8.1.7. </span>深掘り機能<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id15">
-<h4><span class="section-number">8.1.10.2. </span>ドリフト検出<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
-<p>現状のリソースとテンプレート定義の差分を検出する機能</p>
+<h4><span class="section-number">8.1.7.1. </span>ネストッドスタック<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<p>複数のテンプレートで親子関係を構成することができる。</p>
+<p>実行手順</p>
+<ul class="simple">
+<li><p>親側に<code class="docutils literal notranslate"><span class="pre">AWS::CloudFormation::Stack</span></code>リソースて押してこテンプレートのスタックを定義</p></li>
+<li><p>子側のテンプレート作成</p></li>
+<li><p>親側で子テンプレートのパスを指定</p></li>
+<li><p>aws cloudformation packageコマンドを実行してS3にpush</p></li>
+</ul>
 </section>
 <section id="id16">
-<h4><span class="section-number">8.1.10.3. </span>スタックセット<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.1.7.2. </span>カスタムリソース<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<p>CFNのテンプレートに存在しないリソース処理を噛ませる場合にはカスタムリソースを利用する。
+基本的な動きとしてはLambdaで機能を作り込んで、CustomのResourceでLambdaのARNをServiceTokenに指定することで、作り込んだLambdaが実行される</p>
+</section>
+<section id="id17">
+<h4><span class="section-number">8.1.7.3. </span>チェンジセット<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<p>更新しようとしているテンプレートと、作成済のテンプレートの差分を検出する機能。</p>
+</section>
+<section id="id18">
+<h4><span class="section-number">8.1.7.4. </span>ドリフト検出<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<p>現状のリソースと作成した際のテンプレート定義の差分を検出する機能</p>
+</section>
+<section id="id19">
+<h4><span class="section-number">8.1.7.5. </span>スタックセット<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
 <p>１つのテンプレートを複数のAWSアカウントおよびリージョンに展開する</p>
 </section>
 </section>
-<section id="id17">
-<h3><span class="section-number">8.1.11. </span>CloudFormation デザイナー<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h3><span class="section-number">8.1.8. </span>CloudFormation デザイナー<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSコンソールからGUIでテンプレートを作成できる機能</p>
 </section>
 </section>
@@ -273,15 +317,16 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <li><p>デプロイ（CFが実行されて、構築される）</p></li>
 </ol>
 </section>
-<section id="id18">
-<h3><span class="section-number">8.2.2. </span>具体的な差分<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id21">
+<h3><span class="section-number">8.2.2. </span>具体的な差分<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <p>基本的な記述方法はCloudFormationとあまり変わらないが細かい部分で差分はある</p>
-<section id="id19">
-<h4><span class="section-number">8.2.2.1. </span>SAMの宣言<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id22">
+<h4><span class="section-number">8.2.2.1. </span>SAMの宣言<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
 <p>最初の定義で、自分がCFNではなくて、SAMであることを宣言する</p>
 <blockquote>
 <div><p>Transform: AW::Serverless-2016-10-31</p>
 </div></blockquote>
+<p>CFNと同様にResourcesが必須項目であるが、Transformも必須項目である。</p>
 </section>
 <section id="resource">
 <h4><span class="section-number">8.2.2.2. </span>Resource<a class="headerlink" href="#resource" title="この見出しへのパーマリンク">¶</a></h4>
@@ -297,8 +342,8 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <p>Globalsという複数リソースの設定をまとめて行う設定がある点が差分</p>
 </section>
 </section>
-<section id="id20">
-<h3><span class="section-number">8.2.3. </span>Hands on<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h3><span class="section-number">8.2.3. </span>Hands on<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の詳細説明については、<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-2-2022-reg-event.html?trk=aws_introduction_page">SAMのHandsOnBeginners</a>
 を参考にして、サンプルコードなどを例示する。<br />作成する環境は以下で、構成としてはAPIGWで公開されているAPIに対してリクエストした文字列（JP）を翻訳して（EN）返すアプリケーションを作成する。</p>
 <p><img alt="../_images/sam_arche.png" src="../_images/sam_arche.png" /></p>
@@ -310,8 +355,8 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <div><p>aws s3 mb s3://<em>your-backet-name</em></p>
 </div></blockquote>
 </section>
-<section id="id21">
-<h4><span class="section-number">8.2.3.2. </span>samの作成<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id24">
+<h4><span class="section-number">8.2.3.2. </span>samの作成<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h4>
 <p><a class="reference external" href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html">SAMの公式リファレンス</a>を
 参照しながらLambdaを作成するSAMを作成する。</p>
 <p>作成するのは、SAMのテンプレートコードと作成するLambdaの関数。</p>
@@ -378,6 +423,7 @@ Resources:
      <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">template</span><span class="o">-</span><span class="n">file</span> <span class="n">packaged</span><span class="o">-</span><span class="n">template</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">cloudformation</span> <span class="pre">package</span></code> ではなく、<code class="docutils literal notranslate"><span class="pre">sam</span> <span class="pre">package</span></code>でもOK</p>
 </section>
 <section id="samdeploy">
 <h4><span class="section-number">8.2.3.4. </span>SAMのdeploy<a class="headerlink" href="#samdeploy" title="この見出しへのパーマリンク">¶</a></h4>
@@ -391,6 +437,7 @@ Resources:
      <span class="o">--</span><span class="n">capabilities</span> <span class="n">CAPABILITY_IAM</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">cloudformation</span> <span class="pre">deploy</span></code> ではなく、<code class="docutils literal notranslate"><span class="pre">sam</span> <span class="pre">deploy</span></code>でもOK</p>
 </section>
 </section>
 </section>
@@ -398,12 +445,12 @@ Resources:
 <h2><span class="section-number">8.3. </span>Elastic Beanstalk<a class="headerlink" href="#elastic-beanstalk" title="この見出しへのパーマリンク">¶</a></h2>
 <p>典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
 PaaSを実現するサービス</p>
-<section id="id22">
-<h3><span class="section-number">8.3.1. </span>設定対象<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id25">
+<h3><span class="section-number">8.3.1. </span>設定対象<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーションの言語や環境、インスタンスの構成、利用するサービスの設定、オートスケーリングの設定、ネットワークやDBの設定</p>
 </section>
-<section id="id23">
-<h3><span class="section-number">8.3.2. </span>デプロイ戦略<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id26">
+<h3><span class="section-number">8.3.2. </span>デプロイ戦略<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h3>
 <p>5種類のデプロイ戦略が準備されている</p>
 <section id="all-at-once">
 <h4><span class="section-number">8.3.2.1. </span>All at once<a class="headerlink" href="#all-at-once" title="この見出しへのパーマリンク">¶</a></h4>
@@ -446,53 +493,58 @@ PaaSを実現するサービス</p>
 <li><a class="reference internal" href="#cloudformation">8.1. CloudFormation</a><ul>
 <li><a class="reference internal" href="#id2">8.1.1. 環境のコード管理のメリット</a></li>
 <li><a class="reference internal" href="#id3">8.1.2. 運用をコードとして実行する</a></li>
-<li><a class="reference internal" href="#id4">8.1.3. 基本動作</a></li>
+<li><a class="reference internal" href="#id4">8.1.3. 基本動作</a><ul>
+<li><a class="reference internal" href="#id5">8.1.3.1. テンプレートとスタック</a></li>
+<li><a class="reference internal" href="#id6">8.1.3.2. テンプレートの基本</a></li>
+<li><a class="reference internal" href="#id7">8.1.3.3. テンプレートの文法</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#hands-on">8.1.4. Hands on</a><ul>
-<li><a class="reference internal" href="#id5">8.1.4.1. テンプレートとスタック</a></li>
+<li><a class="reference internal" href="#id8">8.1.4.1. テンプレート</a><ul>
+<li><a class="reference internal" href="#vpc">8.1.4.1.1. VPC作成のテンプレート例</a></li>
+<li><a class="reference internal" href="#ec2">8.1.4.1.2. EC2作成のテンプレート例</a></li>
+<li><a class="reference internal" href="#securitygroup">8.1.4.1.3. SecurityGroup作成のテンプレート例</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">8.1.5. テンプレート</a><ul>
-<li><a class="reference internal" href="#vpc">8.1.5.1. VPC作成のテンプレート例</a></li>
-<li><a class="reference internal" href="#ec2">8.1.5.2. EC2作成のテンプレート例</a></li>
-<li><a class="reference internal" href="#securitygroup">8.1.5.3. SecurityGroup作成のテンプレート例</a></li>
+<li><a class="reference internal" href="#id9">8.1.4.2. テンプレートの詳細説明</a><ul>
+<li><a class="reference internal" href="#id10">8.1.4.2.1. 組み込み関数</a></li>
+<li><a class="reference internal" href="#parameters">8.1.4.2.2. Parameters</a></li>
+<li><a class="reference internal" href="#outputs">8.1.4.2.3. Outputs</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id7">8.1.6. テンプレートの詳細説明</a><ul>
-<li><a class="reference internal" href="#id8">8.1.6.1. 組み込み関数</a></li>
-<li><a class="reference internal" href="#parameters">8.1.6.2. Parameters</a></li>
-<li><a class="reference internal" href="#outputs">8.1.6.3. Outputs</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id9">8.1.7. スタック</a></li>
-<li><a class="reference internal" href="#id10">8.1.8. 環境構築方法</a><ul>
-<li><a class="reference internal" href="#aws">8.1.8.1. AWSコンソールからの実行</a></li>
+<li><a class="reference internal" href="#id11">8.1.5. 環境構築方法</a><ul>
+<li><a class="reference internal" href="#aws">8.1.5.1. AWSコンソールからの実行</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aws-cli">8.1.9. AWS CLIからの実行</a><ul>
-<li><a class="reference internal" href="#id11">8.1.9.1. スタックの作成</a></li>
-<li><a class="reference internal" href="#id12">8.1.9.2. 作成したスタックの更新</a></li>
+<li><a class="reference internal" href="#aws-cli">8.1.6. AWS CLIからの実行</a><ul>
+<li><a class="reference internal" href="#id12">8.1.6.1. スタックの作成</a></li>
+<li><a class="reference internal" href="#id13">8.1.6.2. 作成したスタックの更新</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">8.1.10. 深掘り機能</a><ul>
-<li><a class="reference internal" href="#id14">8.1.10.1. ネストッドスタック</a></li>
-<li><a class="reference internal" href="#id15">8.1.10.2. ドリフト検出</a></li>
-<li><a class="reference internal" href="#id16">8.1.10.3. スタックセット</a></li>
+<li><a class="reference internal" href="#id14">8.1.7. 深掘り機能</a><ul>
+<li><a class="reference internal" href="#id15">8.1.7.1. ネストッドスタック</a></li>
+<li><a class="reference internal" href="#id16">8.1.7.2. カスタムリソース</a></li>
+<li><a class="reference internal" href="#id17">8.1.7.3. チェンジセット</a></li>
+<li><a class="reference internal" href="#id18">8.1.7.4. ドリフト検出</a></li>
+<li><a class="reference internal" href="#id19">8.1.7.5. スタックセット</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">8.1.11. CloudFormation デザイナー</a></li>
+<li><a class="reference internal" href="#id20">8.1.8. CloudFormation デザイナー</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#serverless-application-model">8.2. Serverless Application Model</a><ul>
 <li><a class="reference internal" href="#sam">8.2.1. SAM実行の流れ</a></li>
-<li><a class="reference internal" href="#id18">8.2.2. 具体的な差分</a><ul>
-<li><a class="reference internal" href="#id19">8.2.2.1. SAMの宣言</a></li>
+<li><a class="reference internal" href="#id21">8.2.2. 具体的な差分</a><ul>
+<li><a class="reference internal" href="#id22">8.2.2.1. SAMの宣言</a></li>
 <li><a class="reference internal" href="#resource">8.2.2.2. Resource</a></li>
 <li><a class="reference internal" href="#globals">8.2.2.3. Globals</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id20">8.2.3. Hands on</a><ul>
+<li><a class="reference internal" href="#id23">8.2.3. Hands on</a><ul>
 <li><a class="reference internal" href="#s3">8.2.3.1. S3バケットの作成</a></li>
-<li><a class="reference internal" href="#id21">8.2.3.2. samの作成</a></li>
+<li><a class="reference internal" href="#id24">8.2.3.2. samの作成</a></li>
 <li><a class="reference internal" href="#sampackage">8.2.3.3. SAMのpackage</a></li>
 <li><a class="reference internal" href="#samdeploy">8.2.3.4. SAMのdeploy</a></li>
 </ul>
@@ -500,8 +552,8 @@ PaaSを実現するサービス</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#elastic-beanstalk">8.3. Elastic Beanstalk</a><ul>
-<li><a class="reference internal" href="#id22">8.3.1. 設定対象</a></li>
-<li><a class="reference internal" href="#id23">8.3.2. デプロイ戦略</a><ul>
+<li><a class="reference internal" href="#id25">8.3.1. 設定対象</a></li>
+<li><a class="reference internal" href="#id26">8.3.2. デプロイ戦略</a><ul>
 <li><a class="reference internal" href="#all-at-once">8.3.2.1. All at once</a></li>
 <li><a class="reference internal" href="#rolling">8.3.2.2. Rolling</a></li>
 <li><a class="reference internal" href="#rolling-with-additional-batch">8.3.2.3. Rolling with additional batch</a></li>
@@ -523,8 +575,8 @@ PaaSを実現するサービス</p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../Java/java_env.html"
-                          title="次の章へ"><span class="section-number">1. </span>環境構築手順</a></p>
+    <p class="topless"><a href="AWS-Dev-associ.html"
+                          title="次の章へ"><span class="section-number">9. </span>AWS　デベロッパーアソシエイト</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -554,7 +606,7 @@ PaaSを実現するサービス</p>
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. 環境構築手順"
+          <a href="AWS-Dev-associ.html" title="9. AWS デベロッパーアソシエイト"
              >次へ</a> |</li>
         <li class="right" >
           <a href="Netword.html" title="7. AWSのネットワーク"

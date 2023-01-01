@@ -30,6 +30,39 @@ Well-Architectedであるという柱の中に「運用上の優秀性」があ�
 作成は設定したリソースを自動で作成することができ、依存関係は自動で解決してくれる。
 削除に関しても依存関係は自動で解決してくれる。
 
+#### テンプレートとスタック
+JSONやYMLでテンプレートを作成することができ、CloudFormationによってリソースが作成される。
+作成されたリソースはスタックと呼ばれる。
+作成が失敗した場合、ロールバックする。
+
+#### テンプレートの基本
+必須項目は`Resources`のみ。Resourcesに作成するサービスの詳細を記述していく。
+作成するサービスには論理名（表示名）を付与するが、一つのCFN内でユニークである必要がある。
+
+#### テンプレートの文法
+環境ごとに作成するか否かの条件分岐を行う際には`Condistion`を利用する。
+- Parametersセクションで設定するvalueを定義
+- Conditionsセクションで条件の論理名と真偽判定
+```
+Conditions:
+  IsProduction: !Equals [!Ref Env, "production"]
+  IsEC2Role: !Not [!Equals [!Ref EC2Role, ""]]
+  IsPublic: !Equals [!Ref Scope, "public"]
+```
+- Resourcesセクションで確認するConditionと作成するリソース情報を定義
+```
+Resources:
+  MyEC2:
+    Type: AWS::EC2::Instance
+    Condition: IsProduction
+    Properties:
+      ...
+```
+
+
+
+[こちらのサイト](https://oreout.hatenablog.com/entry/aws/cloudformation/6)がわかりやすい
+
 ### Hands on
 以下の詳細説明については、[CFのHandsOnBeginners](https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-cfn-2022-reg-event.html?trk=aws_introduction_page)
 を参考にして、サンプルコードなどを例示する。  
@@ -39,17 +72,12 @@ Well-Architectedであるという柱の中に「運用上の優秀性」があ�
 
 
 
-#### テンプレートとスタック
-JSONやYMLでテンプレートを作成することができ、CloudFormationによってリソースが作成される。
-作成されたリソースはスタックと呼ばれる。
-作成が失敗した場合、ロールバックする。
-
-### テンプレート
+#### テンプレート
 作成するスタックの設計図
 
 細かい利用方法などは[テンプレートリファレンス](https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/template-reference.html)を参照する。
 
-#### VPC作成のテンプレート例  
+##### VPC作成のテンプレート例  
 Resourcesは必須設定で、作成するリソースを記述し、その内部で必要な値を設定する
 ```
 AWSTemplateFormatVersion: 2010-09-09 # versionは現在2010-09-09のみ
@@ -68,7 +96,7 @@ Resources: # 必須項目で作成するAWSリソースの概要
           Value: handson-cfn
 ```
 
-#### EC2作成のテンプレート例
+##### EC2作成のテンプレート例
 EC2の設定では、vpcで作成したサブネットの設定やユーザーデータの設定もPropertiesから設定できる。
 ```
 Resources:
@@ -91,7 +119,7 @@ Resources:
         - !Ref EC2SG
 ```
 
-#### SecurityGroup作成のテンプレート例
+##### SecurityGroup作成のテンプレート例
 紐付けるVPCの設定やインバウンド・アウトバウンドの設定を記述する
 ```
   EC2SG:
@@ -108,8 +136,8 @@ Resources:
 ```
 
 
-### テンプレートの詳細説明
-#### 組み込み関数
+#### テンプレートの詳細説明
+##### 組み込み関数
 ```
   PublicSubnet1:
     Type: AWS::EC2::Subnet
@@ -123,7 +151,7 @@ Resources:
           Value: PublicSubnet1
 ```
 
-#### Parameters
+##### Parameters
 Resourcesで利用するための変数を設定しておく
 ```
 Parameters:
@@ -134,8 +162,9 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 ```
-#### Outputs
-他のテンプレート から呼び出される、リソースが出力する値を記述するのに使う
+##### Outputs
+他のテンプレート から呼び出される、リソースが出力する値を記述するのに使う。
+あるテンプレートで作成したスタックの情報を別のテンプレートから参照する`クロススタックリファレンス`ではOUTPUTの定義が必須。
 ```
 Outputs:
   EC2WebServer01:
@@ -144,8 +173,6 @@ Outputs:
       Name: !Sub ${AWS::StackName}-EC2WebServer01
 ```
 
-### スタック
-AWSリソースのコレクションで、スタックを削除するとコレクションのすべてのリソースが削除される
 
 ### 環境構築方法
 #### AWSコンソールからの実行
@@ -186,11 +213,27 @@ H4Bでは、AWS-CLI設定済のCloud9からの実行している。
 #### ネストッドスタック
 複数のテンプレートで親子関係を構成することができる。
 
+実行手順
+- 親側に`AWS::CloudFormation::Stack`リソースて押してこテンプレートのスタックを定義
+- 子側のテンプレート作成
+- 親側で子テンプレートのパスを指定
+- aws cloudformation packageコマンドを実行してS3にpush
+
+#### カスタムリソース
+CFNのテンプレートに存在しないリソース処理を噛ませる場合にはカスタムリソースを利用する。
+基本的な動きとしてはLambdaで機能を作り込んで、CustomのResourceでLambdaのARNをServiceTokenに指定することで、作り込んだLambdaが実行される
+
+
+#### チェンジセット
+更新しようとしているテンプレートと、作成済のテンプレートの差分を検出する機能。
+
 #### ドリフト検出
-現状のリソースとテンプレート定義の差分を検出する機能
+現状のリソースと作成した際のテンプレート定義の差分を検出する機能
 
 #### スタックセット
 １つのテンプレートを複数のAWSアカウントおよびリージョンに展開する
+
+
 
 ### CloudFormation デザイナー
 AWSコンソールからGUIでテンプレートを作成できる機能
@@ -217,9 +260,12 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 ### 具体的な差分
 基本的な記述方法はCloudFormationとあまり変わらないが細かい部分で差分はある
 
+
 #### SAMの宣言
 最初の定義で、自分がCFNではなくて、SAMであることを宣言する
 > Transform: AW::Serverless-2016-10-31
+
+CFNと同様にResourcesが必須項目であるが、Transformも必須項目である。
 
 #### Resource
 Resourceに置いても、サーバレスに特化した記述方法がある  
@@ -312,6 +358,8 @@ aws cloudformation package \
      --output-template-file packaged-template.yaml
 ```
 
+`aws cloudformation package` ではなく、`sam package`でもOK
+
 #### SAMのdeploy
 - stack-name：cfnの作成されるスタック名
 - capabilities：IAM関連の操作を許す
@@ -321,6 +369,8 @@ aws cloudformation deploy \
      --stack-name hands-on-serverless-2 \
      --capabilities CAPABILITY_IAM
 ```
+
+`aws cloudformation deploy` ではなく、`sam deploy`でもOK
 
 ## Elastic Beanstalk 
 典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。

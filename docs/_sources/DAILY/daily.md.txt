@@ -303,3 +303,7 @@ ElasticBeanstalkはHands-onがないので違いが明確化されていない�
 この前のレクチャーと自分で調べた内容を整理
 
 
+### 相談
+最終報告までに一通り実装をするとした、[AWSで作るマイクロサービス](https://news.mynavi.jp/techplus/series/aws_2/)
+AWS周りはなんとかなるような気がするけど、Spring周りがついて行けなさそう。
+レベル的に大丈夫？？
