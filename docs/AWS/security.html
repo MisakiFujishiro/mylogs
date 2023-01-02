@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>8. セキュリティ &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="9. 環境構築自動化" href="EnvAutomation.html" />
+    <link rel="prev" title="7. AWSのネットワーク" href="Network.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="EnvAutomation.html" title="9. 環境構築自動化"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="Network.html" title="7. AWSのネットワーク"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>セキュリティ</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1><span class="section-number">8. </span>セキュリティ<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="iam">
+<h2><span class="section-number">8.1. </span>IAM<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="cognito">
+<h2><span class="section-number">8.2. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Web-AppやMobile-Appに対してAPIベースで認証機能を提供するサービス</p>
+<section id="id2">
+<h3><span class="section-number">8.2.1. </span>ユーザープール<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザーDBに相当するが、AWSがマネージドで管理してくれる。</p>
+<section id="id3">
+<h4><span class="section-number">8.2.1.1. </span>ユースケース<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ざっくり分けると３つのユースケースに分類可能。Appへの認証、IDプールと連携してAWSサービスへのアクセス、CognitoからLambdaのキック。</p>
+<ul class="simple">
+<li><p>EC2やECS常に配置したWeb-AppやMobile-Appの認証：アプリケーションへの認証をする</p></li>
+<li><p>API GWやALBからのオーソライザ：Tokenの認証をしてIDプールと連携して他のサービスと連携する</p></li>
+<li><p>Lambdaを使ったオーソライザ：CognitoがLambdaを使って、サインインのワークフロをカスタマイズする</p></li>
+</ul>
+</section>
+<section id="id4">
+<h4><span class="section-number">8.2.1.2. </span>具体的な利用方法<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<p>まず、ユーザーディレクトリを定義して、サインアップ方法やパスワードポリシーを設定する。<br />アプリクライアント側（認証を求めてくるクライアント）によって、推奨される認証フローが異なる点に注意</p>
+</section>
+<section id="id5">
+<h4><span class="section-number">8.2.1.3. </span>ユーザープールとアプリケーションの統合<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoでは、OIDCの標準に準拠したエンドポイントが提供されている。
+そのため、アプリへのリクエストに対して、Cognitoのエンドポイントにリダイレクトすることで認証・認可をCognitoに任せることができる。
+Cognitoで認証してクライアント側にTokenを付与することで、Cognitoと連携するアプリへの一元的なアクセスができるようになる（シングルサインオン）</p>
+<p>Cognitoへの認証を外部フェデレーテッドIDプロバイダと連携して任せることができる。
+具体的なIDプロバイダとしてはGoogle ,Amazon ,Facebook ,Apple ,SAML, OpenIDConnectプロバイダが挙げられる。</p>
+</section>
+</section>
+<section id="id">
+<h3><span class="section-number">8.2.2. </span>IDプール<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザープールや外部フェデレーションで認証したユーザーに対してAWSサービスを認可する機能を提供</p>
+<ol class="simple">
+<li><p>ユーザープールで認証される</p></li>
+<li><p>JWTがクライアントに提供される</p></li>
+<li><p>クライアントがIDプールにTokenを渡す</p></li>
+<li><p>IDプールがTokenの検証をする</p></li>
+<li><p>Tokenが正しければ、STSに認証情報をもらう</p></li>
+<li><p>クライアントが所望のサービスにアクセスする</p></li>
+</ol>
+</section>
+<section id="jwt">
+<h3><span class="section-number">8.2.3. </span>JWT<a class="headerlink" href="#jwt" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">署名付きの認証情報を含むToken</span></code></p>
+<p>署名がJWTの発行元の秘密鍵で暗号化されているため、公開鍵で復号化するだけで署名を検証することができる点が有用</p>
+<p>ただし、期限付きの合鍵となるので奪取されることは避けなくてはいけないので取り扱いに注意が必要。</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">8. セキュリティ</a><ul>
+<li><a class="reference internal" href="#iam">8.1. IAM</a></li>
+<li><a class="reference internal" href="#cognito">8.2. Cognito</a><ul>
+<li><a class="reference internal" href="#id2">8.2.1. ユーザープール</a><ul>
+<li><a class="reference internal" href="#id3">8.2.1.1. ユースケース</a></li>
+<li><a class="reference internal" href="#id4">8.2.1.2. 具体的な利用方法</a></li>
+<li><a class="reference internal" href="#id5">8.2.1.3. ユーザープールとアプリケーションの統合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id">8.2.2. IDプール</a></li>
+<li><a class="reference internal" href="#jwt">8.2.3. JWT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="Network.html"
+                          title="前の章へ"><span class="section-number">7. </span>AWSのネットワーク</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="EnvAutomation.html"
+                          title="次の章へ"><span class="section-number">9. </span>環境構築自動化</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/AWS/security.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="EnvAutomation.html" title="9. 環境構築自動化"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="Network.html" title="7. AWSのネットワーク"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>セキュリティ</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>
