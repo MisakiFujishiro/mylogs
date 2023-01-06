@@ -1,17 +1,27 @@
 # 認証認可
-認証認可のサーバーからTOKENを受け取って、 バックエンド機能に問い合わせをしていくのが基本の動き。
-認可の情報に従って、提供するサービスを制御してバックエンドは処理を返していく
-
-## OAuth2.0やOpenIDConnect勉強
-### 認証認可
-#### 認証
-あなたは誰と問うこと。なりすましは許さないための処理。以下の情報で判断
+## 認証とは
+あなたが何者かを問うこと。
+なりすましされないように、以下の情報などで本人確認をする。
 - What You Are：生体認証とか
 - What You Have：トークンとか
-- What You　Know：IDとか
+- What You　Know：ID/Passwordとか
 
-#### 認可
-誰かに鍵を渡すこと。相手が誰かは意識していない。鍵を持っているなら誰でも錠を開けることを許す。
+## 認可とは
+機能を利用することができる鍵を渡すこと。
+認可だけでは、誰に鍵を渡すかは意識していない。
+
+## マイクロサービスアーキテクチャにおける認証認可
+認証認可のサーバーで認証をすることで、TOKENを受け取って、 バックエンド機能に問い合わせをしていくのが基本の動き。
+認証情報に紐づいて、与えるTokenの権限を制御することで、提供するサービスを制御する。
+
+## OAuth2.0
+
+## OpenIDConnect
+
+## SAML
+
+## Cognito
+
 
 
 
@@ -33,12 +43,19 @@ ID Tokenは「JWT(Json Web Token)」という改ざん耐性のある仕組み�
 
 OIDCを提供するOSSとしては、keycloakなどがある
 
-### JWTって何
-任意のJSONデータを格納できるURLセーフな文字列
-中身には以下の３つのデータがある
+### JWTとかID Tokenって何
+
+![](img/jwt_category.png)
+
+#### JWT
+JSON形式で表現されたクレームの集合を署名(+暗号化）したもの。
+任意のJSONデータを格納できるURLセーフな文字列とも表現できる。
+
+中身には以下の３つのデータがあり、ピリオドで区切られている。
 - ヘッダー：トークンの形式や署名のバージョン
 - クレーム：OIDCではここに認証情報を記述
 - 署名：正しい発行者が発行したID Tokenである証跡
+
 
 Googleから発行されたJWTのクレームを見てみると以下の情報が入っている
 - iss (ISSuer)：トークンの発行者
@@ -46,9 +63,22 @@ Googleから発行されたJWTのクレームを見てみると以下の情報�
 - exp (EXPiration)：有効期限
 これらをサーバー側で検証することによって、「正しい発行者が」「自サイト向けに」「１時間以内に認証して発行された（Googleの場合）」IDトークン以外は受け付けないようにできます。
 
+#### ID Token
+JWTの一種で、 JWTよりも強い制限があって、 署名が必要で、暗号化は必須ではない。暗号化するなら、署名してから、暗号化する。
+
+![](img/nestted_jwt.png)
+
+ID Tokenのクレームとしては、以下の内容が含まれる
+- エンドユーザーの認証に関わるもの
+- エンドユーザーの属性に関わるもの
+
+#### Access Token
+これは、JWTとは限らない点に注意
+
+![](img/jwt_token.png)
 
 ### OAuth2.0
-HTTP上で、認可を行うための仕様
+HTTP上で、認可を行うための仕様で、アクセストークンを発行する手順を定めた技術仕様
 
 正確にに書くと
 > OAuth 2.0 とは、サービスのユーザーが、サービス上にホストされている自分のデータへのアクセスを、自分のクレデンシャルズ (ID & パスワード) を渡すことなく、第三者のアプリケーションに許可するためのフレームワークである。
@@ -66,9 +96,17 @@ OAuthが流行っている理由
 1. パスワードをサードパーティのアプリに渡すことなくAPIを利用できる
 2. どのリソースにアクセス可能かを細かくユーザーに認可させることができる
 
+OAuth2.0の認可サーバーは2つのエンドポイントを提供している  
+OAuthのフローによって、利用するエンドポイントが異なるが、認可コードの場合は、両方利用する
+- 認可エンドポイント
+- トークンエンドポイント
+
 #### トークンの発行フロー
 Authorization Code GrantとImplicit Grantの２つがある。
 
+HTTPのリクエストでどちらを利用するかを指定することができる
+
+![](img/oauth_flow_choice.png)
 
 ##### Authorization Code Grant
 Authrozation CodeはサイトAのTokenをユーザーには渡さない
@@ -108,6 +146,10 @@ OAuth Server（Twitter）とかで悪さすることができるので、合鍵�
 ![](img/security_hole_2.png)
 
 ### OpenID
+IDトークンを発行する手順を定めた技術しよう
+
+OAuth2.0に加えて、ID TOkenの受け渡しを追加したフローで、認証まできちんとやって処理をする。
+
 異なるWebサービス間でユーザーの認証情報を受け渡す方法
 
 認証：紹介状を使って本人確認をしているイメージ
@@ -137,6 +179,11 @@ OIDCで払い出されるIDトークンは偽造不可能な名前付きの合�
 ![](img/openid_connect.png)
 
 
+全体の流れとしては、認可エンドポイントで認可コードが発行され、コードをトークンエンドポイントに持っていくとアクセストークンとIDトークンが発行される
+
+![](img/openid_flow.png)
+
+
 ## Cognito
 アプリケーションの認証認可を行うサービスで、アカウント管理と認可の付与をフルマネージドでサポート
 ### ユーザープール
@@ -152,10 +199,11 @@ Cognitoユーザーの管理→認証
 
 
 ## 参考
-- [塾長のマイクロサービス概要資料](https://debugroom.github.io/technical-academy/forum/202104/cloudnative_app.html)
-- [OAuthとOIDCの全体像がわかる](https://atmarkit.itmedia.co.jp/ait/articles/1708/31/news011.html)
+- [川崎さんのわかりやすい動画](https://www.youtube.com/watch?v=PKPj_MmLq5E)
 - [★★★★★一番わかりやすいOAuth](https://qiita.com/TakahikoKawasaki/items/e37caf50776e00e733be)
 - [★★★★★一番わかりやすいOIDC](https://qiita.com/TakahikoKawasaki/items/498ca08bbfcc341691fe)
+- [塾長のマイクロサービス概要資料](https://debugroom.github.io/technical-academy/forum/202104/cloudnative_app.html)
+- [OAuthとOIDCの全体像がわかる](https://atmarkit.itmedia.co.jp/ait/articles/1708/31/news011.html)
 - [OAuthとOpenIDの違い](https://www.sakimura.org/2011/05/1087/)
 - [OAuthによる認可の流れ](https://www.slideshare.net/ph1ph2sa25/oauth20-46144252)
 - [OpenIDConnct誕生までの流れ](https://qiita.com/TakahikoKawasaki/items/f2a0d25a4f05790b3baa)

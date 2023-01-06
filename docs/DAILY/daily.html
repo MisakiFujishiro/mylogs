@@ -81,19 +81,21 @@
 </ul>
 <hr class="docutils" />
 <ul class="simple">
-<li><p>マイクロサービスの全体像勉強→「マイクロサービスからモノリスへ」</p></li>
-<li><p>マイクロサービスの全体像勉強→「マイクロサービスインアクション」</p></li>
-<li><p>マイクロサービスの認証認可の勉強</p></li>
-<li><p>最終報告資料の作成（5%)</p></li>
-<li><p>AWS　ディベロッパーアソシエイト（第２章→ CICDとか構築自動化とか）</p></li>
+<li><p>TERASOLNA11.3(セッション)さらっと</p></li>
+<li><p>マイクロサービスの全体像勉強→「マイクロサービスからモノリスへ」→通読</p></li>
+<li><p>マイクロサービスの全体像勉強→「マイクロサービスインアクション」→読み始め</p></li>
+<li><p>マイクロサービスの認証認可の勉強→ブログとか動画とかを一通りみたのでだいぶスッキリ</p></li>
+<li><p>AWS　ディベロッパーアソシエイト第２章→ CICDとか構築自動化とか、CFN/SAMとか</p></li>
+<li><p>AWS　ディベロッパーアソシエイト第3章→ IAMとかSTSとか</p></li>
 <li><p>CFNのH4B</p></li>
 <li><p>SAMのH4B</p></li>
-<li><p>TERASOLNA11.3(セッション)完了</p></li>
+<li><p>最終報告資料の作成（10%)→テーマ名を変更した方がいいかも</p></li>
 </ul>
 </section>
 <section id="id2">
 <h2><span class="section-number">1.2. </span>テーマ<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
-<p>テーマ「コンテナサービスおよびサーバレスサービスを活用した高速なアプリケーション開発環境の構築の整理」<br />マイクロサービスを構築する上でのニーズとそのニーズを満たすAWSサービスや機能の対応とその実装上の注意を整理する。自分で実装するもしくは、HandsOnのような形式にして、他の人に展開できるようにする。</p>
+<p>テーマ「コンテナサービスおよびサーバレスサービスを活用した高速なアプリケーション開発環境の構築の整理」
+マイクロサービスを構築する上でのニーズとそのニーズを満たすAWSサービスや機能の対応とその実装上の注意を整理する。自分で実装するもしくは、HandsOnのような形式にして、他の人に展開できるようにする。</p>
 <p>自分の興味<br />新しいことを理解したい。理解したことを整理したい。理解したことを難しいことをやっていないことを伝えたい。</p>
 <p>やる価値<br />マイクロサービスアーキテクチャをサーバーレスサービスやコンテナサービスを使ってAWS上で構築することはニーズとして多い。やりたいけど、どう始めればいいかわからない。案件としては進んでいるけど、自分自身の理解が薄いという人って多いのでは？少なくとも自分もそうだった。<br />マイクロサービスにおける技術的なニーズを満たすために、AWSはサービスを拡充している面もあるはず。マイクロサービスに必要な機能とそれを実装するときのベストプラクティス（デファクトスタンダード）的なAWSサービスを整理して提供することは、そういった案件に効果的にも効率的にも寄与しえるのでは？</p>
 </section>
@@ -126,20 +128,14 @@
 <ul class="simple">
 <li><p>マイクロサービスについての整理</p>
 <ul>
-<li><p>全体像</p></li>
-<li><p>メリット</p></li>
-<li><p>デメリット</p></li>
-<li><p>必須要件</p>
+<li><p>全体像【済】</p></li>
+<li><p>メリット【済】</p></li>
+<li><p>デメリット【済】</p></li>
+<li><p>必須要件【済】</p>
 <ul>
-<li><p>認証認可</p></li>
-<li><p>コンテナサービス</p></li>
-</ul>
-</li>
-<li><p>周辺要件</p>
-<ul>
-<li><p>CICD</p></li>
-<li><p>監視サービス</p></li>
-<li><p>サービス間連携（GraphQL/BFF)</p></li>
+<li><p>認証認可【済】</p></li>
+<li><p>コンテナサービス【済】</p></li>
+<li><p>CICD【済】</p></li>
 </ul>
 </li>
 </ul>
@@ -372,11 +368,13 @@ DB周りの考え方についてはかなり根が深そうなので、別機会
 <p>実装しようとしたところで、importするとRun on Serverが出てこない・・・？
 一旦はチュートリアルおしまいで良いかな・・・</p>
 </section>
-<section id="aws-2">
-<h3><span class="section-number">1.7.3. </span>AWS　ディベロッパーアソシエイト（第２章）<a class="headerlink" href="#aws-2" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="aws-2-3">
+<h3><span class="section-number">1.7.3. </span>AWS　ディベロッパーアソシエイト（第２/3章）<a class="headerlink" href="#aws-2-3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CICDの部分は実装経験もあったので復習になった。
 CloudFormation・SAMは経験なかったのでHands-onを追加で受けてみた。
 ElasticBeanstalkはHands-onがないので違いが明確化されていないけど、アプリケーションの形になっているものをテンプレートから選ぶ形で、CloudFormationやSAMの方が自由度高く、自分が立ち上げたいものを作成できるイメージ</p>
+<p>IAMとかSTSを改めて学習。
+AssumePolicyについて理解できた。他のアカウントとの連携は実業務でもありそうなので良い予習になった。</p>
 </section>
 <section id="cfnsam">
 <h3><span class="section-number">1.7.4. </span>CFNとSAMの勉強<a class="headerlink" href="#cfnsam" title="この見出しへのパーマリンク">¶</a></h3>
@@ -385,13 +383,28 @@ ElasticBeanstalkはHands-onがないので違いが明確化されていない�
 </section>
 <section id="id17">
 <h3><span class="section-number">1.7.5. </span>マイクロサービスの認証認可の勉強<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
-<p>この前のレクチャーと自分で調べた内容を整理</p>
+<p>youtube上の動画で非常にわかりやすいものがあった
+一通り理解できたつもりなので、最後にsphinx上で集めた情報を整理する予定</p>
 </section>
 <section id="id18">
-<h3><span class="section-number">1.7.6. </span>相談<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.7.6. </span>最終報告資料作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<p>一旦、目次を考えてみた。
+今回の学習できた範囲を考えると以下の内容でどうだろうか。マイクロサービスの根幹っぽいところには触れられるのでは？</p>
+<ul class="simple">
+<li><p>マイクロサービスの簡単な概要</p></li>
+<li><p>マイクロサービスにおける認証認可の重要性</p></li>
+<li><p>認証認可の仕組みとCognitoを利用した実装</p></li>
+<li><p>マイクロサービスにおけるコンテナ開発（CICD）の重要性</p></li>
+<li><p>コンテナ開発とCICDの仕組みとECSおよびCodeSeriesを利用した実装</p></li>
+</ul>
+</section>
+<section id="id19">
+<h3><span class="section-number">1.7.7. </span>相談<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>最終報告までに一通り実装をするとした、<a class="reference external" href="https://news.mynavi.jp/techplus/series/aws_2/">AWSで作るマイクロサービス</a>
 AWS周りはなんとかなるような気がするけど、Spring周りがついて行けなさそう。
 レベル的に大丈夫？？</p>
+<p>タイトルについて変更したい<br />「コンテナサービスおよびサーバレスサービスを活用した高速なアプリケーション開発環境の構築の整理」<br />↓↓↓<br />「マイクロサービスの基本とAWSサーバレスサービスとコンテナサービスを活用した構築ノウハウの整理」</p>
+<p>目次の確認は後日？</p>
 </section>
 </section>
 </section>
@@ -447,10 +460,11 @@ AWS周りはなんとかなるような気がするけど、Spring周りがつ�
 <li><a class="reference internal" href="#id15">1.7. (12/17-1/6)</a><ul>
 <li><a class="reference internal" href="#id16">1.7.1. マイクロサービスの全体像勉強</a></li>
 <li><a class="reference internal" href="#terasolna11-3">1.7.2. TERASOLNA11.3(セッション)</a></li>
-<li><a class="reference internal" href="#aws-2">1.7.3. AWS　ディベロッパーアソシエイト（第２章）</a></li>
+<li><a class="reference internal" href="#aws-2-3">1.7.3. AWS　ディベロッパーアソシエイト（第２/3章）</a></li>
 <li><a class="reference internal" href="#cfnsam">1.7.4. CFNとSAMの勉強</a></li>
 <li><a class="reference internal" href="#id17">1.7.5. マイクロサービスの認証認可の勉強</a></li>
-<li><a class="reference internal" href="#id18">1.7.6. 相談</a></li>
+<li><a class="reference internal" href="#id18">1.7.6. 最終報告資料作成</a></li>
+<li><a class="reference internal" href="#id19">1.7.7. 相談</a></li>
 </ul>
 </li>
 </ul>
