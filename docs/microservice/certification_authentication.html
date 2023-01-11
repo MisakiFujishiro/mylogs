@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>1. 認証認可 &#8212; my_sphinx  ドキュメント</title>
+    <title>2. マイクロサービスにおける認証認可 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. マイクロサービアーキテクチャとは" href="microservice_archi.html" />
-    <link rel="prev" title="1. 塾の活動" href="../DAILY/daily.html" /> 
+    <link rel="next" title="1. Code Series" href="../AWS/CodeSeries.html" />
+    <link rel="prev" title="1. マイクロサービアーキテクチャとは" href="microservice_archi.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="microservice_archi.html" title="2. マイクロサービアーキテクチャとは"
+          <a href="../AWS/CodeSeries.html" title="1. Code Series"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../DAILY/daily.html" title="1. 塾の活動"
+          <a href="microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>認証認可</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>マイクロサービスにおける認証認可</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,11 @@
           <div class="body" role="main">
             
   <section id="id1">
-<h1><span class="section-number">1. </span>認証認可<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">2. </span>マイクロサービスにおける認証認可<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id2">
-<h2><span class="section-number">1.1. </span>認証とは<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.1. </span>認証認可<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id3">
+<h3><span class="section-number">2.1.1. </span>認証とは<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>あなたが何者かを問うこと。
 なりすましされないように、以下の情報などで本人確認をする。</p>
 <ul class="simple">
@@ -57,251 +59,215 @@
 <li><p>What You　Know：ID/Passwordとか</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2><span class="section-number">1.2. </span>認可とは<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
-<p>機能を利用することができる鍵を渡すこと。
-認可だけでは、誰に鍵を渡すかは意識していない。</p>
-</section>
 <section id="id4">
-<h2><span class="section-number">1.3. </span>マイクロサービスアーキテクチャにおける認証認可<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
-<p>認証認可のサーバーで認証をすることで、TOKENを受け取って、 バックエンド機能に問い合わせをしていくのが基本の動き。
-認証情報に紐づいて、与えるTokenの権限を制御することで、提供するサービスを制御する。</p>
-</section>
-<section id="oauth2-0">
-<h2><span class="section-number">1.4. </span>OAuth2.0<a class="headerlink" href="#oauth2-0" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="openidconnect">
-<h2><span class="section-number">1.5. </span>OpenIDConnect<a class="headerlink" href="#openidconnect" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="saml">
-<h2><span class="section-number">1.6. </span>SAML<a class="headerlink" href="#saml" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="cognito">
-<h2><span class="section-number">1.7. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="oauthoidc">
-<h3><span class="section-number">1.7.1. </span>マイクロサービスの認証認可・OAuthからOIDCの流れ<a class="headerlink" href="#oauthoidc" title="この見出しへのパーマリンク">¶</a></h3>
-<p>これまでの認証認可のアーキテクチャでは一つのサービスで認証した情報をセッションで持って、その情報で認可制御をしていた。
-マイクロサービスアーキテクチャでは、複数のサービスが強調して動作するので、認証認可のプロセスが煩雑になる。</p>
-<p>そこで、認証認可をサーバーから切り離して、認証情報や認可情報をAPIサーバー間でやりとりすることで管理を容易にしたい。
-認可情報をやりとりするためのプロトコルをAPIサーバー・エンドユーザー・認可プロバイダーで決めておく必要があり、それがOAuth</p>
-<p><img alt="../_images/oauth_motivation.png" src="../_images/oauth_motivation.png" /></p>
-<p>Oauthは認可の仕組みに過ぎず、認証の仕組みが仕様になっていない。
-そのため、トークンの横取りで攻撃されてしまうという問題があった。</p>
-<p>この問題に対応したのがOIDC。
-OIDCは、OAuthの認可に加えて「ID Token」という検証可能なトークンを利用
-ID Tokenは「JWT(Json Web Token)」という改ざん耐性のある仕組みを採用。</p>
-<p>OIDCを提供するOSSとしては、keycloakなどがある</p>
-</section>
-<section id="jwtid-token">
-<h3><span class="section-number">1.7.2. </span>JWTとかID Tokenって何<a class="headerlink" href="#jwtid-token" title="この見出しへのパーマリンク">¶</a></h3>
-<p><img alt="../_images/jwt_category.png" src="../_images/jwt_category.png" /></p>
-<section id="jwt">
-<h4><span class="section-number">1.7.2.1. </span>JWT<a class="headerlink" href="#jwt" title="この見出しへのパーマリンク">¶</a></h4>
-<p>JSON形式で表現されたクレームの集合を署名(+暗号化）したもの。
-任意のJSONデータを格納できるURLセーフな文字列とも表現できる。</p>
-<p>中身には以下の３つのデータがあり、ピリオドで区切られている。</p>
-<ul class="simple">
-<li><p>ヘッダー：トークンの形式や署名のバージョン</p></li>
-<li><p>クレーム：OIDCではここに認証情報を記述</p></li>
-<li><p>署名：正しい発行者が発行したID Tokenである証跡</p></li>
-</ul>
-<p>Googleから発行されたJWTのクレームを見てみると以下の情報が入っている</p>
-<ul class="simple">
-<li><p>iss (ISSuer)：トークンの発行者</p></li>
-<li><p>aud (AUDience)：トークンの受け手</p></li>
-<li><p>exp (EXPiration)：有効期限
-これらをサーバー側で検証することによって、「正しい発行者が」「自サイト向けに」「１時間以内に認証して発行された（Googleの場合）」IDトークン以外は受け付けないようにできます。</p></li>
-</ul>
-</section>
-<section id="id-token">
-<h4><span class="section-number">1.7.2.2. </span>ID Token<a class="headerlink" href="#id-token" title="この見出しへのパーマリンク">¶</a></h4>
-<p>JWTの一種で、 JWTよりも強い制限があって、 署名が必要で、暗号化は必須ではない。暗号化するなら、署名してから、暗号化する。</p>
-<p><img alt="../_images/nestted_jwt.png" src="../_images/nestted_jwt.png" /></p>
-<p>ID Tokenのクレームとしては、以下の内容が含まれる</p>
-<ul class="simple">
-<li><p>エンドユーザーの認証に関わるもの</p></li>
-<li><p>エンドユーザーの属性に関わるもの</p></li>
-</ul>
-</section>
-<section id="access-token">
-<h4><span class="section-number">1.7.2.3. </span>Access Token<a class="headerlink" href="#access-token" title="この見出しへのパーマリンク">¶</a></h4>
-<p>これは、JWTとは限らない点に注意</p>
-<p><img alt="../_images/jwt_token.png" src="../_images/jwt_token.png" /></p>
+<h3><span class="section-number">2.1.2. </span>認可とは<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>リソースにアクセスできる権限（鍵）を渡すこと。<br />認可だけでは、誰に鍵を渡すかは意識していない点に注意。<br />また、鍵を渡す人（神様)が誰かという点も意識すること</p>
 </section>
 </section>
 <section id="id5">
-<h3><span class="section-number">1.7.3. </span>OAuth2.0<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
-<p>HTTP上で、認可を行うための仕様で、アクセストークンを発行する手順を定めた技術仕様</p>
-<p>正確にに書くと</p>
-<blockquote>
-<div><p>OAuth 2.0 とは、サービスのユーザーが、サービス上にホストされている自分のデータへのアクセスを、自分のクレデンシャルズ (ID &amp; パスワード) を渡すことなく、第三者のアプリケーションに許可するためのフレームワークである。</p>
-</div></blockquote>
-<p>具体例で書くと</p>
-<blockquote>
-<div><p>あるサイトAの機能（FaceBookの写真投稿）を、サイトB（Instagram）から実行するために、
-ユーザーがサイトBに許可を与えて、サイトAにアクセスすることを認めること。</p>
-</div></blockquote>
-<p>ユーザーがサイトBでサイトAについて認可すると、サイトBの認可チケットをサイトAへわたす。
-そうすると、サイトAにサイトBの認証情報をおかないで、サイトAへ認可することができる。</p>
-<p><img alt="../_images/oauth_flow.png" src="../_images/oauth_flow.png" /></p>
-<p>OAuthが流行っている理由</p>
-<ol class="simple">
-<li><p>パスワードをサードパーティのアプリに渡すことなくAPIを利用できる</p></li>
-<li><p>どのリソースにアクセス可能かを細かくユーザーに認可させることができる</p></li>
-</ol>
-<p>OAuth2.0の認可サーバーは2つのエンドポイントを提供している<br />OAuthのフローによって、利用するエンドポイントが異なるが、認可コードの場合は、両方利用する</p>
-<ul class="simple">
-<li><p>認可エンドポイント</p></li>
-<li><p>トークンエンドポイント</p></li>
-</ul>
-<section id="id6">
-<h4><span class="section-number">1.7.3.1. </span>トークンの発行フロー<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
-<p>Authorization Code GrantとImplicit Grantの２つがある。</p>
-<p>HTTPのリクエストでどちらを利用するかを指定することができる</p>
-<p><img alt="../_images/oauth_flow_choice.png" src="../_images/oauth_flow_choice.png" /></p>
-<section id="authorization-code-grant">
-<h5><span class="section-number">1.7.3.1.1. </span>Authorization Code Grant<a class="headerlink" href="#authorization-code-grant" title="この見出しへのパーマリンク">¶</a></h5>
-<p>Authrozation CodeはサイトAのTokenをユーザーには渡さない
-代わりに、認可コードをWebアプリケーションに渡す。</p>
-<p><img alt="../_images/code_grant.png" src="../_images/code_grant.png" /></p>
+<h2><span class="section-number">2.2. </span>マイクロサービスにおける認証認可<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<p>これまでの認証認可のアーキテクチャでは一つのサービスで認証した情報をセッションで持って、その情報でアクセス制御をしていた。
+しかし、マイクロサービスアーキテクチャでは複数のサービスが協調して動作するので、
+サービスごとに認証認可をしていると認証情報の保持やアクセス制御のポリシー管理が煩雑になる。</p>
+<p>そこで認証認可をサーバーから切り離して、
+ユーザーが認証済みであることを示す「認証結果」やアクセス権限の「認可情報」をリソースサーバー（APIサーバー）と共有することで、
+認証情報やアクセス制御のポリシーを一元化し、管理を容易にする必要性がある。</p>
+<p><a class="reference external" href="https://atmarkit.itmedia.co.jp/ait/articles/1708/31/news011.html">マイクロサービスにおける認証認可とOAuth・OIDCの仕組み</a>がわかりやすい。</p>
+<p><img alt="../_images/oauth_motivation.png" src="../_images/oauth_motivation.png" /></p>
 </section>
-<section id="implicit-grant">
-<h5><span class="section-number">1.7.3.1.2. </span>Implicit Grant<a class="headerlink" href="#implicit-grant" title="この見出しへのパーマリンク">¶</a></h5>
-<p>一番の違いはImplicit GrandはサイトAのTokenを一度ユーザーに渡す点</p>
-<p><img alt="../_images/implicit_grant.png" src="../_images/implicit_grant.png" /></p>
-</section>
-</section>
+<section id="oauthoidc">
+<h2><span class="section-number">2.3. </span>OAuthとOIDCの関係性<a class="headerlink" href="#oauthoidc" title="この見出しへのパーマリンク">¶</a></h2>
+<p>■OAuth<br />「認可情報」をやりとりするための手順をクライアント・リソースサーバー・認可プロバイダー間で定めた プロトコルが<code class="docutils literal notranslate"><span class="pre">OAuth</span></code>である。
+OAuthは認可のプロトコルであり、認証の仕組みについて正確な規定はない。</p>
+<p>それにもかかわらず、認可処理の一部に認証を含むため、OAuthを認証に流用する「OAuth認証」が流行した。
+これは、OAuthは合鍵を利用して認証するようなもので、セキュリティ的に課題を抱えている。</p>
+<p><img alt="../_images/oauth_flow.png" src="../_images/oauth_flow.png" />)</p>
+<p>■OIDC<br />OAuthに認証情報をやり取りするID Tokenの仕組みを加えた<code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">ID</span> <span class="pre">Connct(OIDC)</span></code>と呼ばれるプロトコルが用いられるようになった。
+ID Tokenは<code class="docutils literal notranslate"><span class="pre">JWT(Json</span> <span class="pre">Web</span> <span class="pre">Token)</span></code>という改ざんに耐性のある技術を利用しており、認証情報をやり取りすることでOAuthの問題を解決した。</p>
+<p><img alt="../_images/oidc_flow.png" src="../_images/oidc_flow.png" />)</p>
 </section>
 <section id="oauth">
-<h3><span class="section-number">1.7.4. </span>OAuth認証<a class="headerlink" href="#oauth" title="この見出しへのパーマリンク">¶</a></h3>
-<p>OAuthを使って、認証までしてしまおうという考え。
-本来OAuthは認証ではなくて認可の使用なので、間違って使うと脆弱性が生まれる。
-A君のロッカーを開ける鍵持っているということは、ちゃんとA君だよという認証してきたってことだよね。
-よしよし君はAだなという認証をしちゃう</p>
-<p>![](img/Certification Authorization.png)</p>
-<p>本来認証ではない行為を使って認証をしている。マンションの合鍵を持ってきて、本人確認をする。
-OAuth Server（Twitter）とかで悪さすることができるので、合鍵をばら撒くのは好ましくない・・・</p>
-<p><img alt="../_images/OAuth.png" src="../_images/OAuth.png" /></p>
-<p>セキュリティ的なレベルの低さはあったが、手軽さのおかげで普及した</p>
-<section id="id7">
-<h4><span class="section-number">1.7.4.1. </span>セキュリティホール<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
-<p>いつ」「どこで」「なんのために」作られたのか分からないいつ」「どこで」「なんのために」作られたのか分からない
-セキュリティホールは、 access_tokenをUserAgentに渡すということは、UAはaccess_tokenを使いまわせる点にある。
-サイトAが悪役で、渡したTokenが盗まれたとすると、そのTokenを使うことで、認証せずに、サイトBがAのふりをできる。</p>
-<p><img alt="../_images/security_hole_1.png" src="../_images/security_hole_1.png" />
-<img alt="../_images/security_hole_2.png" src="../_images/security_hole_2.png" /></p>
-</section>
-</section>
-<section id="openid">
-<h3><span class="section-number">1.7.5. </span>OpenID<a class="headerlink" href="#openid" title="この見出しへのパーマリンク">¶</a></h3>
-<p>IDトークンを発行する手順を定めた技術しよう</p>
-<p>OAuth2.0に加えて、ID TOkenの受け渡しを追加したフローで、認証まできちんとやって処理をする。</p>
-<p>異なるWebサービス間でユーザーの認証情報を受け渡す方法</p>
-<p>認証：紹介状を使って本人確認をしているイメージ
-紹介状はIdentity Provider（Googleとか）に書いてもらう</p>
-<p><img alt="../_images/openid.png" src="../_images/openid.png" /></p>
-<p>登場人物は３人</p>
+<h2><span class="section-number">2.4. </span>OAuth<a class="headerlink" href="#oauth" title="この見出しへのパーマリンク">¶</a></h2>
+<p>OAuth2.0とは認可の仕組みであ、クライアントから認可サーバーに対してのアクセストークンの要求とその応答に関する仕様を定めている。<br />OAuthのポイントは、</p>
+<blockquote>
+<div><p>リソースオーナーが、自分のクレデンシャル（ID/PASSWORD)をクライアントに情報を渡すことなく、リソースサーバーにアクセスすることを許可している</p>
+</div></blockquote>
+<p>という点である。この点を意識して以下のフローを確認してみてほしい。</p>
+<section id="id6">
+<h3><span class="section-number">2.4.1. </span>OAuthの登場人物<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
-<li><p>EndUser</p></li>
-<li><p>OpenID Provider(ユーザー認証を行う)</p></li>
-<li><p>Relying Party（ユーザーの許可のもと、OPから認証情報をもらう）</p></li>
+<li><p>リソースオーナー<br />人間(神様)リソースサーバーに関する権限を付与することができる人</p></li>
+<li><p>ユーザーエージェント（UA）<br />リソースオーナーが利用しているブラウザなど</p></li>
+<li><p>クライアント<br />リソースオーナーから権限をもらって、リソースサーバーにアクセスするアプリなど</p></li>
+<li><p>認可サーバー（Authorization Server）<br />リソースオーナーとクライアントの間で権限委譲を仲介する</p></li>
+<li><p>リソースサーバー<br />リソースオーナーが所有するリソースを管理するシステム</p></li>
 </ul>
 </section>
-<section id="openid-connect">
-<h3><span class="section-number">1.7.6. </span>OpenID Connect<a class="headerlink" href="#openid-connect" title="この見出しへのパーマリンク">¶</a></h3>
-<p>認証の仕様</p>
-<p>上記のOAuthの課題観を解決するためにOpenID Connctを開発。
-OAuthとOpenIDを組み合わせて、認証を提供する
-OIDCで払い出されるIDトークンは偽造不可能な名前付きの合鍵。
-「いつ」「どこで」「なんのために」発行されたトークンなのかの情報を含んでおり、かつ署名されているため改ざんができない</p>
-<p>基本アイデアはOAuthで渡す鍵を紹介状が入っているロッカーの鍵にすること
-このロッカーを「UserInfo （ユーザ情報）Endpoint」と呼ぶ
-紹介状の中には、どのような認証をしたのかというメタ情報もある。この紹介状のことを、OpenIDトークンと呼ぶ</p>
-<p><img alt="../_images/openid_connect.png" src="../_images/openid_connect.png" /></p>
-<p>全体の流れとしては、認可エンドポイントで認可コードが発行され、コードをトークンエンドポイントに持っていくとアクセストークンとIDトークンが発行される</p>
-<p><img alt="../_images/openid_flow.png" src="../_images/openid_flow.png" /></p>
+<section id="id7">
+<h3><span class="section-number">2.4.2. </span>OAuthの基本的な流れ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>基本的な流れは<a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/e37caf50776e00e733be">一番わかりやすいOAuth</a>がわかりやすいので読んでから以下の説明を確認してほしい。</p>
+<p>大雑把なフローとしては以下</p>
+<ol class="simple">
+<li><p>クライアントは、リソースサーバーのリソースにアクセスしたい！</p></li>
+<li><p>クライアントからリソースサーバーにアクセスすると、認可情報がないから認可サーバーにクライアントをリダイレクト</p></li>
+<li><p>認可サーバーはリソースオーナに本当に認可情報をクライアントに渡して良いか確認</p></li>
+<li><p>リソースオーナーが承認</p></li>
+<li><p>認可サーバーからクライアントに対して認可情報を渡す</p></li>
+<li><p>クライアントはリソースサーバーにアクセスする</p></li>
+<li><p>リソースサーバーでは認可情報の検証を行う</p></li>
+</ol>
+<p>OAuth2.0の5番以降の処理として<code class="docutils literal notranslate"><span class="pre">Authorization</span> <span class="pre">Code</span> <span class="pre">Grant</span></code>と<code class="docutils literal notranslate"><span class="pre">Implicit</span> <span class="pre">Grant</span></code>がある。
+セキュリティの観点から基本的には<code class="docutils literal notranslate"><span class="pre">Authorization</span> <span class="pre">Code</span> <span class="pre">Grant</span></code>を利用する。</p>
+<section id="implicit-grant">
+<h4><span class="section-number">2.4.2.1. </span>Implicit Grant<a class="headerlink" href="#implicit-grant" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ポイントは、Access Tokenがユーザーエージェントやユーザーに返却しているので、Access Token情報が見えてしまっている点。
+本来は、Access Tokenは認可サーバーとクライアントだけでやり取りをするべきもの。
+UAからAccess Tokenが流出してしまうと、OAuth認証と合わせて大きなセキュリティホールを誘発してしまう。（詳細は後述）</p>
+<p><img alt="../_images/oauth_implicit.png" src="../_images/oauth_implicit.png" /></p>
+<p>エンドポイントの役割について注目してほしい。</p>
+<ol class="simple">
+<li><p>クライアントから<code class="docutils literal notranslate"><span class="pre">認可エンドポイント</span></code>にリクエストが届くと承認を行って、<code class="docutils literal notranslate"><span class="pre">Access</span> <span class="pre">Token</span></code>をクライアント（裏のUA）に直接返却している</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">トークンエンドポイント</span></code>については利用していない。</p></li>
+</ol>
+</section>
+<section id="authorization-code-grant">
+<h4><span class="section-number">2.4.2.2. </span>Authorization Code Grant<a class="headerlink" href="#authorization-code-grant" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ポイントは、認可サーバーとクライアントだけでAccess Tokenをやり取りするために、最初の返却ではクライアント（裏のUA）には認可コードを返している点。
+認可コードからAccess Tokenを引き換えるためにはClient IDとSecretが必要なため、認可コードが流出してもなりすましは不可能となっている。</p>
+<p><img alt="../_images/oauth_code_grant.png" src="../_images/oauth_code_grant.png" /></p>
+<p>エンドポイントの役割について注目してほしい。</p>
+<ol class="simple">
+<li><p>クライアントから<code class="docutils literal notranslate"><span class="pre">認可エンドポイント</span></code>にリクエストが届くと承認を行って、<code class="docutils literal notranslate"><span class="pre">認可コード</span></code>をクライアント（裏のUA）に返却する。</p></li>
+<li><p>クライアントから認可エンドポイントで取得した認可コードを<code class="docutils literal notranslate"><span class="pre">トークンエンドポイント</span></code>へ投げることで、<code class="docutils literal notranslate"><span class="pre">Access</span> <span class="pre">Token</span></code>をクライアントに返却する。</p></li>
+</ol>
+<p>認可コードを経由することで、Access Tokenのやり取りを認可サーバーとクライアント間で完結させることができる。</p>
 </section>
 </section>
 <section id="id8">
-<h2><span class="section-number">1.8. </span>Cognito<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
-<p>アプリケーションの認証認可を行うサービスで、アカウント管理と認可の付与をフルマネージドでサポート</p>
-<section id="id9">
-<h3><span class="section-number">1.8.1. </span>ユーザープール<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Cognitoユーザーの管理→認証</p>
-</section>
-<section id="id">
-<h3><span class="section-number">1.8.2. </span>IDプール<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ユーザープールのアカウントに対して、IAMロールを付与する→認可</p>
-<p><a class="reference external" href="https://qiita.com/UpAllNight/items/ec522da70a6fe86a1d16">cognitoで認証認可</a></p>
-</section>
-</section>
-<section id="id10">
-<h2><span class="section-number">1.9. </span>参考<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">2.4.3. </span>OAuth認証のセキュリティホール<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://www.sakimura.org/2012/02/1487/">OAuth認証を利用すると車が通れるほどのセキュリティホールができる</a>日本語訳記事がわかりやすいので読んでから以下の説明を確認してほしい。</p>
+<p><code class="docutils literal notranslate"><span class="pre">認可</span></code>の仕組みであるOAuthを利用して<code class="docutils literal notranslate"><span class="pre">認証</span></code>をしていることで発生する セキュリティホールであり、噛み砕くと</p>
+<blockquote>
+<div><p>OAuth認証とは、A君の合鍵（認可情報)を持っているということはA君だよねという本人確認をしている。
+つまり鍵を盗むことができれば、A君になりすましていろいろリソースにアクセスできてしまう。</p>
+</div></blockquote>
+<p>2つの要因が合わさるとセキュリティホールになる</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.youtube.com/watch?v=PKPj_MmLq5E">川崎さんのわかりやすい動画</a></p></li>
-<li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/e37caf50776e00e733be">★★★★★一番わかりやすいOAuth</a></p></li>
-<li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/498ca08bbfcc341691fe">★★★★★一番わかりやすいOIDC</a></p></li>
-<li><p><a class="reference external" href="https://debugroom.github.io/technical-academy/forum/202104/cloudnative_app.html">塾長のマイクロサービス概要資料</a></p></li>
-<li><p><a class="reference external" href="https://atmarkit.itmedia.co.jp/ait/articles/1708/31/news011.html">OAuthとOIDCの全体像がわかる</a></p></li>
-<li><p><a class="reference external" href="https://www.sakimura.org/2011/05/1087/">OAuthとOpenIDの違い</a></p></li>
-<li><p><a class="reference external" href="https://www.slideshare.net/ph1ph2sa25/oauth20-46144252">OAuthによる認可の流れ</a></p></li>
-<li><p><a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/f2a0d25a4f05790b3baa">OpenIDConnct誕生までの流れ</a></p></li>
+<li><p>Implicit Grant FlowによりAccess Tokenが流出してしまう</p></li>
+<li><p>OAuth認証</p></li>
 </ul>
+<section id="implicit-grant-flowaccess-token">
+<h4><span class="section-number">2.4.3.1. </span>Implicit Grant FlowによるAccess Tokenの流出<a class="headerlink" href="#implicit-grant-flowaccess-token" title="この見出しへのパーマリンク">¶</a></h4>
+<ol class="simple">
+<li><p>ユーザーX は、Implicit Grant Flowに従って認証を行う</p></li>
+<li><p>ユーザーXのAccess Token_XがUAに直接返却される</p></li>
+<li><p>UAやUA上のサイトAが攻撃者だとすると、Access Token_Xが流出してしまう。</p></li>
+</ol>
+<p><img alt="../_images/oauth_ninsyo.png" src="../_images/oauth_ninsyo.png" /></p>
 </section>
-<section id="id11">
-<h2><span class="section-number">1.10. </span>塾長レクチャー<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id12">
-<h3><span class="section-number">1.10.1. </span>概要<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Oauth1.0は難しすぎて、流行らなかったので2010年初頭におしまいになった。</p>
-<p>OAuth2.0は認可サービス
-認証は済んだことは前提として、何をすることができるかという権限を与えるかという仕様
-簡単にいうと、AccessTokenを配る。Access Tokenを持っているからといって、認証に使うのは危険
-今のマイクロサービスでは当然のように使われている。</p>
-<p>OAuthを認証に使おうとすると、セキュリティホールを使うので注意！</p>
-<p>その対策がOIDC！OAuthを拡張して、認証までくっつけた。</p>
+<section id="oauthaccess-token">
+<h4><span class="section-number">2.4.3.2. </span>OAuth認証でのAccess Tokenを利用したなりすまし<a class="headerlink" href="#oauthaccess-token" title="この見出しへのパーマリンク">¶</a></h4>
+<ol class="simple">
+<li><p>攻撃者ZはOAuth認証をしている他のサイトBにおいて、ログインを試みます。</p></li>
+<li><p>認可サーバーには攻撃者のアカウントで認証して、Access Token_Zを受け取ります</p></li>
+<li><p>リソースサーバーにアクセスする際に、Access Token_Zではなく、Access Token_Xを投げます</p></li>
+</ol>
+<p>サイトBにおいても、認可サーバーにおいても、鍵が誰のものかや鍵を使ったのが誰かについては全く意識していないので、攻撃者ZがXになりすまして認証をすることができました。</p>
+<p><img alt="../_images/oauth_attack.png" src="../_images/oauth_attack.png" /></p>
 </section>
-<section id="id13">
-<h3><span class="section-number">1.10.2. </span>フロー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
-<p>基本的には<code class="docutils literal notranslate"><span class="pre">認可コードグラントフロー</span></code>を押さえておけばOK
-<code class="docutils literal notranslate"><span class="pre">インプリシットグラントフロー</span></code>はセキュリティ的に問題がある。</p>
-<section id="id14">
-<h4><span class="section-number">1.10.2.1. </span>登場人物<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
-<p>以下の登場人物を明確に把握しておく。リソースオーナーとクライアントAPを混合しないこと</p>
-<ul class="simple">
-<li><p>リソースオーナ→人間</p></li>
-<li><p>認可サーバー（Authorization Server）→ Access Tokenを発行する</p></li>
-<li><p>クライアントAP→ブラウザとかApp</p></li>
-<li><p>リソースサーバー→マイクロサービス（Access Tokenに従ってサービスを公開する）</p></li>
-</ul>
-</section>
-<section id="id15">
-<h4><span class="section-number">1.10.2.2. </span>認可コードグラントフロー<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
-<p>やりたいこと
-クライアントAPからリソースサーバーにアクセスしたい！けどAccess Tokenがないから認可サーバーに問い合わせをするストーリー</p>
-<p>OAuthの特徴は、ユーザーのクレデンシャル（ID／PASS）を渡さずにAccessTokenを渡したいこと。
-そのために認可サーバーがいる。</p>
-<p>モバイルを使っているケースで、セキュリティホールが存在して、その対策がPKCEがある。
-セキュリティホール：モバイルアプリだと、認可コードごと盗んでしまう。</p>
-<p>AccessToken側でも、スコープを定めておくことが対策になる（魔法の鍵・盗賊の鍵・最後の鍵）</p>
-</section>
-<section id="id16">
-<h4><span class="section-number">1.10.2.3. </span>インプリシットグラントフロー<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
-<p>違いは認可コードが発行されないのが特徴
-悪意がある人にAccessTokenが渡されちゃう</p>
-<p>悪意のある人はクライアントAPが悪い人だとすると、奪ったAccessToken（合鍵）を使っていろんなサービスにアクセスしちゃう</p>
 </section>
 </section>
 <section id="oidc">
-<h3><span class="section-number">1.10.3. </span>OIDC<a class="headerlink" href="#oidc" title="この見出しへのパーマリンク">¶</a></h3>
-<p>OIDC = OAuth + Identity Layer</p>
-<p>OAuthは誰向けに発行されたのかということに無頓着な合鍵
-OIDCは、誰に向けて発行したものなのかまでくっつけている（ID TokenとUserInfo Endpoint)</p>
+<h2><span class="section-number">2.5. </span>OIDC<a class="headerlink" href="#oidc" title="この見出しへのパーマリンク">¶</a></h2>
+<p>OIDCとは認証の仕組みであり、OpenIDプロバイダーに対してのID Tokenの要求とその応答に関する仕様を定めている。<br />OAuth2.0を拡張する形でOIDCは設計されている。OAuth2.0ではアクセストークンを発行するための処理フローを定めているが、ID Tokenも発行できるようにした。</p>
+<section id="id9">
+<h3><span class="section-number">2.5.1. </span>OIDCの基本的な流れ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>基本的な流れは<a class="reference external" href="https://qiita.com/TakahikoKawasaki/items/498ca08bbfcc341691fe">一番わかりやすいOIDC</a>がわかりやすいので読んでから以下の説明を確認してほしい。</p>
+<p>上述した通り、OIDCはOAuth2.0を拡張しているため、認可サーバーとOpenID プロバイダー両方の役割を兼ねることが多くなる。</p>
+<ol class="simple">
+<li><p>クライアントから「OpenIDプロバイダー兼認可サーバー」へID TokenとAccess Tokenをリクエスト</p></li>
+<li><p>リソースオーナーに本人情報の提示とToken発行の承認を依頼</p></li>
+<li><p>「OpenIDプロバイダー兼認可サーバー」はID TokenとAccess Tokenを生成する</p></li>
+<li><p>クライアントへID TokenとAccess Tokenを発行する</p></li>
+</ol>
+<p><img alt="../_images/oidc_flow_detail.png" src="../_images/oidc_flow_detail.png" /></p>
 </section>
-<section id="id17">
-<h3><span class="section-number">1.10.4. </span>Cognito<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
-<p>自分自身がユーザープールとして、ID/Passを持つこともできる
-外側のIDプロバイダーに認証を任せても良い。</p>
 </section>
+<section id="id-token">
+<h2><span class="section-number">2.6. </span>ID Token<a class="headerlink" href="#id-token" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ID Tokenとは、 「いつ」「どこで」「なんのために」発行されたトークンなのかの情報を含んでおり、かつ署名されているため改ざんができない。
+これにより、ユーザーが認証されたという事実とそのユーザーの属性情報を捏造されていないことを確認可能な方法で、各所に引き回すことができる。</p>
+<section id="id10">
+<h3><span class="section-number">2.6.1. </span>ID Tokenの署名について<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>JWK(Json Web Key)と呼ばれる、暗号化に関する情報のドキュメントを利用して、ID Tokenの署名について検証する。</p>
+<p>ID Tokenの署名はサーバー側の秘密鍵で作成され、クライアント側での検証は公開鍵を利用して行う。</p>
+<p><img alt="../_images/jwk.png" src="../_images/jwk.png" /></p>
+</section>
+<section id="jwtid-token">
+<h3><span class="section-number">2.6.2. </span>JWTとID Tokenの関係性<a class="headerlink" href="#jwtid-token" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="jws-json-web-signature">
+<h4><span class="section-number">2.6.2.1. </span>JWS(Json Web signature)<a class="headerlink" href="#jws-json-web-signature" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ヘッダーとペイロードと署名をbase64URLでエンコードしてピリオドで繋いだ形式のドキュメント</p>
+<blockquote>
+<div><p>【ヘッダー.ペイロード.署名】</p>
+</div></blockquote>
+<p>各種をbase64URLでエンコードするとそれぞれが、JSON形式になっている。</p>
+<ul class="simple">
+<li><p>ヘッダー<br />署名のアルゴリズムを表すパラメータを含む</p></li>
+<li><p>ペイロード<br />JWSでは、ペイロードはJsonじゃなくても良いがJWTではJsonであることを要求している</p></li>
+<li><p>署名<br />バイナリなのでデコードしても中身は不明</p></li>
+</ul>
+</section>
+<section id="jwe-json-web-encryption">
+<h4><span class="section-number">2.6.2.2. </span>JWE(Json Web Encryption)<a class="headerlink" href="#jwe-json-web-encryption" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ヘッダーと暗号化されたキーと初期ベクターと暗号文と認証タグをbase64URLでエンコードしてピリオドで繋いだ形式のドキュメント</p>
+<blockquote>
+<div><p>【ヘッダー.暗号化されたキー.初期ベクター.暗号文.認証タグ】</p>
+</div></blockquote>
+</section>
+<section id="jwt-json-web-token">
+<h4><span class="section-number">2.6.2.3. </span>JWT(Json Web Token)<a class="headerlink" href="#jwt-json-web-token" title="この見出しへのパーマリンク">¶</a></h4>
+<p>JSON形式で表現されたクレームの集合をJWSもしくはJWEに埋め込んだもの<br />クレームには、以下のような情報が含まれており、「いつ」「どこで」「なんのために」発行されたトークンなのかがわかるようになっている
+これらをサーバー側で検証することによって、「正しい発行者が」「自サイト向けに」「１時間以内に認証して発行された」IDトークン以外は受け付けないようにできます。</p>
+<ul class="simple">
+<li><p>iss (ISSuer)：トークンの発行者</p></li>
+<li><p>aud (AUDience)：トークンの受け手</p></li>
+<li><p>exp (EXPiration)：有効期限</p></li>
+</ul>
+<p>JWS形式の場合</p>
+<blockquote>
+<div><p>【ヘッダー.クレーム.署名】</p>
+</div></blockquote>
+<p>JWE形式の場合</p>
+<blockquote>
+<div><p>【ヘッダー.暗号化されたキー.初期ベクター.暗号文（クレーム）.認証タグ】</p>
+</div></blockquote>
+</section>
+<section id="id11">
+<h4><span class="section-number">2.6.2.4. </span>ID Token<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ID Tokenは、JWTの一種であるが、JWTよりも強い制約がある</p>
+<ul class="simple">
+<li><p>署名が必須（JWS)</p></li>
+<li><p>暗号化は任意だが、署名してから暗号化（JWSをJWEにする）</p></li>
+</ul>
+<blockquote>
+<div><p>【ヘッダー.暗号化されたキー.初期ベクター.暗号文（【JWS】）.認証タグ】</p>
+</div></blockquote>
+<p><img alt="../_images/nested_jwt.png" src="../_images/nested_jwt.png" /></p>
+<p>ID Tokenのクレームには以下の情報が含まれる</p>
+<ul class="simple">
+<li><p>ユーザーの認証に関するもの</p></li>
+<li><p>ユーザーの属性に関するもの</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="id12">
+<h2><span class="section-number">2.7. </span>参考<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=PqW948SFSUM&amp;t=2375s">OAuthの基本に関する動画</a></p></li>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=PKPj_MmLq5E">一番わかりやすいシリーズの動画</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -315,55 +281,44 @@ OIDCは、誰に向けて発行したものなのかまでくっつけている�
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">1. 認証認可</a><ul>
-<li><a class="reference internal" href="#id2">1.1. 認証とは</a></li>
-<li><a class="reference internal" href="#id3">1.2. 認可とは</a></li>
-<li><a class="reference internal" href="#id4">1.3. マイクロサービスアーキテクチャにおける認証認可</a></li>
-<li><a class="reference internal" href="#oauth2-0">1.4. OAuth2.0</a></li>
-<li><a class="reference internal" href="#openidconnect">1.5. OpenIDConnect</a></li>
-<li><a class="reference internal" href="#saml">1.6. SAML</a></li>
-<li><a class="reference internal" href="#cognito">1.7. Cognito</a><ul>
-<li><a class="reference internal" href="#oauthoidc">1.7.1. マイクロサービスの認証認可・OAuthからOIDCの流れ</a></li>
-<li><a class="reference internal" href="#jwtid-token">1.7.2. JWTとかID Tokenって何</a><ul>
-<li><a class="reference internal" href="#jwt">1.7.2.1. JWT</a></li>
-<li><a class="reference internal" href="#id-token">1.7.2.2. ID Token</a></li>
-<li><a class="reference internal" href="#access-token">1.7.2.3. Access Token</a></li>
+<li><a class="reference internal" href="#">2. マイクロサービスにおける認証認可</a><ul>
+<li><a class="reference internal" href="#id2">2.1. 認証認可</a><ul>
+<li><a class="reference internal" href="#id3">2.1.1. 認証とは</a></li>
+<li><a class="reference internal" href="#id4">2.1.2. 認可とは</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id5">1.7.3. OAuth2.0</a><ul>
-<li><a class="reference internal" href="#id6">1.7.3.1. トークンの発行フロー</a><ul>
-<li><a class="reference internal" href="#authorization-code-grant">1.7.3.1.1. Authorization Code Grant</a></li>
-<li><a class="reference internal" href="#implicit-grant">1.7.3.1.2. Implicit Grant</a></li>
+<li><a class="reference internal" href="#id5">2.2. マイクロサービスにおける認証認可</a></li>
+<li><a class="reference internal" href="#oauthoidc">2.3. OAuthとOIDCの関係性</a></li>
+<li><a class="reference internal" href="#oauth">2.4. OAuth</a><ul>
+<li><a class="reference internal" href="#id6">2.4.1. OAuthの登場人物</a></li>
+<li><a class="reference internal" href="#id7">2.4.2. OAuthの基本的な流れ</a><ul>
+<li><a class="reference internal" href="#implicit-grant">2.4.2.1. Implicit Grant</a></li>
+<li><a class="reference internal" href="#authorization-code-grant">2.4.2.2. Authorization Code Grant</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">2.4.3. OAuth認証のセキュリティホール</a><ul>
+<li><a class="reference internal" href="#implicit-grant-flowaccess-token">2.4.3.1. Implicit Grant FlowによるAccess Tokenの流出</a></li>
+<li><a class="reference internal" href="#oauthaccess-token">2.4.3.2. OAuth認証でのAccess Tokenを利用したなりすまし</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#oauth">1.7.4. OAuth認証</a><ul>
-<li><a class="reference internal" href="#id7">1.7.4.1. セキュリティホール</a></li>
+<li><a class="reference internal" href="#oidc">2.5. OIDC</a><ul>
+<li><a class="reference internal" href="#id9">2.5.1. OIDCの基本的な流れ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#openid">1.7.5. OpenID</a></li>
-<li><a class="reference internal" href="#openid-connect">1.7.6. OpenID Connect</a></li>
+<li><a class="reference internal" href="#id-token">2.6. ID Token</a><ul>
+<li><a class="reference internal" href="#id10">2.6.1. ID Tokenの署名について</a></li>
+<li><a class="reference internal" href="#jwtid-token">2.6.2. JWTとID Tokenの関係性</a><ul>
+<li><a class="reference internal" href="#jws-json-web-signature">2.6.2.1. JWS(Json Web signature)</a></li>
+<li><a class="reference internal" href="#jwe-json-web-encryption">2.6.2.2. JWE(Json Web Encryption)</a></li>
+<li><a class="reference internal" href="#jwt-json-web-token">2.6.2.3. JWT(Json Web Token)</a></li>
+<li><a class="reference internal" href="#id11">2.6.2.4. ID Token</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">1.8. Cognito</a><ul>
-<li><a class="reference internal" href="#id9">1.8.1. ユーザープール</a></li>
-<li><a class="reference internal" href="#id">1.8.2. IDプール</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id10">1.9. 参考</a></li>
-<li><a class="reference internal" href="#id11">1.10. 塾長レクチャー</a><ul>
-<li><a class="reference internal" href="#id12">1.10.1. 概要</a></li>
-<li><a class="reference internal" href="#id13">1.10.2. フロー</a><ul>
-<li><a class="reference internal" href="#id14">1.10.2.1. 登場人物</a></li>
-<li><a class="reference internal" href="#id15">1.10.2.2. 認可コードグラントフロー</a></li>
-<li><a class="reference internal" href="#id16">1.10.2.3. インプリシットグラントフロー</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#oidc">1.10.3. OIDC</a></li>
-<li><a class="reference internal" href="#id17">1.10.4. Cognito</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#id12">2.7. 参考</a></li>
 </ul>
 </li>
 </ul>
@@ -371,13 +326,13 @@ OIDCは、誰に向けて発行したものなのかまでくっつけている�
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../DAILY/daily.html"
-                          title="前の章へ"><span class="section-number">1. </span>塾の活動</a></p>
+    <p class="topless"><a href="microservice_archi.html"
+                          title="前の章へ"><span class="section-number">1. </span>マイクロサービアーキテクチャとは</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="microservice_archi.html"
-                          title="次の章へ"><span class="section-number">2. </span>マイクロサービアーキテクチャとは</a></p>
+    <p class="topless"><a href="../AWS/CodeSeries.html"
+                          title="次の章へ"><span class="section-number">1. </span>Code Series</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -407,13 +362,13 @@ OIDCは、誰に向けて発行したものなのかまでくっつけている�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="microservice_archi.html" title="2. マイクロサービアーキテクチャとは"
+          <a href="../AWS/CodeSeries.html" title="1. Code Series"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../DAILY/daily.html" title="1. 塾の活動"
+          <a href="microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>認証認可</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>マイクロサービスにおける認証認可</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

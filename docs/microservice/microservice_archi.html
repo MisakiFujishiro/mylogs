@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>2. マイクロサービアーキテクチャとは &#8212; my_sphinx  ドキュメント</title>
+    <title>1. マイクロサービアーキテクチャとは &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,7 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="prev" title="1. 認証認可" href="certification_authentication.html" /> 
+    <link rel="next" title="2. マイクロサービスにおける認証認可" href="certification_authentication.html" />
+    <link rel="prev" title="1. 塾の活動" href="../DAILY/daily.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -29,10 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="certification_authentication.html" title="1. 認証認可"
+          <a href="certification_authentication.html" title="2. マイクロサービスにおける認証認可"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="../DAILY/daily.html" title="1. 塾の活動"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>マイクロサービアーキテクチャとは</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>マイクロサービアーキテクチャとは</a></li> 
       </ul>
     </div>  
 
@@ -42,18 +46,18 @@
           <div class="body" role="main">
             
   <section id="id1">
-<h1><span class="section-number">2. </span>マイクロサービアーキテクチャとは<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">1. </span>マイクロサービアーキテクチャとは<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
 <p>ビジネスドメインに基づいてモデル化された、独立デプロイ可能なサービス。
 境界面についてはドメイン駆動設計から設計し、ネットワークを通じて相互通信する。</p>
 <section id="id2">
-<h2><span class="section-number">2.1. </span>マイクロサービスの定義<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.1. </span>マイクロサービスの定義<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id3">
-<h3><span class="section-number">2.1.1. </span>歴史<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.1. </span>歴史<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>PCが安価になり、巨大なメインフレームにデプロイするよりも複数の安価なマシーンを利用する方がメリットが大きくなった。
 さらに、コンテナサービスやコンテナオーケストレーション、パブリッククラウドにより、安価にマシーンを準備、管理することが一層簡単になった。</p>
 </section>
 <section id="id4">
-<h3><span class="section-number">2.1.2. </span>特徴<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.2. </span>特徴<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マイクロサービスの一番の特徴は、ビジネスドメインに基づいてモデル化されており、独立してデプロイ可能なサービスであること。
 サービス間はネットワークを介して相互に通信してシステムを形成する。
 他のサービスに影響を与えることなく、独立してデプロイすることができるかがマイクロサービスであるか否かの判断基準と言っても良い。
@@ -67,7 +71,7 @@
 </ul>
 </section>
 <section id="id5">
-<h3><span class="section-number">2.1.3. </span>ビジネスドメインに基づく<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.3. </span>ビジネスドメインに基づく<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>web三層構造はコンウェイの法則「システムを設計する組織は、その構造をそっくりまねた構造の設計を生み出す」に従っている。
 すなわち技術目線で構築された構造であり、ビジネス機能面からのアプローチではない。ビジネス目線でコードをグループ化すると、どうなるかは場合による。</p>
 <p>ビジネスドメインからモデル化されたマイクロサービスはIT成果物（サービス）とビジネスドメインに整合性がある。
@@ -78,7 +82,7 @@
 </div></blockquote>
 </section>
 <section id="id6">
-<h3><span class="section-number">2.1.4. </span>独立性<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.4. </span>独立性<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>なんのためにマイクロサービスを採用するのかを明確化するのは大切。</p>
 <p>独立性は、各サービスの作業を並行して行うことができる。
 結果として、提供価値を高めるための繰り返しのリリースができるようになる。</p>
@@ -88,7 +92,7 @@
 </div></blockquote>
 </section>
 <section id="id7">
-<h3><span class="section-number">2.1.5. </span>マイクロサービスのサイズ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.5. </span>マイクロサービスのサイズ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>web三層構造でも、フロント・バックエンド・DBで分散している。
 マイクロサービスとの違いはどれだけ分散しているか。</p>
 <p>じゃあ、マイクロサービスのサイズって何？という質問に対しては、答えはない。
@@ -102,7 +106,7 @@
 </div></blockquote>
 </section>
 <section id="id8">
-<h3><span class="section-number">2.1.6. </span>境界面の定義<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.6. </span>境界面の定義<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>境界面の定義については、独立性とともにビジネス目線でサービスをモデル化することが重要。
 じゃあどうするのかという問いに対する回答の一つがDDD（Domain-Driven Design）。
 集約そして境界コンテキストという考えがある。
@@ -114,20 +118,20 @@
 </div></blockquote>
 </section>
 <section id="id9">
-<h3><span class="section-number">2.1.7. </span>マイクロサービスアーキテクチャの難しさ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.7. </span>マイクロサービスアーキテクチャの難しさ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マイクロサービスはメリットはあるものの、そのメリットを享受するために多くの選択肢や難しさへの対応が必要であることは忘れてはいけない。
 分散システムであることを扱うためには、新しい技術で対応したくなるが、同時に採用するのは危険。まずはMSにすることから
 モノリスでは同じシステム間での通信であったが、システム間の通信に関して障害を考慮しないといけないという課題にぶつかる。</p>
 </section>
 </section>
 <section id="id10">
-<h2><span class="section-number">2.2. </span>モノリスの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.2. </span>モノリスの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
 <p>基本的にはデプロイの単位で判断する。
 システム内のすべての機能を一緒にデプロイする必要があるならモノリス。</p>
 <p>気をつけなくてはならないのはマイクロサービスはモノリスの上位概念ではないということ。
 モノリスは選択肢の一つとなる。</p>
 <section id="id11">
-<h3><span class="section-number">2.2.1. </span>モノリスの種類<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.1. </span>モノリスの種類<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の３種類が存在</p>
 <ul class="simple">
 <li><p>単一プロセスモノリス：全部ガチガチにくっついている</p></li>
@@ -136,13 +140,13 @@
 </ul>
 </section>
 <section id="id12">
-<h3><span class="section-number">2.2.2. </span>モノリスのデメリット<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.2. </span>モノリスのデメリット<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>デプロイをめぐって、コーディングレベルでのコンフリクトが発生する。
 デプロイをめぐって、タイミングを決めるために人間同士の調整が始まる。</p>
 </section>
 </section>
 <section id="id13">
-<h2><span class="section-number">2.3. </span>どうしてマイクロサービスアーキテクチャを採用するのか<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.3. </span>どうしてマイクロサービスアーキテクチャを採用するのか<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <p>モノリスもマイクロサービスも選択肢の一つであり、マイクロサービスへの移行は技術的やコスト的痛みを伴う。
 採用する目的を明確化しないことには頓挫に終わる</p>
 <ul class="simple">
@@ -151,68 +155,68 @@
 <li><p>移行に対する評価指標</p></li>
 </ul>
 <section id="id14">
-<h3><span class="section-number">2.3.1. </span>達成したいことは何か<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.1. </span>達成したいことは何か<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マイクロサービスを選択することで得られるメリットはマイクロサービスを採用する理由になるが、
 マイクロサービスでしか得られないことではない点に注意代替案もあることを念頭に、マイクロサービスで達成したいことを考えるべき</p>
 <p>絶対にやってはいけないのは、何を達成しようとしているのかを明確に把握デッキていない場合。
 どこから移行を開始いてどのように分解するかは、マイクロサービスの採用目的に大きく依存するので、必ず目的を明確化してから取り組むこと。</p>
 <p>いかに述べるような目的が得られるため、マイクロサービスを選択するときは核となる動機と副次的な動機を明確に切り離す。</p>
 <section id="id15">
-<h4><span class="section-number">2.3.1.1. </span>自律的なチーム<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.1.1. </span>自律的なチーム<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
 <p>チームとして担当しているサービスに対して裁量があることは人々の活力になる。</p>
 </section>
 <section id="id16">
-<h4><span class="section-number">2.3.1.2. </span>市場投入までの時間を減らす<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.1.2. </span>市場投入までの時間を減らす<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>リリース調整せずに、デプロイ変更リリースできることは企業の能力向上に寄与する</p>
 </section>
 <section id="id17">
-<h4><span class="section-number">2.3.1.3. </span>スケーリング<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.1.3. </span>スケーリング<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ボトルネックとなりうるサービスのみをスケーリングすることで、運用コストをコントロールできる</p>
 </section>
 <section id="id18">
-<h4><span class="section-number">2.3.1.4. </span>堅牢性の向上<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.1.4. </span>堅牢性の向上<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>SaaS型など、シングルテナントからマルチテナントになると堅牢性の確保は非常に重要
 マイクロサービスにすることで障害をサービスレベルにすることができる。</p>
 </section>
 <section id="id19">
-<h4><span class="section-number">2.3.1.5. </span>開発効率を高める<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.1.5. </span>開発効率を高める<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
 <p>人員を増加させた時、効率よくデリバリー速度を向上させるためには、相互作用がない独立した作業が多いほどよい。</p>
 </section>
 <section id="id20">
-<h4><span class="section-number">2.3.1.6. </span>新しい技術を使う<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.1.6. </span>新しい技術を使う<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
 <p>サービスごとに採用する技術を変更することができ、モノリスと比べて制約を減らすことができる。</p>
 </section>
 </section>
 </section>
 <section id="id21">
-<h2><span class="section-number">2.4. </span>マイクロサービスアーキテクチャを採用した際の課題と対応<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.4. </span>マイクロサービスアーキテクチャを採用した際の課題と対応<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id22">
-<h3><span class="section-number">2.4.1. </span>サービス間の連携<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.1. </span>サービス間の連携<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>サービスが外部に自分の機能を公開する。その外部公開の契約を変更してしまうと、他のサービスに影響が出てしまう。
 これはマイクロサービスの独立性を破壊するので、やらないし、対策が必要</p>
 <p>対策としては、互換性のない変更を検出するツールやテストによるルール変更の検知</p>
 </section>
 <section id="id23">
-<h3><span class="section-number">2.4.2. </span>監視とトラブルシューティング<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.2. </span>監視とトラブルシューティング<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>大量のサービスと大量のインスタンスが稼働している中で、障害をどのように検知し、どのように原因を調査していくのか。</p>
 <p>対策としては、ログ集約システムを用いて、分散しているログを集約する。
 トレーシング：一連の呼び出しがどこで失敗したのかを理解するため、フローに沿って、全体を確認するべき。
 各処理をIDを通じてログを収集ることが重要。</p>
 </section>
 <section id="id24">
-<h3><span class="section-number">2.4.3. </span>多くのサービスを扱っている<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.3. </span>多くのサービスを扱っている<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>サービス数やインスタンス数が多くなりすぎると、デプロイ・設定・管理するプロセスが増える。
 結果として、デプロイ管理やトラブルシューティングに時間がかかり、サービス自体の開発時間が減少する。</p>
 <p>対策として、デプロイやサービス運用を自動化することが挙げられる。
 コンテナオーケストレーションやCICD環境を構築することである。</p>
 </section>
 <section id="id25">
-<h3><span class="section-number">2.4.4. </span>エンド2エンドのテスト<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.4. </span>エンド2エンドのテスト<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マイクロサービスでは範囲が非常に広くなる。複数のサービスにまたがったテストとなるし、すべてのサービスをシナリオに沿って設定する必要がある。
 インスタンスていしやネットワークタイムアウトという環境起因のテストも必要となる。</p>
 </section>
 <section id="db">
-<h3><span class="section-number">2.4.5. </span>DBの分割<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.5. </span>DBの分割<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h3>
 <p>各サービスがTBLの所有権を明確化して、特定のTBLについて、いろいろなサービスが書き込むような状況を避ける必要がある
 ここに関しては根が深そうなので別機会で整理したい。</p>
 </section>
@@ -229,40 +233,40 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">2. マイクロサービアーキテクチャとは</a><ul>
-<li><a class="reference internal" href="#id2">2.1. マイクロサービスの定義</a><ul>
-<li><a class="reference internal" href="#id3">2.1.1. 歴史</a></li>
-<li><a class="reference internal" href="#id4">2.1.2. 特徴</a></li>
-<li><a class="reference internal" href="#id5">2.1.3. ビジネスドメインに基づく</a></li>
-<li><a class="reference internal" href="#id6">2.1.4. 独立性</a></li>
-<li><a class="reference internal" href="#id7">2.1.5. マイクロサービスのサイズ</a></li>
-<li><a class="reference internal" href="#id8">2.1.6. 境界面の定義</a></li>
-<li><a class="reference internal" href="#id9">2.1.7. マイクロサービスアーキテクチャの難しさ</a></li>
+<li><a class="reference internal" href="#">1. マイクロサービアーキテクチャとは</a><ul>
+<li><a class="reference internal" href="#id2">1.1. マイクロサービスの定義</a><ul>
+<li><a class="reference internal" href="#id3">1.1.1. 歴史</a></li>
+<li><a class="reference internal" href="#id4">1.1.2. 特徴</a></li>
+<li><a class="reference internal" href="#id5">1.1.3. ビジネスドメインに基づく</a></li>
+<li><a class="reference internal" href="#id6">1.1.4. 独立性</a></li>
+<li><a class="reference internal" href="#id7">1.1.5. マイクロサービスのサイズ</a></li>
+<li><a class="reference internal" href="#id8">1.1.6. 境界面の定義</a></li>
+<li><a class="reference internal" href="#id9">1.1.7. マイクロサービスアーキテクチャの難しさ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id10">2.2. モノリスの定義</a><ul>
-<li><a class="reference internal" href="#id11">2.2.1. モノリスの種類</a></li>
-<li><a class="reference internal" href="#id12">2.2.2. モノリスのデメリット</a></li>
+<li><a class="reference internal" href="#id10">1.2. モノリスの定義</a><ul>
+<li><a class="reference internal" href="#id11">1.2.1. モノリスの種類</a></li>
+<li><a class="reference internal" href="#id12">1.2.2. モノリスのデメリット</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">2.3. どうしてマイクロサービスアーキテクチャを採用するのか</a><ul>
-<li><a class="reference internal" href="#id14">2.3.1. 達成したいことは何か</a><ul>
-<li><a class="reference internal" href="#id15">2.3.1.1. 自律的なチーム</a></li>
-<li><a class="reference internal" href="#id16">2.3.1.2. 市場投入までの時間を減らす</a></li>
-<li><a class="reference internal" href="#id17">2.3.1.3. スケーリング</a></li>
-<li><a class="reference internal" href="#id18">2.3.1.4. 堅牢性の向上</a></li>
-<li><a class="reference internal" href="#id19">2.3.1.5. 開発効率を高める</a></li>
-<li><a class="reference internal" href="#id20">2.3.1.6. 新しい技術を使う</a></li>
+<li><a class="reference internal" href="#id13">1.3. どうしてマイクロサービスアーキテクチャを採用するのか</a><ul>
+<li><a class="reference internal" href="#id14">1.3.1. 達成したいことは何か</a><ul>
+<li><a class="reference internal" href="#id15">1.3.1.1. 自律的なチーム</a></li>
+<li><a class="reference internal" href="#id16">1.3.1.2. 市場投入までの時間を減らす</a></li>
+<li><a class="reference internal" href="#id17">1.3.1.3. スケーリング</a></li>
+<li><a class="reference internal" href="#id18">1.3.1.4. 堅牢性の向上</a></li>
+<li><a class="reference internal" href="#id19">1.3.1.5. 開発効率を高める</a></li>
+<li><a class="reference internal" href="#id20">1.3.1.6. 新しい技術を使う</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id21">2.4. マイクロサービスアーキテクチャを採用した際の課題と対応</a><ul>
-<li><a class="reference internal" href="#id22">2.4.1. サービス間の連携</a></li>
-<li><a class="reference internal" href="#id23">2.4.2. 監視とトラブルシューティング</a></li>
-<li><a class="reference internal" href="#id24">2.4.3. 多くのサービスを扱っている</a></li>
-<li><a class="reference internal" href="#id25">2.4.4. エンド2エンドのテスト</a></li>
-<li><a class="reference internal" href="#db">2.4.5. DBの分割</a></li>
+<li><a class="reference internal" href="#id21">1.4. マイクロサービスアーキテクチャを採用した際の課題と対応</a><ul>
+<li><a class="reference internal" href="#id22">1.4.1. サービス間の連携</a></li>
+<li><a class="reference internal" href="#id23">1.4.2. 監視とトラブルシューティング</a></li>
+<li><a class="reference internal" href="#id24">1.4.3. 多くのサービスを扱っている</a></li>
+<li><a class="reference internal" href="#id25">1.4.4. エンド2エンドのテスト</a></li>
+<li><a class="reference internal" href="#db">1.4.5. DBの分割</a></li>
 </ul>
 </li>
 </ul>
@@ -272,8 +276,13 @@
   </div>
   <div>
     <h4>前のトピックへ</h4>
+    <p class="topless"><a href="../DAILY/daily.html"
+                          title="前の章へ"><span class="section-number">1. </span>塾の活動</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
     <p class="topless"><a href="certification_authentication.html"
-                          title="前の章へ"><span class="section-number">1. </span>認証認可</a></p>
+                          title="次の章へ"><span class="section-number">2. </span>マイクロサービスにおける認証認可</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -303,10 +312,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="certification_authentication.html" title="1. 認証認可"
+          <a href="certification_authentication.html" title="2. マイクロサービスにおける認証認可"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="../DAILY/daily.html" title="1. 塾の活動"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>マイクロサービアーキテクチャとは</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>マイクロサービアーキテクチャとは</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
