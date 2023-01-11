@@ -262,11 +262,27 @@ UAからAccess Tokenが流出してしまうと、OAuth認証と合わせて大�
 </section>
 </section>
 </section>
+<section id="saml">
+<h2><span class="section-number">2.7. </span>SAML<a class="headerlink" href="#saml" title="この見出しへのパーマリンク">¶</a></h2>
+<p>OIDC同様に認証の<code class="docutils literal notranslate"><span class="pre">プロトコル</span></code></p>
+<section id="saml-vs-oidc">
+<h3><span class="section-number">2.7.1. </span>SAML vs OIDC<a class="headerlink" href="#saml-vs-oidc" title="この見出しへのパーマリンク">¶</a></h3>
+<p>OIDCはSNS認証などの認証を目的として作成されたため、比較的簡易的なプロトコル</p>
+<p>SAMLは非常に複雑な権限管理を行うことができるため、Active Directoryの機能であるActive Directory Federation ServiceやOktaなどのIDPサービスで主に用いられる。</p>
+</section>
+</section>
+<section id="sso">
+<h2><span class="section-number">2.8. </span>SSO<a class="headerlink" href="#sso" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SSO(Single Sign On)は一度のログインにより複数のサービスにアクセスするための仕組み。
+ログイン回数を減らすだけでなく、ユーザー認証情報の一元管理にも寄与する。</p>
+</section>
 <section id="id12">
-<h2><span class="section-number">2.7. </span>参考<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.9. </span>参考<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.youtube.com/watch?v=PqW948SFSUM&amp;t=2375s">OAuthの基本に関する動画</a></p></li>
 <li><p><a class="reference external" href="https://www.youtube.com/watch?v=PKPj_MmLq5E">一番わかりやすいシリーズの動画</a></p></li>
+<li><p><a class="reference external" href="https://baasinfo.net/?p=4418">SAMLの概要とSSOについて</a></p></li>
+<li><p><a class="reference external" href="https://dev.classmethod.jp/articles/add-keycloak-to-cognito-with-oidc/">CognitoとkeycloakをOIDCで連携する手順</a></p></li>
 </ul>
 </section>
 </section>
@@ -318,7 +334,12 @@ UAからAccess Tokenが流出してしまうと、OAuth認証と合わせて大�
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">2.7. 参考</a></li>
+<li><a class="reference internal" href="#saml">2.7. SAML</a><ul>
+<li><a class="reference internal" href="#saml-vs-oidc">2.7.1. SAML vs OIDC</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sso">2.8. SSO</a></li>
+<li><a class="reference internal" href="#id12">2.9. 参考</a></li>
 </ul>
 </li>
 </ul>

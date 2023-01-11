@@ -231,8 +231,23 @@ ID Tokenのクレームには以下の情報が含まれる
 - ユーザーの属性に関するもの
 
 
+## SAML
+OIDC同様に認証の`プロトコル`
+
+### SAML vs OIDC
+OIDCはSNS認証などの認証を目的として作成されたため、比較的簡易的なプロトコル
+
+SAMLは非常に複雑な権限管理を行うことができるため、Active Directoryの機能であるActive Directory Federation ServiceやOktaなどのIDPサービスで主に用いられる。
+
+
+## SSO
+SSO(Single Sign On)は一度のログインにより複数のサービスにアクセスするための仕組み。
+ログイン回数を減らすだけでなく、ユーザー認証情報の一元管理にも寄与する。
+
 
 ## 参考
 - [OAuthの基本に関する動画](https://www.youtube.com/watch?v=PqW948SFSUM&t=2375s)
 - [一番わかりやすいシリーズの動画](https://www.youtube.com/watch?v=PKPj_MmLq5E)
+- [SAMLの概要とSSOについて](https://baasinfo.net/?p=4418)
+- [CognitoとkeycloakをOIDCで連携する手順](https://dev.classmethod.jp/articles/add-keycloak-to-cognito-with-oidc/)
 
