@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>8. セキュリティ &#8212; my_sphinx  ドキュメント</title>
+    <title>2. セキュリティ &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="9. 環境構築自動化" href="EnvAutomation.html" />
-    <link rel="prev" title="7. AWSのネットワーク" href="Network.html" /> 
+    <link rel="next" title="3. ECS" href="ECS.html" />
+    <link rel="prev" title="1. AWSのネットワーク" href="Network.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="9. 環境構築自動化"
+          <a href="ECS.html" title="3. ECS"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="Network.html" title="7. AWSのネットワーク"
+          <a href="Network.html" title="1. AWSのネットワーク"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>セキュリティ</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>セキュリティ</a></li> 
       </ul>
     </div>  
 
@@ -46,12 +46,12 @@
           <div class="body" role="main">
             
   <section id="id1">
-<h1><span class="section-number">8. </span>セキュリティ<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">2. </span>セキュリティ<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="iamsts">
-<h2><span class="section-number">8.1. </span>IAMとSTS<a class="headerlink" href="#iamsts" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.1. </span>IAMとSTS<a class="headerlink" href="#iamsts" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSサービスの認証認可についてはほぼIAMが管理している</p>
 <section id="id2">
-<h3><span class="section-number">8.1.1. </span>基本的な用語<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.1. </span>基本的な用語<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ルートユーザー<br />アカウント作成時に作られるすべての権限を持つユーザーで基本的には利用しない</p></li>
 <li><p>IAMユーザー<br />IAMで作成するユーザーで個人や役割に応じた権限を付与したユーザーを作成する</p></li>
@@ -60,13 +60,13 @@
 <li><p>ポリシー<br />アクセス許可の具体的な定義</p></li>
 </ul>
 <section id="id3">
-<h4><span class="section-number">8.1.1.1. </span>ポリシー<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.1.1.1. </span>ポリシー<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ポリシーにはユーザーやグループに付与する<code class="docutils literal notranslate"><span class="pre">アイデンティティベース</span></code>とAWSのサービス側に付与する<code class="docutils literal notranslate"><span class="pre">リソースベース</span></code>が存在する。
 アクセス可否は２つのポリシーの組み合わせで決まり、どちらかに明示的な拒否があると実行できない。</p>
 </section>
 </section>
 <section id="iam-roleassumerole">
-<h3><span class="section-number">8.1.2. </span>IAM RoleとAssumeRole<a class="headerlink" href="#iam-roleassumerole" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.2. </span>IAM RoleとAssumeRole<a class="headerlink" href="#iam-roleassumerole" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://dev.classmethod.jp/articles/iam-role-and-assumerole/">AssumeRoleの解説</a></p>
 <p>IAM Roleは「API権限を委譲する」機能である。</p>
 <p>これを実現する機能としてstsを利用したAssumeRole がある。
@@ -74,7 +74,7 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 <p>IAMポリシーを作成する際には、信頼できるプリンシパルを定義する<code class="docutils literal notranslate"><span class="pre">信頼ポリシー</span></code>とどのサービスにアクセスできるかの<code class="docutils literal notranslate"><span class="pre">アクセスポリシー</span></code>を定義する。
 信頼ポリシーで設定されているプリンシパルがAssumeRoleAPIを実行することで一時的に認証情報が作成され、アクセスポリシーに定義されたサービスを利用できるようになる。</p>
 <section id="id4">
-<h4><span class="section-number">8.1.2.1. </span>リクエスト元を信頼する（アクセスポリシー）<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.1.2.1. </span>リクエスト元を信頼する（アクセスポリシー）<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
 <p>アクセスポリシーで以下のような定義を記述しておく<br />principalの部分が信頼できるリクエスト元を定義する部分で、色々な設定が可能</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
   &quot;Version&quot;: &quot;2012-10-17&quot;,
@@ -94,7 +94,7 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 </div>
 </section>
 <section id="id5">
-<h4><span class="section-number">8.1.2.2. </span>クロスアカウント<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.1.2.2. </span>クロスアカウント<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
 <p>AssumeRoleを利用することで異なるアカウントのリソースにアクセスする、クロスアカウント設定ができる。</p>
 <p>例えばユーザーAがユーザーBのアカウントのS3にアクセスしたい場合は以下の手順を踏む</p>
 <ol class="simple">
@@ -108,10 +108,10 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 </section>
 </section>
 <section id="kms-key-management-service">
-<h2><span class="section-number">8.2. </span>KMS(Key-Management-Service)<a class="headerlink" href="#kms-key-management-service" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.2. </span>KMS(Key-Management-Service)<a class="headerlink" href="#kms-key-management-service" title="この見出しへのパーマリンク">¶</a></h2>
 <p>データを暗号化するための鍵を管理するサービス</p>
 <section id="id6">
-<h3><span class="section-number">8.2.1. </span>エンベロープ暗号化<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.2.1. </span>エンベロープ暗号化<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>KMSのAPI公開されている直接の暗号化はサイズ制限などがあるので、エンベロープ暗号化を利用する。
 通信に流れるのは暗号化されたテキストと暗号化された鍵
 暗号化された鍵はKMSにアクセスできないと複合化できないので、そこで安全性を担保しているっぽい。（両方盗まれても鍵を複合化できない）</p>
@@ -125,7 +125,7 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 </ol>
 </section>
 <section id="id7">
-<h3><span class="section-number">8.2.2. </span>主なユースケース<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.2.2. </span>主なユースケース<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>SSE(Server Side Encryption)</p>
 <ul>
@@ -145,13 +145,13 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 </section>
 </section>
 <section id="cognito">
-<h2><span class="section-number">8.3. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.3. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Web-AppやMobile-Appに対してAPIベースで認証機能を提供するサービス</p>
 <section id="id8">
-<h3><span class="section-number">8.3.1. </span>ユーザープール<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.1. </span>ユーザープール<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ユーザーDBに相当するが、AWSがマネージドで管理してくれる。</p>
 <section id="id9">
-<h4><span class="section-number">8.3.1.1. </span>ユースケース<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.1.1. </span>ユースケース<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ざっくり分けると３つのユースケースに分類可能。Appへの認証、IDプールと連携してAWSサービスへのアクセス、CognitoからLambdaのキック。</p>
 <ul class="simple">
 <li><p>EC2やECS常に配置したWeb-AppやMobile-Appの認証：アプリケーションへの認証をする</p></li>
@@ -160,11 +160,11 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 </ul>
 </section>
 <section id="id10">
-<h4><span class="section-number">8.3.1.2. </span>具体的な利用方法<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.1.2. </span>具体的な利用方法<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
 <p>まず、ユーザーディレクトリを定義して、サインアップ方法やパスワードポリシーを設定する。<br />アプリクライアント側（認証を求めてくるクライアント）によって、推奨される認証フローが異なる点に注意</p>
 </section>
 <section id="id11">
-<h4><span class="section-number">8.3.1.3. </span>ユーザープールとアプリケーションの統合<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.1.3. </span>ユーザープールとアプリケーションの統合<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Cognitoでは、OIDCの標準に準拠したエンドポイントが提供されている。
 そのため、アプリへのリクエストに対して、Cognitoのエンドポイントにリダイレクトすることで認証・認可をCognitoに任せることができる。
 Cognitoで認証してクライアント側にTokenを付与することで、Cognitoと連携するアプリへの一元的なアクセスができるようになる（シングルサインオン）</p>
@@ -173,7 +173,7 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 </section>
 </section>
 <section id="id">
-<h3><span class="section-number">8.3.2. </span>IDプール<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.2. </span>IDプール<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ユーザープールや外部フェデレーションで認証したユーザーに対してAWSサービスを認可する機能を提供</p>
 <ol class="simple">
 <li><p>ユーザープールで認証される</p></li>
@@ -185,7 +185,7 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 </ol>
 </section>
 <section id="jwt">
-<h3><span class="section-number">8.3.3. </span>JWT<a class="headerlink" href="#jwt" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.3. </span>JWT<a class="headerlink" href="#jwt" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">署名付きの認証情報を含むToken</span></code></p>
 <p>署名がJWTの発行元の秘密鍵で暗号化されているため、公開鍵で復号化するだけで署名を検証することができる点が有用</p>
 <p>ただし、期限付きの合鍵となるので奪取されることは避けなくてはいけないので取り扱いに注意が必要。</p>
@@ -203,33 +203,33 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">8. セキュリティ</a><ul>
-<li><a class="reference internal" href="#iamsts">8.1. IAMとSTS</a><ul>
-<li><a class="reference internal" href="#id2">8.1.1. 基本的な用語</a><ul>
-<li><a class="reference internal" href="#id3">8.1.1.1. ポリシー</a></li>
+<li><a class="reference internal" href="#">2. セキュリティ</a><ul>
+<li><a class="reference internal" href="#iamsts">2.1. IAMとSTS</a><ul>
+<li><a class="reference internal" href="#id2">2.1.1. 基本的な用語</a><ul>
+<li><a class="reference internal" href="#id3">2.1.1.1. ポリシー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#iam-roleassumerole">8.1.2. IAM RoleとAssumeRole</a><ul>
-<li><a class="reference internal" href="#id4">8.1.2.1. リクエスト元を信頼する（アクセスポリシー）</a></li>
-<li><a class="reference internal" href="#id5">8.1.2.2. クロスアカウント</a></li>
+<li><a class="reference internal" href="#iam-roleassumerole">2.1.2. IAM RoleとAssumeRole</a><ul>
+<li><a class="reference internal" href="#id4">2.1.2.1. リクエスト元を信頼する（アクセスポリシー）</a></li>
+<li><a class="reference internal" href="#id5">2.1.2.2. クロスアカウント</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#kms-key-management-service">8.2. KMS(Key-Management-Service)</a><ul>
-<li><a class="reference internal" href="#id6">8.2.1. エンベロープ暗号化</a></li>
-<li><a class="reference internal" href="#id7">8.2.2. 主なユースケース</a></li>
+<li><a class="reference internal" href="#kms-key-management-service">2.2. KMS(Key-Management-Service)</a><ul>
+<li><a class="reference internal" href="#id6">2.2.1. エンベロープ暗号化</a></li>
+<li><a class="reference internal" href="#id7">2.2.2. 主なユースケース</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cognito">8.3. Cognito</a><ul>
-<li><a class="reference internal" href="#id8">8.3.1. ユーザープール</a><ul>
-<li><a class="reference internal" href="#id9">8.3.1.1. ユースケース</a></li>
-<li><a class="reference internal" href="#id10">8.3.1.2. 具体的な利用方法</a></li>
-<li><a class="reference internal" href="#id11">8.3.1.3. ユーザープールとアプリケーションの統合</a></li>
+<li><a class="reference internal" href="#cognito">2.3. Cognito</a><ul>
+<li><a class="reference internal" href="#id8">2.3.1. ユーザープール</a><ul>
+<li><a class="reference internal" href="#id9">2.3.1.1. ユースケース</a></li>
+<li><a class="reference internal" href="#id10">2.3.1.2. 具体的な利用方法</a></li>
+<li><a class="reference internal" href="#id11">2.3.1.3. ユーザープールとアプリケーションの統合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id">8.3.2. IDプール</a></li>
-<li><a class="reference internal" href="#jwt">8.3.3. JWT</a></li>
+<li><a class="reference internal" href="#id">2.3.2. IDプール</a></li>
+<li><a class="reference internal" href="#jwt">2.3.3. JWT</a></li>
 </ul>
 </li>
 </ul>
@@ -240,12 +240,12 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="Network.html"
-                          title="前の章へ"><span class="section-number">7. </span>AWSのネットワーク</a></p>
+                          title="前の章へ"><span class="section-number">1. </span>AWSのネットワーク</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="EnvAutomation.html"
-                          title="次の章へ"><span class="section-number">9. </span>環境構築自動化</a></p>
+    <p class="topless"><a href="ECS.html"
+                          title="次の章へ"><span class="section-number">3. </span>ECS</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -275,13 +275,13 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="9. 環境構築自動化"
+          <a href="ECS.html" title="3. ECS"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="Network.html" title="7. AWSのネットワーク"
+          <a href="Network.html" title="1. AWSのネットワーク"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>セキュリティ</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>セキュリティ</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

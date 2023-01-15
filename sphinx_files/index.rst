@@ -34,16 +34,19 @@ AWS Services
    :maxdepth: 2
    :numbered:
 
-   AWS/CodeSeries
-   AWS/S3
-   AWS/ECS
-   AWS/Lambda
-   AWS/AI
-   AWS/AutoScaling
    AWS/Network
    AWS/security
+   AWS/ECS
+   AWS/CodeSeries
+   AWS/AutoScaling
+   AWS/apigw
+   AWS/Lambda
+   AWS/DB
    AWS/EnvAutomation
+   AWS/S3
+   AWS/AI
    AWS/AWS-Dev-associ
+
 
 Java Spring
 ==================

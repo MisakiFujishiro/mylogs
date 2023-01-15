@@ -36,17 +36,18 @@
 
 ## OAuthとOIDCの関係性
 ■OAuth  
+OAuthは認可のプロトコルである。  
 「認可情報」をやりとりするための手順をクライアント・リソースサーバー・認可プロバイダー間で定めた プロトコルが`OAuth`である。
-OAuthは認可のプロトコルであり、認証の仕組みについて正確な規定はない。
 
-それにもかかわらず、認可処理の一部に認証を含むため、OAuthを認証に流用する「OAuth認証」が流行した。
+認証の仕組みについて正確な規定はないのだが、一般的に認可処理の一部に認証を含むため、OAuthを認証に流用する「OAuth認証」が流行した。
 これは、OAuthは合鍵を利用して認証するようなもので、セキュリティ的に課題を抱えている。
 
 ![](img/oauth_flow.png))
 
 
 ■OIDC  
-OAuthに認証情報をやり取りするID Tokenの仕組みを加えた`Open ID Connct(OIDC)`と呼ばれるプロトコルが用いられるようになった。
+OIDCは認証のプロトコルである。  
+OAuthに認証情報をやり取りするID Tokenの仕組みを加えたプロトコルが`Open ID Connct(OIDC)`である。
 ID Tokenは`JWT(Json Web Token)`という改ざんに耐性のある技術を利用しており、認証情報をやり取りすることでOAuthの問題を解決した。
 
 ![](img/oidc_flow.png))
@@ -103,7 +104,8 @@ UAからAccess Tokenが流出してしまうと、OAuth認証と合わせて大�
 
 #### Authorization Code Grant
 ポイントは、認可サーバーとクライアントだけでAccess Tokenをやり取りするために、最初の返却ではクライアント（裏のUA）には認可コードを返している点。
-認可コードからAccess Tokenを引き換えるためにはClient IDとSecretが必要なため、認可コードが流出してもなりすましは不可能となっている。
+認可コードからAccess Tokenを引き換えるためには、事前に登録されたアプリクライアントであるかのチェックや
+Client IDとSecretが必要なため、認可コードが流出してもなりすましは不可能となっている。
 
 ![](img/oauth_code_grant.png)
 
@@ -250,4 +252,5 @@ SSO(Single Sign On)は一度のログインにより複数のサービスにア�
 - [一番わかりやすいシリーズの動画](https://www.youtube.com/watch?v=PKPj_MmLq5E)
 - [SAMLの概要とSSOについて](https://baasinfo.net/?p=4418)
 - [CognitoとkeycloakをOIDCで連携する手順](https://dev.classmethod.jp/articles/add-keycloak-to-cognito-with-oidc/)
+
 

@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>6. API GateWay &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="7. Lambda" href="Lambda.html" />
+    <link rel="prev" title="5. AutoScaling" href="AutoScaling.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Lambda.html" title="7. Lambda"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="AutoScaling.html" title="5. AutoScaling"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">6. </span>API GateWay</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="api-gateway">
+<h1><span class="section-number">6. </span>API GateWay<a class="headerlink" href="#api-gateway" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id1">
+<h2><span class="section-number">6.1. </span>API Gatewayとは<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>「Web API」の作成や公開、管理を行うためのフルマネージドサービス。<br />サーバーレスのため、APIの実行基盤のサーバー構築や維持管理はAWSが責任を負う。</p>
+<p>API Gatewayを利用することでRESTなWebAPIを作成、公開、管理することができる。</p>
+<section id="rest-api">
+<h3><span class="section-number">6.1.1. </span>REST APIとは<a class="headerlink" href="#rest-api" title="この見出しへのパーマリンク">¶</a></h3>
+<p>本題と外れるので、本当にざっくり重要ポイント解説すると、以下のルールに従って実装されたAPI</p>
+<ol class="simple">
+<li><p>ステートレス<br />以前の通信状態に関係なく、毎回条件なら同じ結果を返す</p></li>
+<li><p>統一インターフェース<br />HTTPのリクエストを受付、JSONやXMLなどで返す</p></li>
+</ol>
+</section>
+<section id="api-gatewayapi">
+<h3><span class="section-number">6.1.2. </span>API GatewayのAPIの種類<a class="headerlink" href="#api-gatewayapi" title="この見出しへのパーマリンク">¶</a></h3>
+<p>APIは3種類存在し、バックエンドのサービス、エンドポイントのタイプやCloudFrontが利用できるかなどの差がある<br />例えば、OIDCの認証はHTTPのみがサポートしているが、エッジ最適化エンドポイントはRESTのみがサポートしている。</p>
+<p>APIの種類は３種類</p>
+<ul class="simple">
+<li><p>REST API</p></li>
+<li><p>HTTP API</p></li>
+<li><p>WebSocket API</p></li>
+</ul>
+<p>バックエンドのサービスは5つ</p>
+<ul class="simple">
+<li><p>Lambda</p></li>
+<li><p>HTTPエンドポイント</p></li>
+<li><p>Mock</p></li>
+<li><p>AWS　サービス</p></li>
+<li><p>VPCリンク</p></li>
+</ul>
+<p>エンドポイントのタイプは３種</p>
+<ul class="simple">
+<li><p>エッジ最適化APIエンドポイント（Cloud Front)</p></li>
+<li><p>プライベートAPIエンドポイント</p></li>
+<li><p>リージョンAPIエンドポイント</p></li>
+</ul>
+</section>
+</section>
+<section id="api-gw">
+<h2><span class="section-number">6.2. </span>API GWのデプロイとステージ<a class="headerlink" href="#api-gw" title="この見出しへのパーマリンク">¶</a></h2>
+<p>APIは<code class="docutils literal notranslate"><span class="pre">ステージ</span></code>という論理的な環境にデプロイされる。APIがデプロイされると以下の形式のエンドポイントURLが払い出される</p>
+<blockquote>
+<div><p>https://{api-id}.execute-api.{region}.amazonaws.com/{stageName}/...</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">{stageName}</span></code>は好きに設定することができ、prd,stg,devのように定義する</p>
+</section>
+<section id="id2">
+<h2><span class="section-number">6.3. </span>API GWのスロットリング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>API GWでは、流量制御の仕組みが実装されている。
+流動制御により、過多なりクエストからAPIを守ったり、クライアントの使用量プランを作成できる。</p>
+<p>流動制御はスロットリングと呼ばれるトークンバケットアルゴリズムであり、1リクエストを処理するたびにバケットないのTokenが消費される。</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">6.4. </span>API GWと認証認可<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>API GWにより、認証認可の仕組みを適用する場合い、いくつかの実現方法がある</p>
+<ol class="simple">
+<li><p>IAMアクセス権限<br />クライアントは、IAMユーザーのアクセスキーをハッシュ化したAWS署名ver4をリクエストヘッダーに付与する。
+API GWで署名を検証して問題なければAPIを呼び出す。</p></li>
+<li><p>Lambda オーソライザ<br />クライアントがリクエストに認証情報を付与して、Lambdaで認証して、IAMポリシーを返却する。
+API GWでポリシー評価をして問題なければAPIを呼び出す。</p></li>
+<li><p>Cognito オーソライザ<br />クライアントはCognitoで認証してJWTを発行してもらってJWTリクエストのヘッダーに付与する。</p></li>
+<li><p>JWT オーソライザ(OAuth/OIDC)
+クライアントはOIDCやOAuth2のプロバイダーでで認証してJWTを発行してもらってJWTリクエストのヘッダーに付与する。</p></li>
+</ol>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">6. API GateWay</a><ul>
+<li><a class="reference internal" href="#id1">6.1. API Gatewayとは</a><ul>
+<li><a class="reference internal" href="#rest-api">6.1.1. REST APIとは</a></li>
+<li><a class="reference internal" href="#api-gatewayapi">6.1.2. API GatewayのAPIの種類</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-gw">6.2. API GWのデプロイとステージ</a></li>
+<li><a class="reference internal" href="#id2">6.3. API GWのスロットリング</a></li>
+<li><a class="reference internal" href="#id3">6.4. API GWと認証認可</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="AutoScaling.html"
+                          title="前の章へ"><span class="section-number">5. </span>AutoScaling</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="Lambda.html"
+                          title="次の章へ"><span class="section-number">7. </span>Lambda</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/AWS/apigw.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Lambda.html" title="7. Lambda"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="AutoScaling.html" title="5. AutoScaling"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">6. </span>API GateWay</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

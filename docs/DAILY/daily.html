@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. マイクロサービスにおける認証認可" href="../microservice/certification_authentication.html" />
+    <link rel="next" title="1. マイクロサービアーキテクチャとは" href="../microservice/microservice_archi.html" />
     <link rel="prev" title="DAILY" href="../index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../microservice/certification_authentication.html" title="1. マイクロサービスにおける認証認可"
+          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="../index.html" title="DAILY"
@@ -95,17 +95,17 @@
 <ul class="simple">
 <li><p>認証認可についてLogsで整理した。</p></li>
 <li><p>タイトルのアップデート含めて事前活動計画シートを更新</p></li>
-<li><p>最終報告資料のchap1-2を作成（50%)</p></li>
-<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/series/AWS/">ECS構築HandsOn</a></p></li>
-<li><p>マイクロサービスの全体像勉強→「マイクロサービスインアクション」→通読</p></li>
+<li><p>マイクロサービスの全体像勉強→「マイクロサービスインアクション→読み始め</p></li>
+<li><p>最終報告資料を作成（40%)</p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4354/">ECS構築HandsOn</a></p></li>
 <li><p>AWS　ディベロッパーアソシエイト第4章勉強（開発系</p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4316/">APIGWとLambdaのHandsOn</a></p></li>
 </ul>
 </section>
 <hr class="docutils" />
 <section id="id2">
 <h2><span class="section-number">1.2. </span>テーマ<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
-<p>テーマ「コンテナサービスおよびサーバレスサービスを活用した高速なアプリケーション開発環境の構築の整理」
-マイクロサービスを構築する上でのニーズとそのニーズを満たすAWSサービスや機能の対応とその実装上の注意を整理する。自分で実装するもしくは、HandsOnのような形式にして、他の人に展開できるようにする。</p>
+<p>テーマ「マイクロサービスの基本とAWSサーバレスサービスとコンテナサービスを活用した構築ノウハウの整理」<br />マイクロサービスを構築する上でのニーズとそのニーズを満たすAWSサービスや機能の対応とその実装上の注意を整理する。自分で実装するもしくは、HandsOnのような形式にして、他の人に展開できるようにする。</p>
 <p>自分の興味<br />新しいことを理解したい。理解したことを整理したい。理解したことを難しいことをやっていないことを伝えたい。</p>
 <p>やる価値<br />マイクロサービスアーキテクチャをサーバーレスサービスやコンテナサービスを使ってAWS上で構築することはニーズとして多い。やりたいけど、どう始めればいいかわからない。案件としては進んでいるけど、自分自身の理解が薄いという人って多いのでは？少なくとも自分もそうだった。<br />マイクロサービスにおける技術的なニーズを満たすために、AWSはサービスを拡充している面もあるはず。マイクロサービスに必要な機能とそれを実装するときのベストプラクティス（デファクトスタンダード）的なAWSサービスを整理して提供することは、そういった案件に効果的にも効率的にも寄与しえるのでは？</p>
 </section>
@@ -415,7 +415,33 @@ AssumePolicyについて理解できた。他のアカウントとの連携は�
 AWS周りはなんとかなるような気がするけど、Spring周りがついて行けなさそう。
 レベル的に大丈夫？？</p>
 <p>タイトルについて変更したい<br />「コンテナサービスおよびサーバレスサービスを活用した高速なアプリケーション開発環境の構築の整理」<br />↓↓↓<br />「マイクロサービスの基本とAWSサーバレスサービスとコンテナサービスを活用した構築ノウハウの整理」</p>
-<p>目次の確認は後日？</p>
+</section>
+</section>
+<section id="id20">
+<h2><span class="section-number">1.8. </span>(1/7-1/20)<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="logs">
+<h3><span class="section-number">1.8.1. </span>認証認可についてLogsで整理した。<a class="headerlink" href="#logs" title="この見出しへのパーマリンク">¶</a></h3>
+<p>OAuthとOIDC周りの知識は一通り整理できた。</p>
+</section>
+<section id="id21">
+<h3><span class="section-number">1.8.2. </span>タイトルのアップデート含めて事前活動計画シートを更新<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<p>RVをお願いしたい。</p>
+</section>
+<section id="id22">
+<h3><span class="section-number">1.8.3. </span>マイクロサービスの全体像勉強→「マイクロサービスインアクション」→通読<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="id23">
+<h3><span class="section-number">1.8.4. </span>最終報告資料を作成（50%)<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<p>chap1は自己紹介なので中間報告資料を流用</p>
+<p>chap2は、読んだ本や記事の情報からざっくり書きたいことを整理した。</p>
+<p>chap3は、作成したい環境の全体像を作成した。
+ECSのHandsOnを通じて作成するものとCICDはストーリーとして見えているのでその周辺はざっくり書いた。</p>
+</section>
+<section id="id24">
+<h3><span class="section-number">1.8.5. </span>相談事項<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<p>■質問1<br />SAMLはOIDCと同じ認証のプロトコルで、SAMLの方が複雑で、OIDCはシンプルなのでSNSなどで利用という理解。
+OIDCやOAuthを利用するとSSOが実現できて、マイクロサービスにおける認証の煩雑性をなくすことができるという理解なのだが、合っている？</p>
+<p>■質問2</p>
 </section>
 </section>
 </section>
@@ -478,6 +504,14 @@ AWS周りはなんとかなるような気がするけど、Spring周りがつ�
 <li><a class="reference internal" href="#id19">1.7.7. 相談</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id20">1.8. (1/7-1/20)</a><ul>
+<li><a class="reference internal" href="#logs">1.8.1. 認証認可についてLogsで整理した。</a></li>
+<li><a class="reference internal" href="#id21">1.8.2. タイトルのアップデート含めて事前活動計画シートを更新</a></li>
+<li><a class="reference internal" href="#id22">1.8.3. マイクロサービスの全体像勉強→「マイクロサービスインアクション」→通読</a></li>
+<li><a class="reference internal" href="#id23">1.8.4. 最終報告資料を作成（50%)</a></li>
+<li><a class="reference internal" href="#id24">1.8.5. 相談事項</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -490,8 +524,8 @@ AWS周りはなんとかなるような気がするけど、Spring周りがつ�
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../microservice/certification_authentication.html"
-                          title="次の章へ"><span class="section-number">1. </span>マイクロサービスにおける認証認可</a></p>
+    <p class="topless"><a href="../microservice/microservice_archi.html"
+                          title="次の章へ"><span class="section-number">1. </span>マイクロサービアーキテクチャとは</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -521,7 +555,7 @@ AWS周りはなんとかなるような気がするけど、Spring周りがつ�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../microservice/certification_authentication.html" title="1. マイクロサービスにおける認証認可"
+          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
              >次へ</a> |</li>
         <li class="right" >
           <a href="../index.html" title="DAILY"
