@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. Code Series" href="../AWS/CodeSeries.html" />
+    <link rel="next" title="1. AWSのネットワーク" href="../AWS/Network.html" />
     <link rel="prev" title="1. マイクロサービアーキテクチャとは" href="microservice_archi.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../AWS/CodeSeries.html" title="1. Code Series"
+          <a href="../AWS/Network.html" title="1. AWSのネットワーク"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
@@ -68,11 +68,16 @@
 <h2><span class="section-number">2.2. </span>マイクロサービスにおける認証認可<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
 <p>これまでの認証認可のアーキテクチャでは一つのサービスで認証した情報をセッションで持って、その情報でアクセス制御をしていた。
 しかし、マイクロサービスアーキテクチャでは複数のサービスが協調して動作するので、
-サービスごとに認証認可をしていると認証情報の保持やアクセス制御のポリシー管理が煩雑になる。</p>
+サービスごとに認証認可をしていると認証情報の保持やアクセス制御のポリシー管理が煩雑になる。
+そのためにSSOの仕組みが必要となる。</p>
 <p>そこで認証認可をサーバーから切り離して、
 ユーザーが認証済みであることを示す「認証結果」やアクセス権限の「認可情報」をリソースサーバー（APIサーバー）と共有することで、
 認証情報やアクセス制御のポリシーを一元化し、管理を容易にする必要性がある。</p>
 <p><a class="reference external" href="https://atmarkit.itmedia.co.jp/ait/articles/1708/31/news011.html">マイクロサービスにおける認証認可とOAuth・OIDCの仕組み</a>がわかりやすい。</p>
+<p>また、OAuthやOIDCは仕組みが公開されても、突破することができない。
+そのため、汎用的な技術である、案件で採用することは、技術者が容易にキャッチアップすることができ、工数削減に寄与する。</p>
+<p>OAuth・OIDCは、スケーラビリティにも優れている。
+クライアント側で受領したAccess TokenやID Tokenを検証する際にも、IDプロバイダーが公開している公開鍵を利用することで検証することができ、プロバイダーへの問い合わせが不要</p>
 <p><img alt="../_images/oauth_motivation.png" src="../_images/oauth_motivation.png" /></p>
 </section>
 <section id="oauthoidc">
@@ -352,8 +357,8 @@ Client IDとSecretが必要なため、認可コードが流出してもなり�
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../AWS/CodeSeries.html"
-                          title="次の章へ"><span class="section-number">1. </span>Code Series</a></p>
+    <p class="topless"><a href="../AWS/Network.html"
+                          title="次の章へ"><span class="section-number">1. </span>AWSのネットワーク</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -383,7 +388,7 @@ Client IDとSecretが必要なため、認可コードが流出してもなり�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../AWS/CodeSeries.html" title="1. Code Series"
+          <a href="../AWS/Network.html" title="1. AWSのネットワーク"
              >次へ</a> |</li>
         <li class="right" >
           <a href="microservice_archi.html" title="1. マイクロサービアーキテクチャとは"

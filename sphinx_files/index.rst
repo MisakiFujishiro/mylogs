@@ -45,7 +45,6 @@ AWS Services
    AWS/EnvAutomation
    AWS/S3
    AWS/AI
-   AWS/AWS-Dev-associ
 
 
 Java Spring
