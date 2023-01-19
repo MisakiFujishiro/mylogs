@@ -12,22 +12,31 @@ API GWとLambdaを利用して実装する。
 
 
 ## PJ構築
-以下を実行してPJ作成
-```
- % mvn archetype:generate -B\
- -DarchetypeGroupId=org.terasoluna.gfw.blank\
- -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype\
- -DarchetypeVersion=5.7.0.RELEASE\
- -DgroupId=org.debugroom\
- -DartifactId=mynavi-sample-aws-lambda\
- -Dversion=0.0.1-SNAPSHOT
-```
 
-STSにて、以下の手順でarchetypeで作成したプロジェクトを選択する。
-> [File] -> [Import] -> [Maven] -> [Existing Maven Projects] -> [Next]
+
 
 
 ## トラブルシューティング
+### 2. Run on Serverができない。
+Spring Initializerでプロジェクトを作成したが、Run on Serverでエラーが発生。
+
+Spring InitializerからPJを作成して、[チュートリアル](https://spring.pleiades.io/quickstart)通り設定
+
+![](img/initialize_setting1.png)
+
+STSのバージョンが３なので、Spring Boot　Versionは3.0.１を設定。
+
+![](img/initialize_setting2.png)
+
+
+run on serverするとエラーが発生
+
+![](img/run_on_server_error.png)
+
+[stackoverflow](https://stackoverflow.com/questions/32731672/the-selection-cannot-be-run-on-any-server)で同じエラーを見つけたが、
+PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが同じエラーが出る。。。
+
+
 ### 1. PJの始め方がわからない。。。
 [TerasolunaのTutorial](https://debugroom.github.io/technical-academy/kickoff/202210/slides/index.html#/7-1)
 では、mvn archeytpe:generate コマンドでPJを作成していたので今回もそれを踏襲して、pomを更新することにしたが、方針として正しいのか。
@@ -40,6 +49,8 @@ STSにて、以下の手順でarchetypeで作成したプロジェクトを選�
  -DartifactId=mynavi-sample-aws-lambda\
  -Dversion=0.0.1-SNAPSHOT
 ```
+STSにて、以下の手順でarchetypeで作成したプロジェクトを選択する。
+> [File] -> [Import] -> [Maven] -> [Existing Maven Projects] -> [Next]
 
 
 pom.xmlの以下の部分をgithubからコピーするとエラーが発生
