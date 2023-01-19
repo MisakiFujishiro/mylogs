@@ -1,0 +1,1 @@
+# Amazon CognitoとSpring Securityを利用したOAuth2ログイン

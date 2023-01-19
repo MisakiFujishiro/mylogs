@@ -13,6 +13,17 @@ DAILY
 
    DAILY/daily
 
+成果物
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   Artifact/apigw_lambda
+   Artifact/ecs
+   Artifact/cicd
+   Artifact/cognito
 
 
 Microservice
@@ -24,7 +35,6 @@ Microservice
 
    microservice/microservice_archi
    microservice/certification_authentication
-
 
 
 AWS Services
@@ -43,6 +53,7 @@ AWS Services
    AWS/Lambda
    AWS/DB
    AWS/EnvAutomation
+   AWS/SNS_SQS
    AWS/S3
    AWS/AI
 

@@ -36,11 +36,12 @@
 ---
 - 認証認可についてLogsで整理した。
 - タイトルのアップデート含めて事前活動計画シートを更新
-- マイクロサービスの全体像勉強→「マイクロサービスインアクション→読み始め
 - 最終報告資料を作成（40%)
+- マイクロサービスの全体像勉強→「マイクロサービスインアクション→読み始め
+- [APIGWとLambdaのHandsOn](https://news.mynavi.jp/techplus/article/techp4316/)
 - [ECS構築HandsOn](https://news.mynavi.jp/techplus/article/techp4354/)
 - AWS　ディベロッパーアソシエイト第4章勉強（開発系
-- [APIGWとLambdaのHandsOn](https://news.mynavi.jp/techplus/article/techp4316/)
+
 ---
 
 ## テーマ

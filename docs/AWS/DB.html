@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>8. RDS &#8212; my_sphinx  ドキュメント</title>
+    <title>8. DataBase &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="11. 環境構築自動化" href="EnvAutomation.html" />
+    <link rel="next" title="9. 環境構築自動化" href="EnvAutomation.html" />
     <link rel="prev" title="7. Lambda" href="Lambda.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="11. 環境構築自動化"
+          <a href="EnvAutomation.html" title="9. 環境構築自動化"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="Lambda.html" title="7. Lambda"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>RDS</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>DataBase</a></li> 
       </ul>
     </div>  
 
@@ -45,14 +45,186 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="rds">
-<h1><span class="section-number">8. </span>RDS<a class="headerlink" href="#rds" title="この見出しへのパーマリンク">¶</a></h1>
+  <section id="database">
+<h1><span class="section-number">8. </span>DataBase<a class="headerlink" href="#database" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id1">
+<h2><span class="section-number">8.1. </span>データベースの種類<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>CAPの定理に従ってDBを分類すると効果的</p>
+<p>CAPの定理：「広域な環境で分散してデータを保存する場合以下の３つの特性のうち、２つまでしか同時に満たすことができない」</p>
+<ul class="simple">
+<li><p>C(一貫性)：あるデータを読み込みした時にすべてのノードで最新のものを返す</p></li>
+<li><p>A(可用性)：システムを構成するノードに障害が発生しても常に読み込み書き込みができる</p></li>
+<li><p>P(ネットワーク分断体制)：システムを構成するノード間の通信が分断されても機能が継続される</p></li>
+</ul>
+<p><img alt="../_images/db_cap.png" src="../_images/db_cap.png" /></p>
+<p>CAPの定理から各DBサービスをCA型、AP型、CP型に分類することができ、それぞれ代表的なRDS・DynamoDB・Elastic Cacheについて説明する。</p>
+<p><a class="reference external" href="https://debugroom.github.io/mynavi-doc-draft/cloud_native/aws-nosql-1-1.html">川畑塾長の記事</a></p>
+<section id="ca">
+<h3><span class="section-number">8.1.1. </span>CA型<a class="headerlink" href="#ca" title="この見出しへのパーマリンク">¶</a></h3>
+<p>データの一貫性と可用性を高める構成で構成で、RDBが相当する<br />複雑な検索や厳密なトランザクションに対応できる。</p>
+<p>複数のAZに分散して、DBを構成して、同期をとることで一貫性と可用性を満たそうとする。
+ネットワークが分散されると一貫性と可用性が満たせなくなる。</p>
+<p><img alt="../_images/db_ca.png" src="../_images/db_ca.png" /></p>
+</section>
+<section id="cp">
+<h3><span class="section-number">8.1.2. </span>CP型<a class="headerlink" href="#cp" title="この見出しへのパーマリンク">¶</a></h3>
+<p>一貫性とネットワーク分断耐性を高める構成で、MongoDBやElastic CacheのRedisが該当する<br />高速処理が可能</p>
+<p>データを複数のAZに分けて保存するシャーディングを利用している。
+シャーディングでは、１つのノードが機能しなくても、そのノードに配置されたデータが利用できなくなるが、DB全体が利用できなくなることはない。
+ただし、ノードが増えることで故障確率が上昇し、読み込みと書き込みが制限される可能性がある。</p>
+<p><img alt="../_images/db_cp.png" src="../_images/db_cp.png" /></p>
+</section>
+<section id="ap">
+<h3><span class="section-number">8.1.3. </span>AP型<a class="headerlink" href="#ap" title="この見出しへのパーマリンク">¶</a></h3>
+<p>可用性とネットワーク分断耐性を高める構成で、DynamoDBが該当する<br />障害が発生しないことを利用した多数アプリやIoTからのアクセスなどへの対応が可能。</p>
+<p>複数のAZにDBを配置し、全体で1つのDBとして動作する。
+1つのノードやネットワークに障害が起きてもデータが損なわれないように各ノードにデータを分散して配置する。
+単一障害点がないので、どのノードからでもデータ更新の可能性がある。
+ノードの故障や通信エラーにより、複数ノード間で生合成が取れない場合がある。
+整合性が取れない場合に備えて、Read Repair機能やQuorum(多数決)などの機能が準備されている。</p>
+<p><img alt="../_images/db_ap.png" src="../_images/db_ap.png" /></p>
+</section>
+</section>
+<section id="rds">
+<h2><span class="section-number">8.2. </span>RDS<a class="headerlink" href="#rds" title="この見出しへのパーマリンク">¶</a></h2>
+<p>構築や運用を容易にするRDBサービスで、CA型のデータベースサービスとなる<br />以下のエンジンがサポートされている</p>
+<ul class="simple">
+<li><p>MySQL</p></li>
+<li><p>PostgreSQL</p></li>
+<li><p>MariaDB</p></li>
+<li><p>SQL Server</p></li>
+<li><p>Oracle Database</p></li>
+<li><p>Aurora</p></li>
+</ul>
+<section id="id2">
+<h3><span class="section-number">8.2.1. </span>RDSの特徴<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>マネージドなサービスであり、アプリケーション最適化以外の部分についてはAWSが管理しており、以下の特徴を持つ。</p>
+<section id="id3">
+<h4><span class="section-number">8.2.1.1. </span>拡張性<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<p>スケールアップやスケールダウンをインスタンスタイプを指定することで容易に実行可能。
+ストレージについてもDBを停止することなく、増加させることができる。</p>
+</section>
+<section id="id4">
+<h4><span class="section-number">8.2.1.2. </span>高可用性<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<p>稼働中のシステムがダウンした際に、待機系のシステムに自動で切り替える<code class="docutils literal notranslate"><span class="pre">自動フェイルオーバー</span></code>や、DBの構築時に<code class="docutils literal notranslate"><span class="pre">Multi-AZ配置</span></code>にすることができる。</p>
+</section>
+<section id="db">
+<h4><span class="section-number">8.2.1.3. </span>DBバックアップ<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">自動バックアップ機能</span></code>が準備されており、次の２つのデータをS3に保存する</p>
+<ul class="simple">
+<li><p>1日1回、バックアップウィンドウで指定した時間のスナップショット</p></li>
+<li><p>5分感覚のトランザクション</p></li>
+</ul>
+</section>
+<section id="id5">
+<h4><span class="section-number">8.2.1.4. </span>パッチ適用<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>DBやOSのパッチは自動で行われる</p>
+</section>
+</section>
+<section id="id6">
+<h3><span class="section-number">8.2.2. </span>リードレプリカ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>パフォーマンス向上のために、プライマリとなるDBを非同期で複製する機能。</p>
+<p>最大で5台のリードレプリカを作成して、負荷分散することができるが、非同期であるので、常に最新のデータが返却去るとは限らない点に注意
+また、エンドポイントもプライマリと異なっているので、アプリ側で書き込みと読み込みで異なるエンドポイントを指定する必要がある。</p>
+<p>災害対策でベルのリージョンにリードレプリカを作成することができる。</p>
+</section>
+</section>
+<section id="aurora">
+<h2><span class="section-number">8.3. </span>Aurora<a class="headerlink" href="#aurora" title="この見出しへのパーマリンク">¶</a></h2>
+<p>RDSのデータベースエンジンの一つで、クラウドの普及に伴ってAmazonが内部のアーキテクチャを再設計したデータベース
+MySQLとPostgreSQL5間のバージョンが提供されている。</p>
+<p>RDBの特性である一貫性をもち、リードレプリカといった特徴とQuorumに基づく結果整合性でデータを分散して保存しているため可用性を高めている。
+あるAZで障害が発生した場合にも、マルチAZでのスタンバイベースを作成していなくても、DBを継続して利用することができる。</p>
+<section id="aurora-serverless">
+<h3><span class="section-number">8.3.1. </span>Aurora Serverless<a class="headerlink" href="#aurora-serverless" title="この見出しへのパーマリンク">¶</a></h3>
+<p>DBサーバーをプロ美女人戯して管理するのではなくて、キャパシティユニットを指定して管理する。
+不定期、断続的、予測不可能なワークロードに対して効率良く利用することができる。</p>
+</section>
 </section>
 <section id="elastic-cache">
-<h1><span class="section-number">9. </span>Elastic Cache<a class="headerlink" href="#elastic-cache" title="この見出しへのパーマリンク">¶</a></h1>
+<h2><span class="section-number">8.4. </span>Elastic Cache<a class="headerlink" href="#elastic-cache" title="この見出しへのパーマリンク">¶</a></h2>
+<p>AWSが提供するセットアップ、運用、拡張が良いなマネージドキャッシュサービス</p>
+<p>RDBに保存してある、マスターデータをキャッシュして、処理を高速化したり、複数Appサーバーでセッション情報を共有するために利用される。</p>
+<section id="memcached">
+<h3><span class="section-number">8.4.1. </span>Memcached<a class="headerlink" href="#memcached" title="この見出しへのパーマリンク">¶</a></h3>
+<p>マルチスレッドでアクセス可能な共通データのキャッシュ用途で利用する<br />インメモリ型のキーバリューストアで、シンプルなキーバリューストアでデータをキャッシュして低レイテンシーでデータ参照するためといった目的で利用する。</p>
+</section>
+<section id="id7">
+<h3><span class="section-number">8.4.2. </span>基本的な挙動<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<ol class="simple">
+<li><p>複数AZに跨った、クラスターを構成する</p></li>
+<li><p>データはハッシュアルゴリズムに従って格納するデータが決まる</p></li>
+<li><p>App側はElastic Cache Clientを利用して、データが格納されているノードをMemcachedのエンドポイントに問い合わせる</p></li>
+<li><p>キャッシュにデータがあればデータを取得する</p></li>
+</ol>
+<p>※Elastic Cache Clientが提供されているのが、C#,Java,PHPなので、それ以外はApp側で問い合わせ先のノードを計算する必要がある。</p>
+</section>
+<section id="redis">
+<h3><span class="section-number">8.4.3. </span>Redis<a class="headerlink" href="#redis" title="この見出しへのパーマリンク">¶</a></h3>
+<p>データをいくつかのグループで分割して持つシャードを利用して分散処理して、パフォーマンスや可用性を高める<br />高機能なインメモリ型のキーバリューストアで、CP型のデータベースとなる。</p>
+<p>Redisの構成と用語は以下の通り</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ノード</span></code>：データを保持する単位</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">シャード</span></code>：ノードの集合体</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">クラスタ</span></code>：シャードの集合体</p></li>
+</ul>
+<p>Redisでは、シャードにデータを分散保存（シャーディング）することでパフォーマンスと可用性を高めている。
+シャーディングを利用するか否かをクラスターモードの設定が可能。</p>
+<section id="id8">
+<h4><span class="section-number">8.4.3.1. </span>クラスタモード無効<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<p>クラスターモードが無効だとシャードが１つとなる。
+エンドポイントは書き込みと読み取り用途のエンドポイントが提供される。</p>
+<p>データを保存しているプライマリノードとリードレプリカを配置して、負荷分散をする。
+プライマリノードとリードレプリカの同期は非同期に行われている</p>
+<p><img alt="../_images/db_elasticcache_wo_cluster.png" src="../_images/db_elasticcache_wo_cluster.png" /></p>
+</section>
+<section id="id9">
+<h4><span class="section-number">8.4.3.2. </span>クラスタモード有効<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<p>キャッシュデータ量が多ければ、クラスターモードを有効化することを考えた方が良い。</p>
+<p>クラスターモードが有効だとシャードは1-15で設定可能。エンドポイントは設定エンドポイントのみが提供される。
+キーのハッシュ値（スロット）に応じてシャーディングし、シャードを跨いでプライマリとリードレプリカについても作成する。</p>
+<p><img alt="../_images/db_elasticcache_with_cluster.png" src="../_images/db_elasticcache_with_cluster.png" /></p>
+</section>
+</section>
 </section>
 <section id="dynamo-db">
-<h1><span class="section-number">10. </span>Dynamo DB<a class="headerlink" href="#dynamo-db" title="この見出しへのパーマリンク">¶</a></h1>
+<h2><span class="section-number">8.5. </span>Dynamo DB<a class="headerlink" href="#dynamo-db" title="この見出しへのパーマリンク">¶</a></h2>
+<p>AP型のデータベースの代表例で、クラウドならではの水平スケーラビリティに優れており、大規模分散処理構成のユースケースが得意<br />水平スケーラビリティとは、リソースの数を増やして、システム全体のパフォーマンスを高める手法で、性能向上は垂直スケーラビリティと呼ぶ。</p>
+<p>リージョン単位でDBが構成され、3箇所の異なるAZにデータがレプリケーションされる。
+単一障害点がないのが特徴。</p>
+<p>DynamoDBはNoSQLデータベースサービスで、項目・属性の定義が不要なスキーマレスのテーブル構成。
+格納するデータの属性が項目ごとに異なって問題ないなどかなり自由度高くデータを格納できる。</p>
+<p><img alt="../_images/db_dynamo_table.png" src="../_images/db_dynamo_table.png" /></p>
+<section id="id10">
+<h3><span class="section-number">8.5.1. </span>データとキー<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>DynamoDBではConsistent Hashingというアルゴリズムに基づいて、親キー（<code class="docutils literal notranslate"><span class="pre">パーティションキー</span></code>）をハッシュ化して、配置するノード決定する。
+さらに、ノード内での順序は子キー（<code class="docutils literal notranslate"><span class="pre">ソートキー</span></code>）が決めることができるが、ソートキーの設定は任意</p>
+</section>
+<section id="dynamodb">
+<h3><span class="section-number">8.5.2. </span>DynamoDBの注意点<a class="headerlink" href="#dynamodb" title="この見出しへのパーマリンク">¶</a></h3>
+<p>RDBでは当然のようにできていたことができない。
+テーブル間の結合や不軸問い合わせができないことやAND飲みが論理演算子で利用可能など・・・
+Dynamoにはできないことをきちんと把握してから利用する必要がある。</p>
+</section>
+<section id="id11">
+<h3><span class="section-number">8.5.3. </span>課金体系<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<p>DynamoDBの課金体系には以下の２つがある</p>
+<ul class="simple">
+<li><p>オンデマンドキャパシティモード：リクエスト数に応じて課金</p></li>
+<li><p>プロビジョンモード：テーブル単位で読み書きのパフォーマンスをスループットとして定義する。</p></li>
+</ul>
+<p>読み込みと書き込みのキャパシティユニットをそれぞれWCUs(Write Capacity Units)とRCUs（Read Capacity Units)と呼ぶ。</p>
+</section>
+<section id="ttl-time-to-line">
+<h3><span class="section-number">8.5.4. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
+<p>項目に対して有効期限を設定することができ、指定されたタイムスタンプの日時にWCUsを利用せずに削除することができる。</p>
+</section>
+<section id="dax-dynamodb-accelarator">
+<h3><span class="section-number">8.5.5. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
+<p>VPC内でキャッシュクラスタを構築して、DynamoDBへの高速アクセスを可能とするキャッシュサービス。</p>
+<p>リアルタイムにゅううさつやソーシャルゲームなどのユースケースに適している。</p>
+</section>
+</section>
 </section>
 
 
@@ -65,9 +237,48 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">8. RDS</a></li>
-<li><a class="reference internal" href="#elastic-cache">9. Elastic Cache</a></li>
-<li><a class="reference internal" href="#dynamo-db">10. Dynamo DB</a></li>
+<li><a class="reference internal" href="#">8. DataBase</a><ul>
+<li><a class="reference internal" href="#id1">8.1. データベースの種類</a><ul>
+<li><a class="reference internal" href="#ca">8.1.1. CA型</a></li>
+<li><a class="reference internal" href="#cp">8.1.2. CP型</a></li>
+<li><a class="reference internal" href="#ap">8.1.3. AP型</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rds">8.2. RDS</a><ul>
+<li><a class="reference internal" href="#id2">8.2.1. RDSの特徴</a><ul>
+<li><a class="reference internal" href="#id3">8.2.1.1. 拡張性</a></li>
+<li><a class="reference internal" href="#id4">8.2.1.2. 高可用性</a></li>
+<li><a class="reference internal" href="#db">8.2.1.3. DBバックアップ</a></li>
+<li><a class="reference internal" href="#id5">8.2.1.4. パッチ適用</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id6">8.2.2. リードレプリカ</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#aurora">8.3. Aurora</a><ul>
+<li><a class="reference internal" href="#aurora-serverless">8.3.1. Aurora Serverless</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#elastic-cache">8.4. Elastic Cache</a><ul>
+<li><a class="reference internal" href="#memcached">8.4.1. Memcached</a></li>
+<li><a class="reference internal" href="#id7">8.4.2. 基本的な挙動</a></li>
+<li><a class="reference internal" href="#redis">8.4.3. Redis</a><ul>
+<li><a class="reference internal" href="#id8">8.4.3.1. クラスタモード無効</a></li>
+<li><a class="reference internal" href="#id9">8.4.3.2. クラスタモード有効</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dynamo-db">8.5. Dynamo DB</a><ul>
+<li><a class="reference internal" href="#id10">8.5.1. データとキー</a></li>
+<li><a class="reference internal" href="#dynamodb">8.5.2. DynamoDBの注意点</a></li>
+<li><a class="reference internal" href="#id11">8.5.3. 課金体系</a></li>
+<li><a class="reference internal" href="#ttl-time-to-line">8.5.4. TTL(Time To Line)</a></li>
+<li><a class="reference internal" href="#dax-dynamodb-accelarator">8.5.5. DAX(DynamoDB Accelarator)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
   </div>
@@ -79,7 +290,7 @@
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="EnvAutomation.html"
-                          title="次の章へ"><span class="section-number">11. </span>環境構築自動化</a></p>
+                          title="次の章へ"><span class="section-number">9. </span>環境構築自動化</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -109,13 +320,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="11. 環境構築自動化"
+          <a href="EnvAutomation.html" title="9. 環境構築自動化"
              >次へ</a> |</li>
         <li class="right" >
           <a href="Lambda.html" title="7. Lambda"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>RDS</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>DataBase</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
