@@ -21,7 +21,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="2. java spring" href="knowledge.html" />
-    <link rel="prev" title="2. S3" href="../AWS/S3.html" /> 
+    <link rel="prev" title="13. AIサービス" href="../AWS/AI.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -33,7 +33,7 @@
           <a href="knowledge.html" title="2. java spring"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../AWS/S3.html" title="2. S3"
+          <a href="../AWS/AI.html" title="13. AIサービス"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築手順</a></li> 
@@ -67,7 +67,11 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">adoptopenjdk</span><span class="o">-</span><span class="mf">8.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span><span class="o">/</span><span class="nb">bin</span>
 </pre></div>
 </div>
-<p>javaのパスについては以下の手順で確認</p>
+</section>
+</section>
+<section id="java">
+<h2><span class="section-number">1.2. </span>javaのバージョン変更<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://amateur-engineer.com/mac-java-version/">macでJDKのバージョンを切り替える方法-JAVA_HOME設定</a>を参考に以下の手順で変更する。</p>
 <ol class="simple">
 <li><p>javaのバージョン確認</p></li>
 </ol>
@@ -82,13 +86,12 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 PATH=$JAVA_HOME/bin:$PATH</p>
 </div></blockquote>
 </section>
-</section>
 <section id="maven">
-<h2><span class="section-number">1.2. </span>maven<a class="headerlink" href="#maven" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.3. </span>maven<a class="headerlink" href="#maven" title="この見出しへのパーマリンク">¶</a></h2>
 <p>POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。
 プロジェクトに関わる情報はPOMに集約する。</p>
 <section id="id3">
-<h3><span class="section-number">1.2.1. </span>インストール<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.1. </span>インストール<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>インストールできるApach Maveを確認</p>
 <blockquote>
 <div><p>brew search maven</p>
@@ -103,14 +106,14 @@ PATH=$JAVA_HOME/bin:$PATH</p>
 </div></blockquote>
 </section>
 <section id="id4">
-<h3><span class="section-number">1.2.2. </span>mavenの各コマンド<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.2. </span>mavenの各コマンド<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="mvn-compile">
-<h4><span class="section-number">1.2.2.1. </span>mvn compile<a class="headerlink" href="#mvn-compile" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.2.1. </span>mvn compile<a class="headerlink" href="#mvn-compile" title="この見出しへのパーマリンク">¶</a></h4>
 <p>src/main/java/配下のソースファイルのコンパイルが行われます。
 コンパイルにより作成されたクラスファイルはtarger/classesディレクトリに出力されます。</p>
 </section>
 <section id="mvn-test">
-<h4><span class="section-number">1.2.2.2. </span>mvn test<a class="headerlink" href="#mvn-test" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.2.2. </span>mvn test<a class="headerlink" href="#mvn-test" title="この見出しへのパーマリンク">¶</a></h4>
 <p>デフォルてで、以下のパターンにマッチするファイルが実行される</p>
 <ul class="simple">
 <li><p>＊＊/Test＊.java</p></li>
@@ -119,13 +122,13 @@ PATH=$JAVA_HOME/bin:$PATH</p>
 </ul>
 </section>
 <section id="mvn-packege">
-<h4><span class="section-number">1.2.2.3. </span>mvn packege<a class="headerlink" href="#mvn-packege" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.2.3. </span>mvn packege<a class="headerlink" href="#mvn-packege" title="この見出しへのパーマリンク">¶</a></h4>
 <p>成功すると、targetディレクトリに**.jarファイルが作成される。<br />作成されるjarファイルの名前はpom.xmlに記述されているartifactIdとversionできまる。</p>
 </section>
 </section>
 </section>
 <section id="id5">
-<h2><span class="section-number">1.3. </span>参考<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.4. </span>参考<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://zenn.dev/nakohama/articles/7ed3953bae7f33">Spring Tool Suite (STS)の環境構築(for Mac)</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/ASHITSUBO/items/6c2aa8dd55043781c6b4">Mavenとは何ぞや</a></p></li>
@@ -153,17 +156,18 @@ PATH=$JAVA_HOME/bin:$PATH</p>
 <li><a class="reference internal" href="#x">1.1.3. 3.xの場合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#maven">1.2. maven</a><ul>
-<li><a class="reference internal" href="#id3">1.2.1. インストール</a></li>
-<li><a class="reference internal" href="#id4">1.2.2. mavenの各コマンド</a><ul>
-<li><a class="reference internal" href="#mvn-compile">1.2.2.1. mvn compile</a></li>
-<li><a class="reference internal" href="#mvn-test">1.2.2.2. mvn test</a></li>
-<li><a class="reference internal" href="#mvn-packege">1.2.2.3. mvn packege</a></li>
+<li><a class="reference internal" href="#java">1.2. javaのバージョン変更</a></li>
+<li><a class="reference internal" href="#maven">1.3. maven</a><ul>
+<li><a class="reference internal" href="#id3">1.3.1. インストール</a></li>
+<li><a class="reference internal" href="#id4">1.3.2. mavenの各コマンド</a><ul>
+<li><a class="reference internal" href="#mvn-compile">1.3.2.1. mvn compile</a></li>
+<li><a class="reference internal" href="#mvn-test">1.3.2.2. mvn test</a></li>
+<li><a class="reference internal" href="#mvn-packege">1.3.2.3. mvn packege</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id5">1.3. 参考</a></li>
+<li><a class="reference internal" href="#id5">1.4. 参考</a></li>
 </ul>
 </li>
 </ul>
@@ -171,8 +175,8 @@ PATH=$JAVA_HOME/bin:$PATH</p>
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../AWS/S3.html"
-                          title="前の章へ"><span class="section-number">2. </span>S3</a></p>
+    <p class="topless"><a href="../AWS/AI.html"
+                          title="前の章へ"><span class="section-number">13. </span>AIサービス</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
@@ -210,7 +214,7 @@ PATH=$JAVA_HOME/bin:$PATH</p>
           <a href="knowledge.html" title="2. java spring"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../AWS/S3.html" title="2. S3"
+          <a href="../AWS/AI.html" title="13. AIサービス"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築手順</a></li> 

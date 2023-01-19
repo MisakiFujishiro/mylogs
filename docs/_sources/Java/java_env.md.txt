@@ -19,7 +19,10 @@ sts.appを右クリック、パッケージ内容を表示して、` /Applicatio
 -vm
 /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin
 ```
-javaのパスについては以下の手順で確認
+
+## javaのバージョン変更
+[macでJDKのバージョンを切り替える方法-JAVA_HOME設定](https://amateur-engineer.com/mac-java-version/)を参考に以下の手順で変更する。
+
 1. javaのバージョン確認
 > /usr/libexec/java_home -V
 

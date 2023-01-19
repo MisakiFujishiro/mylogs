@@ -4,30 +4,12 @@
 API GWとLambdaを利用して実装する。
 
 塾長の記事[AWSで作るクラウドネイティブアプリケーションの基本](https://news.mynavi.jp/techplus/series/AWS/?page=2)を実する。
-- [第1回　Spring の開発](https://news.mynavi.jp/techplus/article/techp4316/)
+- [第1回 Spring の開発](https://news.mynavi.jp/techplus/article/techp4316/)
 - [第2回 Lambdaの設定](https://news.mynavi.jp/techplus/article/techp4318/)
-- [第3回　API GWの設定](https://news.mynavi.jp/techplus/article/techp4321/)
+- [第3回 API GWの設定](https://news.mynavi.jp/techplus/article/techp4321/)
 
 ソースコードは[github](https://github.com/debugroom/mynavi-sample-aws-lambda)のものを参考にする
 
-## 環境について
-javaのバージョン
-```
-% java -version
-openjdk version "1.8.0_292"
-OpenJDK Runtime Environment (AdoptOpenJDK)(build 1.8.0_292-b10)
-OpenJDK 64-Bit Server VM (AdoptOpenJDK)(build 25.292-b10, mixed mode)
-
-```
-mvnのバージョン
-```
-% mvn -v
-Apache Maven 3.8.6 (84538c9988a25aec085021c365c560670ad80f63)
-Maven home: /opt/homebrew/Cellar/maven/3.8.6/libexec
-Java version: 1.8.0_292, vendor: AdoptOpenJDK, runtime: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre
-Default locale: ja_JP, platform encoding: UTF-8
-OS name: "mac os x", version: "10.16", arch: "x86_64", family: "mac"
-```
 
 ## PJ構築
 以下を実行してPJ作成
@@ -43,20 +25,6 @@ OS name: "mac os x", version: "10.16", arch: "x86_64", family: "mac"
 
 STSにて、以下の手順でarchetypeで作成したプロジェクトを選択する。
 > [File] -> [Import] -> [Maven] -> [Existing Maven Projects] -> [Next]
-
-
-
-
-
-## Spring Cloud Functionを利用したサーバーレスアプリケーションの実装
-
-
-
-## AWS Lambdaの設定
-
-
-
-## Amazon API Gatewayの設定
 
 
 ## トラブルシューティング
@@ -75,6 +43,7 @@ STSにて、以下の手順でarchetypeで作成したプロジェクトを選�
 
 
 pom.xmlの以下の部分をgithubからコピーするとエラーが発生
+
 変更前
 ```
   <properties>
@@ -132,5 +101,32 @@ pom.xmlの以下の部分をgithubからコピーするとエラーが発生
     </dependencies>
 ```
 エラー
+
 ![](img/pom_error.png)
 
+少し調べたが、javaのパスに関する記事ができてた。
+バージョンは Java1.8でmvnも同じはず
+
+javaのバージョン
+```
+% java -version
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (AdoptOpenJDK)(build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (AdoptOpenJDK)(build 25.292-b10, mixed mode)
+
+```
+mvnのバージョン
+```
+% mvn -v
+Apache Maven 3.8.6 (84538c9988a25aec085021c365c560670ad80f63)
+Maven home: /opt/homebrew/Cellar/maven/3.8.6/libexec
+Java version: 1.8.0_292, vendor: AdoptOpenJDK, runtime: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre
+Default locale: ja_JP, platform encoding: UTF-8
+OS name: "mac os x", version: "10.16", arch: "x86_64", family: "mac"
+```
+
+
+
+## Spring Cloud Functionを利用したサーバーレスアプリケーションの実装
+## AWS Lambdaの設定
+## Amazon API Gatewayの設定

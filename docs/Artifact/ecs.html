@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="3. AWS Code Seriesを利用したCICD環境の構築" href="cicd.html" />
+    <link rel="next" title="3. AWS Code Seriesを利用したCICD環境" href="cicd.html" />
     <link rel="prev" title="1. API GWとLambdaを利用したサーバーレスSpringアプリケーション" href="apigw_lambda.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="cicd.html" title="3. AWS Code Seriesを利用したCICD環境の構築"
+          <a href="cicd.html" title="3. AWS Code Seriesを利用したCICD環境"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="apigw_lambda.html" title="1. API GWとLambdaを利用したサーバーレスSpringアプリケーション"
@@ -47,6 +47,41 @@
             
   <section id="aws-ecsspring">
 <h1><span class="section-number">2. </span>AWS ECS上に構築するSpringアプリケーション<a class="headerlink" href="#aws-ecsspring" title="この見出しへのパーマリンク">¶</a></h1>
+<p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/AWS/?page=2">AWSで作るクラウドネイティブアプリケーションの基本</a>を実する。</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4354/">第1回　VPC環境構築</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4359/">第2回 ALBの作成</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4363/">第3回 Springを使用したコンテナアプリ実装</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4390/">第4回 Dockerコンテナの作成</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4405/">第5回 ECSクラスターの作成</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4408/">第6回 ECSタスクの定義</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4416/">第7回 ECSサービスの実行</a></p></li>
+</ul>
+<p>ソースコードは<a class="reference external" href="https://github.com/debugroom/mynavi-sample-aws-ecs">github</a>のものを参考にする</p>
+<section id="vpc">
+<h2><span class="section-number">2.1. </span>VPC環境構築<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="alb">
+<h2><span class="section-number">2.2. </span>ALBの作成<a class="headerlink" href="#alb" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="spring">
+<h2><span class="section-number">2.3. </span>Springを使用したコンテナアプリ実装<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="docker">
+<h2><span class="section-number">2.4. </span>Dockerコンテナの作成<a class="headerlink" href="#docker" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="ecs">
+<h2><span class="section-number">2.5. </span>ECSクラスターの作成<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id1">
+<h2><span class="section-number">2.6. </span>ECSタスクの定義<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id2">
+<h2><span class="section-number">2.7. </span>ECSサービスの実行<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id3">
+<h2><span class="section-number">2.8. </span>トラブルシューティング<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
 </section>
 
 
@@ -57,6 +92,23 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">2. AWS ECS上に構築するSpringアプリケーション</a><ul>
+<li><a class="reference internal" href="#vpc">2.1. VPC環境構築</a></li>
+<li><a class="reference internal" href="#alb">2.2. ALBの作成</a></li>
+<li><a class="reference internal" href="#spring">2.3. Springを使用したコンテナアプリ実装</a></li>
+<li><a class="reference internal" href="#docker">2.4. Dockerコンテナの作成</a></li>
+<li><a class="reference internal" href="#ecs">2.5. ECSクラスターの作成</a></li>
+<li><a class="reference internal" href="#id1">2.6. ECSタスクの定義</a></li>
+<li><a class="reference internal" href="#id2">2.7. ECSサービスの実行</a></li>
+<li><a class="reference internal" href="#id3">2.8. トラブルシューティング</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="apigw_lambda.html"
                           title="前の章へ"><span class="section-number">1. </span>API GWとLambdaを利用したサーバーレスSpringアプリケーション</a></p>
@@ -64,7 +116,7 @@
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="cicd.html"
-                          title="次の章へ"><span class="section-number">3. </span>AWS Code Seriesを利用したCICD環境の構築</a></p>
+                          title="次の章へ"><span class="section-number">3. </span>AWS Code Seriesを利用したCICD環境</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -94,7 +146,7 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="cicd.html" title="3. AWS Code Seriesを利用したCICD環境の構築"
+          <a href="cicd.html" title="3. AWS Code Seriesを利用したCICD環境"
              >次へ</a> |</li>
         <li class="right" >
           <a href="apigw_lambda.html" title="1. API GWとLambdaを利用したサーバーレスSpringアプリケーション"

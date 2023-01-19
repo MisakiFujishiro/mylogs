@@ -52,22 +52,129 @@
 API GWとLambdaを利用して実装する。</p>
 <p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/AWS/?page=2">AWSで作るクラウドネイティブアプリケーションの基本</a>を実する。</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4316/">第1回</a></p></li>
-<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4318/">第2回</a></p></li>
-<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4321/">第3回</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4316/">第1回 Spring の開発</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4318/">第2回 Lambdaの設定</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4321/">第3回 API GWの設定</a></p></li>
 </ul>
 <p>ソースコードは<a class="reference external" href="https://github.com/debugroom/mynavi-sample-aws-lambda">github</a>のものを参考にする</p>
-<section id="spring-cloud-function">
-<h2><span class="section-number">1.1. </span>Spring Cloud Functionを利用したサーバーレスアプリケーションの実装<a class="headerlink" href="#spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="aws-lambda">
-<h2><span class="section-number">1.2. </span>AWS Lambdaの設定<a class="headerlink" href="#aws-lambda" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="amazon-api-gateway">
-<h2><span class="section-number">1.3. </span>Amazon API Gatewayの設定<a class="headerlink" href="#amazon-api-gateway" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="pj">
+<h2><span class="section-number">1.1. </span>PJ構築<a class="headerlink" href="#pj" title="この見出しへのパーマリンク">¶</a></h2>
+<p>以下を実行してPJ作成</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">%</span> <span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
+ <span class="o">-</span><span class="n">DarchetypeGroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">terasoluna</span><span class="o">.</span><span class="n">gfw</span><span class="o">.</span><span class="n">blank</span>\
+ <span class="o">-</span><span class="n">DarchetypeArtifactId</span><span class="o">=</span><span class="n">terasoluna</span><span class="o">-</span><span class="n">gfw</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">blank</span><span class="o">-</span><span class="n">archetype</span>\
+ <span class="o">-</span><span class="n">DarchetypeVersion</span><span class="o">=</span><span class="mf">5.7.0</span><span class="o">.</span><span class="n">RELEASE</span>\
+ <span class="o">-</span><span class="n">DgroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">debugroom</span>\
+ <span class="o">-</span><span class="n">DartifactId</span><span class="o">=</span><span class="n">mynavi</span><span class="o">-</span><span class="n">sample</span><span class="o">-</span><span class="n">aws</span><span class="o">-</span><span class="k">lambda</span>\
+ <span class="o">-</span><span class="n">Dversion</span><span class="o">=</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span>
+</pre></div>
+</div>
+<p>STSにて、以下の手順でarchetypeで作成したプロジェクトを選択する。</p>
+<blockquote>
+<div><p>[File] -&gt; [Import] -&gt; [Maven] -&gt; [Existing Maven Projects] -&gt; [Next]</p>
+</div></blockquote>
 </section>
 <section id="id1">
-<h2><span class="section-number">1.4. </span>トラブルシューティング<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.2. </span>トラブルシューティング<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id2">
+<h3><span class="section-number">1.2.1. </span>1. PJの始め方がわからない。。。<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://debugroom.github.io/technical-academy/kickoff/202210/slides/index.html#/7-1">TerasolunaのTutorial</a>
+では、mvn archeytpe:generate コマンドでPJを作成していたので今回もそれを踏襲して、pomを更新することにしたが、方針として正しいのか。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">%</span> <span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
+ <span class="o">-</span><span class="n">DarchetypeGroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">terasoluna</span><span class="o">.</span><span class="n">gfw</span><span class="o">.</span><span class="n">blank</span>\
+ <span class="o">-</span><span class="n">DarchetypeArtifactId</span><span class="o">=</span><span class="n">terasoluna</span><span class="o">-</span><span class="n">gfw</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">blank</span><span class="o">-</span><span class="n">archetype</span>\
+ <span class="o">-</span><span class="n">DarchetypeVersion</span><span class="o">=</span><span class="mf">5.7.0</span><span class="o">.</span><span class="n">RELEASE</span>\
+ <span class="o">-</span><span class="n">DgroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">debugroom</span>\
+ <span class="o">-</span><span class="n">DartifactId</span><span class="o">=</span><span class="n">mynavi</span><span class="o">-</span><span class="n">sample</span><span class="o">-</span><span class="n">aws</span><span class="o">-</span><span class="k">lambda</span>\
+ <span class="o">-</span><span class="n">Dversion</span><span class="o">=</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span>
+</pre></div>
+</div>
+<p>pom.xmlの以下の部分をgithubからコピーするとエラーが発生</p>
+<p>変更前</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">properties</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">sourceEncoding</span><span class="o">&gt;</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span><span class="o">&lt;/</span><span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">sourceEncoding</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">maven</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">source</span><span class="o">&gt;</span><span class="mf">1.7</span><span class="o">&lt;/</span><span class="n">maven</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">source</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">maven</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">target</span><span class="o">&gt;</span><span class="mf">1.7</span><span class="o">&lt;/</span><span class="n">maven</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">target</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">properties</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="n">dependencies</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">junit</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">junit</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">4.11</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">dependencies</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>変更後</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="o">&lt;</span><span class="n">properties</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">java</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">1.8</span><span class="o">&lt;/</span><span class="n">java</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">spring</span><span class="o">-</span><span class="n">cloud</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span><span class="n">Greenwich</span><span class="o">.</span><span class="n">RC2</span><span class="o">&lt;/</span><span class="n">spring</span><span class="o">-</span><span class="n">cloud</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">properties</span><span class="o">&gt;</span>
+
+    <span class="o">&lt;</span><span class="n">dependencies</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">cloud</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">spring</span><span class="o">-</span><span class="n">cloud</span><span class="o">-</span><span class="n">function</span><span class="o">-</span><span class="n">web</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">cloud</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">spring</span><span class="o">-</span><span class="n">cloud</span><span class="o">-</span><span class="n">function</span><span class="o">-</span><span class="n">adapter</span><span class="o">-</span><span class="n">aws</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">aws</span><span class="o">-</span><span class="k">lambda</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="n">events</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">2.0.2</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">aws</span><span class="o">-</span><span class="k">lambda</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="n">core</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">1.1.0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="n">projectlombok</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">lombok</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="n">true</span><span class="o">&lt;/</span><span class="n">optional</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">boot</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">spring</span><span class="o">-</span><span class="n">boot</span><span class="o">-</span><span class="n">starter</span><span class="o">-</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">dependencies</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>エラー</p>
+<p><img alt="../_images/pom_error.png" src="../_images/pom_error.png" /></p>
+<p>少し調べたが、javaのパスに関する記事ができてた。
+バージョンは Java1.8でmvnも同じはず</p>
+<p>javaのバージョン</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">java</span> <span class="o">-</span><span class="n">version</span>
+<span class="n">openjdk</span> <span class="n">version</span> <span class="s2">&quot;1.8.0_292&quot;</span>
+<span class="n">OpenJDK</span> <span class="n">Runtime</span> <span class="n">Environment</span> <span class="p">(</span><span class="n">AdoptOpenJDK</span><span class="p">)(</span><span class="n">build</span> <span class="mf">1.8.0_292</span><span class="o">-</span><span class="n">b10</span><span class="p">)</span>
+<span class="n">OpenJDK</span> <span class="mi">64</span><span class="o">-</span><span class="n">Bit</span> <span class="n">Server</span> <span class="n">VM</span> <span class="p">(</span><span class="n">AdoptOpenJDK</span><span class="p">)(</span><span class="n">build</span> <span class="mf">25.292</span><span class="o">-</span><span class="n">b10</span><span class="p">,</span> <span class="n">mixed</span> <span class="n">mode</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>mvnのバージョン</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">mvn</span> <span class="o">-</span><span class="n">v</span>
+<span class="n">Apache</span> <span class="n">Maven</span> <span class="mf">3.8.6</span> <span class="p">(</span><span class="mi">84538</span><span class="n">c9988a25aec085021c365c560670ad80f63</span><span class="p">)</span>
+<span class="n">Maven</span> <span class="n">home</span><span class="p">:</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">homebrew</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">maven</span><span class="o">/</span><span class="mf">3.8.6</span><span class="o">/</span><span class="n">libexec</span>
+<span class="n">Java</span> <span class="n">version</span><span class="p">:</span> <span class="mf">1.8.0_292</span><span class="p">,</span> <span class="n">vendor</span><span class="p">:</span> <span class="n">AdoptOpenJDK</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">adoptopenjdk</span><span class="o">-</span><span class="mf">8.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span><span class="o">/</span><span class="n">jre</span>
+<span class="n">Default</span> <span class="n">locale</span><span class="p">:</span> <span class="n">ja_JP</span><span class="p">,</span> <span class="n">platform</span> <span class="n">encoding</span><span class="p">:</span> <span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">OS</span> <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;mac os x&quot;</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="s2">&quot;10.16&quot;</span><span class="p">,</span> <span class="n">arch</span><span class="p">:</span> <span class="s2">&quot;x86_64&quot;</span><span class="p">,</span> <span class="n">family</span><span class="p">:</span> <span class="s2">&quot;mac&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="spring-cloud-function">
+<h2><span class="section-number">1.3. </span>Spring Cloud Functionを利用したサーバーレスアプリケーションの実装<a class="headerlink" href="#spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="aws-lambda">
+<h2><span class="section-number">1.4. </span>AWS Lambdaの設定<a class="headerlink" href="#aws-lambda" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="amazon-api-gateway">
+<h2><span class="section-number">1.5. </span>Amazon API Gatewayの設定<a class="headerlink" href="#amazon-api-gateway" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 </section>
 
@@ -82,10 +189,14 @@ API GWとLambdaを利用して実装する。</p>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
 <li><a class="reference internal" href="#">1. API GWとLambdaを利用したサーバーレスSpringアプリケーション</a><ul>
-<li><a class="reference internal" href="#spring-cloud-function">1.1. Spring Cloud Functionを利用したサーバーレスアプリケーションの実装</a></li>
-<li><a class="reference internal" href="#aws-lambda">1.2. AWS Lambdaの設定</a></li>
-<li><a class="reference internal" href="#amazon-api-gateway">1.3. Amazon API Gatewayの設定</a></li>
-<li><a class="reference internal" href="#id1">1.4. トラブルシューティング</a></li>
+<li><a class="reference internal" href="#pj">1.1. PJ構築</a></li>
+<li><a class="reference internal" href="#id1">1.2. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id2">1.2.1. 1. PJの始め方がわからない。。。</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spring-cloud-function">1.3. Spring Cloud Functionを利用したサーバーレスアプリケーションの実装</a></li>
+<li><a class="reference internal" href="#aws-lambda">1.4. AWS Lambdaの設定</a></li>
+<li><a class="reference internal" href="#amazon-api-gateway">1.5. Amazon API Gatewayの設定</a></li>
 </ul>
 </li>
 </ul>
