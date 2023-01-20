@@ -28,6 +28,7 @@ sts.appを右クリック、パッケージ内容を表示して、` /Applicatio
 
 2. javaの切り替え
 > export JAVA_HOME=`/usr/libexec/java_home -v "1.8.0_292"`
+
 > PATH=$JAVA_HOME/bin:$PATH
 
 ## serverの追加
@@ -37,6 +38,10 @@ sts.appを右クリック、パッケージ内容を表示して、` /Applicatio
 
 ### STSへのServerの追加
 [STSへTomcat9をインストール](https://iteng-pom.com/archives/129)この記事を参考に実施
+
+## macでhomebrewでjdkをインストール
+[参考サイト](https://engineering.mobalab.net/2022/06/06/how-to-install-java-on-macos-in-2022/)
+
 
 ## maven
 POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。
@@ -50,6 +55,7 @@ POM(Project Object Model)という考え方に基づいて、プロジェクト�
 > brew install maven
 
 動作確認
+
 > mvn --version
 
 ### mavenの各コマンド

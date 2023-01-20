@@ -47,9 +47,8 @@
             
   <section id="aws-ecsspring">
 <h1><span class="section-number">2. </span>AWS ECS上に構築するSpringアプリケーション<a class="headerlink" href="#aws-ecsspring" title="この見出しへのパーマリンク">¶</a></h1>
-<p>ECSは、クラスタ単位でDockerコンテナを実行・停止・管理することができるコンテナ管理サービス
-複数のAZを跨いで、コンテナ実行できるため、可用性が高い。</p>
-<p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/AWS/?page=2">AWSで作るクラウドネイティブアプリケーションの基本</a>を実する。</p>
+<p>ECSは、クラスタ単位でDockerコンテナを実行・停止・管理することができるコンテナ管理サービス<br />複数のAZを跨いで、コンテナ実行できるため、可用性が高い。</p>
+<p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/AWS/?page=2">AWSで作るクラウドネイティブアプリケーションの基本</a>を実装していく。</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4354/">第1回 VPC環境構築</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4359/">第2回 ALBの作成</a></p></li>
@@ -60,23 +59,20 @@
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4416/">第7回 ECSサービスの実行</a></p></li>
 </ul>
 <p>ソースコードは<a class="reference external" href="https://github.com/debugroom/mynavi-sample-aws-ecs">github</a>のものを参考にする</p>
-<p>作成する環境のイメージ</p>
 <p><img alt="../_images/ecs_app.png" src="../_images/ecs_app.png" /></p>
 <section id="vpc">
 <h2><span class="section-number">2.1. </span>VPC環境構築<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id1">
 <h3><span class="section-number">2.1.1. </span>基本方針<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>複数AZに跨って、Private-SubnetとPublic-Subnetを作成する。</p>
-<p>private-subnetには、NAT GWにルーティングされたルートテーブルを付与する。
-NAT GWには、Elastic IPを付与する。</p>
-<p>public-subnetには、Internet GWにルーティングされたルートテーブルを付与する</p>
+<p>private-subnetには、NAT GWにルーティングされたルートテーブルを付与する。<br />public-subnetには、Internet GWにルーティングされたルートテーブルを付与する</p>
 </section>
 <section id="id2">
 <h3><span class="section-number">2.1.2. </span>VPC作成後の成果物<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>成果物</p>
 <ul class="simple">
 <li><p>VPC</p></li>
-<li><p>subnet: private/publicを2つづつ</p></li>
+<li><p>subnet: private/publicそれぞれ２つ</p></li>
 <li><p>Internet GW</p></li>
 <li><p>NAT GW</p></li>
 <li><p>Elastic-IP: NATGWに割り当たる</p></li>
@@ -90,8 +86,7 @@ NAT GWには、Elastic IPを付与する。</p>
 </ul>
 <p><img alt="../_images/vpc_setting_prefix.png" src="../_images/vpc_setting_prefix.png" /></p>
 <ul class="simple">
-<li><p>サブネット
-サブネットないのAZの数やPublicとPrivateそれぞれのSubnet数を選択するだけで、自動作成される<br />CIDRに関しても自動で、割り振りをしてくれる</p></li>
+<li><p>サブネット<br />サブネットないのAZの数やPublicとPrivateそれぞれのSubnet数を選択するだけで、自動作成される<br />CIDRに関しても自動で、割り振りをしてくれる</p></li>
 </ul>
 <p><img alt="../_images/vpc_setting_subnet.png" src="../_images/vpc_setting_subnet.png" /></p>
 <ul class="simple">
@@ -107,7 +102,8 @@ NAT GWには、Elastic IPを付与する。</p>
 <h2><span class="section-number">2.2. </span>ALBの作成<a class="headerlink" href="#alb" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id4">
 <h3><span class="section-number">2.2.1. </span>基本方針<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Public -Subnetに公開されるBFFアプリケーションはロードバランサー経由でHTTPリクエストを送信する。<br />ロードバランサー側で、パスルーティングを行うため、ALBを構築する。</p>
+<p>Public-Subnetに構築されるBFF Appは外部向けロードバランサー経由でHTTPリクエストを受け取る<br />Private-Subnetに構築されるバックエンドAppは内部向けロードバランサー経由でリクエストを受け取り、パスルーティングを行う。</p>
+<p>パスルーティングを行うため、ALBを構築する。</p>
 </section>
 <section id="id5">
 <h3><span class="section-number">2.2.2. </span>ALB作成後の成果物<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
@@ -115,30 +111,32 @@ NAT GWには、Elastic IPを付与する。</p>
 <li><p>Public向けALB
 Public-Subnetに配置するECS用のインターネットからの接続可能なALB</p></li>
 <li><p>Private向けALB<br />Private-Subnetに配置するECS用のVPC内部からしか接続できないALB</p></li>
+<li><p>Public/PrivateのALB用のセキュリティグループ</p></li>
+<li><p>Public/PrivateのTargetGrout（ヘルスチェックやターゲットは未設定）</p></li>
 </ul>
 </section>
 <section id="id6">
 <h3><span class="section-number">2.2.3. </span>ALBの作成<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
-<ol class="simple">
+<ul class="simple">
 <li><p>EC2のナビゲーションペインからロードバランサーを選択</p></li>
 <li><p>Create Load BalancerからALBを選択</p></li>
 <li><p>名前を設定</p></li>
-<li><p>スキーム：publicなのでInternet向けを選択</p></li>
+<li><p>スキーム：public：Internet、Private：Internalを選択</p></li>
 <li><p>アドレスタイプ：Ipv4</p></li>
-<li><p>VPCとSubnet：作成済のPublicを選択</p></li>
-</ol>
+<li><p>VPCとSubnet：作成済のSubnetを選択</p></li>
+</ul>
 <p><img alt="../_images/alb_setting_basic.png" src="../_images/alb_setting_basic.png" /></p>
-<ol class="simple">
+<ul class="simple">
 <li><p>セキュリティグループの作成<br />今後、ECSのセキュリティグループで、接続元を制限する際に本セキュリティグループと紐づけるので新規でSGを作成<br />VPCの設定変更や Nameタグの付与を忘れない<br />Publicの場合は、0.0.0.0/0をインバウンドに設定、Privateの場合はVPC内部だけをインバウンドに設定</p></li>
-</ol>
+</ul>
 <p><img alt="../_images/alb_setting_sg_public.png" src="../_images/alb_setting_sg_public.png" /></p>
-<ol class="simple">
+<ul class="simple">
 <li><p>ターゲットグループの作成<br />ターゲットの種類には、ECSのクラスターのインスタンスが対象となるのでインスタンスを指定を指定する。<br />ヘルスチェック先やターゲットの登録はECSサービスを作成してから再設定するので、デフォルトのままで設定完了</p></li>
-</ol>
+</ul>
 <p><img alt="../_images/alb_setting_tg.png" src="../_images/alb_setting_tg.png" /></p>
-<ol class="simple">
+<ul class="simple">
 <li><p>リスナーの設定（ロードバランサのプロトコル・ポート）<br />HTTPの80を指定して、作成したTGを設定</p></li>
-</ol>
+</ul>
 <p><img alt="../_images/alb_setting_listener.png" src="../_images/alb_setting_listener.png" /></p>
 </section>
 </section>

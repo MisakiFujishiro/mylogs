@@ -62,6 +62,12 @@ API GWとLambdaを利用して実装する。</p>
 </section>
 <section id="app-spring-cloud-function">
 <h2><span class="section-number">1.2. </span>App実装（Spring Cloud Function）<a class="headerlink" href="#app-spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="spring-cloud-function">
+<h3><span class="section-number">1.2.1. </span>Spring Cloud Functionとは<a class="headerlink" href="#spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaが呼ばれると、Java側では<code class="docutils literal notranslate"><span class="pre">com.amazonaws.services.lambda.runtime.RequestHandler</span></code>が呼び出されるという仕様になっている</p>
+<p>Spring Cloud FunctionはDIコンテナの注入とかしている？？</p>
+<p>a</p>
+</section>
 </section>
 <section id="lambda">
 <h2><span class="section-number">1.3. </span>Lambdaの設定<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h2>
@@ -197,7 +203,10 @@ PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが�
     <ul>
 <li><a class="reference internal" href="#">1. API GWとLambdaを利用したサーバーレスSpringアプリケーション</a><ul>
 <li><a class="reference internal" href="#pj">1.1. PJ構築</a></li>
-<li><a class="reference internal" href="#app-spring-cloud-function">1.2. App実装（Spring Cloud Function）</a></li>
+<li><a class="reference internal" href="#app-spring-cloud-function">1.2. App実装（Spring Cloud Function）</a><ul>
+<li><a class="reference internal" href="#spring-cloud-function">1.2.1. Spring Cloud Functionとは</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#lambda">1.3. Lambdaの設定</a></li>
 <li><a class="reference internal" href="#api-gw">1.4. API GWの設定</a></li>
 <li><a class="reference internal" href="#id1">1.5. トラブルシューティング</a><ul>

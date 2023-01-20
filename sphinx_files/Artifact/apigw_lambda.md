@@ -13,6 +13,13 @@ API GWとLambdaを利用して実装する。
 
 ## PJ構築
 ## App実装（Spring Cloud Function）
+### Spring Cloud Functionとは
+Lambdaが呼ばれると、Java側では`com.amazonaws.services.lambda.runtime.RequestHandler`が呼び出されるという仕様になっている
+
+Spring Cloud FunctionはDIコンテナの注入とかしている？？
+
+a
+
 ## Lambdaの設定
 ## API GWの設定
 
