@@ -12,32 +12,17 @@ API GWとLambdaを利用して実装する。
 
 
 ## PJ構築
+## App実装（Spring Cloud Function）
+## Lambdaの設定
+## API GWの設定
 
 
 
 
 ## トラブルシューティング
-### 2. Run on Serverができない。
-Spring Initializerでプロジェクトを作成したが、Run on Serverでエラーが発生。
-
-Spring InitializerからPJを作成して、[チュートリアル](https://spring.pleiades.io/quickstart)通り設定
-
-![](img/initialize_setting1.png)
-
-STSのバージョンが３なので、Spring Boot　Versionは3.0.１を設定。
-
-![](img/initialize_setting2.png)
 
 
-run on serverするとエラーが発生
-
-![](img/run_on_server_error.png)
-
-[stackoverflow](https://stackoverflow.com/questions/32731672/the-selection-cannot-be-run-on-any-server)で同じエラーを見つけたが、
-PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが同じエラーが出る。。。
-
-
-### 1. PJの始め方がわからない。。。
+### PJの始め方がわからない。。。
 [TerasolunaのTutorial](https://debugroom.github.io/technical-academy/kickoff/202210/slides/index.html#/7-1)
 では、mvn archeytpe:generate コマンドでPJを作成していたので今回もそれを踏襲して、pomを更新することにしたが、方針として正しいのか。
 ```
@@ -136,8 +121,28 @@ Default locale: ja_JP, platform encoding: UTF-8
 OS name: "mac os x", version: "10.16", arch: "x86_64", family: "mac"
 ```
 
+### Run on Serverができない。
+Spring Initializerでプロジェクトを作成したが、Run on Serverでエラーが発生。
+
+Spring InitializerからPJを作成して、[チュートリアル](https://spring.pleiades.io/quickstart)通り設定
+
+![](img/initialize_setting1.png)
+
+STSのバージョンが３なので、Spring Boot　Versionは3.0.１を設定。
+
+![](img/initialize_setting2.png)
 
 
-## Spring Cloud Functionを利用したサーバーレスアプリケーションの実装
-## AWS Lambdaの設定
-## Amazon API Gatewayの設定
+run on serverするとエラーが発生
+
+![](img/run_on_server_error.png)
+
+[stackoverflow](https://stackoverflow.com/questions/32731672/the-selection-cannot-be-run-on-any-server)で同じエラーを見つけたが、
+PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが同じエラーが出る。。。
+
+
+### jdkとjreの設定したけど。。。
+![](img/error_java_ver.png)
+
+![](img/error_jdk_jre.png)
+

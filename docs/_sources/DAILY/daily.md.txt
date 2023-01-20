@@ -41,7 +41,6 @@
 - [APIGWとLambdaのHandsOn](https://news.mynavi.jp/techplus/article/techp4316/)
 - [ECS構築HandsOn](https://news.mynavi.jp/techplus/article/techp4354/)
 - AWS　ディベロッパーアソシエイト第4章勉強（開発系
-
 ---
 
 ## テーマ
@@ -342,8 +341,6 @@ OAuthとOIDC周りの知識は一通り整理できた。
 ### タイトルのアップデート含めて事前活動計画シートを更新
 RVをお願いしたい。
 
-### マイクロサービスの全体像勉強→「マイクロサービスインアクション」→通読
-
 
 ### 最終報告資料を作成（40%)
 chap1は自己紹介なので中間報告資料を流用
@@ -356,11 +353,13 @@ ECSのHandsOnを通じて作成するものとCICDはストーリーとして見
 
 ### APIGWとLambdaのHandsOn
 Springの勉強とDVAの勉強で試そうと思ったが、 SpringのPJの始め方がで詰まる・・・・
-可能なら最初の一歩どなたかと一緒にやれるとありがたい。
-
 
 ### ECS構築HandsOn
-Springは詰まってしまうので、それ以外のVPCの構築などに着手
+VPCとALBの構築などに着手。完了
+Dockerの中身のアプリケーション開発したいが、Springのスタートで詰まっている。。。
+
+
+
 
 ### 相談事項
 ■質問1  
@@ -368,5 +367,11 @@ SAMLはOIDCと同じ認証のプロトコルで、SAMLの方が複雑で、OIDC�
 OIDCやOAuthを利用するとSSOが実現できて、マイクロサービスにおける認証の煩雑性をなくすことができるという理解なのだが、合っている？
 
 ■質問2    
-[APIGWとLambdaのHandsOn](https://news.mynavi.jp/techplus/article/techp4316/)を実施してみて、PJの始め方がわからないことが判明。。。。
-Mattter Mostで質問中
+[APIGWとLambdaのHandsOn](https://news.mynavi.jp/techplus/article/techp4316/)を実施してみて、PJの基本的な始め方がよくわかっていない・・・
+Spring InitializerからPJを始めたが、以下の問題発生。
+STSの再インストールとJavaのバージョンを見直し中
+1. Run on Serverできない(Tomcatもインストールしてみた)  
+  →JDKとJREの設定見直し中
+1. pomの更新でエラー
+
+可能なら最初の一歩どなたかと一緒にやれるとありがたい。

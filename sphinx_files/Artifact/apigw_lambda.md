@@ -139,3 +139,10 @@ run on serverするとエラーが発生
 
 [stackoverflow](https://stackoverflow.com/questions/32731672/the-selection-cannot-be-run-on-any-server)で同じエラーを見つけたが、
 PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが同じエラーが出る。。。
+
+
+### jdkとjreの設定したけど。。。
+![](img/error_java_ver.png)
+
+![](img/error_jdk_jre.png)
+

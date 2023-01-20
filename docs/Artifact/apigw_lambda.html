@@ -60,22 +60,19 @@ API GWとLambdaを利用して実装する。</p>
 <section id="pj">
 <h2><span class="section-number">1.1. </span>PJ構築<a class="headerlink" href="#pj" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
-<section id="id1">
-<h2><span class="section-number">1.2. </span>トラブルシューティング<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="run-on-server">
-<h3><span class="section-number">1.2.1. </span>2. Run on Serverができない。<a class="headerlink" href="#run-on-server" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Spring Initializerでプロジェクトを作成したが、Run on Serverでエラーが発生。</p>
-<p>Spring InitializerからPJを作成して、<a class="reference external" href="https://spring.pleiades.io/quickstart">チュートリアル</a>通り設定</p>
-<p><img alt="../_images/initialize_setting1.png" src="../_images/initialize_setting1.png" /></p>
-<p>STSのバージョンが３なので、Spring Boot　Versionは3.0.１を設定。</p>
-<p><img alt="../_images/initialize_setting2.png" src="../_images/initialize_setting2.png" /></p>
-<p>run on serverするとエラーが発生</p>
-<p><img alt="../_images/run_on_server_error.png" src="../_images/run_on_server_error.png" /></p>
-<p><a class="reference external" href="https://stackoverflow.com/questions/32731672/the-selection-cannot-be-run-on-any-server">stackoverflow</a>で同じエラーを見つけたが、
-PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが同じエラーが出る。。。</p>
+<section id="app-spring-cloud-function">
+<h2><span class="section-number">1.2. </span>App実装（Spring Cloud Function）<a class="headerlink" href="#app-spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
+<section id="lambda">
+<h2><span class="section-number">1.3. </span>Lambdaの設定<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="api-gw">
+<h2><span class="section-number">1.4. </span>API GWの設定<a class="headerlink" href="#api-gw" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id1">
+<h2><span class="section-number">1.5. </span>トラブルシューティング<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id2">
-<h3><span class="section-number">1.2.2. </span>1. PJの始め方がわからない。。。<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.1. </span>PJの始め方がわからない。。。<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://debugroom.github.io/technical-academy/kickoff/202210/slides/index.html#/7-1">TerasolunaのTutorial</a>
 では、mvn archeytpe:generate コマンドでPJを作成していたので今回もそれを踏襲して、pomを更新することにしたが、方針として正しいのか。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">%</span> <span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
@@ -168,15 +165,23 @@ PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが�
 </pre></div>
 </div>
 </section>
+<section id="run-on-server">
+<h3><span class="section-number">1.5.2. </span>Run on Serverができない。<a class="headerlink" href="#run-on-server" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Spring Initializerでプロジェクトを作成したが、Run on Serverでエラーが発生。</p>
+<p>Spring InitializerからPJを作成して、<a class="reference external" href="https://spring.pleiades.io/quickstart">チュートリアル</a>通り設定</p>
+<p><img alt="../_images/initialize_setting1.png" src="../_images/initialize_setting1.png" /></p>
+<p>STSのバージョンが３なので、Spring Boot　Versionは3.0.１を設定。</p>
+<p><img alt="../_images/initialize_setting2.png" src="../_images/initialize_setting2.png" /></p>
+<p>run on serverするとエラーが発生</p>
+<p><img alt="../_images/run_on_server_error.png" src="../_images/run_on_server_error.png" /></p>
+<p><a class="reference external" href="https://stackoverflow.com/questions/32731672/the-selection-cannot-be-run-on-any-server">stackoverflow</a>で同じエラーを見つけたが、
+PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが同じエラーが出る。。。</p>
 </section>
-<section id="spring-cloud-function">
-<h2><span class="section-number">1.3. </span>Spring Cloud Functionを利用したサーバーレスアプリケーションの実装<a class="headerlink" href="#spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="jdkjre">
+<h3><span class="section-number">1.5.3. </span>jdkとjreの設定したけど。。。<a class="headerlink" href="#jdkjre" title="この見出しへのパーマリンク">¶</a></h3>
+<p><img alt="../_images/error_java_ver.png" src="../_images/error_java_ver.png" /></p>
+<p><img alt="../_images/error_jdk_jre.png" src="../_images/error_jdk_jre.png" /></p>
 </section>
-<section id="aws-lambda">
-<h2><span class="section-number">1.4. </span>AWS Lambdaの設定<a class="headerlink" href="#aws-lambda" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="amazon-api-gateway">
-<h2><span class="section-number">1.5. </span>Amazon API Gatewayの設定<a class="headerlink" href="#amazon-api-gateway" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 </section>
 
@@ -192,14 +197,15 @@ PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが�
     <ul>
 <li><a class="reference internal" href="#">1. API GWとLambdaを利用したサーバーレスSpringアプリケーション</a><ul>
 <li><a class="reference internal" href="#pj">1.1. PJ構築</a></li>
-<li><a class="reference internal" href="#id1">1.2. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#run-on-server">1.2.1. 2. Run on Serverができない。</a></li>
-<li><a class="reference internal" href="#id2">1.2.2. 1. PJの始め方がわからない。。。</a></li>
+<li><a class="reference internal" href="#app-spring-cloud-function">1.2. App実装（Spring Cloud Function）</a></li>
+<li><a class="reference internal" href="#lambda">1.3. Lambdaの設定</a></li>
+<li><a class="reference internal" href="#api-gw">1.4. API GWの設定</a></li>
+<li><a class="reference internal" href="#id1">1.5. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id2">1.5.1. PJの始め方がわからない。。。</a></li>
+<li><a class="reference internal" href="#run-on-server">1.5.2. Run on Serverができない。</a></li>
+<li><a class="reference internal" href="#jdkjre">1.5.3. jdkとjreの設定したけど。。。</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#spring-cloud-function">1.3. Spring Cloud Functionを利用したサーバーレスアプリケーションの実装</a></li>
-<li><a class="reference internal" href="#aws-lambda">1.4. AWS Lambdaの設定</a></li>
-<li><a class="reference internal" href="#amazon-api-gateway">1.5. Amazon API Gatewayの設定</a></li>
 </ul>
 </li>
 </ul>

@@ -30,6 +30,13 @@ sts.appを右クリック、パッケージ内容を表示して、` /Applicatio
 > export JAVA_HOME=`/usr/libexec/java_home -v "1.8.0_292"`
 > PATH=$JAVA_HOME/bin:$PATH
 
+## serverの追加
+### apache tomcat のDL
+[macにtomcatをDL](https://blanche-toile.com/web/mac-tomcat)この記事を参考に実施
+
+
+### STSへのServerの追加
+[STSへTomcat9をインストール](https://iteng-pom.com/archives/129)この記事を参考に実施
 
 ## maven
 POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。

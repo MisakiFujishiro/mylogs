@@ -51,7 +51,7 @@
 複数のAZを跨いで、コンテナ実行できるため、可用性が高い。</p>
 <p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/AWS/?page=2">AWSで作るクラウドネイティブアプリケーションの基本</a>を実する。</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4354/">第1回　VPC環境構築</a></p></li>
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4354/">第1回 VPC環境構築</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4359/">第2回 ALBの作成</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4363/">第3回 Springを使用したコンテナアプリ実装</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4390/">第4回 Dockerコンテナの作成</a></p></li>
@@ -66,73 +66,114 @@
 <h2><span class="section-number">2.1. </span>VPC環境構築<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id1">
 <h3><span class="section-number">2.1.1. </span>基本方針<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
-<p>複数AZに跨って、Private-SubnetとPublic-Subnetを作成し、それぞれにECSコンテナを配置する。</p>
-<p>パブリックサブネットにBFFとして、WebApp向けのHTMLを作成するサーバーを配置
-プライベートサブネットのECSコンテナにAPIサーバーを配置</p>
+<p>複数AZに跨って、Private-SubnetとPublic-Subnetを作成する。</p>
+<p>private-subnetには、NAT GWにルーティングされたルートテーブルを付与する。
+NAT GWには、Elastic IPを付与する。</p>
+<p>public-subnetには、Internet GWにルーティングされたルートテーブルを付与する</p>
 </section>
 <section id="id2">
-<h3><span class="section-number">2.1.2. </span>VPCを作成する<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.2. </span>VPC作成後の成果物<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>成果物</p>
 <ul class="simple">
-<li><p>Elastic-IP: MA-fujishiroms-eip</p></li>
-<li><p>VPC: MA-fujishiroms-vpc</p></li>
+<li><p>VPC</p></li>
 <li><p>subnet: private/publicを2つづつ</p></li>
 <li><p>Internet GW</p></li>
 <li><p>NAT GW</p></li>
+<li><p>Elastic-IP: NATGWに割り当たる</p></li>
 <li><p>ルートテーブル</p></li>
 </ul>
-<section id="natgwelasticip">
-<h4><span class="section-number">2.1.2.1. </span>NATGW用のElasticIPの取得<a class="headerlink" href="#natgwelasticip" title="この見出しへのパーマリンク">¶</a></h4>
-<p>VPCのナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">Elastic</span> <span class="pre">IP</span></code>を選択し、<code class="docutils literal notranslate"><span class="pre">Elastic</span> <span class="pre">IPアドレスを割り当てる</span></code>から取得</p>
-<p>タグで、Nameタグを付与しておくこと。
-今回は<code class="docutils literal notranslate"><span class="pre">MA-fujishiroms-eip</span></code>で取得</p>
-</section>
 <section id="id3">
-<h4><span class="section-number">2.1.2.2. </span>VPC作成<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.1.2.1. </span>VPC作成<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ウィザードからVPCなどを選択して設定すると各種自動で作成される</p>
 <ul class="simple">
-<li><p>VPC名：MA-fujishiroms-vpc</p></li>
-<li><p>IPv4 CIDRブロック：10.2.42.0/24</p></li>
+<li><p>名前タグ<br />自動設定をONにして、入力しておくと自動作成されるリソースにPrefixを付与してくれる</p></li>
 </ul>
-<p><img alt="../_images/ecs_vpc_setting.png" src="../_images/ecs_vpc_setting.png" /></p>
-</section>
-<section id="id4">
-<h4><span class="section-number">2.1.2.3. </span>サブネット作成<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
-<p>AZとして、ap-northeast-1aとap-northeast-1cを利用し、それぞれにpublicとprivateのサブネットを作成。</p>
+<p><img alt="../_images/vpc_setting_prefix.png" src="../_images/vpc_setting_prefix.png" /></p>
 <ul class="simple">
-<li><p>public-subnet-az-1a:10.2.42.0/28</p></li>
-<li><p>public-subnet-az-1c:10.2.42.16/28</p></li>
-<li><p>private-subnet-az-1a:10.2.42.128/28</p></li>
-<li><p>private-subnet-az-1c:10.2.42.144/28</p></li>
+<li><p>サブネット
+サブネットないのAZの数やPublicとPrivateそれぞれのSubnet数を選択するだけで、自動作成される<br />CIDRに関しても自動で、割り振りをしてくれる</p></li>
 </ul>
-</section>
-<section id="nat-gw">
-<h4><span class="section-number">2.1.2.4. </span>NAT GWの設定<a class="headerlink" href="#nat-gw" title="この見出しへのパーマリンク">¶</a></h4>
-</section>
-<section id="id5">
-<h4><span class="section-number">2.1.2.5. </span>ルートテーブルの設定<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p><img alt="../_images/vpc_setting_subnet.png" src="../_images/vpc_setting_subnet.png" /></p>
+<ul class="simple">
+<li><p>Internet GW<br />自動で作成し、VPCに自動でアタッチしてくれる</p></li>
+<li><p>NAT GW<br />自動で作成し、ElasticIPの取得とアタッチをしてくれる</p></li>
+<li><p>ルートテーブル<br />Public-SubnetにはInternet GWへのルーティングを設定したルートテーブルがアタッチされる<br />Private-SubnetにはNAT GWへのルーティングを設定したルートテーブルがアタッチされる</p></li>
+</ul>
+<p><img alt="../_images/vpc_setting_rtb.png" src="../_images/vpc_setting_rtb.png" /></p>
 </section>
 </section>
 </section>
 <section id="alb">
 <h2><span class="section-number">2.2. </span>ALBの作成<a class="headerlink" href="#alb" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id4">
+<h3><span class="section-number">2.2.1. </span>基本方針<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Public -Subnetに公開されるBFFアプリケーションはロードバランサー経由でHTTPリクエストを送信する。<br />ロードバランサー側で、パスルーティングを行うため、ALBを構築する。</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">2.2.2. </span>ALB作成後の成果物<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>Public向けALB
+Public-Subnetに配置するECS用のインターネットからの接続可能なALB</p></li>
+<li><p>Private向けALB<br />Private-Subnetに配置するECS用のVPC内部からしか接続できないALB</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3><span class="section-number">2.2.3. </span>ALBの作成<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<ol class="simple">
+<li><p>EC2のナビゲーションペインからロードバランサーを選択</p></li>
+<li><p>Create Load BalancerからALBを選択</p></li>
+<li><p>名前を設定</p></li>
+<li><p>スキーム：publicなのでInternet向けを選択</p></li>
+<li><p>アドレスタイプ：Ipv4</p></li>
+<li><p>VPCとSubnet：作成済のPublicを選択</p></li>
+</ol>
+<p><img alt="../_images/alb_setting_basic.png" src="../_images/alb_setting_basic.png" /></p>
+<ol class="simple">
+<li><p>セキュリティグループの作成<br />今後、ECSのセキュリティグループで、接続元を制限する際に本セキュリティグループと紐づけるので新規でSGを作成<br />VPCの設定変更や Nameタグの付与を忘れない<br />Publicの場合は、0.0.0.0/0をインバウンドに設定、Privateの場合はVPC内部だけをインバウンドに設定</p></li>
+</ol>
+<p><img alt="../_images/alb_setting_sg_public.png" src="../_images/alb_setting_sg_public.png" /></p>
+<ol class="simple">
+<li><p>ターゲットグループの作成<br />ターゲットの種類には、ECSのクラスターのインスタンスが対象となるのでインスタンスを指定を指定する。<br />ヘルスチェック先やターゲットの登録はECSサービスを作成してから再設定するので、デフォルトのままで設定完了</p></li>
+</ol>
+<p><img alt="../_images/alb_setting_tg.png" src="../_images/alb_setting_tg.png" /></p>
+<ol class="simple">
+<li><p>リスナーの設定（ロードバランサのプロトコル・ポート）<br />HTTPの80を指定して、作成したTGを設定</p></li>
+</ol>
+<p><img alt="../_images/alb_setting_listener.png" src="../_images/alb_setting_listener.png" /></p>
+</section>
 </section>
 <section id="spring">
 <h2><span class="section-number">2.3. </span>Springを使用したコンテナアプリ実装<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id7">
+<h3><span class="section-number">2.3.1. </span>基本方針<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
 </section>
 <section id="docker">
 <h2><span class="section-number">2.4. </span>Dockerコンテナの作成<a class="headerlink" href="#docker" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id8">
+<h3><span class="section-number">2.4.1. </span>基本方針<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
 </section>
 <section id="ecs">
 <h2><span class="section-number">2.5. </span>ECSクラスターの作成<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id9">
+<h3><span class="section-number">2.5.1. </span>基本方針<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
-<section id="id6">
-<h2><span class="section-number">2.6. </span>ECSタスクの定義<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
-<section id="id7">
-<h2><span class="section-number">2.7. </span>ECSサービスの実行<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id10">
+<h2><span class="section-number">2.6. </span>ECSタスクの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id11">
+<h3><span class="section-number">2.6.1. </span>基本方針<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
-<section id="id8">
-<h2><span class="section-number">2.8. </span>トラブルシューティング<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id12">
+<h2><span class="section-number">2.7. </span>ECSサービスの実行<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id13">
+<h3><span class="section-number">2.7.1. </span>基本方針<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+<section id="id14">
+<h2><span class="section-number">2.8. </span>トラブルシューティング<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 </section>
 
@@ -149,23 +190,39 @@
 <li><a class="reference internal" href="#">2. AWS ECS上に構築するSpringアプリケーション</a><ul>
 <li><a class="reference internal" href="#vpc">2.1. VPC環境構築</a><ul>
 <li><a class="reference internal" href="#id1">2.1.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id2">2.1.2. VPCを作成する</a><ul>
-<li><a class="reference internal" href="#natgwelasticip">2.1.2.1. NATGW用のElasticIPの取得</a></li>
-<li><a class="reference internal" href="#id3">2.1.2.2. VPC作成</a></li>
-<li><a class="reference internal" href="#id4">2.1.2.3. サブネット作成</a></li>
-<li><a class="reference internal" href="#nat-gw">2.1.2.4. NAT GWの設定</a></li>
-<li><a class="reference internal" href="#id5">2.1.2.5. ルートテーブルの設定</a></li>
+<li><a class="reference internal" href="#id2">2.1.2. VPC作成後の成果物</a><ul>
+<li><a class="reference internal" href="#id3">2.1.2.1. VPC作成</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#alb">2.2. ALBの作成</a></li>
-<li><a class="reference internal" href="#spring">2.3. Springを使用したコンテナアプリ実装</a></li>
-<li><a class="reference internal" href="#docker">2.4. Dockerコンテナの作成</a></li>
-<li><a class="reference internal" href="#ecs">2.5. ECSクラスターの作成</a></li>
-<li><a class="reference internal" href="#id6">2.6. ECSタスクの定義</a></li>
-<li><a class="reference internal" href="#id7">2.7. ECSサービスの実行</a></li>
-<li><a class="reference internal" href="#id8">2.8. トラブルシューティング</a></li>
+<li><a class="reference internal" href="#alb">2.2. ALBの作成</a><ul>
+<li><a class="reference internal" href="#id4">2.2.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id5">2.2.2. ALB作成後の成果物</a></li>
+<li><a class="reference internal" href="#id6">2.2.3. ALBの作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spring">2.3. Springを使用したコンテナアプリ実装</a><ul>
+<li><a class="reference internal" href="#id7">2.3.1. 基本方針</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docker">2.4. Dockerコンテナの作成</a><ul>
+<li><a class="reference internal" href="#id8">2.4.1. 基本方針</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ecs">2.5. ECSクラスターの作成</a><ul>
+<li><a class="reference internal" href="#id9">2.5.1. 基本方針</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id10">2.6. ECSタスクの定義</a><ul>
+<li><a class="reference internal" href="#id11">2.6.1. 基本方針</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">2.7. ECSサービスの実行</a><ul>
+<li><a class="reference internal" href="#id13">2.7.1. 基本方針</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">2.8. トラブルシューティング</a></li>
 </ul>
 </li>
 </ul>

@@ -428,30 +428,33 @@ AWS周りはなんとかなるような気がするけど、Spring周りがつ�
 <p>RVをお願いしたい。</p>
 </section>
 <section id="id22">
-<h3><span class="section-number">1.8.3. </span>マイクロサービスの全体像勉強→「マイクロサービスインアクション」→通読<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-<section id="id23">
-<h3><span class="section-number">1.8.4. </span>最終報告資料を作成（40%)<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.8.3. </span>最終報告資料を作成（40%)<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>chap1は自己紹介なので中間報告資料を流用</p>
 <p>chap2は、読んだ本や記事の情報からざっくり書きたいことを整理した。</p>
 <p>chap3は、作成したい環境の全体像を作成した。
 ECSのHandsOnを通じて作成するものとCICDはストーリーとして見えているのでその周辺はざっくり書いた。</p>
 </section>
 <section id="apigwlambdahandson">
-<h3><span class="section-number">1.8.5. </span>APIGWとLambdaのHandsOn<a class="headerlink" href="#apigwlambdahandson" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Springの勉強とDVAの勉強で試そうと思ったが、 SpringのPJの始め方がで詰まる・・・・
-可能なら最初の一歩どなたかと一緒にやれるとありがたい。</p>
+<h3><span class="section-number">1.8.4. </span>APIGWとLambdaのHandsOn<a class="headerlink" href="#apigwlambdahandson" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Springの勉強とDVAの勉強で試そうと思ったが、 SpringのPJの始め方がで詰まる・・・・</p>
 </section>
 <section id="ecshandson">
-<h3><span class="section-number">1.8.6. </span>ECS構築HandsOn<a class="headerlink" href="#ecshandson" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Springは詰まってしまうので、それ以外のVPCの構築などに着手</p>
+<h3><span class="section-number">1.8.5. </span>ECS構築HandsOn<a class="headerlink" href="#ecshandson" title="この見出しへのパーマリンク">¶</a></h3>
+<p>VPCとALBの構築などに着手。完了
+Dockerの中身のアプリケーション開発したいが、Springのスタートで詰まっている。。。</p>
 </section>
-<section id="id24">
-<h3><span class="section-number">1.8.7. </span>相談事項<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h3><span class="section-number">1.8.6. </span>相談事項<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■質問1<br />SAMLはOIDCと同じ認証のプロトコルで、SAMLの方が複雑で、OIDCはシンプルなのでSNSなどで利用という理解。
 OIDCやOAuthを利用するとSSOが実現できて、マイクロサービスにおける認証の煩雑性をなくすことができるという理解なのだが、合っている？</p>
-<p>■質問2<br /><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4316/">APIGWとLambdaのHandsOn</a>を実施してみて、PJの始め方がわからないことが判明。。。。
-Mattter Mostで質問中</p>
+<p>■質問2<br /><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4316/">APIGWとLambdaのHandsOn</a>を実施してみて、PJの基本的な始め方がよくわかっていない・・・
+Spring InitializerからPJを始めたが、以下の問題発生。
+STSの再インストールとJavaのバージョンを見直し中</p>
+<ol class="simple">
+<li><p>Run on Serverできない(Tomcatもインストールしてみた)<br />→JDKとJREの設定見直し中</p></li>
+<li><p>pomの更新でエラー</p></li>
+</ol>
+<p>可能なら最初の一歩どなたかと一緒にやれるとありがたい。</p>
 </section>
 </section>
 </section>
@@ -517,11 +520,10 @@ Mattter Mostで質問中</p>
 <li><a class="reference internal" href="#id20">1.8. (1/7-1/20)</a><ul>
 <li><a class="reference internal" href="#logs">1.8.1. 認証認可についてLogsで整理した。</a></li>
 <li><a class="reference internal" href="#id21">1.8.2. タイトルのアップデート含めて事前活動計画シートを更新</a></li>
-<li><a class="reference internal" href="#id22">1.8.3. マイクロサービスの全体像勉強→「マイクロサービスインアクション」→通読</a></li>
-<li><a class="reference internal" href="#id23">1.8.4. 最終報告資料を作成（40%)</a></li>
-<li><a class="reference internal" href="#apigwlambdahandson">1.8.5. APIGWとLambdaのHandsOn</a></li>
-<li><a class="reference internal" href="#ecshandson">1.8.6. ECS構築HandsOn</a></li>
-<li><a class="reference internal" href="#id24">1.8.7. 相談事項</a></li>
+<li><a class="reference internal" href="#id22">1.8.3. 最終報告資料を作成（40%)</a></li>
+<li><a class="reference internal" href="#apigwlambdahandson">1.8.4. APIGWとLambdaのHandsOn</a></li>
+<li><a class="reference internal" href="#ecshandson">1.8.5. ECS構築HandsOn</a></li>
+<li><a class="reference internal" href="#id23">1.8.6. 相談事項</a></li>
 </ul>
 </li>
 </ul>
