@@ -4,7 +4,7 @@ ECSは、クラスタ単位でDockerコンテナを実行・停止・管理す�
 
 
 塾長の記事[AWSで作るクラウドネイティブアプリケーションの基本](https://news.mynavi.jp/techplus/series/AWS/?page=2)を実する。
-- [第1回　VPC環境構築](https://news.mynavi.jp/techplus/article/techp4354/)
+- [第1回 VPC環境構築](https://news.mynavi.jp/techplus/article/techp4354/)
 - [第2回 ALBの作成](https://news.mynavi.jp/techplus/article/techp4359/)
 - [第3回 Springを使用したコンテナアプリ実装](https://news.mynavi.jp/techplus/article/techp4363/)
 - [第4回 Dockerコンテナの作成](https://news.mynavi.jp/techplus/article/techp4390/)
@@ -63,7 +63,7 @@ public-subnetには、Internet GWにルーティングされたルートテー�
     自動で作成し、ElasticIPの取得とアタッチをしてくれる
 
 
-- ルートテーブル
+- ルートテーブル  
     Public-SubnetにはInternet GWへのルーティングを設定したルートテーブルがアタッチされる  
     Private-SubnetにはNAT GWへのルーティングを設定したルートテーブルがアタッチされる
 
@@ -90,12 +90,14 @@ Public -Subnetに公開されるBFFアプリケーションはロードバラン
 4. スキーム：publicなのでInternet向けを選択
 5. アドレスタイプ：Ipv4
 6. VPCとSubnet：作成済のPublicを選択
+
 ![](img/alb_setting_basic.png)
 
 7. セキュリティグループの作成  
     今後、ECSのセキュリティグループで、接続元を制限する際に本セキュリティグループと紐づけるので新規でSGを作成  
-    VPCの設定変更や Nameタグの付与を忘れない
+    VPCの設定変更や Nameタグの付与を忘れない  
     Publicの場合は、0.0.0.0/0をインバウンドに設定、Privateの場合はVPC内部だけをインバウンドに設定
+
 ![](img/alb_setting_sg_public.png)
 
 
@@ -107,6 +109,7 @@ Public -Subnetに公開されるBFFアプリケーションはロードバラン
 
 10. リスナーの設定（ロードバランサのプロトコル・ポート）  
      HTTPの80を指定して、作成したTGを設定
+
 ![](img/alb_setting_listener.png)
 
 
