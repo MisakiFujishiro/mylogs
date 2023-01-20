@@ -18,55 +18,121 @@ ECSは、クラスタ単位でDockerコンテナを実行・停止・管理す�
 
 ![](img/ecs_app.png)
 
+
+
+
+
+
 ## VPC環境構築
 ### 基本方針
-複数AZに跨って、Private-SubnetとPublic-Subnetを作成し、それぞれにECSコンテナを配置する。
+複数AZに跨って、Private-SubnetとPublic-Subnetを作成する。
 
-パブリックサブネットにBFFとして、WebApp向けのHTMLを作成するサーバーを配置
-プライベートサブネットのECSコンテナにAPIサーバーを配置
+private-subnetには、NAT GWにルーティングされたルートテーブルを付与する。
+NAT GWには、Elastic IPを付与する。
 
-### VPCを作成する
+public-subnetには、Internet GWにルーティングされたルートテーブルを付与する
+
+### VPC作成後の成果物
 成果物
-- Elastic-IP: MA-fujishiroms-eip
-- VPC: MA-fujishiroms-vpc
+- VPC
 - subnet: private/publicを2つづつ
 - Internet GW
 - NAT GW
+- Elastic-IP: NATGWに割り当たる
 - ルートテーブル
 
-#### NATGW用のElasticIPの取得
-VPCのナビゲーションペインから`Elastic IP`を選択し、`Elastic IPアドレスを割り当てる`から取得
-
-タグで、Nameタグを付与しておくこと。
-今回は`MA-fujishiroms-eip`で取得
-
 #### VPC作成
-- VPC名：MA-fujishiroms-vpc
-- IPv4 CIDRブロック：10.2.42.0/24
+ウィザードからVPCなどを選択して設定すると各種自動で作成される
 
-![](img/ecs_vpc_setting.png)
+- 名前タグ  
+    自動設定をONにして、入力しておくと自動作成されるリソースにPrefixを付与してくれる
 
-#### サブネット作成
-AZとして、ap-northeast-1aとap-northeast-1cを利用し、それぞれにpublicとprivateのサブネットを作成。
-- public-subnet-az-1a:10.2.42.0/28
-- public-subnet-az-1c:10.2.42.16/28
-- private-subnet-az-1a:10.2.42.128/28
-- private-subnet-az-1c:10.2.42.144/28
+![](img/vpc_setting_prefix.png)
 
-#### NAT GWの設定
+- サブネット
+    サブネットないのAZの数やPublicとPrivateそれぞれのSubnet数を選択するだけで、自動作成される      
+    CIDRに関しても自動で、割り振りをしてくれる  
 
-#### ルートテーブルの設定
+![](img/vpc_setting_subnet.png)
 
 
+- Internet GW  
+    自動で作成し、VPCに自動でアタッチしてくれる
+
+- NAT GW  
+    自動で作成し、ElasticIPの取得とアタッチをしてくれる
+
+
+- ルートテーブル
+    Public-SubnetにはInternet GWへのルーティングを設定したルートテーブルがアタッチされる  
+    Private-SubnetにはNAT GWへのルーティングを設定したルートテーブルがアタッチされる
+
+![](img/vpc_setting_rtb.png)
 
 
 ## ALBの作成
+### 基本方針
+Public -Subnetに公開されるBFFアプリケーションはロードバランサー経由でHTTPリクエストを送信する。  
+ロードバランサー側で、パスルーティングを行うため、ALBを構築する。
+
+
+### ALB作成後の成果物 
+- Public向けALB
+    Public-Subnetに配置するECS用のインターネットからの接続可能なALB
+- Private向けALB  
+    Private-Subnetに配置するECS用のVPC内部からしか接続できないALB
+
+
+### ALBの作成
+1. EC2のナビゲーションペインからロードバランサーを選択
+2. Create Load BalancerからALBを選択
+3. 名前を設定
+4. スキーム：publicなのでInternet向けを選択
+5. アドレスタイプ：Ipv4
+6. VPCとSubnet：作成済のPublicを選択
+![](img/alb_setting_basic.png)
+
+7. セキュリティグループの作成  
+    今後、ECSのセキュリティグループで、接続元を制限する際に本セキュリティグループと紐づけるので新規でSGを作成  
+    VPCの設定変更や Nameタグの付与を忘れない
+    Publicの場合は、0.0.0.0/0をインバウンドに設定、Privateの場合はVPC内部だけをインバウンドに設定
+![](img/alb_setting_sg_public.png)
+
+
+8. ターゲットグループの作成  
+    ターゲットの種類には、ECSのクラスターのインスタンスが対象となるのでインスタンスを指定を指定する。  
+    ヘルスチェック先やターゲットの登録はECSサービスを作成してから再設定するので、デフォルトのままで設定完了
+    
+![](img/alb_setting_tg.png)    
+
+10. リスナーの設定（ロードバランサのプロトコル・ポート）  
+     HTTPの80を指定して、作成したTGを設定
+![](img/alb_setting_listener.png)
+
+
+
+
+
+
 
 
 ## Springを使用したコンテナアプリ実装
+### 基本方針
+
+
 ## Dockerコンテナの作成
+### 基本方針
+
+
 ## ECSクラスターの作成
+### 基本方針
+
+
 ## ECSタスクの定義
+### 基本方針
+
+
 ## ECSサービスの実行
+### 基本方針
 
 ## トラブルシューティング
