@@ -263,6 +263,28 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 サードパーティ製のセキュリティミドルウェアがインストールされたEC2インスタンスへ転送するため。</p>
 </section>
 </section>
+<section id="cloud-front">
+<h2><span class="section-number">1.5. </span>Cloud Front<a class="headerlink" href="#cloud-front" title="この見出しへのパーマリンク">¶</a></h2>
+<p>CloudFrontはCDN（Contents Delivery Netwoerk)の機能を持つマネージドサービス。
+CloudFrontを利用することで、クライアントへコンテンツを高速配信することが可能。</p>
+<p>AWSは、エッジロケーションを世界中に保有しているため、グローバル単位でコンテンツ配信を高速化可能であり、
+さらに他のAWSサービスと統合されているため、アクセスのモニタリングやセキュリティの担保が可能となる。</p>
+<section id="cdn">
+<h3><span class="section-number">1.5.1. </span>CDNとは<a class="headerlink" href="#cdn" title="この見出しへのパーマリンク">¶</a></h3>
+<p>各地に配置されたエッジサーバーにコンテンツをキャッシュすることによって、コンテンツ配信の高速化や負荷分散する処理。</p>
+<p>オリジンサーバーとエッジサーバーで構成されている</p>
+<ul class="simple">
+<li><p>オリジンサーバー<br />コンテンツを配信するWebサーバー・APサーバー</p></li>
+<li><p>エッジサーバー<br />オリジンサーバーのコンテンツの一部を一時的に保持するサーバー</p></li>
+</ul>
+</section>
+<section id="id17">
+<h3><span class="section-number">1.5.2. </span>他のAWSサービスとの連携<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CloudWatchにより、キャッシュのヒット率やエラー状況などのモニタリングが可能</p>
+<p>アクセスログをS3に配信したり、WAFやACMによってCloudFrontと通信を保護することも可能</p>
+<p><img alt="../_images/cloudfront_image.png" src="../_images/cloudfront_image.png" /></p>
+</section>
+</section>
 </section>
 
 
@@ -321,6 +343,11 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 <li><a class="reference internal" href="#nlb-network-load-balancer">1.4.3. NLB(Network  Load Balancer)</a></li>
 <li><a class="reference internal" href="#clb-classic-load-balancer">1.4.4. CLB(Classic  Load Balancer)</a></li>
 <li><a class="reference internal" href="#glb-gateway-load-balancer">1.4.5. GLB(Gateway  Load Balancer)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cloud-front">1.5. Cloud Front</a><ul>
+<li><a class="reference internal" href="#cdn">1.5.1. CDNとは</a></li>
+<li><a class="reference internal" href="#id17">1.5.2. 他のAWSサービスとの連携</a></li>
 </ul>
 </li>
 </ul>
