@@ -31,6 +31,7 @@ AWSのリソースに配信されるが、Consumer側で作り込みが必要に
 
 ## Kinesis Data Firehose
 S3、Redshift、OenSeearchなどのストレージサービスやDBにストリームデータをロードさせるサービス。
+Redshiftに保存するためには一度S3に格納する必要がある点に注意
 
 Kinesis Data FirehoseはLambdaと統合されており、受信したデータに変換をしてから、配信することが可能。
 
@@ -62,7 +63,9 @@ Kinesis Data Analyticsで分析した後は、Firehoseで分析結果を蓄積�
 ## kinesis Video Streams
 ビデオカメラなどのデバイスから送られてくる動画データをストリームデータとしてAWSに取り込み、ストリーミング（データ転送）するサービス。
 
-データ分析を行うほか、レイテンシーを短くすることで、オンライン会議のような双方向での配信も可能である。
+データ分析を行う際には、Kinesis Video Streams Parser Streams　Libraryを利用した動画解析や機械学習サービスであるAmazon Rekognition VideoやSage Makerとの連携が可能。
+
+データ分析を行うほか、WebRTCを使用して、レイテンシーを短くすることで、オンライン会議のような双方向での配信も可能である。
 
 ![](img/kinesis_data_video_streams.png)
 

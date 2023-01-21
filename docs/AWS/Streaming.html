@@ -75,7 +75,8 @@
 </section>
 <section id="kinesis-data-firehose">
 <h2><span class="section-number">12.2. </span>Kinesis Data Firehose<a class="headerlink" href="#kinesis-data-firehose" title="この見出しへのパーマリンク">¶</a></h2>
-<p>S3、Redshift、OenSeearchなどのストレージサービスやDBにストリームデータをロードさせるサービス。</p>
+<p>S3、Redshift、OenSeearchなどのストレージサービスやDBにストリームデータをロードさせるサービス。
+Redshiftに保存するためには一度S3に格納する必要がある点に注意</p>
 <p>Kinesis Data FirehoseはLambdaと統合されており、受信したデータに変換をしてから、配信することが可能。</p>
 <p>Data Streamsと比較して、Consumer側での作り込みが不要であるが、60secほどのラグがあるため、準リアルタイムな機能となる。</p>
 <p><img alt="../_images/kinesis_data_firehose.png" src="../_images/kinesis_data_firehose.png" /></p>
@@ -91,7 +92,8 @@
 <section id="kinesis-video-streams">
 <h2><span class="section-number">12.4. </span>kinesis Video Streams<a class="headerlink" href="#kinesis-video-streams" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ビデオカメラなどのデバイスから送られてくる動画データをストリームデータとしてAWSに取り込み、ストリーミング（データ転送）するサービス。</p>
-<p>データ分析を行うほか、レイテンシーを短くすることで、オンライン会議のような双方向での配信も可能である。</p>
+<p>データ分析を行う際には、Kinesis Video Streams Parser Streams　Libraryを利用した動画解析や機械学習サービスであるAmazon Rekognition VideoやSage Makerとの連携が可能。</p>
+<p>データ分析を行うほか、WebRTCを使用して、レイテンシーを短くすることで、オンライン会議のような双方向での配信も可能である。</p>
 <p><img alt="../_images/kinesis_data_video_streams.png" src="../_images/kinesis_data_video_streams.png" /></p>
 </section>
 </section>
