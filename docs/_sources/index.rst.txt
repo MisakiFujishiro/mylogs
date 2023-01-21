@@ -37,6 +37,20 @@ Microservice
    microservice/certification_authentication
 
 
+
+ITの基本
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   knowledge/basic
+   knowledge/environment
+   
+
+
+
 AWS Services
 ==================
 
