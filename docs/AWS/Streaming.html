@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>&lt;no title&gt; &#8212; my_sphinx  ドキュメント</title>
+    <title>12. Kinesis &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -19,7 +19,9 @@
     <script src="../_static/translations.js"></script>
     
     <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="検索" href="../search.html" /> 
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="13. S3" href="S3.html" />
+    <link rel="prev" title="10. SNS" href="SNS_SQS.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -27,8 +29,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="S3.html" title="13. S3"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="SNS_SQS.html" title="10. SNS"
+             accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>Kinesis</a></li> 
       </ul>
     </div>  
 
@@ -37,7 +45,57 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  
+  <section id="kinesis">
+<h1><span class="section-number">12. </span>Kinesis<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">ストリーミングデータの配信機能</span></code>を提供するマネージドサービス</p>
+<p>サーバーがAWS管理のため、ユーザーはストリームデータの処理に集中することができる。</p>
+<p>そもそもストリーミングデータとは、データの連続的な変化によって意味を持つデータのことであり、
+これらのデータは抽出（Extracet）変換(Transform)書き出し（Load）ETL処理をされて保管される。</p>
+<p>Kinesisは、ストリーミングデータを扱うために４つのサービスが提供されている</p>
+<ul class="simple">
+<li><p>Kinesis Data Streams:各種AWSサービスにストリームデータをリアルタイムに配信</p></li>
+<li><p>Kinesis Data Firehose:ストリームデータを準リアルタイムでデータレイクや分析ツールに蓄積する</p></li>
+<li><p>Kinesis Data Analytics:Streams/Firehoseに配信されたデータをリアルタイムで分析変換</p></li>
+<li><p>Kinesis Video Streams:動画をストリームデータとしてAWSに取り込み、各種サービスに配信</p></li>
+</ul>
+<section id="kinesis-data-streams">
+<h2><span class="section-number">12.1. </span>Kinesis Data Streams<a class="headerlink" href="#kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h2>
+<p>異なるシステムやサーバー、デバイスから送信されるストリームデータを受信して、各種AWSサービスにリアルタイムに配信するサービス。</p>
+<p>AWSのリソースに配信されるが、Consumer側で作り込みが必要になる点に注意。</p>
+<p><img alt="../_images/kinesis_data_sterams.png" src="../_images/kinesis_data_sterams.png" /></p>
+<section id="data-streams">
+<h3><span class="section-number">12.1.1. </span>Data Streamsの登場人物<a class="headerlink" href="#data-streams" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>Producer</p></li>
+<li><p>Consumer</p></li>
+<li><p>ストリーム: kafkaだとTopicに対応、データのグループ</p></li>
+<li><p>シャード: kafkaだとPartitionに対応、ストリームの分割単位</p></li>
+</ul>
+</section>
+</section>
+<section id="kinesis-data-firehose">
+<h2><span class="section-number">12.2. </span>Kinesis Data Firehose<a class="headerlink" href="#kinesis-data-firehose" title="この見出しへのパーマリンク">¶</a></h2>
+<p>S3、Redshift、OenSeearchなどのストレージサービスやDBにストリームデータをロードさせるサービス。</p>
+<p>Kinesis Data FirehoseはLambdaと統合されており、受信したデータに変換をしてから、配信することが可能。</p>
+<p>Data Streamsと比較して、Consumer側での作り込みが不要であるが、60secほどのラグがあるため、準リアルタイムな機能となる。</p>
+<p><img alt="../_images/kinesis_data_firehose.png" src="../_images/kinesis_data_firehose.png" /></p>
+</section>
+<section id="kinesis-data-analytics">
+<h2><span class="section-number">12.3. </span>Kinesis Data Analytics<a class="headerlink" href="#kinesis-data-analytics" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Kinesis Data streamsとKinesis Data Firehoseに格納されたストリームデータに対して分析が可能なサービス</p>
+<p>SQLなどを利用して、データ分析を行い、Lambdaと統合されているためデータ形式の変換を行なうことも可能。</p>
+<p>Kinesis Data Analyticsで分析した後は、Firehoseで分析結果を蓄積したり、Streamsへ流してよりリッチな分析を行うことが可能。
+処理の内容自体は、Streamsでも可能だが、Consumer側の作り込みをせずに分析をすることができる点が大きなメリット。</p>
+<p><img alt="../_images/kinesis_data_analytics.png" src="../_images/kinesis_data_analytics.png" /></p>
+</section>
+<section id="kinesis-video-streams">
+<h2><span class="section-number">12.4. </span>kinesis Video Streams<a class="headerlink" href="#kinesis-video-streams" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ビデオカメラなどのデバイスから送られてくる動画データをストリームデータとしてAWSに取り込み、ストリーミング（データ転送）するサービス。</p>
+<p>データ分析を行うほか、レイテンシーを短くすることで、オンライン会議のような双方向での配信も可能である。</p>
+<p><img alt="../_images/kinesis_data_video_streams.png" src="../_images/kinesis_data_video_streams.png" /></p>
+</section>
+</section>
+
 
             <div class="clearer"></div>
           </div>
@@ -45,6 +103,32 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">12. Kinesis</a><ul>
+<li><a class="reference internal" href="#kinesis-data-streams">12.1. Kinesis Data Streams</a><ul>
+<li><a class="reference internal" href="#data-streams">12.1.1. Data Streamsの登場人物</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kinesis-data-firehose">12.2. Kinesis Data Firehose</a></li>
+<li><a class="reference internal" href="#kinesis-data-analytics">12.3. Kinesis Data Analytics</a></li>
+<li><a class="reference internal" href="#kinesis-video-streams">12.4. kinesis Video Streams</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="SNS_SQS.html"
+                          title="前の章へ"><span class="section-number">10. </span>SNS</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="S3.html"
+                          title="次の章へ"><span class="section-number">13. </span>S3</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -72,8 +156,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
+        <li class="right" >
+          <a href="S3.html" title="13. S3"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="SNS_SQS.html" title="10. SNS"
+             >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>Kinesis</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

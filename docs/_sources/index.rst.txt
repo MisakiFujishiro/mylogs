@@ -54,6 +54,7 @@ AWS Services
    AWS/DB
    AWS/EnvAutomation
    AWS/SNS_SQS
+   AWS/Streaming
    AWS/S3
    AWS/AI
 
