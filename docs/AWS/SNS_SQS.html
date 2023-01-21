@@ -47,9 +47,135 @@
             
   <section id="sns">
 <h1><span class="section-number">10. </span>SNS<a class="headerlink" href="#sns" title="この見出しへのパーマリンク">¶</a></h1>
+<p>SNS(Simple Notification Service)は、マネージド型の<code class="docutils literal notranslate"><span class="pre">メッセージ配信サービス</span></code>で非同期なメッセージ配信を実現することができる</p>
+<p>利用のイメージとしては、SNSのコンソール上でTopicの作成およびSub側の設定をして、Pub側でSNSのTopicを指定してあげる。</p>
+<p><img alt="../_images/sns_image.png" src="../_images/sns_image.png" /></p>
+<section id="id1">
+<h2><span class="section-number">10.1. </span>SNSの登場人物<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p>Publisher：メッセージを配信する発行者</p></li>
+<li><p>Subscriber：メッセージを受信する購買者</p></li>
+<li><p>Topic：PubとSubを仲介して疎結合にする</p></li>
+</ul>
+</section>
+<section id="publisher">
+<h2><span class="section-number">10.2. </span>Publisher<a class="headerlink" href="#publisher" title="この見出しへのパーマリンク">¶</a></h2>
+<p>256キロバイトまでのメッセージをTopicに対して発行することができる。</p>
+<p>S3のイベントやCodePipelineやLambdaなどと連携することができる。</p>
+</section>
+<section id="subscriber">
+<h2><span class="section-number">10.3. </span>Subscriber<a class="headerlink" href="#subscriber" title="この見出しへのパーマリンク">¶</a></h2>
+<p>事前に興味のあるTopicを購読設定しておくことで、メッセージが配信されるとSub側で受信することができる。</p>
+<p>LambdaやSQS、Eメールなどが設定可能。
+PubとしてCode PipelineをSubとしてEメールを設定しておけば、Deploy前にメールで承認依頼を出すといったことができる。</p>
+</section>
+<section id="topic">
+<h2><span class="section-number">10.4. </span>Topic<a class="headerlink" href="#topic" title="この見出しへのパーマリンク">¶</a></h2>
+<p>通信チャネルとして機能する論理的なエンドポイント</p>
+<p>TopicにはスタンダートとFIFOの２種類が存在し、順序性、重複性、スループットの面でメリデメがある。</p>
+<ul class="simple">
+<li><p>スタンダート<br />順序性と重複性が保証がされない代わりにほぼ無制限のスループットが実現できる</p></li>
+<li><p>FIFO<br />順序性と重複排除が保証されるが、スループットは300件/secとなる</p></li>
+</ul>
+<section id="id2">
+<h3><span class="section-number">10.4.1. </span>順序性<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>FIFOトピックではメッセージを発行時に、<code class="docutils literal notranslate"><span class="pre">メッセージグループID</span></code>を発行する。
+同一のメッセージグループでは配信順序が保証され。すべてのメッセージで配信順序を担保するためには一つのメッセージグループIDとすれば良い。</p>
+</section>
+<section id="id3">
+<h3><span class="section-number">10.4.2. </span>重複排除<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>リトライなどで、同じメッセージが配信されてしまうことは銀行業務などでは許されないので、重複排除の機能を利用する。</p>
+<p>基本思想としては、特定の重複排除IDを持つメッセージが発行されてから５分間は同一IDを持つメッセージ配信を行わないようにする。
+SNSではコンテンツベースの重複削除が機能として提供されており、SNSのコンテンツをSHA-256で暗号化して重複IDとする。</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">10.4.3. </span>リトライ<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>TopicからSubへのメッセージ配信が失敗した場合に、４段階のリトライポリシーに従ってリトライ処理がされる</p>
+<ol class="simple">
+<li><p>即時再試行</p></li>
+<li><p>バックオフ前段階</p></li>
+<li><p>バックオフ段階</p></li>
+<li><p>バックオフ後段階</p></li>
+</ol>
+<p>バっクオフとは、配信が失敗した時に間隔を徐々に伸ばしながらリトライする手法。
+すべてのリトライ処理が実行されても配信ができない場合は、メッセージが破棄されるが、SQSと組み合わせてデットレターキューに配信することも可能</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">10.4.4. </span>セキュリティ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>KMSによってTopic内のメッセージ（本文）を暗号化することができる。
+ただし、Topic名などのメタデータは暗号化対象外であることに注意。</p>
+<p>SNSはIAMによるアクセス制御に加えて、Topicに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
+</section>
+</section>
 </section>
 <section id="sqs">
 <h1><span class="section-number">11. </span>SQS<a class="headerlink" href="#sqs" title="この見出しへのパーマリンク">¶</a></h1>
+<p>SQS(Simple Queue Service)は無制限のスケーラビリティを備えたフルマネージド型の<code class="docutils literal notranslate"><span class="pre">分散メッセージキューサービス</span></code>で疎結合なシステムを実現できる。</p>
+<p>キューとは、データをFIFOに従ったデータ構造で、非同期にデータを受け渡す手法としてよく利用される。
+SQSは、複数のAZにキューを構成することで可用性や耐久性を担保し、アクセス制御やKMSによる暗号化などを利用できるため、簡単に優れたキューイング構成を構築できる。</p>
+<p><img alt="../_images/sqs_image.png" src="../_images/sqs_image.png" /></p>
+<section id="id6">
+<h2><span class="section-number">11.1. </span>SQSの登場人物<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p>Producer：メッセージを作成する生産者</p></li>
+<li><p>Consumer：メッセージを取り出して後続処理を行う消費者</p></li>
+<li><p>キュー：ProducerとConsumer両者を疎結合にする</p></li>
+</ul>
+<p>SNSは<code class="docutils literal notranslate"><span class="pre">Push型</span></code>の仕組みであり、SNSは<code class="docutils literal notranslate"><span class="pre">Pull型</span></code>である点。<br />Push型では、TopicからSubscriberへの配信は即時に行われるが、Pull型ではキューからConsumerがメッセージを取り出す必要がある。</p>
+</section>
+<section id="id7">
+<h2><span class="section-number">11.2. </span>SQSのキュー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SNS同様にスタンダードとFIFOが準備されており、順序性、重複性、スループットの面でメリデメがある。</p>
+<ul class="simple">
+<li><p>スタンダート<br />順序性と重複性が保証がされない代わりにほぼ無制限のスループットが実現できる</p></li>
+<li><p>FIFO<br />順序性についてはベストエフォートで、配信方法については少なくとも1回配信されるが2回配信される可能性がある。
+そのため、Consumer側で冪等性の仕組みなどを取り入れる必要がある。
+スループットは300件/secとなる</p></li>
+</ul>
+<section id="id8">
+<h3><span class="section-number">11.2.1. </span>キューからのメッセージ取得<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>次の3ステップを踏む</p>
+<ol class="simple">
+<li><p>Consumerがキューをポーリング（キューの監視）</p></li>
+<li><p>Consumerがメッセージ取得</p></li>
+<li><p>Consumerが処理済みメッセージをキューから削除</p></li>
+</ol>
+<p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。</p>
+</section>
+<section id="id9">
+<h3><span class="section-number">11.2.2. </span>ポーリング<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。</p>
+<ul class="simple">
+<li><p>ショートポーリング<br />分散されたSQSのサーバーから一部をサンプリングして即時返答</p></li>
+<li><p>ロングポーリング（推奨)<br />分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3><span class="section-number">11.2.3. </span>キューの待機時間設定<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producerがキューに格納してからConsumerが取得するまでの時間を遅延させたり、
+Consumerがキューを取得してから他のConsumerがメッセージを取得するまでの時間を遅延させたりすることができる。</p>
+<p><img alt="../_images/sns_delay.png" src="../_images/sns_delay.png" /></p>
+</section>
+<section id="id11">
+<h3><span class="section-number">11.2.4. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producerからキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。<br />遅延キューでは、キュー全体に設定が反映され、メッセージタイマーでは特定メッセージに対して設定が反映される</p>
+</section>
+<section id="id12">
+<h3><span class="section-number">11.2.5. </span>可視性タイムアウト<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Consumerがメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を防止することができるが、重複性を完全排除はできない点に注意。</p>
+</section>
+<section id="id13">
+<h3><span class="section-number">11.2.6. </span>デットレターキュー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<p>正常に処理できないメッセージがキューに滞留することを避ける機能。</p>
+<p>Redriveポリシーで、移動させるルール（最大受信数）とメッセージ格納先（デットレターキュー）を指定する
+デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
+</section>
+<section id="id14">
+<h3><span class="section-number">11.2.7. </span>セキュリティ<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<p>KMSによってメッセージを暗号化できるが、ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
+<p>SQSはIAMによるアクセス制御に加えて、キューに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
+</section>
+</section>
 </section>
 
 
@@ -62,8 +188,33 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">10. SNS</a></li>
-<li><a class="reference internal" href="#sqs">11. SQS</a></li>
+<li><a class="reference internal" href="#">10. SNS</a><ul>
+<li><a class="reference internal" href="#id1">10.1. SNSの登場人物</a></li>
+<li><a class="reference internal" href="#publisher">10.2. Publisher</a></li>
+<li><a class="reference internal" href="#subscriber">10.3. Subscriber</a></li>
+<li><a class="reference internal" href="#topic">10.4. Topic</a><ul>
+<li><a class="reference internal" href="#id2">10.4.1. 順序性</a></li>
+<li><a class="reference internal" href="#id3">10.4.2. 重複排除</a></li>
+<li><a class="reference internal" href="#id4">10.4.3. リトライ</a></li>
+<li><a class="reference internal" href="#id5">10.4.4. セキュリティ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sqs">11. SQS</a><ul>
+<li><a class="reference internal" href="#id6">11.1. SQSの登場人物</a></li>
+<li><a class="reference internal" href="#id7">11.2. SQSのキュー</a><ul>
+<li><a class="reference internal" href="#id8">11.2.1. キューからのメッセージ取得</a></li>
+<li><a class="reference internal" href="#id9">11.2.2. ポーリング</a></li>
+<li><a class="reference internal" href="#id10">11.2.3. キューの待機時間設定</a></li>
+<li><a class="reference internal" href="#id11">11.2.4. 遅延キューとメッセージタイマー</a></li>
+<li><a class="reference internal" href="#id12">11.2.5. 可視性タイムアウト</a></li>
+<li><a class="reference internal" href="#id13">11.2.6. デットレターキュー</a></li>
+<li><a class="reference internal" href="#id14">11.2.7. セキュリティ</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
   </div>
