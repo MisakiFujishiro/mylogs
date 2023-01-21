@@ -137,17 +137,21 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 <p>次の3ステップを踏む</p>
 <ol class="simple">
 <li><p>Consumerがキューをポーリング（キューの監視）</p></li>
-<li><p>Consumerがメッセージ取得</p></li>
+<li><p>Consumerがメッセージ取得（最大10件までまとめて取得可能）</p></li>
 <li><p>Consumerが処理済みメッセージをキューから削除</p></li>
 </ol>
-<p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。</p>
+<p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。
+メッセージ削除の際は取得したMessageのIDである「ReceiptHandle」を指定するが、他のConsumerがメッセージに触れると「ReceiptHandle」が書き換えられてエラーになるの可能性があるので、可視化タイムアウトなどの設定を使うようにする。</p>
 </section>
 <section id="id9">
 <h3><span class="section-number">11.2.2. </span>ポーリング<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。</p>
+<p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。
+ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
 <ul class="simple">
-<li><p>ショートポーリング<br />分散されたSQSのサーバーから一部をサンプリングして即時返答</p></li>
-<li><p>ロングポーリング（推奨)<br />分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける</p></li>
+<li><p>ショートポーリング<br />受信待機時間を0にすると設定できる。
+分散されたSQSのサーバーから一部をサンプリングして即時返答<br />即時返答のため、SNSのようにProducerが生産してからすぐConsumerが消費できる</p></li>
+<li><p>ロングポーリング（推奨)<br />受信待機時間を1-20にすると設定できる。
+分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける<br />待機時間を設定することで、Producerが生産してからConsumerが消費するまでの待機時間を設定できる</p></li>
 </ul>
 </section>
 <section id="id10">
@@ -158,7 +162,7 @@ Consumerがキューを取得してから他のConsumerがメッセージを取�
 </section>
 <section id="id11">
 <h3><span class="section-number">11.2.4. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Producerからキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。<br />遅延キューでは、キュー全体に設定が反映され、メッセージタイマーでは特定メッセージに対して設定が反映される</p>
+<p>Producerからキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。<br />遅延キューでは、<code class="docutils literal notranslate"><span class="pre">配信遅延時間</span></code>を設定することでキュー全体に設定が反映され、メッセージタイマーでは特定メッセージに対して設定が反映される</p>
 </section>
 <section id="id12">
 <h3><span class="section-number">11.2.5. </span>可視性タイムアウト<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
