@@ -289,7 +289,40 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 </ul>
 </section>
 <section id="id18">
-<h3><span class="section-number">1.5.3. </span>他のAWSサービスとの連携<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.3. </span>ビヘイビアにおけるキャッシュの設定<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<p>URLが一致した場合などにキャッシュを利用するように設定できるが、そのキャッシュをどう扱うかをキャッシュコントロールで設定することができる。
+CloudFront側で、TTLを設定することができ、オリジン側もCacheControlを設定でき、比較してキャッシュの時間を決定する。</p>
+<p>CloudFront側では以下を設定</p>
+<ul class="simple">
+<li><p>Max-TTL：最大のTTLでこれは越えれない</p></li>
+<li><p>Min-TTL：最小でも確保するTTLでこれより小さくはできない</p></li>
+<li><p>Default-TTL：オリジン側のCache Controlがない場合のTTL</p></li>
+</ul>
+<p>オリジン側では以下を設定</p>
+<ul class="simple">
+<li><p>Cache Control：オリジン側からリクエストするTTL</p></li>
+</ul>
+</section>
+<section id="id19">
+<h3><span class="section-number">1.5.4. </span>キャッシュポリシーとオリジンリクエストポリシー<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<p>キャッシングルールをパスごとに１つづつ設定指定が、ポリシー化してアタッチすることが可能となった。</p>
+<p>さらに、キャッシュポリシーとオリジンリクエストポリシーを分離して扱うことが可能となっった。
+キャッシュポリシーに指定したパラメータはオリジンリクエストに時効的に含まれる。</p>
+</section>
+<section id="lambda-edge">
+<h3><span class="section-number">1.5.5. </span>Lambda&#64;Edge<a class="headerlink" href="#lambda-edge" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CloudFrontのエッジがわで動作するLambda関数を設定することが可能。
+４つのパターンでLambda関数を定義可能</p>
+<ul class="simple">
+<li><p>ビューワーリクエスト<br />ビューワーからCloudFrontへのリクエストを受信した時に実行する<br />認証トークンの検証やA/Bテスト用のURLの書き換えなど</p></li>
+<li><p>オリジンリクエスト<br />CloudFrontからオリジンへの転送時に実行される<br />S3バケットのURLをエッジに近いものに変えたりする</p></li>
+<li><p>オリジンレスポインス<br />オリジンからのレスポンスをCloudFrontが受信した時に実行される
+レスポインスに含まれる画像イメージをリサイズしたりする</p></li>
+<li><p>ビューワーレスポンス<br />CloudFrontがビューワーにレスポンスを返す前に実行される</p></li>
+</ul>
+</section>
+<section id="id20">
+<h3><span class="section-number">1.5.6. </span>他のAWSサービスとの連携<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatchにより、キャッシュのヒット率やエラー状況などのモニタリングが可能</p>
 <p>アクセスログをS3に配信したり、WAFやACMによってCloudFrontと通信を保護することも可能</p>
 <p><img alt="../_images/cloudfront_image.png" src="../_images/cloudfront_image.png" /></p>
@@ -358,7 +391,10 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 <li><a class="reference internal" href="#cloud-front">1.5. Cloud Front</a><ul>
 <li><a class="reference internal" href="#cdn">1.5.1. CDNとは</a></li>
 <li><a class="reference internal" href="#id17">1.5.2. Cloud Frontの構成要素</a></li>
-<li><a class="reference internal" href="#id18">1.5.3. 他のAWSサービスとの連携</a></li>
+<li><a class="reference internal" href="#id18">1.5.3. ビヘイビアにおけるキャッシュの設定</a></li>
+<li><a class="reference internal" href="#id19">1.5.4. キャッシュポリシーとオリジンリクエストポリシー</a></li>
+<li><a class="reference internal" href="#lambda-edge">1.5.5. Lambda&#64;Edge</a></li>
+<li><a class="reference internal" href="#id20">1.5.6. 他のAWSサービスとの連携</a></li>
 </ul>
 </li>
 </ul>
