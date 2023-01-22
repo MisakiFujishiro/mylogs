@@ -1,8 +1,9 @@
-# チュートリアル11.1：TODOアプリケーション
+# チュートリアル
+## チュートリアル11.1：TODOアプリケーション
 [実施内容](http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/index.html)
 
-## 環境構築
-### PJの作成
+### 環境構築
+#### PJの作成
 `mvn archetype:generate`コマンドは設定したフォーマットのjavaのプロジェクトのひな壇を作成してくれる。
 フォーマットを作成することもでき、ベストプラクティスに従った構成を素早く作成できる。
 
@@ -26,11 +27,11 @@ mvn archetype:generate -B\
  -Dversion=1.0.0-SNAPSHOT
 ```
 
-### STSでのPJ立ち上げ
+#### STSでのPJ立ち上げ
 STSでImportする。  
 詳細は[チュートリアル](http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/TutorialTodo.html#id13)に有り
 
-### PJ構成
+#### PJ構成
 
 ```
 src
@@ -60,7 +61,7 @@ src/main/javaのフォルダとpom.xmlが上記なような構成があるだけ
 結果として、mavenは自動で、src/main/java配下にあるソースをコンパイルしてくれる。
 
 
-### PJの動作確認
+#### PJの動作確認
 `src/main/java/com/example/todo/app/welcome/HelloController.java`のプロジェクトはトップページが準備されている。
 
 ★1
@@ -120,7 +121,7 @@ public class HelloController {
 
 
 
-## Todoアプリケーションの作成
+### Todoアプリケーションの作成
 ドメイン層とアプリケーション層のステップで作成する。  
 
 ドメイン層  
@@ -135,7 +136,7 @@ ControllerとViewを作成する。
 - Viewでは、JSPなどを記述して画面表示する内容を記述。
 
 
-### Domain層の作成
+#### Domain層の作成
 Model、Repository、Serviceを作成する。
 - Modelは変数定義を記述 。
 - RepositoryはInterfaceとImplementを作成して、中身としては業務を含まないデータへのアクセス処理を記述
@@ -143,7 +144,7 @@ Model、Repository、Serviceを作成する。
 
 
 
-#### Model作成
+###### Model作成
 src/main/java/com/example/todo/domain/model配下に作成
 
 各プロパティとGetter・Setterを作成
@@ -204,8 +205,8 @@ public class Todo implements Serializable {
 }
 ```
 
-#### Repository作成
-##### Repository Interface作成
+###### Repository作成
+####### Repository Interface作成
 Interfaceから作成する
 
 src/main/java/com/example.todo.domain.repository.todo配下にTodoRepository.javaを作成
@@ -242,7 +243,7 @@ public interface TodoRepository {
 }
 ```
 
-##### Repository Implementの作成
+####### Repository Implementの作成
 Implementを作成する
 
 src/main/java/com/example.todo.domain.repository.todo配下にTodoRepositoryImpl.javaを作成
@@ -316,8 +317,8 @@ public class TodoRepositoryImpl implements TodoRepository {
 }
 ```
 
-#### Service作成
-##### Service Interfaceの作成
+###### Service作成
+####### Service Interfaceの作成
 Interfaceから作成する。
 
 src/main/java/com/example/todo/service/todo配下にTodoService.javaを作成する。
@@ -351,7 +352,7 @@ public interface TodoService {
 ```
 
 
-##### Service Implementの作成
+####### Service Implementの作成
 Implementを作成する。
 
 src/main/java/com/example/todo/service/todo配下にTodoServiceImpl.javaを作成する。
@@ -465,13 +466,13 @@ public class TodoServiceImpl implements TodoService {
 }
 ```
 
-### アプリケーション層の作成 
+#### アプリケーション層の作成 
 ControllerとViewを作成する。
 - Controllerでは、pathとメソッドの紐付け、viewとやり取りするためにmodelへのAttributeの追加などを記述。
 - Viewでは、JSPなどを記述して画面表示する内容を記述。
 
 
-#### Controllerの作成
+###### Controllerの作成
 src/main/java/com/example/todo/app/todo配下にTodoController.javaを作成する。
 
 ★1
@@ -491,10 +492,10 @@ public class TodoController {
 }
 ```
 
-#### Show all Todoの作成
+###### Show all Todoの作成
 新規作成フォームとTODOの全件表示の機能を実装
 
-##### TodoFormを作成する。
+####### TodoFormを作成する。
 Controllerで扱う、プロパティをここで定義して、最終的にはDomainに追加するような形。
 
 src/main/java/com/example/todo/app/todo配下にTodoForm.javaを作成する。
@@ -522,7 +523,7 @@ public class TodoForm implements Serializable {
 ```
 
 
-##### Controllerの修正
+####### Controllerの修正
 @GetMappingで/todo/listへのGETメソッドに対しての処理を記述
 
 ★1  
@@ -578,7 +579,7 @@ public class TodoController {
 
 
 
-##### jspの修正
+####### jspの修正
 Controllerjから受け取ったmodelの中身を使って、TODOのタイトルを表示する
 
 src/main/webapp/WEB-INF-views/todo配下にlist.jspを作成する。
@@ -621,8 +622,8 @@ model.Attributeで渡されてtodosについてfor文で展開して、画面表
 </body>
 </html>
 ```
-### Create Todoの作成
-#### TodoFormの修正
+#### Create Todoの作成
+###### TodoFormの修正
 TodoTitleについて、nullの禁止と文字数制限を設定
 ```
 import javax.validation.constraints.NotNull;
@@ -633,8 +634,8 @@ import javax.validation.constraints.Size;
 
 ```
 
-#### controllerの修正
-##### beanMapperによるtodoFormオブジェクトをtodoオブジェクトに変換
+###### controllerの修正
+####### beanMapperによるtodoFormオブジェクトをtodoオブジェクトに変換
 
 ★1  
 todoFormは、todoTitleの情報を持っている。
@@ -648,7 +649,7 @@ Mapper beanMapper;
 Todo todo = beanMapper.map(todoForm, Todo.class);
 ```
 
-##### postメソッドによるcreate処理
+####### postメソッドによるcreate処理
 
 ★1  
 todo/createというパスのポストメソッドに対しては、createメソッドが走る。
@@ -672,7 +673,7 @@ public String create(@Valid TodoForm todoForm,// ★★★★★2★★★★★
 
 ```
 
-#### Create処理詳細
+###### Create処理詳細
 エラーがあれば一覧表示。エラーがなければ、正常終了でリダイレクト。
 
 ★1  
@@ -715,7 +716,7 @@ serviceに記述された個数の制限などに引っかかるとcatchされ�
 ```
 
 
-#### jspの修正
+###### jspの修正
 ★1  
 <t:messagesPanel />
 org.terasoluna.gfw.common.message.ResultMessageに持っている情報を表示する。todoServiceで出力されたエラーか、正常終了のエラーが表示される。
@@ -748,8 +749,8 @@ modelAttributeには、@modelAttributeで指定した名前をつける
     </form:form>
 </div>
 ```
-### Finish Todoの作成
-#### todoFormの修正
+#### Finish Todoの作成
+###### todoFormの修正
 Finishの処理を追加する。FinishはtodoIdを使って、処理を行う。
 CreateとFinishでは利用するプロパティが異なり、Createの時にはtodoTitleを使いFinishの時はtodoIdを使いたい。  
 groups属性を利用して、入力チェックの制御を行う。
@@ -807,7 +808,7 @@ public class TodoForm implements Serializable {
 }
 ```
 
-#### todoControllerの修正
+###### todoControllerの修正
 groups属性を追加したので@Validではなく、@Validatedを利用する。
 
 ★1  
@@ -850,7 +851,7 @@ public String finish(
 }
 ```
 
-#### jspファイルの変更
+###### jspファイルの変更
 hiddenでtodoのtodoIdをPOSTする。
 ```
 <!-- (1) -->
@@ -866,11 +867,11 @@ hiddenでtodoのtodoIdをPOSTする。
 </form:form>
 ```
 
-### Delete Todoの作成
+#### Delete Todoの作成
 Finishと基本的には同じ修正を加える。
 
-## MyBatis3を利用したTODOアプリ
-### プロジェクトの作成
+### MyBatis3を利用したTODOアプリ
+#### プロジェクトの作成
 以下を実行（別のフォルダで）
 ```
 mvn archetype:generate -B¥
@@ -892,7 +893,7 @@ mvn archetype:generate -B¥
 - src/main/webapp/WEB-INF/views/todo/list.jsp
 
 
-### DataBaseのセットアップ
+#### DataBaseのセットアップ
 APサーバ起動時にH2 Database上にテーブルが作成されるようにする。
 TBLを作成するためのDDLは以下
 ```
@@ -920,7 +921,7 @@ cp.minIdle=0
 cp.maxWait=60000
 ```
 
-### インフラストラクチャ層の実装
+#### インフラストラクチャ層の実装
 RepositoryImplにあたる部分を作成する。  
 RepositoryImplを作成するのではなく、Repositoryインターフェースが呼び出された時に、実行するSQLを定義するためのMapperファイルを作成する。
 
@@ -1053,15 +1054,21 @@ idの部分で、Repositoryインターフェースのメソッドとのマッ�
 ```
 
 
-## References
+### References
 - [mvn archetype:generateコマンド](https://shunyaueta.com/posts/2021-07-18/)
 - [javaPJの構成](https://qiita.com/aaaaaayyymmm/items/f5458d2302c11202136d)
 
 
 
 
-# チュートリアル11.2：RESTでのTODOアプリケーション
-## REST API(REpresentational State Transfer)
+
+
+
+
+
+
+## チュートリアル11.2：RESTでのTODOアプリケーション
+### REST API(REpresentational State Transfer)
 クライアントとサーバーでデータをやり取りするためのアーキテクチャスタイルの一つ。  
 RESTにはいくつかの原則があり、それらを原則に従っているシステムをRESTfulと呼ばれる。  
 
@@ -1078,7 +1085,7 @@ Webシステムの設計思想であり、RESTであるための原則は4つ
 - ステートレス性  
 やり取りが一回ずつで完結すること
 
-## チュートリアルでやりたいこと
+### チュートリアルでやりたいこと
 全件取得・一件取得・削除・完了状態などをRESTで設定できるようにする。
 
 - GET api/v1/todos：全件取得
@@ -1089,13 +1096,13 @@ Webシステムの設計思想であり、RESTであるための原則は4つ
 
 エラーメッセージもHTTPのレスポンスで返すようにする。エラーコードをキーとしてプロパティファイルから取得
 
-## 実装
-### DispatcherServletの設定
+### 実装
+#### DispatcherServletの設定
 DispatherServletは、フロントでリクエストを受け取って裏側のjavaたちに処理を流していく。
 
 ![](img/tutorial11.2_dispatcher.png)
 
-#### web.xmlの修正
+###### web.xmlの修正
 `src/main/webapp/WEB-INF/web.xml`に設定を追加する
 REST用のMVC設定ファイルを`META-INF/spring/spring-mvc-rest.xml`に書き込むことを指定する。  
 DispatcherServletにマッピングするURLを指定する。今回は`/api/v1/*`へのURLはDispathcerServletにマッピングする。  
@@ -1117,19 +1124,19 @@ DispatcherServletにマッピングするURLを指定する。今回は`/api/v1/
 </servlet-mapping>
 ```
 
-#### rest用の設定ファイルの作成
+###### rest用の設定ファイルの作成
 `META-INF/spring/spring-mvc-rest.xml`を作成  
 component-scanの対象などを指定する。`com.example.todo.api`配下を指定して、apiの開発はこちらで実施する。  
 詳細はチュートリアルページ参照
 
-### REST APIのパッケージ作成
+#### REST APIのパッケージ作成
 `com.example.todo.api.todo`というパッケージを作成する。  
 api.todoパッケージの配下として作成するクラスは以下
 - [NAME]Resource
 - [NAME]RestController
 - [NAME]Helper(必要なら)
 
-### TodoResourceの実装
+#### TodoResourceの実装
 `src/main/java/com/example/todo/api/todo/TodoResource.java`を作成する
 
 Domain層で作成した`com.example.todo.domain.model`のTodo.javaと同様の指定に見えるが、TodoResoueceではクライアントとのやり取りの中で扱う情報が定義されている。
@@ -1137,7 +1144,7 @@ Todo.javaで定義するのは、業務処理の中で扱うデータである�
 詳細はチュートリアルページ参照
 
 
-### TodoRestControllerの実装
+#### TodoRestControllerの実装
 `src/main/java/com/example/todo/api/todo/TodoRestController.java`を作成する
 
 この中で、各RESTの処理を記述していく
@@ -1202,11 +1209,11 @@ public class TodoRestController {
 
 ~~~
 
-### 例外ハンドリングの実装
+#### 例外ハンドリングの実装
 これまでは、エラーメッセージをtodoServiceでハードコーディングしていたが、プロパティファイルからメッセージを取得する実装に変更する。  
 最終的には、プロパティファイルからエラーメッセージがまとめられていて、Serviceからはエラーコードを渡し、エラーのハンドリングはerroe用のパッケージを準備する。
 
-#### Serviceの修正
+###### Serviceの修正
 エラーメッセージをハードコーディングしていた部分を、エラーコードを渡す処理に変更
 
 変更前
@@ -1233,7 +1240,7 @@ public Todo create(Todo todo) {
     }
 ```
 
-#### プロパティファイルの作成
+###### プロパティファイルの作成
 処理結果に関するエラーメッセージを管理するプロパティファイル`src/main/resources/i18n/application-messages.properties`配下にアプリ用のエラーメッセージを追加する。
 ```
 # For this tutorial
@@ -1253,7 +1260,7 @@ javax.validation.constraints.Size.message    = {0} size must be between {min} an
 ```
 
 
-#### errorパッケージの作成
+###### errorパッケージの作成
 エラーハンドリング用のパッケージ`com.example.todo.api.common.error`を作成する
 
 実装は、`ResponseEntityExceptionHandler`を継承した`com.example.todo.api.common.error.RestGlobalExceptionHandler`クラスを作成して行う。  
@@ -1268,11 +1275,23 @@ ApiErrorクラスがJSONに変換されて、クライアントに応答され�
 
 ![](img/tutorial11.2_errorClass.png)
 
-## 参考
+### 参考
 - [RESTful Web Service¶](http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/ArchitectureInDetail/WebServiceDetail/REST.html#restoverviewhypermedialinkstorelatedresourceshttp://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/ArchitectureInDetail/WebServiceDetail/REST.html#restoverviewhypermedialinkstorelatedresources)
 
-# チュートリアル11.3：セッション
-## セッション管理
+
+
+
+
+
+
+
+
+
+
+
+
+## チュートリアル11.3：セッション
+### セッション管理
 セッションを含むデータの管理設計やセッションを利用した実装の[チュートリアル](http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/TutorialSession.html)
 
 セッションで管理対処となるデータについての設計
@@ -1283,7 +1302,7 @@ ApiErrorクラスがJSONに変換されて、クライアントに応答され�
 - `@SessionAttributes`の利用
 - Beanを利用する方法
 
-## 作成するアプリケーションと設計
+### 作成するアプリケーションと設計
 ![](img/tutorial11.3_arche.png)
 
 設計手順
@@ -1295,18 +1314,18 @@ ApiErrorクラスがJSONに変換されて、クライアントに応答され�
 5. セッションの利用をメリデメから検討する
 6. セッションをどのように実現するか検討するか
     
-## セッションのメリットデメリット
+### セッションのメリットデメリット
 セッションを利用すると複数画面のデータのやり取りが容易になるがデメリットもある。 基本的には使わない方針で、必要な時にセッションは使う
-### メリット
+#### メリット
 セッションを利用するのは、クレジットカードなどのマスクが必要な情報
 多数画面で利用される情報
 
-### デメリット
+#### デメリット
 - クライアント側が複数タブを利用していると整合性の担保を考慮する必要がある。
 - 管理するデータのサイズによってはメモリが枯渇する
 - サーバーがスケーリングなどで多重実行の場合に整合性の担保を考慮する必要がある。
 
-## セッションをどのように実現するか
+### セッションをどのように実現するか
 実現方法としては３つ挙げられる
 - `@SessionAttributes` ：１つのController内で扱う情報である
 - `SpringのセッションスコープのBean`：複数のControllerで扱う情報である
@@ -1316,14 +1335,25 @@ ApiErrorクラスがJSONに変換されて、クライアントに応答され�
 - 複数リクエストでセッション情報に同時アクセスする場合
 - セッションのタイムアウトをどのように扱うか
 
-## 実装
+### 実装
 Controllerで@SessionControllerを定義してあげる。
 
 BeanのスコープをSessionにするために@Componentの下で定義してあげる
 
-# チュートリアル11.4：Spring Security
 
-## 作成するアプリケーション
+
+
+
+
+
+
+
+
+
+
+## チュートリアル11.4：Spring Security
+
+### 作成するアプリケーション
 ![](img/tutorial11.4_arche.png)
 
 - ログインページでID/Pass認証を行う。
@@ -1331,12 +1361,12 @@ BeanのスコープをSessionにするために@Componentの下で定義して�
 - 認証しないとアクセスできないウェルカムページがある。
 - ログアウトすることができる。(Spring Security)
 
-## 基本的な処理の流れ
+### 基本的な処理の流れ
 1. usernameを画面から受け取り、ユーザー情報を検索
 2. ユーザー情報からusernameが見つかれば、passwordをハッシュ化したもので比較
 3. パスワード比較が一致すれば認証、ユーザー情報がなかったり、パスワード一致しないと認証失敗
 
-## アプリケーションの作成
+### アプリケーションの作成
 プロジェクトを作成する。
 DBを利用するのでmybatisのプロジェクトとする
 ```
@@ -1349,15 +1379,15 @@ mvn archetype:generate -B\
  -Dversion=1.0.0-SNAPSHOT
 ```
 
-## ドメイン層の実装
+### ドメイン層の実装
 Model・Repository・Serviceを作成する。
 
-### Modelの作成
+#### Modelの作成
 認証情報（usernameとpassword)を保持するAccountクラスを作成する。
 `src/main/java/com/example/security/domain/model/Account.java`
 
 
-### Repositoryの作成
+#### Repositoryの作成
 Accountのオブジェクトをデータベースに問い合わせる処理を実装する。
 
 まずは、Interfaceを実装する。
@@ -1404,7 +1434,7 @@ public interface AccountRepository {
     </select>
 </mapper>
 ```
-### Serviceの作成
+#### Serviceの作成
 ユーザー名から、Accountオブジェクトを取得する処理を実装する。
 今回の処理は、SpirngSecurityの認証サービスから呼び出されるため、共通処理であるShareを名前につける
 
@@ -1434,7 +1464,7 @@ public class AccountSharedServiceImpl implements AccountSharedService {
     }
 ```
 
-### 認証サービスの作成
+#### 認証サービスの作成
 SpringSecurityで利用する、アカウント情報を保持するクラスを作成する。
 このクラスに、本プロジェクトで扱うアカウント情報が渡されると、SpringSecurityで利用するアカウント情報に変換してくれる。
 `src/main/com/example/security/domain/service/userdetails/SampleUserDetail.java`
@@ -1504,7 +1534,7 @@ public class SampleUserDetailsService implements UserDetailsService {
 ```
 
 
-### DB初期化スクリプト
+#### DB初期化スクリプト
 本チュートリアルでは、インメモリDBを利用しているのでプロジェクト実行時に、毎回DBを作成する必要がある。
 ブランクPJでは、`jdbc:initialize-database`が設定されているので、ここにDDLとDMLを設定すれば初期に実行される
 `src/main/resources/META-INF/spring/first-springsecurity-env.xml`
@@ -1521,8 +1551,8 @@ public class SampleUserDetailsService implements UserDetailsService {
 
 
 
-## アプリケーション層の実装
-### Spring Securityの設定
+### アプリケーション層の実装
+#### Spring Securityの設定
 Spring Securityの設定ファイルに認証認可の設定を書き込む。  
 各種URLの遷移制御や、認証に合わせた画面表示の認可の設定を行う。
 
@@ -1562,7 +1592,7 @@ Spring Securityの設定ファイルに認証認可の設定を書き込む。
 
 ```
 
-### LoginFormを返すControllerの作成
+#### LoginFormを返すControllerの作成
 loginのフォームに遷移させるControllerを作成
 `src/main/com/example/security/app/login/LoginController.java`
 ```
@@ -1583,7 +1613,7 @@ Login用のJSPを作成
 セッションスコープに格納される認証エラーの例外オブジェクトをJSPから取得できるようにする。
 `src/main/webapp/WEB-INF/views/common/include.jsp`
 
-### Welcomeページの作成
+#### Welcomeページの作成
 認証さればページで、ログインユーザーのオブジェクトにアクセスする。
 アカウント情報を使って、ログインユーザーにWelcomeしてみよう
 
