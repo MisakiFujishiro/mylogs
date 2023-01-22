@@ -1,0 +1,1768 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>3. チュートリアル11.1：TODOアプリケーション &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. 環境構築（MacOS）" href="../Docker/docker_env.html" />
+    <link rel="prev" title="2. java spring" href="knowledge.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../Docker/docker_env.html" title="1. 環境構築（MacOS）"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="knowledge.html" title="2. java spring"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>チュートリアル11.1：TODOアプリケーション</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="todo">
+<h1><span class="section-number">3. </span>チュートリアル11.1：TODOアプリケーション<a class="headerlink" href="#todo" title="この見出しへのパーマリンク">¶</a></h1>
+<p><a class="reference external" href="http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/index.html">実施内容</a></p>
+<section id="id1">
+<h2><span class="section-number">3.1. </span>環境構築<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="pj">
+<h3><span class="section-number">3.1.1. </span>PJの作成<a class="headerlink" href="#pj" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">mvn</span> <span class="pre">archetype:generate</span></code>コマンドは設定したフォーマットのjavaのプロジェクトのひな壇を作成してくれる。
+フォーマットを作成することもでき、ベストプラクティスに従った構成を素早く作成できる。</p>
+<p>オプションの意味は以下</p>
+<ul class="simple">
+<li><p>archetypeGroupId:テンプレートの提供元ID</p></li>
+<li><p>archetypeArtifactId:今回利用するテンプレートのID</p></li>
+<li><p>archetypeVersion:テンプレートのバージョン</p></li>
+<li><p>groupId:PJの識別子</p></li>
+<li><p>artifactId:作成するJavaPJの名称</p></li>
+<li><p>version:PJのバージョン名</p></li>
+</ul>
+<p>※terminalで実行する場合は、¥で改行するようにしないとエラーが出た</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
+ <span class="o">-</span><span class="n">DarchetypeGroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">terasoluna</span><span class="o">.</span><span class="n">gfw</span><span class="o">.</span><span class="n">blank</span>\
+ <span class="o">-</span><span class="n">DarchetypeArtifactId</span><span class="o">=</span><span class="n">terasoluna</span><span class="o">-</span><span class="n">gfw</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">blank</span><span class="o">-</span><span class="n">archetype</span>\
+ <span class="o">-</span><span class="n">DarchetypeVersion</span><span class="o">=</span><span class="mf">5.7.0</span><span class="o">.</span><span class="n">RELEASE</span>\
+ <span class="o">-</span><span class="n">DgroupId</span><span class="o">=</span><span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">todo</span>\
+ <span class="o">-</span><span class="n">DartifactId</span><span class="o">=</span><span class="n">todo</span>\
+ <span class="o">-</span><span class="n">Dversion</span><span class="o">=</span><span class="mf">1.0.0</span><span class="o">-</span><span class="n">SNAPSHOT</span>
+</pre></div>
+</div>
+</section>
+<section id="stspj">
+<h3><span class="section-number">3.1.2. </span>STSでのPJ立ち上げ<a class="headerlink" href="#stspj" title="この見出しへのパーマリンク">¶</a></h3>
+<p>STSでImportする。<br />詳細は<a class="reference external" href="http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/TutorialTodo.html#id13">チュートリアル</a>に有り</p>
+</section>
+<section id="id2">
+<h3><span class="section-number">3.1.3. </span>PJ構成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>src
+  └pom.xml
+  └main
+      ├java・・・ソースコードを置くことがルール
+      │  └com
+      │    └example
+      │      └todo
+      │        ├ app ・・・アプリケーション層
+      │        │   └todo・・・コントローラー
+      │        └domain ・・・ドメイン層
+      │            ├model ・・・モデル（データ定義
+      │            ├repository ・・・リポジトリ（データにアクセス
+      │            │   └todo
+      │            └service ・・・サービス（業務処理
+      │                └todo
+      ├resources・・・設定ファイルをおくことがルール
+      │  └META-INF
+      │      └spring 
+      └wepapp
+          └WEB-INF
+              └views ・・・jspなどのビュー
+</pre></div>
+</div>
+<p>src/main/javaのフォルダとpom.xmlが上記なような構成があるだけで、mvnPJと呼ぶことができる。
+昔は自由に決めることができていたけど、新規参画者が酷い目にあったので、ルールが画一化された。
+結果として、mavenは自動で、src/main/java配下にあるソースをコンパイルしてくれる。</p>
+</section>
+<section id="id3">
+<h3><span class="section-number">3.1.4. </span>PJの動作確認<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/todo/app/welcome/HelloController.java</span></code>のプロジェクトはトップページが準備されている。</p>
+<p>★1
+&#64;ControllerのアノテーションによりControllerであることを認識させる</p>
+<p>★2
+&#64;RequestMappingにより<code class="docutils literal notranslate"><span class="pre">/</span></code>のGETとPOSTに対してhomeというメソッドを紐付け。
+処理内容はログの出力、日時の取得、日時情報をモデルに引き渡し、Viewへの連携</p>
+<p>★3
+ModelにAttribute（変数）を引き渡している。
+model側でserverTimeという変数名が使える。</p>
+<p>★4
+viewのファイル名で、画面を表示先を指定<br />ViewResolverで<code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/views/welcome/home.jsp</span></code>配下のファイルが指定されている</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+/**
+ * Handles requests for the application home page.
+ */
+ 
+// ★★★★★1★★★★★
+@Controller
+public class HelloController {
+
+    private static final Logger logger = LoggerFactory
+            .getLogger(HelloController.class);
+
+    /**
+     * Simply selects the home view to render by returning its name.
+     */
+
+    // ★★★★★2★★★★★
+    @RequestMapping(value = &quot;/&quot;, method = {RequestMethod.GET, RequestMethod.POST})
+    public String home(Locale locale, Model model) {
+
+        logger.info(&quot;Welcome home! The client locale is {}.&quot;, locale);
+
+        Date date = new Date();
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG,
+                DateFormat.LONG, locale);
+
+        String formattedDate = dateFormat.format(date);
+
+        // ★★★★★3★★★★★
+        model.addAttribute(&quot;serverTime&quot;, formattedDate);
+
+        // ★★★★★4★★★★★
+        return &quot;welcome/home&quot;;
+    }
+
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id4">
+<h2><span class="section-number">3.2. </span>Todoアプリケーションの作成<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ドメイン層とアプリケーション層のステップで作成する。</p>
+<p>ドメイン層<br />Model、Repository、Serviceを作成する。</p>
+<ul class="simple">
+<li><p>Modelは変数定義を記述 。</p></li>
+<li><p>RepositoryはInterfaceとImplementを作成して、中身としては業務を含まないデータへのアクセス処理を記述</p></li>
+<li><p>Serviceは業務まで含んだ、エラーメッセージのハンドリングまで含めて記述。</p></li>
+</ul>
+<p>アプリケーション層<br />ControllerとViewを作成する。</p>
+<ul class="simple">
+<li><p>Controllerでは、pathとメソッドの紐付け、viewとやり取りするためにmodelへのAttributeの追加などを記述。</p></li>
+<li><p>Viewでは、JSPなどを記述して画面表示する内容を記述。</p></li>
+</ul>
+<section id="domain">
+<h3><span class="section-number">3.2.1. </span>Domain層の作成<a class="headerlink" href="#domain" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Model、Repository、Serviceを作成する。</p>
+<ul class="simple">
+<li><p>Modelは変数定義を記述 。</p></li>
+<li><p>RepositoryはInterfaceとImplementを作成して、中身としては業務を含まないデータへのアクセス処理を記述</p></li>
+<li><p>Serviceは業務まで含んだ、エラーメッセージのハンドリングまで含めて記述。</p></li>
+</ul>
+<section id="model">
+<h4><span class="section-number">3.2.1.1. </span>Model作成<a class="headerlink" href="#model" title="この見出しへのパーマリンク">¶</a></h4>
+<p>src/main/java/com/example/todo/domain/model配下に作成</p>
+<p>各プロパティとGetter・Setterを作成</p>
+<ul class="simple">
+<li><p>todoId：ID</p></li>
+<li><p>todoTitle：タイトル</p></li>
+<li><p>finished：完了フラグ</p></li>
+<li><p>createdAt：作成日</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">todo</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">model</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Todo</span> <span class="n">implements</span> <span class="n">Serializable</span> <span class="p">{</span>
+
+    <span class="n">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1</span><span class="n">L</span><span class="p">;</span>
+
+    <span class="n">private</span> <span class="n">String</span> <span class="n">todoId</span><span class="p">;</span>
+
+    <span class="n">private</span> <span class="n">String</span> <span class="n">todoTitle</span><span class="p">;</span>
+
+    <span class="n">private</span> <span class="n">boolean</span> <span class="n">finished</span><span class="p">;</span>
+
+    <span class="n">private</span> <span class="n">Date</span> <span class="n">createdAt</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getTodoId</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">todoId</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setTodoId</span><span class="p">(</span><span class="n">String</span> <span class="n">todoId</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">todoId</span> <span class="o">=</span> <span class="n">todoId</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getTodoTitle</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">todoTitle</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setTodoTitle</span><span class="p">(</span><span class="n">String</span> <span class="n">todoTitle</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">todoTitle</span> <span class="o">=</span> <span class="n">todoTitle</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">boolean</span> <span class="n">isFinished</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">finished</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setFinished</span><span class="p">(</span><span class="n">boolean</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="n">finished</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">Date</span> <span class="n">getCreatedAt</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">createdAt</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setCreatedAt</span><span class="p">(</span><span class="n">Date</span> <span class="n">createdAt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">createdAt</span> <span class="o">=</span> <span class="n">createdAt</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="repository">
+<h4><span class="section-number">3.2.1.2. </span>Repository作成<a class="headerlink" href="#repository" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="repository-interface">
+<h5><span class="section-number">3.2.1.2.1. </span>Repository Interface作成<a class="headerlink" href="#repository-interface" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Interfaceから作成する</p>
+<p>src/main/java/com/example.todo.domain.repository.todo配下にTodoRepository.javaを作成</p>
+<p>各関数の引数と返り値のみが定義される。（中身はImplで作成）
+記述する機能としては、業務とは独立したデータのCRUD処理のみ記述される</p>
+<ul class="simple">
+<li><p>findById</p></li>
+<li><p>findAll</p></li>
+<li><p>create</p></li>
+<li><p>update</p></li>
+<li><p>delete</p></li>
+<li><p>countByFinished</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">todo</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">todo</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Collection</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Optional</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">com.example.todo.domain.model.Todo</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">interface</span> <span class="n">TodoRepository</span> <span class="p">{</span>
+    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span> <span class="n">findById</span><span class="p">(</span><span class="n">String</span> <span class="n">todoId</span><span class="p">);</span>
+
+    <span class="n">Collection</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span> <span class="n">findAll</span><span class="p">();</span>
+
+    <span class="n">void</span> <span class="n">create</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">);</span>
+
+    <span class="n">boolean</span> <span class="n">update</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">);</span>
+
+    <span class="n">void</span> <span class="n">delete</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">);</span>
+
+    <span class="n">long</span> <span class="n">countByFinished</span><span class="p">(</span><span class="n">boolean</span> <span class="n">finished</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="repository-implement">
+<h5><span class="section-number">3.2.1.2.2. </span>Repository Implementの作成<a class="headerlink" href="#repository-implement" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Implementを作成する</p>
+<p>src/main/java/com/example.todo.domain.repository.todo配下にTodoRepositoryImpl.javaを作成</p>
+<p>各関数の具体的な処理内容が記載される。
+Interfaceで記述した機能について&#64;Overrideして追記</p>
+<ul class="simple">
+<li><p>findById</p></li>
+<li><p>findAll</p></li>
+<li><p>create</p></li>
+<li><p>update</p></li>
+<li><p>delete</p></li>
+<li><p>countByFinished</p></li>
+</ul>
+<p>★1<br />Impl側に&#64;Repositoryを記述する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package com.example.todo.domain.repository.todo;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.todo.domain.model.Todo;
+
+// ★★★★★1★★★★★
+@Repository  
+public class TodoRepositoryImpl implements TodoRepository {
+    private static final Map&lt;String, Todo&gt; TODO_MAP = new ConcurrentHashMap&lt;String, Todo&gt;();
+
+    @Override
+    public Optional&lt;Todo&gt; findById(String todoId) {
+        return Optional.ofNullable(TODO_MAP.get(todoId));
+    }
+
+    @Override
+    public Collection&lt;Todo&gt; findAll() {
+        return TODO_MAP.values();
+    }
+
+    @Override
+    public void create(Todo todo) {
+        TODO_MAP.put(todo.getTodoId(), todo);
+    }
+
+    @Override
+    public boolean update(Todo todo) {
+        TODO_MAP.put(todo.getTodoId(), todo);
+        return true;
+    }
+
+    @Override
+    public void delete(Todo todo) {
+        TODO_MAP.remove(todo.getTodoId());
+    }
+
+    @Override
+    public long countByFinished(boolean finished) {
+        long count = 0;
+        for (Todo todo : TODO_MAP.values()) {
+            if (finished == todo.isFinished()) {
+                count++;
+            }
+        }
+        return count;
+    }
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="service">
+<h4><span class="section-number">3.2.1.3. </span>Service作成<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="service-interface">
+<h5><span class="section-number">3.2.1.3.1. </span>Service Interfaceの作成<a class="headerlink" href="#service-interface" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Interfaceから作成する。</p>
+<p>src/main/java/com/example/todo/service/todo配下にTodoService.javaを作成する。</p>
+<p>各関数の引数と返り値のみが定義される。（中身はImplで作成）</p>
+<ul class="simple">
+<li><p>findAll</p></li>
+<li><p>create</p></li>
+<li><p>finish</p></li>
+<li><p>delete</p></li>
+</ul>
+<p>記述する機能としては、アプリケーションとしての業務処理を行うメソッド</p>
+<p><img alt="todoApp" src="../_images/tutorial1_todoApp_archi.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">todo</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">todo</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Collection</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">com.example.todo.domain.model.Todo</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">interface</span> <span class="n">TodoService</span> <span class="p">{</span>
+    <span class="n">Collection</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span> <span class="n">findAll</span><span class="p">();</span>
+
+    <span class="n">Todo</span> <span class="n">create</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">);</span>
+
+    <span class="n">Todo</span> <span class="n">finish</span><span class="p">(</span><span class="n">String</span> <span class="n">todoId</span><span class="p">);</span>
+
+    <span class="n">void</span> <span class="n">delete</span><span class="p">(</span><span class="n">String</span> <span class="n">todoId</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="service-implement">
+<h5><span class="section-number">3.2.1.3.2. </span>Service Implementの作成<a class="headerlink" href="#service-implement" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Implementを作成する。</p>
+<p>src/main/java/com/example/todo/service/todo配下にTodoServiceImpl.javaを作成する。</p>
+<p>エラーメッセージのハンドリングなど、業務的なロジックについて実装している</p>
+<p>★1<br />ServiceImpl側でアノテーションを付与する</p>
+<p>★2<br />&#64;Transactionalはトランザクション管理で、参照のみを行う処理にreadOnly=trueを付与する</p>
+<p>★3<br />&#64;InjectでRepositoryで実装したメソッドのインスタンス注入されるので利用できるようになる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package com.example.todo.domain.service.todo;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.terasoluna.gfw.common.exception.BusinessException;
+import org.terasoluna.gfw.common.exception.ResourceNotFoundException;
+import org.terasoluna.gfw.common.message.ResultMessage;
+import org.terasoluna.gfw.common.message.ResultMessages;
+
+import com.example.todo.domain.model.Todo;
+import com.example.todo.domain.repository.todo.TodoRepository;
+
+// ★★★★★1★★★★★
+@Service
+
+// ★★★★★2★★★★★
+@Transactional 
+public class TodoServiceImpl implements TodoService {
+
+    private static final long MAX_UNFINISHED_COUNT = 5;
+
+    // ★★★★★3★★★★★
+    @Inject
+    TodoRepository todoRepository;
+
+    @Override
+    @Transactional(readOnly = true) 
+    public Collection&lt;Todo&gt; findAll() {
+        return todoRepository.findAll();
+    }
+
+    @Override
+    public Todo create(Todo todo) {
+        long unfinishedCount = todoRepository.countByFinished(false);
+        if (unfinishedCount &gt;= MAX_UNFINISHED_COUNT) {
+            ResultMessages messages = ResultMessages.error();
+            messages.add(ResultMessage
+                    .fromText(&quot;[E001] The count of un-finished Todo must not be over &quot;
+                            + MAX_UNFINISHED_COUNT + &quot;.&quot;));
+            
+            throw new BusinessException(messages);
+        }
+
+        
+        String todoId = UUID.randomUUID().toString();
+        Date createdAt = new Date();
+
+        todo.setTodoId(todoId);
+        todo.setCreatedAt(createdAt);
+        todo.setFinished(false);
+
+        todoRepository.create(todo);
+        return todo;
+    }
+
+    @Override
+    public Todo finish(String todoId) {
+        Todo todo = findOne(todoId);
+        if (todo.isFinished()) {
+            ResultMessages messages = ResultMessages.error();
+            messages.add(ResultMessage
+                    .fromText(&quot;[E002] The requested Todo is already finished. (id=&quot;
+                            + todoId + &quot;)&quot;));
+            throw new BusinessException(messages);
+        }
+        todo.setFinished(true);
+        todoRepository.update(todo);
+        return todo;
+    }
+
+    @Override
+    public void delete(String todoId) {
+        Todo todo = findOne(todoId);
+        todoRepository.delete(todo);
+    }
+
+    
+    private Todo findOne(String todoId) {
+        
+        return todoRepository.findById(todoId).orElseThrow(() -&gt; {
+            ResultMessages messages = ResultMessages.error();
+            messages.add(ResultMessage
+                    .fromText(&quot;[E404] The requested Todo is not found. (id=&quot;
+                            + todoId + &quot;)&quot;));
+            return new ResourceNotFoundException(messages);
+        });
+    }
+}
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="id5">
+<h3><span class="section-number">3.2.2. </span>アプリケーション層の作成<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ControllerとViewを作成する。</p>
+<ul class="simple">
+<li><p>Controllerでは、pathとメソッドの紐付け、viewとやり取りするためにmodelへのAttributeの追加などを記述。</p></li>
+<li><p>Viewでは、JSPなどを記述して画面表示する内容を記述。</p></li>
+</ul>
+<section id="controller">
+<h4><span class="section-number">3.2.2.1. </span>Controllerの作成<a class="headerlink" href="#controller" title="この見出しへのパーマリンク">¶</a></h4>
+<p>src/main/java/com/example/todo/app/todo配下にTodoController.javaを作成する。</p>
+<p>★1
+&#64;RequestMappngでTodoControllerで扱うパスの設定をしていく。
+全ての処理はtodoの配下に設定される</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package com.example.todo.app.todo;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+// ★★★★★1★★★★★
+@RequestMapping(&quot;todo&quot;) 
+public class TodoController {
+
+}
+</pre></div>
+</div>
+</section>
+<section id="show-all-todo">
+<h4><span class="section-number">3.2.2.2. </span>Show all Todoの作成<a class="headerlink" href="#show-all-todo" title="この見出しへのパーマリンク">¶</a></h4>
+<p>新規作成フォームとTODOの全件表示の機能を実装</p>
+<section id="todoform">
+<h5><span class="section-number">3.2.2.2.1. </span>TodoFormを作成する。<a class="headerlink" href="#todoform" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Controllerで扱う、プロパティをここで定義して、最終的にはDomainに追加するような形。</p>
+<p>src/main/java/com/example/todo/app/todo配下にTodoForm.javaを作成する。</p>
+<p>内容としては todoTitleに関するプロパティ定義</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">todo</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">todo</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="k">class</span> <span class="nc">TodoForm</span> <span class="n">implements</span> <span class="n">Serializable</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1</span><span class="n">L</span><span class="p">;</span>
+
+    <span class="n">private</span> <span class="n">String</span> <span class="n">todoTitle</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getTodoTitle</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">todoTitle</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setTodoTitle</span><span class="p">(</span><span class="n">String</span> <span class="n">todoTitle</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">todoTitle</span> <span class="o">=</span> <span class="n">todoTitle</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h5><span class="section-number">3.2.2.2.2. </span>Controllerの修正<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h5>
+<p>&#64;GetMappingで/todo/listへのGETメソッドに対しての処理を記述</p>
+<p>★1<br />&#64;ModelAttributeを定義すると、クラス名を小文字化したもの（todoForm)をkey,返り値をvalueとして、modelに追加される。<br />すなわち、TodoControllerの各処理で、model.Attribute(&quot;todoForm&quot;,form)を実装するのと同じ<br />TodoFormの中身が、modelに追加される。</p>
+<p>★2<br />&#64;GetMapping(&quot;list&quot;)の設定により todo/listへのアクセスがあると、list関数が走って、findallの結果をattributeに追加して、 todo/listに遷移させる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package com.example.todo.app.todo;
+
+import java.util.Collection;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.todo.domain.model.Todo;
+import com.example.todo.domain.service.todo.TodoService;
+
+
+@Controller
+@RequestMapping(&quot;todo&quot;)
+public class TodoController {
+    @Inject 
+    TodoService todoService;
+    
+    // ★★★★★1★★★★★
+    @ModelAttribute 
+    public TodoForm setUpForm() {
+        TodoForm form = new TodoForm();
+        return form;
+    }
+    
+    
+    // ★★★★★2★★★★★
+    @GetMapping(&quot;list&quot;) 
+    public String list(Model model) {
+        Collection&lt;Todo&gt; todos = todoService.findAll();
+        model.addAttribute(&quot;todos&quot;, todos); 
+        return &quot;todo/list&quot;; 
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="jsp">
+<h5><span class="section-number">3.2.2.2.3. </span>jspの修正<a class="headerlink" href="#jsp" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Controllerjから受け取ったmodelの中身を使って、TODOのタイトルを表示する</p>
+<p>src/main/webapp/WEB-INF-views/todo配下にlist.jspを作成する。</p>
+<p>★1<br />model.Attributeで渡されてtodosについてfor文で展開して、画面表示している。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;Todo List&lt;/title&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+.strike {
+    text-decoration: line-through;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Todo List&lt;/h1&gt;
+    &lt;hr /&gt;
+    &lt;div id=&quot;todoList&quot;&gt;
+        &lt;ul&gt;
+            &lt;!-- ★★★★★1★★★★★--&gt;
+            &lt;c:forEach items=&quot;${todos}&quot; var=&quot;todo&quot;&gt;
+                &lt;li&gt;&lt;c:choose&gt;
+                        &lt;c:when test=&quot;${todo.finished}&quot;&gt;
+                            &lt;span class=&quot;strike&quot;&gt;
+                            ${f:h(todo.todoTitle)}
+                            &lt;/span&gt;
+                        &lt;/c:when&gt;
+                        &lt;c:otherwise&gt;
+                            ${f:h(todo.todoTitle)}
+                         &lt;/c:otherwise&gt;
+                    &lt;/c:choose&gt;&lt;/li&gt;
+            &lt;/c:forEach&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="create-todo">
+<h3><span class="section-number">3.2.3. </span>Create Todoの作成<a class="headerlink" href="#create-todo" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id7">
+<h4><span class="section-number">3.2.3.1. </span>TodoFormの修正<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>TodoTitleについて、nullの禁止と文字数制限を設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+    @NotNull // ★★★★★
+    @Size(min = 1, max = 30) // ★★★★★
+    private String todoTitle;
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h4><span class="section-number">3.2.3.2. </span>controllerの修正<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="beanmappertodoformtodo">
+<h5><span class="section-number">3.2.3.2.1. </span>beanMapperによるtodoFormオブジェクトをtodoオブジェクトに変換<a class="headerlink" href="#beanmappertodoformtodo" title="この見出しへのパーマリンク">¶</a></h5>
+<p>★1<br />todoFormは、todoTitleの情報を持っている。
+Controller側でtodoTitleに関わる処理を終えたらtodoに変換する。<br />これによって、todoTitleが入ったtodoオブジェクトを作って、次の createに流す。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@Inject
+Mapper beanMapper;
+// ★★★★★1★★★★★
+Todo todo = beanMapper.map(todoForm, Todo.class);
+</pre></div>
+</div>
+</section>
+<section id="postcreate">
+<h5><span class="section-number">3.2.3.2.2. </span>postメソッドによるcreate処理<a class="headerlink" href="#postcreate" title="この見出しへのパーマリンク">¶</a></h5>
+<p>★1<br />todo/createというパスのポストメソッドに対しては、createメソッドが走る。</p>
+<p>★2<br />TodoFormに対して、入力チェックが走る。</p>
+<p>★3<br />入力チェックの結果が格納される</p>
+<p>★4<br />正常に作成が完了すると、リダイレクトされる<br />リダイレクト先への情報を格納するために、引数にRedirectAttributesを加える。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@PostMapping(&quot;create&quot;) // ★★★★★1★★★★★
+public String create(@Valid TodoForm todoForm,// ★★★★★2★★★★★ 
+                            BindingResult bindingResult, // ★★★★★3★★★★★
+                            Model model, 
+                            RedirectAttributes attributes// ★★★★★4★★★★★) { /
+</pre></div>
+</div>
+</section>
+</section>
+<section id="create">
+<h4><span class="section-number">3.2.3.3. </span>Create処理詳細<a class="headerlink" href="#create" title="この見出しへのパーマリンク">¶</a></h4>
+<p>エラーがあれば一覧表示。エラーがなければ、正常終了でリダイレクト。</p>
+<p>★1<br />&#64;validの部分でエラーがあった場合は一覧表示に戻る。<br />JSP側で<code class="docutils literal notranslate"><span class="pre">&lt;form:errors</span> <span class="pre">path=&quot;todoTitle&quot;</span> <span class="pre">/&gt;</span></code>として、TodoFormのプロパティであるtodoTititleのエラーを表示させている。</p>
+<p>★2<br />todoServiceのcreateを呼び出して実行<br />todoService→todoRepositoryのcreateが実行されて、Todo_Mapにtodoが追加される。</p>
+<p>★3<br />serviceに記述された個数の制限などに引っかかるとcatchされる。<br />エラーメッセージはmodelに格納されるし、modelAttributeでmodelにtodoFornも格納されていると思う。</p>
+<p>★4<br />全ての処理がうまくいった場合は、ResultMessagesに成功のメッセージを追加して、listへリダイレクトする。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   // ★★★★★1★★★★★
+    if (bindingResult.hasErrors()) {
+        return list(model);
+    }
+
+    //★★★★★2★★★★★
+    try {
+        todoService.create(todo);
+    } catch (BusinessException e) {
+        // ★★★★★3★★★★★
+        model.addAttribute(e.getResultMessages());
+        return list(model);
+    }
+
+    // ★★★★★4★★★★★
+    attributes.addFlashAttribute(ResultMessages.success().add(
+            ResultMessage.fromText(&quot;Created successfully!&quot;)));
+    return &quot;redirect:/todo/list&quot;;
+}
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h4><span class="section-number">3.2.3.4. </span>jspの修正<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<p>★1<br />&lt;t:messagesPanel /&gt;
+org.terasoluna.gfw.common.message.ResultMessageに持っている情報を表示する。todoServiceで出力されたエラーか、正常終了のエラーが表示される。</p>
+<p>★2<br />modelAttributeには、&#64;modelAttributeで指定した名前をつける</p>
+<p>★3<br />プロパティ名を指定するので、Formのプロパティ名を指定する。</p>
+<p>★4<br />入力エラーがあった場合に表示する。path属性の値は、Formのプロパティ名を指定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;div id=&quot;todoForm&quot;&gt;
+    &lt;!-- ★1 --&gt;
+    &lt;t:messagesPanel /&gt;
+
+    &lt;!-- ★2 --&gt;
+    &lt;form:form
+       action=&quot;${pageContext.request.contextPath}/todo/create&quot;
+        method=&quot;post&quot; modelAttribute=&quot;todoForm&quot;&gt;
+        &lt;!-- ★3 --&gt;
+        &lt;form:input path=&quot;todoTitle&quot; /&gt;
+        &lt;!-- ★4 --&gt;
+        &lt;form:errors path=&quot;todoTitle&quot; cssClass=&quot;text-error&quot; /&gt;
+        
+        &lt;form:button&gt;Create Todo&lt;/form:button&gt;
+    &lt;/form:form&gt;
+&lt;/div&gt;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="finish-todo">
+<h3><span class="section-number">3.2.4. </span>Finish Todoの作成<a class="headerlink" href="#finish-todo" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h4><span class="section-number">3.2.4.1. </span>todoFormの修正<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Finishの処理を追加する。FinishはtodoIdを使って、処理を行う。
+CreateとFinishでは利用するプロパティが異なり、Createの時にはtodoTitleを使いFinishの時はtodoIdを使いたい。<br />groups属性を利用して、入力チェックの制御を行う。</p>
+<p>★1<br />入力チェックのために、インターフェースを追加</p>
+<p>★2<br />todoIdはFinishで入力チェックをして、todoTitleはCreateで入力チェックをする。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package com.example.todo.app.todo;
+
+import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class TodoForm implements Serializable {
+    
+    // ★★★★★1★★★★★
+    public static interface TodoCreate {
+    };
+    public static interface TodoFinish {
+    };
+
+    private static final long serialVersionUID = 1L;
+
+    // ★★★★★2★★★★★
+    @NotNull(groups = { TodoFinish.class })
+    private String todoId;
+
+    // ★★★★★2★★★★★
+    @NotNull(groups = { TodoCreate.class })
+    @Size(min = 1, max = 30, groups = { TodoCreate.class })
+    private String todoTitle;
+
+    public String getTodoId() {
+        return todoId;
+    }
+
+    public void setTodoId(String todoId) {
+        this.todoId = todoId;
+    }
+
+    public String getTodoTitle() {
+        return todoTitle;
+    }
+
+    public void setTodoTitle(String todoTitle) {
+        this.todoTitle = todoTitle;
+    }
+
+}
+</pre></div>
+</div>
+</section>
+<section id="todocontroller">
+<h4><span class="section-number">3.2.4.2. </span>todoControllerの修正<a class="headerlink" href="#todocontroller" title="この見出しへのパーマリンク">¶</a></h4>
+<p>groups属性を追加したので&#64;Validではなく、&#64;Validatedを利用する。</p>
+<p>★1<br />グループ化した入力チェックルールを適用するために、&#64;Validアノテーションを&#64;Validatedアノテーションに変更する
+適用する入力チェックルールのグループ(グループインタフェース)を指定する。
+Default.classは、グループ化されていない入力チェックルールを適用するために用意されているグループインタフェースである</p>
+<p>★2<br />PostMappping(&quot;finish&quot;)でtodo/finishへのPOSTメソッドに対する処理を記載する。
+基本的な処理はcreateと同じで、エラーを捌きつつ、正常終了したら、Service→Repositoryで定義されたfinishを実行する。
+処理の中身としては、対象のIdのfinishフラグの値を変更して、updateをかける。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@PostMapping(&quot;create&quot;)
+public String create(
+        // ★★★★★1★★★★★
+        @Validated({ Default.class, TodoCreate.class }) TodoForm todoForm, 
+        BindingResult bindingResult, Model model,
+        RedirectAttributes attributes) {
+
+// ★★★★★2★★★★★
+@PostMapping(&quot;finish&quot;) 
+public String finish(
+        @Validated({ Default.class, TodoFinish.class }) TodoForm form, 
+        BindingResult bindingResult, Model model,
+        RedirectAttributes attributes) {
+    if (bindingResult.hasErrors()) {
+        return list(model);
+    }
+    try {
+        todoService.finish(form.getTodoId());
+    } catch (BusinessException e) {
+        model.addAttribute(e.getResultMessages());
+        return list(model);
+    }
+    attributes.addFlashAttribute(ResultMessages.success().add(
+            ResultMessage.fromText(&quot;Finished successfully!&quot;)));
+    return &quot;redirect:/todo/list&quot;;
+}
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h4><span class="section-number">3.2.4.3. </span>jspファイルの変更<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<p>hiddenでtodoのtodoIdをPOSTする。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!-- (1) --&gt;
+&lt;form:form
+    action=&quot;${pageContext.request.contextPath}/todo/finish&quot;
+    method=&quot;post&quot;
+    modelAttribute=&quot;todoForm&quot;
+    cssClass=&quot;inline&quot;&gt;
+    &lt;!-- (2) --&gt;
+    &lt;form:hidden path=&quot;todoId&quot;
+        value=&quot;${f:h(todo.todoId)}&quot; /&gt;
+    &lt;form:button&gt;Finish&lt;/form:button&gt;
+&lt;/form:form&gt;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="delete-todo">
+<h3><span class="section-number">3.2.5. </span>Delete Todoの作成<a class="headerlink" href="#delete-todo" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Finishと基本的には同じ修正を加える。</p>
+</section>
+</section>
+<section id="mybatis3todo">
+<h2><span class="section-number">3.3. </span>MyBatis3を利用したTODOアプリ<a class="headerlink" href="#mybatis3todo" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id12">
+<h3><span class="section-number">3.3.1. </span>プロジェクトの作成<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下を実行（別のフォルダで）</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mvn archetype:generate -B¥
+ -DarchetypeGroupId=org.terasoluna.gfw.blank¥
+ -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis3-archetype¥
+ -DarchetypeVersion=5.7.0.RELEASE¥
+ -DgroupId=com.example.todo¥
+ -DartifactId=todo¥
+ -Dversion=1.0.0-SNAPSHOT
+</pre></div>
+</div>
+<p>すでに作成した、src配下のRepositoryImpl以外のファイルをコピーしてくる。</p>
+<ul class="simple">
+<li><p>domain/model/Todo.java</p></li>
+<li><p>domain/repository/todo/TodoRepository.java</p></li>
+<li><p>domain/service/todo/TodoService.java</p></li>
+<li><p>domain/service/todo/TodoServiceImpl.java</p></li>
+<li><p>app/todo/TodoController.java</p></li>
+<li><p>app/todo/TodoForm.java</p></li>
+<li><p>src/main/webapp/WEB-INF/views/todo/list.jsp</p></li>
+</ul>
+</section>
+<section id="database">
+<h3><span class="section-number">3.3.2. </span>DataBaseのセットアップ<a class="headerlink" href="#database" title="この見出しへのパーマリンク">¶</a></h3>
+<p>APサーバ起動時にH2 Database上にテーブルが作成されるようにする。
+TBLを作成するためのDDLは以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create</span> <span class="n">table</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span> <span class="n">todo</span> <span class="p">(</span>
+    <span class="n">todo_id</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span> <span class="n">primary</span> <span class="n">key</span><span class="p">,</span>
+    <span class="n">todo_title</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+    <span class="n">finished</span> <span class="n">boolean</span><span class="p">,</span>
+    <span class="n">created_at</span> <span class="n">timestamp</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>これを <code class="docutils literal notranslate"><span class="pre">src/main/resources/META-INF/spring/todo-infra.properties</span></code>に追加。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">database</span><span class="o">=</span><span class="n">H2</span>
+
+<span class="c1"># (1)</span>
+<span class="n">database</span><span class="o">.</span><span class="n">url</span><span class="o">=</span><span class="n">jdbc</span><span class="p">:</span><span class="n">h2</span><span class="p">:</span><span class="n">mem</span><span class="p">:</span><span class="n">todo</span><span class="p">;</span><span class="n">DB_CLOSE_DELAY</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span><span class="n">INIT</span><span class="o">=</span><span class="n">create</span> <span class="n">table</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span> <span class="n">todo</span><span class="p">(</span><span class="n">todo_id</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span> <span class="n">primary</span> <span class="n">key</span><span class="p">,</span> <span class="n">todo_title</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">finished</span> <span class="n">boolean</span><span class="p">,</span> <span class="n">created_at</span> <span class="n">timestamp</span><span class="p">)</span>
+
+<span class="n">database</span><span class="o">.</span><span class="n">username</span><span class="o">=</span><span class="n">sa</span>
+<span class="n">database</span><span class="o">.</span><span class="n">password</span><span class="o">=</span>
+<span class="n">database</span><span class="o">.</span><span class="n">driverClassName</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">h2</span><span class="o">.</span><span class="n">Driver</span>
+<span class="c1"># connection pool</span>
+<span class="n">cp</span><span class="o">.</span><span class="n">maxActive</span><span class="o">=</span><span class="mi">96</span>
+<span class="n">cp</span><span class="o">.</span><span class="n">maxIdle</span><span class="o">=</span><span class="mi">16</span>
+<span class="n">cp</span><span class="o">.</span><span class="n">minIdle</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">cp</span><span class="o">.</span><span class="n">maxWait</span><span class="o">=</span><span class="mi">60000</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h3><span class="section-number">3.3.3. </span>インフラストラクチャ層の実装<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<p>RepositoryImplにあたる部分を作成する。<br />RepositoryImplを作成するのではなく、Repositoryインターフェースが呼び出された時に、実行するSQLを定義するためのMapperファイルを作成する。</p>
+<p><code class="docutils literal notranslate"><span class="pre">todo/src/main/resources/com/example/todo/domain/repository/todo</span></code>配下に<code class="docutils literal notranslate"><span class="pre">TodoRepository.xml</span></code>を作成する。</p>
+<p>★1<br />RepositoryのインターフェースのFQCNを指定する</p>
+<p>★2<br />今回の検索結果(ResultSet)とDomain/modelの紐付けをおこなっている。
+Repository内部で指定するtodoResultMapと、domain/model配下のtodo.javaの紐付けを行うという宣言。</p>
+<p>★3<br />idでの指定はPrimaryKeyの指定している。
+Repositoryの変数todoIdとテーブルのtodo_idを紐付けている。</p>
+<p>★4<br />resultの指定はそのほかの要素に関する指定
+Repositoryの変数todoTitleとテーブルのtodo_titleなどを紐付けている。</p>
+<p>★5-10<br />処理自体はSQLとして記述している。
+idの部分で、Repositoryインターフェースのメソッドとのマッピングをしている。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+    &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+
+&lt;!-- ★★★★★1★★★★★ --&gt;
+&lt;mapper namespace=&quot;com.example.todo.domain.repository.todo.TodoRepository&quot;&gt;
+
+    &lt;!-- ★★★★★2★★★★★ --&gt;
+    &lt;resultMap id=&quot;todoResultMap&quot; type=&quot;Todo&quot;&gt;
+        &lt;!-- ★★★★★3★★★★★ --&gt;
+        &lt;id property=&quot;todoId&quot; column=&quot;todo_id&quot; /&gt;
+        &lt;!-- ★★★★★4★★★★★ --&gt;
+        &lt;result property=&quot;todoTitle&quot; column=&quot;todo_title&quot; /&gt;
+        &lt;result property=&quot;finished&quot; column=&quot;finished&quot; /&gt;
+        &lt;result property=&quot;createdAt&quot; column=&quot;created_at&quot; /&gt;
+    &lt;/resultMap&gt;
+
+    &lt;!-- ★★★★★5★★★★★ --&gt;
+    &lt;select id=&quot;findById&quot; parameterType=&quot;String&quot; resultMap=&quot;todoResultMap&quot;&gt;
+    &lt;![CDATA[
+        SELECT
+            todo_id,
+            todo_title,
+            finished,
+            created_at
+        FROM
+            todo
+        WHERE
+            todo_id = #{todoId}
+    ]]&gt;
+    &lt;/select&gt;
+
+    &lt;!-- ★★★★★6★★★★★ --&gt;
+    &lt;select id=&quot;findAll&quot; resultMap=&quot;todoResultMap&quot;&gt;
+    &lt;![CDATA[
+        SELECT
+            todo_id,
+            todo_title,
+            finished,
+            created_at
+        FROM
+            todo
+    ]]&gt;
+    &lt;/select&gt;
+
+    &lt;!-- ★★★★★7★★★★★ --&gt;
+    &lt;insert id=&quot;create&quot; parameterType=&quot;Todo&quot;&gt;
+    &lt;![CDATA[
+        INSERT INTO todo
+        (
+            todo_id,
+            todo_title,
+            finished,
+            created_at
+        )
+        VALUES
+        (
+            #{todoId},
+            #{todoTitle},
+            #{finished},
+            #{createdAt}
+        )
+    ]]&gt;
+    &lt;/insert&gt;
+
+    &lt;!-- ★★★★★8★★★★★ --&gt;
+    &lt;update id=&quot;update&quot; parameterType=&quot;Todo&quot;&gt;
+    &lt;![CDATA[
+        UPDATE todo
+        SET
+            todo_title = #{todoTitle},
+            finished = #{finished},
+            created_at = #{createdAt}
+        WHERE
+            todo_id = #{todoId}
+    ]]&gt;
+    &lt;/update&gt;
+
+    &lt;!-- ★★★★★9★★★★★ --&gt;
+    &lt;delete id=&quot;delete&quot; parameterType=&quot;Todo&quot;&gt;
+    &lt;![CDATA[
+        DELETE FROM
+            todo
+        WHERE
+            todo_id = #{todoId}
+    ]]&gt;
+    &lt;/delete&gt;
+
+    &lt;!-- ★★★★★10★★★★★ --&gt;
+    &lt;select id=&quot;countByFinished&quot; parameterType=&quot;Boolean&quot;
+        resultType=&quot;Long&quot;&gt;
+    &lt;![CDATA[
+        SELECT
+            COUNT(*)
+        FROM
+            todo
+        WHERE
+            finished = #{finished}
+    ]]&gt;
+    &lt;/select&gt;
+
+&lt;/mapper&gt;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="references">
+<h2><span class="section-number">3.4. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://shunyaueta.com/posts/2021-07-18/">mvn archetype:generateコマンド</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/aaaaaayyymmm/items/f5458d2302c11202136d">javaPJの構成</a></p></li>
+</ul>
+</section>
+</section>
+<section id="resttodo">
+<h1><span class="section-number">4. </span>チュートリアル11.2：RESTでのTODOアプリケーション<a class="headerlink" href="#resttodo" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="rest-api-representational-state-transfer">
+<h2><span class="section-number">4.1. </span>REST API(REpresentational State Transfer)<a class="headerlink" href="#rest-api-representational-state-transfer" title="この見出しへのパーマリンク">¶</a></h2>
+<p>クライアントとサーバーでデータをやり取りするためのアーキテクチャスタイルの一つ。<br />RESTにはいくつかの原則があり、それらを原則に従っているシステムをRESTfulと呼ばれる。</p>
+<p><img alt="../_images/tutorial11.2_restful.png" src="../_images/tutorial11.2_restful.png" /></p>
+<p>Webシステムの設計思想であり、RESTであるための原則は4つ</p>
+<ul class="simple">
+<li><p>統一インターフェース<br />情報のやり取りについてあらかじめ定義されていること
+「GET／POST／DELETE／PUT」などのHTTPリクエストを利用することやJSON形式であることなどを決めている。</p></li>
+<li><p>アドレス可能性<br />全ての情報がURIを持つこと</p></li>
+<li><p>接続性<br />各エンドポイント間で接続できること</p></li>
+<li><p>ステートレス性<br />やり取りが一回ずつで完結すること</p></li>
+</ul>
+</section>
+<section id="id14">
+<h2><span class="section-number">4.2. </span>チュートリアルでやりたいこと<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<p>全件取得・一件取得・削除・完了状態などをRESTで設定できるようにする。</p>
+<ul class="simple">
+<li><p>GET api/v1/todos：全件取得</p></li>
+<li><p>GET api/v1/todos/{id}:一件取得</p></li>
+<li><p>POST api/v1/todos:新規作成</p></li>
+<li><p>Put api/v1/todos/{id}:完了状態</p></li>
+<li><p>DELETE api/v1/todos/{id}:削除</p></li>
+</ul>
+<p>エラーメッセージもHTTPのレスポンスで返すようにする。エラーコードをキーとしてプロパティファイルから取得</p>
+</section>
+<section id="id15">
+<h2><span class="section-number">4.3. </span>実装<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="dispatcherservlet">
+<h3><span class="section-number">4.3.1. </span>DispatcherServletの設定<a class="headerlink" href="#dispatcherservlet" title="この見出しへのパーマリンク">¶</a></h3>
+<p>DispatherServletは、フロントでリクエストを受け取って裏側のjavaたちに処理を流していく。</p>
+<p><img alt="../_images/tutorial11.2_dispatcher.png" src="../_images/tutorial11.2_dispatcher.png" /></p>
+<section id="web-xml">
+<h4><span class="section-number">4.3.1.1. </span>web.xmlの修正<a class="headerlink" href="#web-xml" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/web.xml</span></code>に設定を追加する
+REST用のMVC設定ファイルを<code class="docutils literal notranslate"><span class="pre">META-INF/spring/spring-mvc-rest.xml</span></code>に書き込むことを指定する。<br />DispatcherServletにマッピングするURLを指定する。今回は<code class="docutils literal notranslate"><span class="pre">/api/v1/*</span></code>へのURLはDispathcerServletにマッピングする。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;servlet&gt;
+    &lt;servlet-name&gt;restApiServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;!-- ApplicationContext for Spring MVC (REST) --&gt;
+        &lt;param-value&gt;classpath*:META-INF/spring/spring-mvc-rest.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;restApiServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/api/v1/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</pre></div>
+</div>
+</section>
+<section id="rest">
+<h4><span class="section-number">4.3.1.2. </span>rest用の設定ファイルの作成<a class="headerlink" href="#rest" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">META-INF/spring/spring-mvc-rest.xml</span></code>を作成<br />component-scanの対象などを指定する。<code class="docutils literal notranslate"><span class="pre">com.example.todo.api</span></code>配下を指定して、apiの開発はこちらで実施する。<br />詳細はチュートリアルページ参照</p>
+</section>
+</section>
+<section id="rest-api">
+<h3><span class="section-number">4.3.2. </span>REST APIのパッケージ作成<a class="headerlink" href="#rest-api" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">com.example.todo.api.todo</span></code>というパッケージを作成する。<br />api.todoパッケージの配下として作成するクラスは以下</p>
+<ul class="simple">
+<li><p>[NAME]Resource</p></li>
+<li><p>[NAME]RestController</p></li>
+<li><p>[NAME]Helper(必要なら)</p></li>
+</ul>
+</section>
+<section id="todoresource">
+<h3><span class="section-number">4.3.3. </span>TodoResourceの実装<a class="headerlink" href="#todoresource" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/todo/api/todo/TodoResource.java</span></code>を作成する</p>
+<p>Domain層で作成した<code class="docutils literal notranslate"><span class="pre">com.example.todo.domain.model</span></code>のTodo.javaと同様の指定に見えるが、TodoResoueceではクライアントとのやり取りの中で扱う情報が定義されている。
+Todo.javaで定義するのは、業務処理の中で扱うデータであるので、ここは明確に分ける。<br />詳細はチュートリアルページ参照</p>
+</section>
+<section id="todorestcontroller">
+<h3><span class="section-number">4.3.4. </span>TodoRestControllerの実装<a class="headerlink" href="#todorestcontroller" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/todo/api/todo/TodoRestController.java</span></code>を作成する</p>
+<p>この中で、各RESTの処理を記述していく</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@RestController</span>
+<span class="nd">@RequestMapping</span><span class="p">(</span><span class="s2">&quot;todos&quot;</span><span class="p">)</span> <span class="o">//</span> <span class="o">&lt;</span><span class="n">ContentPath</span><span class="o">&gt;/</span><span class="n">api</span><span class="o">/</span><span class="n">todo</span><span class="o">/</span><span class="n">todosに対してマッピング</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">TodoRestController</span> <span class="p">{</span>
+
+    <span class="nd">@Inject</span>
+    <span class="n">TodoService</span> <span class="n">todoService</span><span class="p">;</span>
+    <span class="nd">@Inject</span>
+    <span class="n">Mapper</span> <span class="n">beanMapper</span><span class="p">;</span>
+
+    <span class="o">//</span> <span class="n">全件取得</span>
+    <span class="nd">@GetMapping</span> <span class="o">//</span><span class="n">GETメソッドに対するマッピング</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span> <span class="o">//</span> <span class="n">HTTPステータス200を返す</span>
+    <span class="n">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TodoResource</span><span class="o">&gt;</span> <span class="n">getTodos</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">Collection</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span> <span class="n">todos</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">findAll</span><span class="p">();</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">TodoResource</span><span class="o">&gt;</span> <span class="n">todoResources</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span> <span class="p">:</span> <span class="n">todos</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">todoResources</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">todo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">));</span> <span class="o">//</span><span class="n">todoResouces型に変換</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">todoResources</span><span class="p">;</span> <span class="o">//</span> <span class="n">todoResouces型はJSONに変換される</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">新規作成</span>
+    <span class="nd">@PostMapping</span> <span class="o">//</span><span class="n">POSTメソッドに対するマッピング</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">)</span> <span class="o">//</span> <span class="n">HTTPステータス201</span> <span class="n">CREATEDを返す</span>
+    <span class="n">public</span> <span class="n">TodoResource</span> <span class="n">postTodos</span><span class="p">(</span><span class="nd">@RequestBody</span> <span class="nd">@Validated</span> <span class="n">TodoResource</span> <span class="n">todoResource</span><span class="p">)</span> <span class="p">{</span> <span class="o">//</span><span class="n">todoResourceで受け取る</span>
+        <span class="n">Todo</span> <span class="n">createdTodo</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">todoResource</span><span class="p">,</span> <span class="n">Todo</span><span class="o">.</span><span class="n">class</span><span class="p">));</span> <span class="o">//</span><span class="n">todoResourceをtodo型に変換して処理を実行</span>
+        <span class="n">TodoResource</span> <span class="n">createdTodoResponse</span> <span class="o">=</span> <span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">createdTodo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">);</span> <span class="o">//</span><span class="n">todoResouces型に変換</span>
+        <span class="k">return</span> <span class="n">createdTodoResponse</span><span class="p">;</span> <span class="o">//</span> <span class="n">todoResouces型はJSONに変換される</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="mi">1</span><span class="n">件取得</span>
+    <span class="nd">@GetMapping</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{todoId}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">//</span><span class="n">IDまで指定された場合のGETメソッドに対するマッピング</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">TodoResource</span> <span class="n">getTodo</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="p">(</span><span class="s2">&quot;todoId&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">todoId</span><span class="p">)</span> <span class="p">{</span> <span class="o">//</span> <span class="n">PathVariableでパスに含まれる変数を取得する</span>
+        <span class="n">Todo</span> <span class="n">todo</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">findOne</span><span class="p">(</span><span class="n">todoId</span><span class="p">);</span> <span class="o">//</span><span class="n">findOneはtodoServiceに定義しておく</span>
+        <span class="n">TodoResource</span> <span class="n">todoResource</span> <span class="o">=</span> <span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">todo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">todoResource</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">更新</span>
+    <span class="nd">@PutMapping</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{todoId}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">TodoResource</span> <span class="n">putTodo</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="p">(</span><span class="s2">&quot;todoId&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">todoId</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Todo</span> <span class="n">finishedTodo</span> <span class="o">=</span> <span class="n">todoService</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="n">todoId</span><span class="p">);</span>
+        <span class="n">TodoResource</span> <span class="n">finishedTodoResource</span> <span class="o">=</span> <span class="n">beanMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">finishedTodo</span><span class="p">,</span> <span class="n">TodoResource</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">finishedTodoResource</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">削除</span>
+    <span class="nd">@DeleteMapping</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{todoId}</span><span class="s2">&quot;</span><span class="p">)</span> 
+    <span class="nd">@ResponseStatus</span><span class="p">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span><span class="p">)</span> <span class="o">//</span> <span class="n">HTTPステータス</span>　<span class="mi">204</span> <span class="n">No</span> <span class="n">Contentを返す</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">deleteTodo</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="p">(</span><span class="s2">&quot;todoId&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">todoId</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="n">todoService</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">todoId</span><span class="p">);</span> 
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id16">
+<h3><span class="section-number">4.3.5. </span>例外ハンドリングの実装<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p>これまでは、エラーメッセージをtodoServiceでハードコーディングしていたが、プロパティファイルからメッセージを取得する実装に変更する。<br />最終的には、プロパティファイルからエラーメッセージがまとめられていて、Serviceからはエラーコードを渡し、エラーのハンドリングはerroe用のパッケージを準備する。</p>
+<section id="id17">
+<h4><span class="section-number">4.3.5.1. </span>Serviceの修正<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<p>エラーメッセージをハードコーディングしていた部分を、エラーコードを渡す処理に変更</p>
+<p>変更前</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Override</span>
+<span class="n">public</span> <span class="n">Todo</span> <span class="n">create</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">...</span>
+        <span class="n">ResultMessages</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">ResultMessages</span><span class="o">.</span><span class="n">error</span><span class="p">();</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ResultMessage</span>
+                <span class="o">.</span><span class="n">fromText</span><span class="p">(</span><span class="s2">&quot;[E001] The count of un-finished Todo must not be over &quot;</span>
+                        <span class="o">+</span> <span class="n">MAX_UNFINISHED_COUNT</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">));</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>変更後</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Override</span>
+<span class="n">public</span> <span class="n">Todo</span> <span class="n">create</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">...</span>
+        <span class="n">ResultMessages</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">ResultMessages</span><span class="o">.</span><span class="n">error</span><span class="p">();</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;E001&quot;</span><span class="p">,</span> <span class="n">MAX_UNFINISHED_COUNT</span><span class="p">);</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h4><span class="section-number">4.3.5.2. </span>プロパティファイルの作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<p>処理結果に関するエラーメッセージを管理するプロパティファイル<code class="docutils literal notranslate"><span class="pre">src/main/resources/i18n/application-messages.properties</span></code>配下にアプリ用のエラーメッセージを追加する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># For this tutorial</span>
+<span class="n">E001</span> <span class="o">=</span> <span class="p">[</span><span class="n">E001</span><span class="p">]</span> <span class="n">The</span> <span class="n">count</span> <span class="n">of</span> <span class="n">un</span><span class="o">-</span><span class="n">finished</span> <span class="n">Todo</span> <span class="n">must</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">over</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="o">.</span>
+<span class="n">E002</span> <span class="o">=</span> <span class="p">[</span><span class="n">E002</span><span class="p">]</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">Todo</span> <span class="ow">is</span> <span class="n">already</span> <span class="n">finished</span><span class="o">.</span> <span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">})</span>
+<span class="n">E400</span> <span class="o">=</span> <span class="p">[</span><span class="n">E400</span><span class="p">]</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">Todo</span> <span class="n">contains</span> <span class="n">invalid</span> <span class="n">values</span><span class="o">.</span>
+<span class="n">E404</span> <span class="o">=</span> <span class="p">[</span><span class="n">E404</span><span class="p">]</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">Todo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">found</span><span class="o">.</span> <span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">})</span>
+<span class="n">E500</span> <span class="o">=</span> <span class="p">[</span><span class="n">E500</span><span class="p">]</span> <span class="n">System</span> <span class="n">error</span> <span class="n">occurred</span><span class="o">.</span>
+<span class="n">E999</span> <span class="o">=</span> <span class="p">[</span><span class="n">E999</span><span class="p">]</span> <span class="n">Error</span> <span class="n">occurred</span><span class="o">.</span> <span class="n">Caused</span> <span class="n">by</span> <span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>入力チェック用のエラーコードに対応するエラーメッセージを管理するプロパティファイル<code class="docutils literal notranslate"><span class="pre">src/main/resources/ValidationMessages.properties</span></code> 配下に追加する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">javax</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">NotNull</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="n">may</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">null</span><span class="o">.</span>
+<span class="n">javax</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">Size</span><span class="o">.</span><span class="n">message</span>    <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="n">size</span> <span class="n">must</span> <span class="n">be</span> <span class="n">between</span> <span class="p">{</span><span class="nb">min</span><span class="p">}</span> <span class="ow">and</span> <span class="p">{</span><span class="nb">max</span><span class="p">}</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="error">
+<h4><span class="section-number">4.3.5.3. </span>errorパッケージの作成<a class="headerlink" href="#error" title="この見出しへのパーマリンク">¶</a></h4>
+<p>エラーハンドリング用のパッケージ<code class="docutils literal notranslate"><span class="pre">com.example.todo.api.common.error</span></code>を作成する</p>
+<p>実装は、<code class="docutils literal notranslate"><span class="pre">ResponseEntityExceptionHandler</span></code>を継承した<code class="docutils literal notranslate"><span class="pre">com.example.todo.api.common.error.RestGlobalExceptionHandler</span></code>クラスを作成して行う。<br />このクラスに実装していくことで、HTTPレスポンスBODYにエラー情報が出力される。
+詳細はチュートリアル参照</p>
+<p>REST APIで発生したエラー情報を保持するクラスとして、<code class="docutils literal notranslate"><span class="pre">ApiError</span></code>クラスを<code class="docutils literal notranslate"><span class="pre">com.example.todo.api.common.error</span></code>パッケージに作成する。
+ApiErrorクラスがJSONに変換されて、クライアントに応答される。<br />詳細はチュートリアル参照</p>
+<p><img alt="../_images/tutorial11.2_errorClass.png" src="../_images/tutorial11.2_errorClass.png" /></p>
+</section>
+</section>
+</section>
+<section id="id19">
+<h2><span class="section-number">4.4. </span>参考<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/ArchitectureInDetail/WebServiceDetail/REST.html#restoverviewhypermedialinkstorelatedresourceshttp://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/ArchitectureInDetail/WebServiceDetail/REST.html#restoverviewhypermedialinkstorelatedresources">RESTful Web Service¶</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id20">
+<h1><span class="section-number">5. </span>チュートリアル11.3：セッション<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id21">
+<h2><span class="section-number">5.1. </span>セッション管理<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h2>
+<p>セッションを含むデータの管理設計やセッションを利用した実装の<a class="reference external" href="http://terasolunaorg.github.io/guideline/5.7.0.RELEASE/ja/Tutorial/TutorialSession.html">チュートリアル</a></p>
+<p>セッションで管理対処となるデータについての設計</p>
+<ul class="simple">
+<li><p>セッションに格納するデータの選択</p></li>
+<li><p>セッションの中のデータの破棄</p></li>
+</ul>
+<p>具体的な利用方法</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;SessionAttributes</span></code>の利用</p></li>
+<li><p>Beanを利用する方法</p></li>
+</ul>
+</section>
+<section id="id22">
+<h2><span class="section-number">5.2. </span>作成するアプリケーションと設計<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h2>
+<p><img alt="../_images/tutorial11.3_arche.png" src="../_images/tutorial11.3_arche.png" /></p>
+<p>設計手順</p>
+<ol class="simple">
+<li><p>画面イメージにそって、各画面のURLとパラメータを設定する。</p></li>
+<li><p>URLが決まれば、URLを制御するControllerも設定する。</p></li>
+<li><p>各画面で扱うデータを洗い出す</p></li>
+<li><p>洗い出したデータのライフサイクルを整理する<br />データがいつ作成されて、いつ破棄されるか、複数画面でやり取りするか</p></li>
+<li><p>セッションの利用をメリデメから検討する</p></li>
+<li><p>セッションをどのように実現するか検討するか</p></li>
+</ol>
+</section>
+<section id="id23">
+<h2><span class="section-number">5.3. </span>セッションのメリットデメリット<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h2>
+<p>セッションを利用すると複数画面のデータのやり取りが容易になるがデメリットもある。 基本的には使わない方針で、必要な時にセッションは使う</p>
+<section id="id24">
+<h3><span class="section-number">5.3.1. </span>メリット<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<p>セッションを利用するのは、クレジットカードなどのマスクが必要な情報
+多数画面で利用される情報</p>
+</section>
+<section id="id25">
+<h3><span class="section-number">5.3.2. </span>デメリット<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>クライアント側が複数タブを利用していると整合性の担保を考慮する必要がある。</p></li>
+<li><p>管理するデータのサイズによってはメモリが枯渇する</p></li>
+<li><p>サーバーがスケーリングなどで多重実行の場合に整合性の担保を考慮する必要がある。</p></li>
+</ul>
+</section>
+</section>
+<section id="id26">
+<h2><span class="section-number">5.4. </span>セッションをどのように実現するか<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h2>
+<p>実現方法としては３つ挙げられる</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;SessionAttributes</span></code> ：１つのController内で扱う情報である</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SpringのセッションスコープのBean</span></code>：複数のControllerで扱う情報である</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SpringSecurity</span></code>：認証情報に関わる情報である</p></li>
+</ul>
+<p>実現方法に沿って、以下の内容についても考慮する</p>
+<ul class="simple">
+<li><p>複数リクエストでセッション情報に同時アクセスする場合</p></li>
+<li><p>セッションのタイムアウトをどのように扱うか</p></li>
+</ul>
+</section>
+<section id="id27">
+<h2><span class="section-number">5.5. </span>実装<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Controllerで&#64;SessionControllerを定義してあげる。</p>
+<p>BeanのスコープをSessionにするために&#64;Componentの下で定義してあげる</p>
+</section>
+</section>
+<section id="spring-security">
+<h1><span class="section-number">6. </span>チュートリアル11.4：Spring Security<a class="headerlink" href="#spring-security" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id28">
+<h2><span class="section-number">6.1. </span>作成するアプリケーション<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h2>
+<p><img alt="../_images/tutorial11.4_arche.png" src="../_images/tutorial11.4_arche.png" /></p>
+<ul class="simple">
+<li><p>ログインページでID/Pass認証を行う。</p></li>
+<li><p>ID/PassはDBで管理しており、認証問い合わせを行う。(Spring Security)</p></li>
+<li><p>認証しないとアクセスできないウェルカムページがある。</p></li>
+<li><p>ログアウトすることができる。(Spring Security)</p></li>
+</ul>
+</section>
+<section id="id29">
+<h2><span class="section-number">6.2. </span>基本的な処理の流れ<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h2>
+<ol class="simple">
+<li><p>usernameを画面から受け取り、ユーザー情報を検索</p></li>
+<li><p>ユーザー情報からusernameが見つかれば、passwordをハッシュ化したもので比較</p></li>
+<li><p>パスワード比較が一致すれば認証、ユーザー情報がなかったり、パスワード一致しないと認証失敗</p></li>
+</ol>
+</section>
+<section id="id30">
+<h2><span class="section-number">6.3. </span>アプリケーションの作成<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h2>
+<p>プロジェクトを作成する。
+DBを利用するのでmybatisのプロジェクトとする</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
+ <span class="o">-</span><span class="n">DarchetypeGroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">terasoluna</span><span class="o">.</span><span class="n">gfw</span><span class="o">.</span><span class="n">blank</span>\
+ <span class="o">-</span><span class="n">DarchetypeArtifactId</span><span class="o">=</span><span class="n">terasoluna</span><span class="o">-</span><span class="n">gfw</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">blank</span><span class="o">-</span><span class="n">mybatis3</span><span class="o">-</span><span class="n">archetype</span>\
+ <span class="o">-</span><span class="n">DarchetypeVersion</span><span class="o">=</span><span class="mf">5.7.0</span><span class="o">.</span><span class="n">RELEASE</span>\
+ <span class="o">-</span><span class="n">DgroupId</span><span class="o">=</span><span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">security</span>\
+ <span class="o">-</span><span class="n">DartifactId</span><span class="o">=</span><span class="n">first</span><span class="o">-</span><span class="n">springsecurity</span>\
+ <span class="o">-</span><span class="n">Dversion</span><span class="o">=</span><span class="mf">1.0.0</span><span class="o">-</span><span class="n">SNAPSHOT</span>
+</pre></div>
+</div>
+</section>
+<section id="id31">
+<h2><span class="section-number">6.4. </span>ドメイン層の実装<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Model・Repository・Serviceを作成する。</p>
+<section id="id32">
+<h3><span class="section-number">6.4.1. </span>Modelの作成<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
+<p>認証情報（usernameとpassword)を保持するAccountクラスを作成する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/model/Account.java</span></code></p>
+</section>
+<section id="id33">
+<h3><span class="section-number">6.4.2. </span>Repositoryの作成<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Accountのオブジェクトをデータベースに問い合わせる処理を実装する。</p>
+<p>まずは、Interfaceを実装する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/repository/account/AccountRepository.java</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">account</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">com.example.security.domain.model.Account</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Optional</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">interface</span> <span class="n">AccountRepository</span> <span class="p">{</span>
+    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Account</span><span class="o">&gt;</span> <span class="n">findById</span><span class="p">(</span><span class="n">String</span> <span class="n">username</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>次に、Implを実装する。Mybatisに問い合わせるSQLをMapperファイルに記述する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/reporitory/account/AccountRepository.xml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+    &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;com.example.security.domain.repository.account.AccountRepository&quot;&gt;
+
+    &lt;resultMap id=&quot;accountResultMap&quot; type=&quot;Account&quot;&gt;
+        &lt;id property=&quot;username&quot; column=&quot;username&quot; /&gt;
+        &lt;result property=&quot;password&quot; column=&quot;password&quot; /&gt;
+        &lt;result property=&quot;firstName&quot; column=&quot;first_name&quot; /&gt;
+        &lt;result property=&quot;lastName&quot; column=&quot;last_name&quot; /&gt;
+    &lt;/resultMap&gt;
+
+    &lt;select id=&quot;findById&quot; parameterType=&quot;String&quot; resultMap=&quot;accountResultMap&quot;&gt;
+        SELECT
+            username,
+            password,
+            first_name,
+            last_name
+        FROM
+            account
+        WHERE
+            username = #{username}
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</pre></div>
+</div>
+</section>
+<section id="id34">
+<h3><span class="section-number">6.4.3. </span>Serviceの作成<a class="headerlink" href="#id34" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザー名から、Accountオブジェクトを取得する処理を実装する。
+今回の処理は、SpirngSecurityの認証サービスから呼び出されるため、共通処理であるShareを名前につける</p>
+<p>業務処理的な中身を記述するので、usernameが見つからなかった場合にエラーメッセージを発行する。</p>
+<p>まずは、Interfaceを実装する。
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/service/account/AccountShareService.java</span></code></p>
+<p>次に、Implを実装する
+<code class="docutils literal notranslate"><span class="pre">src/main/java/com/example/security/domain/service/account/AccountShareServiceImpl.java</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Service</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">AccountSharedServiceImpl</span> <span class="n">implements</span> <span class="n">AccountSharedService</span> <span class="p">{</span>
+    <span class="nd">@Inject</span>
+    <span class="n">AccountRepository</span> <span class="n">accountRepository</span><span class="p">;</span>
+
+    <span class="nd">@Transactional</span><span class="p">(</span><span class="n">readOnly</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">Account</span> <span class="n">findOne</span><span class="p">(</span><span class="n">String</span> <span class="n">username</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">//</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">accountRepository</span><span class="o">.</span><span class="n">findById</span><span class="p">(</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">orElseThrow</span><span class="p">(()</span> <span class="o">-&gt;</span> <span class="p">{</span>
+            <span class="n">ResultMessages</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">ResultMessages</span><span class="o">.</span><span class="n">error</span><span class="p">();</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ResultMessage</span><span class="o">.</span><span class="n">fromText</span><span class="p">(</span>
+                    <span class="s2">&quot;The given account is not found! username=&quot;</span> <span class="o">+</span> <span class="n">username</span><span class="p">));</span>
+            <span class="k">return</span> <span class="n">new</span> <span class="n">ResourceNotFoundException</span><span class="p">(</span><span class="n">messages</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id35">
+<h3><span class="section-number">6.4.4. </span>認証サービスの作成<a class="headerlink" href="#id35" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SpringSecurityで利用する、アカウント情報を保持するクラスを作成する。
+このクラスに、本プロジェクトで扱うアカウント情報が渡されると、SpringSecurityで利用するアカウント情報に変換してくれる。
+<code class="docutils literal notranslate"><span class="pre">src/main/com/example/security/domain/service/userdetails/SampleUserDetail.java</span></code></p>
+<p>★1<br />org.springframework.security.core.userdetails.Userを継承して、実装</p>
+<p>★2<br />親クラスのメソッドを呼び出して、SpringSecurityで扱うAccountオブジェクトを作成</p>
+<p>★3<br />getterを用意することで、ログインユーザーのAccountオブジェクトを取得</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import com.example.security.domain.model.Account;
+
+public class SampleUserDetails extends User { //★★★★★1
+    private static final long serialVersionUID = 1L;
+
+    private final Account account; 
+    
+    public SampleUserDetails(Account account) {
+        //★★★★★2
+        super(account.getUsername(), account.getPassword(), AuthorityUtils.createAuthorityList(&quot;ROLE_USER&quot;)); 
+        this.account = account;
+    }
+    
+     //★★★★★3
+    public Account getAccount() { 
+        return account;
+    }
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>Spring Securityで利用する認証ユーザーの情報を取得するサービスを作成する。
+このプロジェクトでは、UserShareServiceを利用して、usernameからアカウントを特定。
+アカウントをSampleUserDetailsを利用してSpringSecurityに利用できるアカウントに変換。
+<code class="docutils literal notranslate"><span class="pre">src/main/com/example/security/domain/service/userdetails/SampleUserDetailService.java</span></code></p>
+<p>★1<br />accountShareServiceを利用して、ユーザアカウントを特定</p>
+<p>★2<br />SampleUserDetailsに渡して、SpringSecurityで扱えるアカウント情報に変換</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@Service
+public class SampleUserDetailsService implements UserDetailsService { 
+    @Inject
+    AccountSharedService accountSharedService; 
+
+    @Transactional(readOnly=true)
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            //★★★★★1
+            Account account = accountSharedService.findOne(username);
+            //★★★★★2 
+            return new SampleUserDetails(account); 
+        } catch (ResourceNotFoundException e) {
+            throw new UsernameNotFoundException(&quot;user not found&quot;, e); 
+        }
+    }
+</pre></div>
+</div>
+</section>
+<section id="db">
+<h3><span class="section-number">6.4.5. </span>DB初期化スクリプト<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h3>
+<p>本チュートリアルでは、インメモリDBを利用しているのでプロジェクト実行時に、毎回DBを作成する必要がある。
+ブランクPJでは、<code class="docutils literal notranslate"><span class="pre">jdbc:initialize-database</span></code>が設定されているので、ここにDDLとDMLを設定すれば初期に実行される
+<code class="docutils literal notranslate"><span class="pre">src/main/resources/META-INF/spring/first-springsecurity-env.xml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jdbc</span><span class="p">:</span><span class="n">initialize</span><span class="o">-</span><span class="n">database</span> <span class="n">data</span><span class="o">-</span><span class="n">source</span><span class="o">=</span><span class="s2">&quot;dataSource&quot;</span>
+    <span class="n">ignore</span><span class="o">-</span><span class="n">failures</span><span class="o">=</span><span class="s2">&quot;ALL&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">jdbc</span><span class="p">:</span><span class="n">script</span> <span class="n">location</span><span class="o">=</span><span class="s2">&quot;classpath:/database/$</span><span class="si">{database}</span><span class="s2">-schema.sql&quot;</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">jdbc</span><span class="p">:</span><span class="n">script</span> <span class="n">location</span><span class="o">=</span><span class="s2">&quot;classpath:/database/$</span><span class="si">{database}</span><span class="s2">-dataload.sql&quot;</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span> <span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">jdbc</span><span class="p">:</span><span class="n">initialize</span><span class="o">-</span><span class="n">database</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/resouces/database/H2-schema.sql</span></code>にDDLを設定する。
+<code class="docutils literal notranslate"><span class="pre">src/main/resouces/database/H2-dataload.sql</span></code>にDMLを設定する。</p>
+</section>
+</section>
+<section id="id36">
+<h2><span class="section-number">6.5. </span>アプリケーション層の実装<a class="headerlink" href="#id36" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id37">
+<h3><span class="section-number">6.5.1. </span>Spring Securityの設定<a class="headerlink" href="#id37" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Spring Securityの設定ファイルに認証認可の設定を書き込む。<br />各種URLの遷移制御や、認証に合わせた画面表示の認可の設定を行う。</p>
+<p><code class="docutils literal notranslate"><span class="pre">sec/main/resources/META-INF/spring/spring-security.xml</span></code></p>
+<p>★1<br />ログインフォームのURLと認証に失敗した場合の遷移先を設定</p>
+<p>★2<br />ログアウトした際の遷移先URLと削除するCookie名</p>
+<p>★3<br />認可の設定。isAuthenticatedがあると、認証しないとアクセスできない。</p>
+<p>★4<br />認証設定で、sampleUserDetailsServiceを利用することを設定。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!-- (1) --&gt;
+&lt;sec:form-login
+    login-page=&quot;/login/loginForm&quot;
+    authentication-failure-url=&quot;/login/loginForm?error=true&quot; /&gt;
+
+&lt;!-- (2) --&gt;
+&lt;sec:logout
+    logout-success-url=&quot;/&quot;
+    delete-cookies=&quot;JSESSIONID&quot; /&gt;
+
+&lt;!-- (3) --&gt;
+&lt;sec:intercept-url pattern=&quot;/login/**&quot; access=&quot;permitAll&quot; /&gt;
+&lt;sec:intercept-url pattern=&quot;/**&quot; access=&quot;isAuthenticated()&quot; /&gt;
+&lt;/sec:http&gt;
+
+&lt;!-- (4) --&gt;
+&lt;sec:authentication-provider user-service-ref=&quot;sampleUserDetailsService&quot; /&gt;
+&lt;/sec:authentication-manager&gt;
+</pre></div>
+</div>
+</section>
+<section id="loginformcontroller">
+<h3><span class="section-number">6.5.2. </span>LoginFormを返すControllerの作成<a class="headerlink" href="#loginformcontroller" title="この見出しへのパーマリンク">¶</a></h3>
+<p>loginのフォームに遷移させるControllerを作成
+<code class="docutils literal notranslate"><span class="pre">src/main/com/example/security/app/login/LoginController.java</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">)</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">LoginController</span> <span class="p">{</span>
+
+    <span class="nd">@GetMapping</span><span class="p">(</span><span class="s2">&quot;/loginForm&quot;</span><span class="p">)</span> 
+    <span class="n">public</span> <span class="n">String</span> <span class="n">view</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">&quot;login/loginForm&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Login用のJSPを作成
+<code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/views/login/loginForm.jsp</span></code></p>
+<p>セッションスコープに格納される認証エラーの例外オブジェクトをJSPから取得できるようにする。
+<code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/views/common/include.jsp</span></code></p>
+</section>
+<section id="welcome">
+<h3><span class="section-number">6.5.3. </span>Welcomeページの作成<a class="headerlink" href="#welcome" title="この見出しへのパーマリンク">¶</a></h3>
+<p>認証さればページで、ログインユーザーのオブジェクトにアクセスする。
+アカウント情報を使って、ログインユーザーにWelcomeしてみよう</p>
+<p><code class="docutils literal notranslate"><span class="pre">src/main/webapp/WEB-INF/views/welcome/home.jsp</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Home&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;${pageContext.request.contextPath}/resources/app/css/styles.css&quot;&gt;
+&lt;/head&gt;
+
+&lt;!-- 認証情報を取得 --&gt;
+&lt;sec:authentication property=&quot;principal.account&quot; var=&quot;account&quot; /&gt;
+
+&lt;body&gt;
+    &lt;div id=&quot;wrapper&quot;&gt;
+        &lt;h1&gt;Hello world!&lt;/h1&gt;
+        &lt;p&gt;The time on the server is ${serverTime}.&lt;/p&gt;
+        
+        &lt;!-- 取得した情報から名前を表示 --&gt;
+        &lt;p&gt;Welcome ${f:h(account.firstName)} ${f:h(account.lastName)} !!&lt;/p&gt;
+        
+        &lt;!-- ログアウト用のフォーム --&gt;
+        &lt;p&gt;
+            &lt;form:form action=&quot;${pageContext.request.contextPath}/logout&quot;&gt;
+                &lt;button type=&quot;submit&quot;&gt;Logout&lt;/button&gt;
+            &lt;/form:form&gt;
+        &lt;/p&gt;
+        &lt;ul&gt;
+            &lt;li&gt;&lt;a href=&quot;${pageContext.request.contextPath}/account&quot;&gt;view account&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">3. チュートリアル11.1：TODOアプリケーション</a><ul>
+<li><a class="reference internal" href="#id1">3.1. 環境構築</a><ul>
+<li><a class="reference internal" href="#pj">3.1.1. PJの作成</a></li>
+<li><a class="reference internal" href="#stspj">3.1.2. STSでのPJ立ち上げ</a></li>
+<li><a class="reference internal" href="#id2">3.1.3. PJ構成</a></li>
+<li><a class="reference internal" href="#id3">3.1.4. PJの動作確認</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id4">3.2. Todoアプリケーションの作成</a><ul>
+<li><a class="reference internal" href="#domain">3.2.1. Domain層の作成</a><ul>
+<li><a class="reference internal" href="#model">3.2.1.1. Model作成</a></li>
+<li><a class="reference internal" href="#repository">3.2.1.2. Repository作成</a><ul>
+<li><a class="reference internal" href="#repository-interface">3.2.1.2.1. Repository Interface作成</a></li>
+<li><a class="reference internal" href="#repository-implement">3.2.1.2.2. Repository Implementの作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#service">3.2.1.3. Service作成</a><ul>
+<li><a class="reference internal" href="#service-interface">3.2.1.3.1. Service Interfaceの作成</a></li>
+<li><a class="reference internal" href="#service-implement">3.2.1.3.2. Service Implementの作成</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">3.2.2. アプリケーション層の作成</a><ul>
+<li><a class="reference internal" href="#controller">3.2.2.1. Controllerの作成</a></li>
+<li><a class="reference internal" href="#show-all-todo">3.2.2.2. Show all Todoの作成</a><ul>
+<li><a class="reference internal" href="#todoform">3.2.2.2.1. TodoFormを作成する。</a></li>
+<li><a class="reference internal" href="#id6">3.2.2.2.2. Controllerの修正</a></li>
+<li><a class="reference internal" href="#jsp">3.2.2.2.3. jspの修正</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#create-todo">3.2.3. Create Todoの作成</a><ul>
+<li><a class="reference internal" href="#id7">3.2.3.1. TodoFormの修正</a></li>
+<li><a class="reference internal" href="#id8">3.2.3.2. controllerの修正</a><ul>
+<li><a class="reference internal" href="#beanmappertodoformtodo">3.2.3.2.1. beanMapperによるtodoFormオブジェクトをtodoオブジェクトに変換</a></li>
+<li><a class="reference internal" href="#postcreate">3.2.3.2.2. postメソッドによるcreate処理</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#create">3.2.3.3. Create処理詳細</a></li>
+<li><a class="reference internal" href="#id9">3.2.3.4. jspの修正</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#finish-todo">3.2.4. Finish Todoの作成</a><ul>
+<li><a class="reference internal" href="#id10">3.2.4.1. todoFormの修正</a></li>
+<li><a class="reference internal" href="#todocontroller">3.2.4.2. todoControllerの修正</a></li>
+<li><a class="reference internal" href="#id11">3.2.4.3. jspファイルの変更</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#delete-todo">3.2.5. Delete Todoの作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mybatis3todo">3.3. MyBatis3を利用したTODOアプリ</a><ul>
+<li><a class="reference internal" href="#id12">3.3.1. プロジェクトの作成</a></li>
+<li><a class="reference internal" href="#database">3.3.2. DataBaseのセットアップ</a></li>
+<li><a class="reference internal" href="#id13">3.3.3. インフラストラクチャ層の実装</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">3.4. References</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resttodo">4. チュートリアル11.2：RESTでのTODOアプリケーション</a><ul>
+<li><a class="reference internal" href="#rest-api-representational-state-transfer">4.1. REST API(REpresentational State Transfer)</a></li>
+<li><a class="reference internal" href="#id14">4.2. チュートリアルでやりたいこと</a></li>
+<li><a class="reference internal" href="#id15">4.3. 実装</a><ul>
+<li><a class="reference internal" href="#dispatcherservlet">4.3.1. DispatcherServletの設定</a><ul>
+<li><a class="reference internal" href="#web-xml">4.3.1.1. web.xmlの修正</a></li>
+<li><a class="reference internal" href="#rest">4.3.1.2. rest用の設定ファイルの作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rest-api">4.3.2. REST APIのパッケージ作成</a></li>
+<li><a class="reference internal" href="#todoresource">4.3.3. TodoResourceの実装</a></li>
+<li><a class="reference internal" href="#todorestcontroller">4.3.4. TodoRestControllerの実装</a></li>
+<li><a class="reference internal" href="#id16">4.3.5. 例外ハンドリングの実装</a><ul>
+<li><a class="reference internal" href="#id17">4.3.5.1. Serviceの修正</a></li>
+<li><a class="reference internal" href="#id18">4.3.5.2. プロパティファイルの作成</a></li>
+<li><a class="reference internal" href="#error">4.3.5.3. errorパッケージの作成</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id19">4.4. 参考</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id20">5. チュートリアル11.3：セッション</a><ul>
+<li><a class="reference internal" href="#id21">5.1. セッション管理</a></li>
+<li><a class="reference internal" href="#id22">5.2. 作成するアプリケーションと設計</a></li>
+<li><a class="reference internal" href="#id23">5.3. セッションのメリットデメリット</a><ul>
+<li><a class="reference internal" href="#id24">5.3.1. メリット</a></li>
+<li><a class="reference internal" href="#id25">5.3.2. デメリット</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id26">5.4. セッションをどのように実現するか</a></li>
+<li><a class="reference internal" href="#id27">5.5. 実装</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spring-security">6. チュートリアル11.4：Spring Security</a><ul>
+<li><a class="reference internal" href="#id28">6.1. 作成するアプリケーション</a></li>
+<li><a class="reference internal" href="#id29">6.2. 基本的な処理の流れ</a></li>
+<li><a class="reference internal" href="#id30">6.3. アプリケーションの作成</a></li>
+<li><a class="reference internal" href="#id31">6.4. ドメイン層の実装</a><ul>
+<li><a class="reference internal" href="#id32">6.4.1. Modelの作成</a></li>
+<li><a class="reference internal" href="#id33">6.4.2. Repositoryの作成</a></li>
+<li><a class="reference internal" href="#id34">6.4.3. Serviceの作成</a></li>
+<li><a class="reference internal" href="#id35">6.4.4. 認証サービスの作成</a></li>
+<li><a class="reference internal" href="#db">6.4.5. DB初期化スクリプト</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id36">6.5. アプリケーション層の実装</a><ul>
+<li><a class="reference internal" href="#id37">6.5.1. Spring Securityの設定</a></li>
+<li><a class="reference internal" href="#loginformcontroller">6.5.2. LoginFormを返すControllerの作成</a></li>
+<li><a class="reference internal" href="#welcome">6.5.3. Welcomeページの作成</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="knowledge.html"
+                          title="前の章へ"><span class="section-number">2. </span>java spring</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../Docker/docker_env.html"
+                          title="次の章へ"><span class="section-number">1. </span>環境構築（MacOS）</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Java/tutorial.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../Docker/docker_env.html" title="1. 環境構築（MacOS）"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="knowledge.html" title="2. java spring"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>チュートリアル11.1：TODOアプリケーション</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

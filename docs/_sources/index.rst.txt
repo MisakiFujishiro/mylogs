@@ -77,16 +77,12 @@ Java Spring
 ==================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    Java/java_env
    Java/knowledge
-   Java/tutorial11.1
-   Java/tutorial11.2
-   Java/tutorial11.4
-   Java/tutorial11.3
-
+   Java/tutorial
 
 Docker
 ==================
