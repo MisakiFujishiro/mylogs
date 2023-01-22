@@ -52,48 +52,57 @@
 <p><img alt="../_images/autoscaling_merit.png" src="../_images/autoscaling_merit.png" /></p>
 <section id="ec2">
 <h2><span class="section-number">5.1. </span>EC2におけるオートスケーリング<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>AWSにはEC2を対象としたEC2 Auto Scalingと、ECSやLambdaなどを対象としたApplication Auto Scalingがある。</p>
 <section id="id1">
-<h3><span class="section-number">5.1.1. </span>オートスケーリング設定のメリット<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.1.1. </span>メリット<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>リソースの状況を踏まえて、台数の増減を自動で調整してくれるスケールアウトやスケールインを実行してくれることともに、
 異常なインスタンスの置き換えを行なって、可用性を担保してくれる。</p>
 <p>Amazon EC2 AutoscalingはEC2のステータスチェックやELBのヘルスチェックに応じて、インスタンスの自動更新機能まで提供している。
 「希望する台数」に満たないような異常が発生した場合は、AutoScalingの設定が自動でインスタンスを作成してくれる。</p>
 </section>
-<section id="id2">
-<h3><span class="section-number">5.1.2. </span>設定項目<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
-<p>起動情報とAutoScaling情報を設定する。</p>
+<section id="ec2-autoscaling">
+<h3><span class="section-number">5.1.2. </span>EC2 AutoScalingの構成要素<a class="headerlink" href="#ec2-autoscaling" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>Auto Scaling Group<br />立ち上げるVPCやサブネットの設定やインスタンスの最小最大希望数など</p></li>
+<li><p>Launch Configuration<br />インスタンス起動のルール設定</p></li>
+<li><p>Scaling Plan<br />スケールするためのルール詳細</p></li>
+</ul>
+</section>
+<section id="aut-scaling-group">
+<h3><span class="section-number">5.1.3. </span>Aut Scaling Group<a class="headerlink" href="#aut-scaling-group" title="この見出しへのパーマリンク">¶</a></h3>
+<p>AutoScaing情報は監視するメトリクスやスケールインスケールアウトの台数などを設定する。</p>
+<ul class="simple">
+<li><p>どのテンプレートを利用するか</p></li>
+<li><p>立ち上げのVPCやサブネット</p></li>
+<li><p>何台構成にするか</p></li>
+<li><p>スケールアウト・スケールインの台数</p></li>
+</ul>
+</section>
+<section id="launch-configuration">
+<h3><span class="section-number">5.1.4. </span>Launch Configuration<a class="headerlink" href="#launch-configuration" title="この見出しへのパーマリンク">¶</a></h3>
 <p>起動情報は、起動するインスタンスに関する情報を設定（AMIなど）</p>
 <ul class="simple">
 <li><p>AMI</p></li>
 <li><p>インスタンスタイプ</p></li>
 <li><p>ネットワーク設定 etc</p></li>
 </ul>
-<p>AutoScaing情報は監視するメトリクスやスケールインスケールアウトの台数などを設定する。</p>
-<ul class="simple">
-<li><p>どのテンプレートを利用するか</p></li>
-<li><p>何台構成にするか</p></li>
-<li><p>スケールアウト・スケールインの台数</p></li>
-<li><p>トリガーの設定</p></li>
-</ul>
 </section>
-<section id="id3">
-<h3><span class="section-number">5.1.3. </span>AutoScalingのトリガー種別<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="scaling-plan">
+<h3><span class="section-number">5.1.5. </span>Scaling Plan<a class="headerlink" href="#scaling-plan" title="この見出しへのパーマリンク">¶</a></h3>
 <p>EC2を自動で追加や削除するための契機のパターン</p>
 <ul class="simple">
 <li><p>スケジュールスケーリング：スケジュールに基いて、オートスケーリング</p></li>
 <li><p>動的スケジューリング：需要の変化に動的に対応するようにオートスケーリング</p></li>
 </ul>
 <p><img alt="../_images/autoscaling_pattern.png" src="../_images/autoscaling_pattern.png" /></p>
-</section>
-</section>
-<section id="id4">
-<h2><span class="section-number">5.2. </span>スケジュールスケーリング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id2">
+<h4><span class="section-number">5.1.5.1. </span>スケジュールスケーリング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h4>
 <p>予測ができる需要変化に対する対策。設定されたスケジュールに基づいてスケーリングする。</p>
 <p><img alt="../_images/autoscaling_schedule.png" src="../_images/autoscaling_schedule.png" /></p>
 <p>一度きりの実行や定期的なイベントとして、開始と終了の設定が可能。<br />イメージとしては、決められた時間にAutoScalingのルールを上書きするイメージ</p>
 </section>
-<section id="id5">
-<h2><span class="section-number">5.3. </span>動的スケーリング<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id3">
+<h4><span class="section-number">5.1.5.2. </span>動的スケーリング<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
 <p>予測ができない需要への対策。設定した敷居位置に基づいて動的にスケーリングを行う。
 注意としては、スケーリングには数分かかるので、リアルタイム性を求められる、スパイクアクセスへの対策時。</p>
 <p><img alt="../_images/autoscaling_douteki.png" src="../_images/autoscaling_douteki.png" /></p>
@@ -103,23 +112,25 @@
 <li><p>ステップスケーリング</p></li>
 <li><p>シンプルなスケーリング</p></li>
 </ul>
-<section id="id6">
-<h3><span class="section-number">5.3.1. </span>ターゲット追跡スケーリング<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id4">
+<h5><span class="section-number">5.1.5.2.1. </span>ターゲット追跡スケーリング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h5>
 <p>設定したターゲット値を維持するようにスケールアウト・スケールインを行う</p>
 <p><img alt="../_images/autoscaling_target_policy_image.png" src="../_images/autoscaling_target_policy_image.png" /></p>
 </section>
-<section id="id7">
-<h3><span class="section-number">5.3.2. </span>ステップスケーリング<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id5">
+<h5><span class="section-number">5.1.5.2.2. </span>ステップスケーリング<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h5>
 <p>CloudWatchのメトリクスからえられる値の閾値を超えて発せられるアラームに対して、値ベースでスケーリングアクションを個別設定する。</p>
 </section>
 </section>
-<section id="id8">
-<h2><span class="section-number">5.4. </span>AutoScalingを設定する際の注意点<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id6">
+<h3><span class="section-number">5.1.6. </span>AutoScalingを設定する際の注意点<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>スケーリングによって、インスタンスが増減するので、特定のサーバーに依存するようなステートフルなアプリではなくて、ステートレスな作りが求められる。</p>
 <p><img alt="../_images/autoscaling_stateless.png" src="../_images/autoscaling_stateless.png" /></p>
 </section>
+</section>
 <section id="ecs">
-<h2><span class="section-number">5.5. </span>ECSにおけるオートスケーリング<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.2. </span>ECSにおけるオートスケーリング<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h2>
 <p>起動テンプレートはタスク定義で作成されているので、設定不要。<br />ECSのサービス設定の中で、何をメトリクスとして、スケーリングを行うのかを設定して、あとは台数などのスケールアウト設定をするだけで、実装できてしまう。</p>
 <ol class="simple">
 <li><p>CloudWatchからalarmを設定する。</p></li>
@@ -130,8 +141,8 @@
 </ul>
 </li>
 </ol>
-<section id="id9">
-<h3><span class="section-number">5.5.1. </span>スケールインにおけるタスクの保護<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id7">
+<h3><span class="section-number">5.2.1. </span>スケールインにおけるタスクの保護<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>注意点で挙げたように、ステートレスなアプリにする必要があるが、タスクが処理中にスケールインされる問題はタスクが落ちないようにする保護の設定を入れることもできる。</p>
 <p>ECSはアラームを監視して、スケールアウト、スケールインを実行する。<br />タスクが処理を行なっているか否かを確認していないため、処理中のタスクが落ちてしまう可能性がある。<br />対策として、<a class="reference external" href="https://aws.amazon.com/jp/blogs/news/announcing-amazon-ecs-task-scale-in-protection/">ECS タスクのスケールイン保護</a>の処理を組み込む。</p>
 <p>コンテナ内部からprotectionEnabled属性を設定することで、ECSタスクの停止を止めることができる。<br />具体的には、<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/task-scale-in-protection-endpoint.html">以下のコマンド</a>を処理の実行前と実行後に記述することで、処理中はタスクが落ちなくなる</p>
@@ -150,11 +161,11 @@ PUT $ECS_AGENT_URI/task-protection/v1/state -d
 </section>
 </section>
 <section id="h4b">
-<h2><span class="section-number">5.6. </span>H4B<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.3. </span>H4B<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSのハンズオン<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Auto_Scaling-2022-confirmation_842.html">Amazon EC2 Auto Scaling</a>の内容</p>
 <p><img alt="../_images/ec2_autoscaling_handson.png" src="../_images/ec2_autoscaling_handson.png" /></p>
-<section id="id10">
-<h3><span class="section-number">5.6.1. </span>環境の準備<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id8">
+<h3><span class="section-number">5.3.1. </span>環境の準備<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudFormationのテンプレートを使って、環境を構築する</p>
 <ul class="simple">
 <li><p>VPC</p></li>
@@ -162,8 +173,8 @@ PUT $ECS_AGENT_URI/task-protection/v1/state -d
 <li><p>ALB</p></li>
 </ul>
 </section>
-<section id="id11">
-<h3><span class="section-number">5.6.2. </span>起動テンプレートの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">5.3.2. </span>起動テンプレートの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSのコンソールから、EC2へ移動して、ナビゲーションペインから「起動テンプレート」を選択<br />AMIやインスタンスタイプを選択する。</p>
 <p><img alt="../_images/autoscaling_kidou_template.png" src="../_images/autoscaling_kidou_template.png" /></p>
 <p>AutoScalingグループの設定で、起動するインスタンスの名前になるので、Nameタグはつけておく</p>
@@ -186,8 +197,8 @@ sudo systemctl restart sshd.service
 <p>起動バージョンの修正について はバージョンが更新される形をとる。
 デフォルトの起動バージョンは１になっているので、アクションから変更する。</p>
 </section>
-<section id="id12">
-<h3><span class="section-number">5.6.3. </span>AutoScalingグループの作成<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">5.3.3. </span>AutoScalingグループの作成<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSのコンソールから、EC2へ移動して、ナビゲーションペインから「Auto Scalingグループ」を選択<br />以下の設定を順次行なっていく</p>
 <ul class="simple">
 <li><p>起動テンプレートの選択</p></li>
@@ -196,8 +207,8 @@ sudo systemctl restart sshd.service
 <li><p>グループ際の設定：常時起動数、最小最大キャパシティ（今回は最小1、最大4、必要1）</p></li>
 </ul>
 <p>AutoScalingのグループを作成すると、EC2が自動で起動する</p>
-<section id="id13">
-<h4><span class="section-number">5.6.3.1. </span>スケジュールの設定<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id11">
+<h4><span class="section-number">5.3.3.1. </span>スケジュールの設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>AutoScalingの自動スケーリングのタブから、スケジュールの設定ができる。</p>
 <p><img alt="../_images/autoscaling-awsconsole.png" src="../_images/autoscaling-awsconsole.png" /></p>
 <p>スケジュールは「予定されたアクション」から、設定する。
@@ -206,8 +217,8 @@ sudo systemctl restart sshd.service
 <p>こうすると、設定した時間に起動ルールが上書きされる。</p>
 </section>
 </section>
-<section id="id14">
-<h3><span class="section-number">5.6.4. </span>ターゲット追跡スケーリングの設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">5.3.4. </span>ターゲット追跡スケーリングの設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AutoScalingの自動スケーリングのタブから、スケジュールの設定ができる。</p>
 <p>動的スケーリングポリシーを選択する。</p>
 <p><img alt="../_images/autoscaling_target_policy_douteki.png" src="../_images/autoscaling_target_policy_douteki.png" /></p>
@@ -233,30 +244,34 @@ sudo systemctl restart sshd.service
     <ul>
 <li><a class="reference internal" href="#">5. AutoScaling</a><ul>
 <li><a class="reference internal" href="#ec2">5.1. EC2におけるオートスケーリング</a><ul>
-<li><a class="reference internal" href="#id1">5.1.1. オートスケーリング設定のメリット</a></li>
-<li><a class="reference internal" href="#id2">5.1.2. 設定項目</a></li>
-<li><a class="reference internal" href="#id3">5.1.3. AutoScalingのトリガー種別</a></li>
+<li><a class="reference internal" href="#id1">5.1.1. メリット</a></li>
+<li><a class="reference internal" href="#ec2-autoscaling">5.1.2. EC2 AutoScalingの構成要素</a></li>
+<li><a class="reference internal" href="#aut-scaling-group">5.1.3. Aut Scaling Group</a></li>
+<li><a class="reference internal" href="#launch-configuration">5.1.4. Launch Configuration</a></li>
+<li><a class="reference internal" href="#scaling-plan">5.1.5. Scaling Plan</a><ul>
+<li><a class="reference internal" href="#id2">5.1.5.1. スケジュールスケーリング</a></li>
+<li><a class="reference internal" href="#id3">5.1.5.2. 動的スケーリング</a><ul>
+<li><a class="reference internal" href="#id4">5.1.5.2.1. ターゲット追跡スケーリング</a></li>
+<li><a class="reference internal" href="#id5">5.1.5.2.2. ステップスケーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">5.2. スケジュールスケーリング</a></li>
-<li><a class="reference internal" href="#id5">5.3. 動的スケーリング</a><ul>
-<li><a class="reference internal" href="#id6">5.3.1. ターゲット追跡スケーリング</a></li>
-<li><a class="reference internal" href="#id7">5.3.2. ステップスケーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">5.4. AutoScalingを設定する際の注意点</a></li>
-<li><a class="reference internal" href="#ecs">5.5. ECSにおけるオートスケーリング</a><ul>
-<li><a class="reference internal" href="#id9">5.5.1. スケールインにおけるタスクの保護</a></li>
+<li><a class="reference internal" href="#id6">5.1.6. AutoScalingを設定する際の注意点</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#h4b">5.6. H4B</a><ul>
-<li><a class="reference internal" href="#id10">5.6.1. 環境の準備</a></li>
-<li><a class="reference internal" href="#id11">5.6.2. 起動テンプレートの作成</a></li>
-<li><a class="reference internal" href="#id12">5.6.3. AutoScalingグループの作成</a><ul>
-<li><a class="reference internal" href="#id13">5.6.3.1. スケジュールの設定</a></li>
+<li><a class="reference internal" href="#ecs">5.2. ECSにおけるオートスケーリング</a><ul>
+<li><a class="reference internal" href="#id7">5.2.1. スケールインにおけるタスクの保護</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">5.6.4. ターゲット追跡スケーリングの設定</a></li>
+<li><a class="reference internal" href="#h4b">5.3. H4B</a><ul>
+<li><a class="reference internal" href="#id8">5.3.1. 環境の準備</a></li>
+<li><a class="reference internal" href="#id9">5.3.2. 起動テンプレートの作成</a></li>
+<li><a class="reference internal" href="#id10">5.3.3. AutoScalingグループの作成</a><ul>
+<li><a class="reference internal" href="#id11">5.3.3.1. スケジュールの設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">5.3.4. ターゲット追跡スケーリングの設定</a></li>
 </ul>
 </li>
 </ul>
