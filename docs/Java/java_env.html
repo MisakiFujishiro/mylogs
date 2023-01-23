@@ -21,7 +21,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="2. java spring" href="knowledge.html" />
-    <link rel="prev" title="13. AIサービス" href="../AWS/AI.html" /> 
+    <link rel="prev" title="15. AIサービス" href="../AWS/AI.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -33,7 +33,7 @@
           <a href="knowledge.html" title="2. java spring"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../AWS/AI.html" title="13. AIサービス"
+          <a href="../AWS/AI.html" title="15. AIサービス"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築手順</a></li> 
@@ -63,6 +63,11 @@
 <p><img alt="../_images/sts3_dl.png" src="../_images/sts3_dl.png" /></p>
 <p>Applicationのstsを開こうとするとVMが作成できないエラーが出る場合がある。
 sts.appを右クリック、パッケージ内容を表示して、<code class="docutils literal notranslate"><span class="pre">/Applications/STS.app/Contents/Eclipse/STS.ini</span></code>を編集</p>
+<p>STSの元々</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">vm</span>
+<span class="o">../</span><span class="n">Eclipse</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">justj</span><span class="o">.</span><span class="n">openjdk</span><span class="o">.</span><span class="n">hotspot</span><span class="o">.</span><span class="n">jre</span><span class="o">.</span><span class="n">full</span><span class="o">.</span><span class="n">macosx</span><span class="o">.</span><span class="n">x86_64_17</span><span class="mf">.0.5</span><span class="o">.</span><span class="n">v20221102</span><span class="o">-</span><span class="mi">0933</span><span class="o">/</span><span class="n">jre</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libjli</span><span class="o">.</span><span class="n">dylib</span>
+</pre></div>
+</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">vm</span>
 <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">adoptopenjdk</span><span class="o">-</span><span class="mf">8.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span><span class="o">/</span><span class="nb">bin</span>
 </pre></div>
@@ -102,6 +107,26 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 <section id="machomebrewjdk">
 <h2><span class="section-number">1.4. </span>macでhomebrewでjdkをインストール<a class="headerlink" href="#machomebrewjdk" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://engineering.mobalab.net/2022/06/06/how-to-install-java-on-macos-in-2022/">参考サイト</a></p>
+<section id="stsjava">
+<h3><span class="section-number">1.4.1. </span>STS側で利用しているJavaのバージョン確認<a class="headerlink" href="#stsjava" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://itsakura.com/eclipse-javavm">Eclipseを動かしているJava VMを確認する方法</a></p>
+<ol class="simple">
+<li><p>設定ウィンドウのSTS4を選択</p></li>
+<li><p>バージョン情報STS4を選択</p></li>
+<li><p>インストール詳細</p></li>
+<li><p>Configurationの-vmの部分を確認</p></li>
+</ol>
+<p>STS4の場合、STS内部のver17を使っているみたい</p>
+<blockquote>
+<div><p>/Applications/SpringToolSuite4.app/Contents/Eclipse/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.macosx.x86_64_17.0.5.v20221102-0933/jre/lib/libjli.dylib</p>
+</div></blockquote>
+</section>
+<section id="macjava8">
+<h3><span class="section-number">1.4.2. </span>MACにjava8をインストール<a class="headerlink" href="#macjava8" title="この見出しへのパーマリンク">¶</a></h3>
+<blockquote>
+<div><p>brew install homebrew/cask-versions/adoptopenjdk8</p>
+</div></blockquote>
+</section>
 </section>
 <section id="maven">
 <h2><span class="section-number">1.5. </span>maven<a class="headerlink" href="#maven" title="この見出しへのパーマリンク">¶</a></h2>
@@ -179,7 +204,11 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 <li><a class="reference internal" href="#stsserver">1.3.2. STSへのServerの追加</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#machomebrewjdk">1.4. macでhomebrewでjdkをインストール</a></li>
+<li><a class="reference internal" href="#machomebrewjdk">1.4. macでhomebrewでjdkをインストール</a><ul>
+<li><a class="reference internal" href="#stsjava">1.4.1. STS側で利用しているJavaのバージョン確認</a></li>
+<li><a class="reference internal" href="#macjava8">1.4.2. MACにjava8をインストール</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#maven">1.5. maven</a><ul>
 <li><a class="reference internal" href="#id3">1.5.1. インストール</a></li>
 <li><a class="reference internal" href="#id4">1.5.2. mavenの各コマンド</a><ul>
@@ -199,7 +228,7 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="../AWS/AI.html"
-                          title="前の章へ"><span class="section-number">13. </span>AIサービス</a></p>
+                          title="前の章へ"><span class="section-number">15. </span>AIサービス</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
@@ -237,7 +266,7 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
           <a href="knowledge.html" title="2. java spring"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../AWS/AI.html" title="13. AIサービス"
+          <a href="../AWS/AI.html" title="15. AIサービス"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築手順</a></li> 
