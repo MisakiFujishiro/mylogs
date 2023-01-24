@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="10. 監視系" href="Watch.html" />
+    <link rel="next" title="10. 監視系" href="Monitoring.html" />
     <link rel="prev" title="8. S3" href="S3.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="Watch.html" title="10. 監視系"
+          <a href="Monitoring.html" title="10. 監視系"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="S3.html" title="8. S3"
@@ -132,9 +132,11 @@
 <section id="aurora">
 <h2><span class="section-number">9.3. </span>Aurora<a class="headerlink" href="#aurora" title="この見出しへのパーマリンク">¶</a></h2>
 <p>RDSのデータベースエンジンの一つで、クラウドの普及に伴ってAmazonが内部のアーキテクチャを再設計したデータベース
-MySQLとPostgreSQL5間のバージョンが提供されている。</p>
+MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>RDBの特性である一貫性をもち、リードレプリカといった特徴とQuorumに基づく結果整合性でデータを分散して保存しているため可用性を高めている。
 あるAZで障害が発生した場合にも、マルチAZでのスタンバイベースを作成していなくても、DBを継続して利用することができる。</p>
+<p>書き込み用のクラスターエンドポイントと読み込み用の読み込みエンドポイントがある。
+<img alt="../_images/db_aurora_endpoint.png" src="../_images/db_aurora_endpoint.png" /></p>
 <section id="aurora-serverless">
 <h3><span class="section-number">9.3.1. </span>Aurora Serverless<a class="headerlink" href="#aurora-serverless" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DBサーバーをプロ美女人戯して管理するのではなくて、キャパシティユニットを指定して管理する。
@@ -176,6 +178,7 @@ MySQLとPostgreSQL5間のバージョンが提供されている。</p>
 エンドポイントは書き込みと読み取り用途のエンドポイントが提供される。</p>
 <p>データを保存しているプライマリノードとリードレプリカを配置して、負荷分散をする。
 プライマリノードとリードレプリカの同期は非同期に行われている</p>
+<p>障害時は、リードレプリカがプライマリーに昇格する。</p>
 <p><img alt="../_images/db_elasticcache_wo_cluster.png" src="../_images/db_elasticcache_wo_cluster.png" /></p>
 </section>
 <section id="id9">
@@ -199,6 +202,19 @@ MySQLとPostgreSQL5間のバージョンが提供されている。</p>
 <h3><span class="section-number">9.5.1. </span>データとキー<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DynamoDBではConsistent Hashingというアルゴリズムに基づいて、親キー（<code class="docutils literal notranslate"><span class="pre">パーティションキー</span></code>）をハッシュ化して、配置するノード決定する。
 さらに、ノード内での順序は子キー（<code class="docutils literal notranslate"><span class="pre">ソートキー</span></code>）が決めることができるが、ソートキーの設定は任意</p>
+<section id="lsi">
+<h4><span class="section-number">9.5.1.1. </span>ローカルセカンダリインデックス(LSI)<a class="headerlink" href="#lsi" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Sort kye以外に絞り込み検索を行うkeyを持つことができる。
+Partition keyが同一で他のAttributesで検索をすることができる。</p>
+<p><img alt="../_images/db_dynamo_lsi.png" src="../_images/db_dynamo_lsi.png" />
+LSIを設定しておくことで、A1をPrimary key、A3をSort kyeとしたテーブルを作成し、検索することが可能となる。</p>
+</section>
+<section id="gsi">
+<h4><span class="section-number">9.5.1.2. </span>グローバルセカンダリインデックス(GSI)<a class="headerlink" href="#gsi" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Prrtition key属性の代わりとなるkeyを指定することができる。</p>
+<p><img alt="../_images/db_dynamo_gsi.png" src="../_images/db_dynamo_gsi.png" />
+GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作成することができる。</p>
+</section>
 </section>
 <section id="dynamodb">
 <h3><span class="section-number">9.5.2. </span>DynamoDBの注意点<a class="headerlink" href="#dynamodb" title="この見出しへのパーマリンク">¶</a></h3>
@@ -214,6 +230,25 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <li><p>プロビジョンモード：テーブル単位で読み書きのパフォーマンスをスループットとして定義する。</p></li>
 </ul>
 <p>読み込みと書き込みのキャパシティユニットをそれぞれWCUs(Write Capacity Units)とRCUs（Read Capacity Units)と呼ぶ。</p>
+<section id="rcus">
+<h4><span class="section-number">9.5.3.1. </span>RCUs<a class="headerlink" href="#rcus" title="この見出しへのパーマリンク">¶</a></h4>
+<blockquote>
+<div><p>1秒当たりの読み込み項目数 * 項目サイズ(4KBまでを1ブロック)</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>結果整合性読み込みは雑に読み込むのでスループット2倍</p></li>
+<li><p>トランザクション読み込みはしっかり読み込むのでスループット半減</p></li>
+</ul>
+</section>
+<section id="wcus">
+<h4><span class="section-number">9.5.3.2. </span>WCUs<a class="headerlink" href="#wcus" title="この見出しへのパーマリンク">¶</a></h4>
+<blockquote>
+<div><p>1秒当たりの書き込み項目数 ＊ 項目サイズ（1KBまでを１ブロック）</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>トランザクション書き込み（強い整合性）の場合はしっかり書き込むのでスループット半分</p></li>
+</ul>
+</section>
 </section>
 <section id="ttl-time-to-line">
 <h3><span class="section-number">9.5.4. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
@@ -222,7 +257,14 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <section id="dax-dynamodb-accelarator">
 <h3><span class="section-number">9.5.5. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
 <p>VPC内でキャッシュクラスタを構築して、DynamoDBへの高速アクセスを可能とするキャッシュサービス。</p>
-<p>リアルタイムにゅううさつやソーシャルゲームなどのユースケースに適している。</p>
+<p>リアルタイム入札やソーシャルゲームなどのユースケースに適している。</p>
+</section>
+<section id="dynamodb-stream-trigger">
+<h3><span class="section-number">9.5.6. </span>DynamoDB Stream/Trigger<a class="headerlink" href="#dynamodb-stream-trigger" title="この見出しへのパーマリンク">¶</a></h3>
+<p>テーブル内で項目の変更に関するデータを記録する機能</p>
+<p>データが作成・更新・削除されたときに項目のPKと変更前後のセータがストリームレコードとして書き込まれる。</p>
+<p><img alt="../_images/db_dynamo_streams.png" src="../_images/db_dynamo_streams.png" /></p>
+<p>LambdaやKinesisと統合されており、StreamAPIを使って、ポーリングを行なって変更を検知すると処理を実行できる（DynamoDB Trigger)</p>
 </section>
 </section>
 </section>
@@ -270,11 +312,20 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 </ul>
 </li>
 <li><a class="reference internal" href="#dynamo-db">9.5. Dynamo DB</a><ul>
-<li><a class="reference internal" href="#id10">9.5.1. データとキー</a></li>
+<li><a class="reference internal" href="#id10">9.5.1. データとキー</a><ul>
+<li><a class="reference internal" href="#lsi">9.5.1.1. ローカルセカンダリインデックス(LSI)</a></li>
+<li><a class="reference internal" href="#gsi">9.5.1.2. グローバルセカンダリインデックス(GSI)</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#dynamodb">9.5.2. DynamoDBの注意点</a></li>
-<li><a class="reference internal" href="#id11">9.5.3. 課金体系</a></li>
+<li><a class="reference internal" href="#id11">9.5.3. 課金体系</a><ul>
+<li><a class="reference internal" href="#rcus">9.5.3.1. RCUs</a></li>
+<li><a class="reference internal" href="#wcus">9.5.3.2. WCUs</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#ttl-time-to-line">9.5.4. TTL(Time To Line)</a></li>
 <li><a class="reference internal" href="#dax-dynamodb-accelarator">9.5.5. DAX(DynamoDB Accelarator)</a></li>
+<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.6. DynamoDB Stream/Trigger</a></li>
 </ul>
 </li>
 </ul>
@@ -289,7 +340,7 @@ Dynamoにはできないことをきちんと把握してから利用する必�
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="Watch.html"
+    <p class="topless"><a href="Monitoring.html"
                           title="次の章へ"><span class="section-number">10. </span>監視系</a></p>
   </div>
   <div role="note" aria-label="source link">
@@ -320,7 +371,7 @@ Dynamoにはできないことをきちんと把握してから利用する必�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="Watch.html" title="10. 監視系"
+          <a href="Monitoring.html" title="10. 監視系"
              >次へ</a> |</li>
         <li class="right" >
           <a href="S3.html" title="8. S3"

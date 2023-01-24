@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>1. IT関連の基礎知識 &#8212; my_sphinx  ドキュメント</title>
+    <title>1. 開発 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. 環境構築系の基礎知識" href="environment.html" />
+    <link rel="next" title="3. 環境構築系の基礎知識" href="environment.html" />
     <link rel="prev" title="2. マイクロサービスにおける認証認可" href="../microservice/certification_authentication.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="environment.html" title="2. 環境構築系の基礎知識"
+          <a href="environment.html" title="3. 環境構築系の基礎知識"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="../microservice/certification_authentication.html" title="2. マイクロサービスにおける認証認可"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>IT関連の基礎知識</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>開発</a></li> 
       </ul>
     </div>  
 
@@ -45,23 +45,34 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="it">
-<h1><span class="section-number">1. </span>IT関連の基礎知識<a class="headerlink" href="#it" title="この見出しへのパーマリンク">¶</a></h1>
+  <section id="id1">
+<h1><span class="section-number">1. </span>開発<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="web">
 <h2><span class="section-number">1.1. </span>Webサイト<a class="headerlink" href="#web" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id1">
-<h3><span class="section-number">1.1.1. </span>静的Webサイト<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id2">
+<h3><span class="section-number">1.1.1. </span>静的Webサイト<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>クライアントのリクエストの内容に関わらず、同じ内容を表示するコンテンツ</p>
 <p>HTMLや画像ファイルが静的コンテンツに該当し、静的コンテンツをクライアントに返却するサーバーを<code class="docutils literal notranslate"><span class="pre">Webサーバー</span></code>と呼ぶ。</p>
 <p>WebサーバーはOSSのApacheやNginxなどのWebサーバー用のSWをインストールすることで構築することができる。</p>
 </section>
-<section id="id2">
-<h3><span class="section-number">1.1.2. </span>動的Webサイト<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id3">
+<h3><span class="section-number">1.1.2. </span>動的Webサイト<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>クライアントのリクエストの内容や状況に応じて表示する内容を変更できるコンテンツ</p>
 <p>このようなジョン点つを提供するサーバーを<code class="docutils literal notranslate"><span class="pre">アプリケーションサーバー</span></code>と呼ぶ。</p>
 <p>動的な処理はJavaやPythonなどのプログラミング言語を利用することで実装され、デプロイされたAppを動作させるためには、
 プログラミング言語に合わせたSWをAPサーバーにインストール必要があり、JavaであればTomcatやPythonの場合はGunicornなどがある。</p>
 </section>
+</section>
+</section>
+<section id="id4">
+<h1><span class="section-number">2. </span>通信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="web-socket">
+<h2><span class="section-number">2.1. </span>Web Socket<a class="headerlink" href="#web-socket" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Web Scoketとは、ブラウザとウェブサーバーで双方向通信を行うための通信規格。</p>
+<p>サーバー側とユーザー側が常にオンライン状態を維持するので双方向を可能とする。</p>
+<p>Load Balancerを経由する場合は、同じサーバーと接続ができるように、スティッキーセッションを利用する必要がある。</p>
+<p><img alt="../_images/network_websocket.png" src="../_images/network_websocket.png" /></p>
+<p><a class="reference external" href="https://www.freshvoice.net/knowledge/word/6323/">WebSocketとは</a>の解説がわかりやすい</p>
 </section>
 </section>
 
@@ -75,12 +86,16 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">1. IT関連の基礎知識</a><ul>
+<li><a class="reference internal" href="#">1. 開発</a><ul>
 <li><a class="reference internal" href="#web">1.1. Webサイト</a><ul>
-<li><a class="reference internal" href="#id1">1.1.1. 静的Webサイト</a></li>
-<li><a class="reference internal" href="#id2">1.1.2. 動的Webサイト</a></li>
+<li><a class="reference internal" href="#id2">1.1.1. 静的Webサイト</a></li>
+<li><a class="reference internal" href="#id3">1.1.2. 動的Webサイト</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id4">2. 通信</a><ul>
+<li><a class="reference internal" href="#web-socket">2.1. Web Socket</a></li>
 </ul>
 </li>
 </ul>
@@ -94,7 +109,7 @@
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="environment.html"
-                          title="次の章へ"><span class="section-number">2. </span>環境構築系の基礎知識</a></p>
+                          title="次の章へ"><span class="section-number">3. </span>環境構築系の基礎知識</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -124,13 +139,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="environment.html" title="2. 環境構築系の基礎知識"
+          <a href="environment.html" title="3. 環境構築系の基礎知識"
              >次へ</a> |</li>
         <li class="right" >
           <a href="../microservice/certification_authentication.html" title="2. マイクロサービスにおける認証認可"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>IT関連の基礎知識</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>開発</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>1. 環境構築手順 &#8212; my_sphinx  ドキュメント</title>
+    <title>1. Javaとは &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. java spring" href="knowledge.html" />
+    <link rel="next" title="3. java spring" href="knowledge.html" />
     <link rel="prev" title="15. AIサービス" href="../AWS/AI.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="knowledge.html" title="2. java spring"
+          <a href="knowledge.html" title="3. java spring"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="../AWS/AI.html" title="15. AIサービス"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築手順</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Javaとは</a></li> 
       </ul>
     </div>  
 
@@ -45,20 +45,148 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="id1">
-<h1><span class="section-number">1. </span>環境構築手順<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+  <section id="java">
+<h1><span class="section-number">1. </span>Javaとは<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h1>
+<p><a class="reference external" href="https://gihyo.jp/article/2022/07/java2022-0701">2022年のJavaまるわかり！最新バージョンからJavaを取り巻く環境まで</a></p>
+<section id="jdk">
+<h2><span class="section-number">1.1. </span>JDKとは<a class="headerlink" href="#jdk" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="jre">
+<h2><span class="section-number">1.2. </span>JREとは<a class="headerlink" href="#jre" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+</section>
+<section id="id1">
+<h1><span class="section-number">2. </span>環境構築手順<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id2">
+<h2><span class="section-number">2.1. </span>Javaのインストール<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.oracle.com/java/technologies/downloads/">Oracle</a></p></li>
+<li><p><a class="reference external" href="https://www.azul.com/downloads/?version=java-17-lts&amp;os=macos&amp;architecture=arm-64-bit&amp;package=jdk">azul</a>
+からダウンロードするが、Installerの選択にはPCの確認が必要</p></li>
+</ul>
+<section id="mac">
+<h3><span class="section-number">2.1.1. </span>MACのバージョン確認<a class="headerlink" href="#mac" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Macの場合、<code class="docutils literal notranslate"><span class="pre">M1</span></code>か<code class="docutils literal notranslate"><span class="pre">Interl</span></code>の確認をしてからDLする必要がある。
+Macの「このMacについて」からチップを確認する。</p>
+<ul class="simple">
+<li><p>M1の場合：<code class="docutils literal notranslate"><span class="pre">Arm</span> <span class="pre">64</span></code> DMG Installerを選択</p></li>
+<li><p>Intelの場合：<code class="docutils literal notranslate"><span class="pre">x64</span></code> DMG Installerを選択</p></li>
+</ul>
+<p>DL後は展開して、承認すれば、インストール完了</p>
+<p><img alt="../_images/java_env_mac.png" src="../_images/java_env_mac.png" /></p>
+</section>
+<section id="id3">
+<h3><span class="section-number">2.1.2. </span>Javaのバージョン確認<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>現在使われているjavaのバージョン確認</p>
+<blockquote>
+<div><p>java -version</p>
+</div></blockquote>
+<p>インストールされているすべてのJavaの確認</p>
+<blockquote>
+<div><p>/usr/libexec/java_home -V</p>
+</div></blockquote>
+<p>出力例。バージョンとJavaがインストールされているパスが返却される</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Matching</span> <span class="n">Java</span> <span class="n">Virtual</span> <span class="n">Machines</span> <span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="mf">17.0.6</span> <span class="p">(</span><span class="n">arm64</span><span class="p">)</span> <span class="s2">&quot;Oracle Corporation&quot;</span> <span class="o">-</span> <span class="s2">&quot;Java SE 17.0.6&quot;</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">jdk</span><span class="o">-</span><span class="mf">17.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+    <span class="mf">1.8.351.10</span> <span class="p">(</span><span class="n">x86_64</span><span class="p">)</span> <span class="s2">&quot;Oracle Corporation&quot;</span> <span class="o">-</span> <span class="s2">&quot;Java&quot;</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Internet</span> <span class="n">Plug</span><span class="o">-</span><span class="n">Ins</span><span class="o">/</span><span class="n">JavaAppletPlugin</span><span class="o">.</span><span class="n">plugin</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+    <span class="mf">1.8.0_352</span> <span class="p">(</span><span class="n">x86_64</span><span class="p">)</span> <span class="s2">&quot;Eclipse Temurin&quot;</span> <span class="o">-</span> <span class="s2">&quot;Eclipse Temurin 8&quot;</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">temurin</span><span class="o">-</span><span class="mf">8.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+    <span class="mf">1.8.0_351</span> <span class="p">(</span><span class="n">x86_64</span><span class="p">)</span> <span class="s2">&quot;Oracle Corporation&quot;</span> <span class="o">-</span> <span class="s2">&quot;Java SE 8&quot;</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">jdk1</span><span class="mf">.8.0_351</span><span class="o">.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+<span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">jdk</span><span class="o">-</span><span class="mf">17.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">2.1.3. </span>Javaのアンインストール<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>javaがインストールされているパスのフォルダを指定することで、環境をアンインストールすることが可能</p>
+<blockquote>
+<div><p>sudo rm -fr [path_to_jdk]</p>
+</div></blockquote>
+</section>
+<section id="id5">
+<h3><span class="section-number">2.1.4. </span>Javaの切り替え<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>JAVA＿HOMEを設定する。[ver]の部分に切り替えたいjavaのバージョンを入れる</p>
+<blockquote>
+<div><p>export JAVA_HOME=<code class="docutils literal notranslate"><span class="pre">/usr/libexec/java_home</span> <span class="pre">-v</span> <span class="pre">&quot;[ver]&quot;</span></code></p>
+</div></blockquote>
+<p>パスを通す。</p>
+<blockquote>
+<div><p>PATH=$JAVA_HOME/bin:$PATH</p>
+</div></blockquote>
+<p>改めてjavaのバージョンを確認すると、バージョンが変更されている。</p>
+</section>
+</section>
 <section id="sts-mac">
-<h2><span class="section-number">1.1. </span>STSのインストール（MAC）<a class="headerlink" href="#sts-mac" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.2. </span>STSのインストール（MAC）<a class="headerlink" href="#sts-mac" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="sts">
-<h3><span class="section-number">1.1.1. </span>STSとは<a class="headerlink" href="#sts" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.2.1. </span>STSとは<a class="headerlink" href="#sts" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Springの公式ツールでEclipseベースのIDE</p>
 </section>
-<section id="id2">
-<h3><span class="section-number">1.1.2. </span>インストール<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id6">
+<h3><span class="section-number">2.2.2. </span>インストール<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>sts4.xは、<a class="reference external" href="https://spring.io/tools">公式サイト</a><br />sts3.xは、<a class="reference external" href="https://dist.springsource.com/release/STS/index.html">公式サイト</a></p>
 </section>
+<section id="stsvm">
+<h3><span class="section-number">2.2.3. </span>STSのVM<a class="headerlink" href="#stsvm" title="この見出しへのパーマリンク">¶</a></h3>
+<p>STS(eclips)はJavaVMというJavaプログラムを実行するソフト内で起動する。</p>
+<p>STSが起動すると読み込まれる<code class="docutils literal notranslate"><span class="pre">.ini</span></code>ファイルでvm環境をしている。</p>
+<p>自分のPC上のjavaのバージョンとSTSのVMのバージョンを一致させておく必要があるので、注意。</p>
+<section id="ini">
+<h4><span class="section-number">2.2.3.1. </span>iniファイルの確認<a class="headerlink" href="#ini" title="この見出しへのパーマリンク">¶</a></h4>
+<p>STSのアプリケーションを<code class="docutils literal notranslate"><span class="pre">control</span></code>を押しながらクリックすると<code class="docutils literal notranslate"><span class="pre">パッケージの内容を表示</span></code>が選択できるので選択し、以下のパスを確認する</p>
+<p>STS3の場合</p>
+<blockquote>
+<div><p>Contents/Eclips/STS.ini</p>
+</div></blockquote>
+<p>STS4の場合</p>
+<blockquote>
+<div><p>Contents/Eclips/StringToolSuite4.ini</p>
+</div></blockquote>
+</section>
+<section id="id7">
+<h4><span class="section-number">2.2.3.2. </span>立ち上がっているSTSからvmの確認<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ウィンドウのSTSから「バージョン情報」を選択「インストール詳細」から「Configuration」を選択
+<img alt="../_images/java_env_sts_vm1.png" src="../_images/java_env_sts_vm1.png" /></p>
+<p><code class="docutils literal notranslate"><span class="pre">-vm</span></code>の項目に記載されているのがvmで利用されているjavaのパス
+<img alt="../_images/java_env_sts_vm2.png" src="../_images/java_env_sts_vm2.png" /></p>
+</section>
+</section>
+<section id="id8">
+<h3><span class="section-number">2.2.4. </span>トラブルシューティング<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="sts3">
+<h4><span class="section-number">2.2.4.1. </span>STS3の環境構築<a class="headerlink" href="#sts3" title="この見出しへのパーマリンク">¶</a></h4>
+<p>iniファイルにおいて<code class="docutils literal notranslate"><span class="pre">-vm</span></code>で指定されているパスがvmで利用しているjavaのパス</p>
+<p>STS3の場合、Javaのver17をiniファイルで指定すると以下のエラーが出る</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">vm</span>
+<span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">jdk</span><span class="o">-</span><span class="mf">17.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span><span class="o">/</span><span class="nb">bin</span>
+</pre></div>
+</div>
+<p><img alt="../_images/java_sts_error_sts3.png" src="../_images/java_sts_error_sts3.png" /></p>
+<p>Javaのver1.8を指定する場合、M1対応のjdkがないためか、立ち上がっても、うまく開発できない。(stringすらインストールできていないポイ)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">vm</span>
+<span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">jdk1</span><span class="mf">.8.0_351</span><span class="o">.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+</pre></div>
+</div>
+</section>
+<section id="sts4">
+<h4><span class="section-number">2.2.4.2. </span>STS4の環境構築<a class="headerlink" href="#sts4" title="この見出しへのパーマリンク">¶</a></h4>
+<p>iniファイルでは、STS内で指定されているver17のjavaが動いている。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">vm</span>
+<span class="o">../</span><span class="n">Eclipse</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">justj</span><span class="o">.</span><span class="n">openjdk</span><span class="o">.</span><span class="n">hotspot</span><span class="o">.</span><span class="n">jre</span><span class="o">.</span><span class="n">full</span><span class="o">.</span><span class="n">macosx</span><span class="o">.</span><span class="n">x86_64_17</span><span class="mf">.0.5</span><span class="o">.</span><span class="n">v20221102</span><span class="o">-</span><span class="mi">0933</span><span class="o">/</span><span class="n">jre</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libjli</span><span class="o">.</span><span class="n">dylib</span>
+</pre></div>
+</div>
+<p>なので、PC側のjavaのバージョンもver17とする。</p>
+</section>
+</section>
+<section id="stsjava">
+<h3><span class="section-number">2.2.5. </span>STS内部でjavaバージョンを指定<a class="headerlink" href="#stsjava" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ウィンドウから<code class="docutils literal notranslate"><span class="pre">設定</span></code>を選択。</p>
+<p>ナビゲーションペインから、<code class="docutils literal notranslate"><span class="pre">Java/インストール済みのJRE</span></code>で利用するJREを指定する。</p>
+<p><img alt="../_images/java_env_sts_jre.png" src="../_images/java_env_sts_jre.png" /></p>
+<p>また、ナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">Java/コンパイラー</span></code>でコンパイルするときのjavaのバージョンを指定する。</p>
+<p><img alt="../_images/java_env_sts_compile.png" src="../_images/java_env_sts_compile.png" /></p>
+</section>
 <section id="x">
-<h3><span class="section-number">1.1.3. </span>3.xの場合<a class="headerlink" href="#x" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.2.6. </span>3.xの場合<a class="headerlink" href="#x" title="この見出しへのパーマリンク">¶</a></h3>
 <p>stsをDLして、展開すると３つappがあるので全部Applicationにいれる。</p>
 <p><img alt="../_images/sts3_dl.png" src="../_images/sts3_dl.png" /></p>
 <p>Applicationのstsを開こうとするとVMが作成できないエラーが出る場合がある。
@@ -74,66 +202,23 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 </div>
 </section>
 </section>
-<section id="java">
-<h2><span class="section-number">1.2. </span>javaのバージョン変更<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h2>
-<p><a class="reference external" href="https://amateur-engineer.com/mac-java-version/">macでJDKのバージョンを切り替える方法-JAVA_HOME設定</a>を参考に以下の手順で変更する。</p>
-<ol class="simple">
-<li><p>javaのバージョン確認</p></li>
-</ol>
-<blockquote>
-<div><p>/usr/libexec/java_home -V</p>
-</div></blockquote>
-<ol class="simple">
-<li><p>javaの切り替え</p></li>
-</ol>
-<blockquote>
-<div><p>export JAVA_HOME=<code class="docutils literal notranslate"><span class="pre">/usr/libexec/java_home</span> <span class="pre">-v</span> <span class="pre">&quot;1.8.0_292&quot;</span></code></p>
-</div></blockquote>
-<blockquote>
-<div><p>PATH=$JAVA_HOME/bin:$PATH</p>
-</div></blockquote>
-</section>
 <section id="server">
-<h2><span class="section-number">1.3. </span>serverの追加<a class="headerlink" href="#server" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.3. </span>serverの追加<a class="headerlink" href="#server" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="apache-tomcat-dl">
-<h3><span class="section-number">1.3.1. </span>apache tomcat のDL<a class="headerlink" href="#apache-tomcat-dl" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.1. </span>apache tomcat のDL<a class="headerlink" href="#apache-tomcat-dl" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://blanche-toile.com/web/mac-tomcat">macにtomcatをDL</a>この記事を参考に実施</p>
 </section>
 <section id="stsserver">
-<h3><span class="section-number">1.3.2. </span>STSへのServerの追加<a class="headerlink" href="#stsserver" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.2. </span>STSへのServerの追加<a class="headerlink" href="#stsserver" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://iteng-pom.com/archives/129">STSへTomcat9をインストール</a>この記事を参考に実施</p>
 </section>
 </section>
-<section id="machomebrewjdk">
-<h2><span class="section-number">1.4. </span>macでhomebrewでjdkをインストール<a class="headerlink" href="#machomebrewjdk" title="この見出しへのパーマリンク">¶</a></h2>
-<p><a class="reference external" href="https://engineering.mobalab.net/2022/06/06/how-to-install-java-on-macos-in-2022/">参考サイト</a></p>
-<section id="stsjava">
-<h3><span class="section-number">1.4.1. </span>STS側で利用しているJavaのバージョン確認<a class="headerlink" href="#stsjava" title="この見出しへのパーマリンク">¶</a></h3>
-<p><a class="reference external" href="https://itsakura.com/eclipse-javavm">Eclipseを動かしているJava VMを確認する方法</a></p>
-<ol class="simple">
-<li><p>設定ウィンドウのSTS4を選択</p></li>
-<li><p>バージョン情報STS4を選択</p></li>
-<li><p>インストール詳細</p></li>
-<li><p>Configurationの-vmの部分を確認</p></li>
-</ol>
-<p>STS4の場合、STS内部のver17を使っているみたい</p>
-<blockquote>
-<div><p>/Applications/SpringToolSuite4.app/Contents/Eclipse/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.macosx.x86_64_17.0.5.v20221102-0933/jre/lib/libjli.dylib</p>
-</div></blockquote>
-</section>
-<section id="macjava8">
-<h3><span class="section-number">1.4.2. </span>MACにjava8をインストール<a class="headerlink" href="#macjava8" title="この見出しへのパーマリンク">¶</a></h3>
-<blockquote>
-<div><p>brew install homebrew/cask-versions/adoptopenjdk8</p>
-</div></blockquote>
-</section>
-</section>
 <section id="maven">
-<h2><span class="section-number">1.5. </span>maven<a class="headerlink" href="#maven" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.4. </span>maven<a class="headerlink" href="#maven" title="この見出しへのパーマリンク">¶</a></h2>
 <p>POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。
 プロジェクトに関わる情報はPOMに集約する。</p>
-<section id="id3">
-<h3><span class="section-number">1.5.1. </span>インストール<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">2.4.1. </span>インストール<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>インストールできるApach Maveを確認</p>
 <blockquote>
 <div><p>brew search maven</p>
@@ -147,15 +232,15 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 <div><p>mvn --version</p>
 </div></blockquote>
 </section>
-<section id="id4">
-<h3><span class="section-number">1.5.2. </span>mavenの各コマンド<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">2.4.2. </span>mavenの各コマンド<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="mvn-compile">
-<h4><span class="section-number">1.5.2.1. </span>mvn compile<a class="headerlink" href="#mvn-compile" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.2.1. </span>mvn compile<a class="headerlink" href="#mvn-compile" title="この見出しへのパーマリンク">¶</a></h4>
 <p>src/main/java/配下のソースファイルのコンパイルが行われます。
 コンパイルにより作成されたクラスファイルはtarger/classesディレクトリに出力されます。</p>
 </section>
 <section id="mvn-test">
-<h4><span class="section-number">1.5.2.2. </span>mvn test<a class="headerlink" href="#mvn-test" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.2.2. </span>mvn test<a class="headerlink" href="#mvn-test" title="この見出しへのパーマリンク">¶</a></h4>
 <p>デフォルてで、以下のパターンにマッチするファイルが実行される</p>
 <ul class="simple">
 <li><p>＊＊/Test＊.java</p></li>
@@ -164,13 +249,13 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 </ul>
 </section>
 <section id="mvn-packege">
-<h4><span class="section-number">1.5.2.3. </span>mvn packege<a class="headerlink" href="#mvn-packege" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.2.3. </span>mvn packege<a class="headerlink" href="#mvn-packege" title="この見出しへのパーマリンク">¶</a></h4>
 <p>成功すると、targetディレクトリに**.jarファイルが作成される。<br />作成されるjarファイルの名前はpom.xmlに記述されているartifactIdとversionできまる。</p>
 </section>
 </section>
 </section>
-<section id="id5">
-<h2><span class="section-number">1.6. </span>参考<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id11">
+<h2><span class="section-number">2.5. </span>参考<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://zenn.dev/nakohama/articles/7ed3953bae7f33">Spring Tool Suite (STS)の環境構築(for Mac)</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/ASHITSUBO/items/6c2aa8dd55043781c6b4">Mavenとは何ぞや</a></p></li>
@@ -191,35 +276,52 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">1. 環境構築手順</a><ul>
-<li><a class="reference internal" href="#sts-mac">1.1. STSのインストール（MAC）</a><ul>
-<li><a class="reference internal" href="#sts">1.1.1. STSとは</a></li>
-<li><a class="reference internal" href="#id2">1.1.2. インストール</a></li>
-<li><a class="reference internal" href="#x">1.1.3. 3.xの場合</a></li>
+<li><a class="reference internal" href="#">1. Javaとは</a><ul>
+<li><a class="reference internal" href="#jdk">1.1. JDKとは</a></li>
+<li><a class="reference internal" href="#jre">1.2. JREとは</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#java">1.2. javaのバージョン変更</a></li>
-<li><a class="reference internal" href="#server">1.3. serverの追加</a><ul>
-<li><a class="reference internal" href="#apache-tomcat-dl">1.3.1. apache tomcat のDL</a></li>
-<li><a class="reference internal" href="#stsserver">1.3.2. STSへのServerの追加</a></li>
+<li><a class="reference internal" href="#id1">2. 環境構築手順</a><ul>
+<li><a class="reference internal" href="#id2">2.1. Javaのインストール</a><ul>
+<li><a class="reference internal" href="#mac">2.1.1. MACのバージョン確認</a></li>
+<li><a class="reference internal" href="#id3">2.1.2. Javaのバージョン確認</a></li>
+<li><a class="reference internal" href="#id4">2.1.3. Javaのアンインストール</a></li>
+<li><a class="reference internal" href="#id5">2.1.4. Javaの切り替え</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#machomebrewjdk">1.4. macでhomebrewでjdkをインストール</a><ul>
-<li><a class="reference internal" href="#stsjava">1.4.1. STS側で利用しているJavaのバージョン確認</a></li>
-<li><a class="reference internal" href="#macjava8">1.4.2. MACにjava8をインストール</a></li>
+<li><a class="reference internal" href="#sts-mac">2.2. STSのインストール（MAC）</a><ul>
+<li><a class="reference internal" href="#sts">2.2.1. STSとは</a></li>
+<li><a class="reference internal" href="#id6">2.2.2. インストール</a></li>
+<li><a class="reference internal" href="#stsvm">2.2.3. STSのVM</a><ul>
+<li><a class="reference internal" href="#ini">2.2.3.1. iniファイルの確認</a></li>
+<li><a class="reference internal" href="#id7">2.2.3.2. 立ち上がっているSTSからvmの確認</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#maven">1.5. maven</a><ul>
-<li><a class="reference internal" href="#id3">1.5.1. インストール</a></li>
-<li><a class="reference internal" href="#id4">1.5.2. mavenの各コマンド</a><ul>
-<li><a class="reference internal" href="#mvn-compile">1.5.2.1. mvn compile</a></li>
-<li><a class="reference internal" href="#mvn-test">1.5.2.2. mvn test</a></li>
-<li><a class="reference internal" href="#mvn-packege">1.5.2.3. mvn packege</a></li>
+<li><a class="reference internal" href="#id8">2.2.4. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#sts3">2.2.4.1. STS3の環境構築</a></li>
+<li><a class="reference internal" href="#sts4">2.2.4.2. STS4の環境構築</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#stsjava">2.2.5. STS内部でjavaバージョンを指定</a></li>
+<li><a class="reference internal" href="#x">2.2.6. 3.xの場合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#server">2.3. serverの追加</a><ul>
+<li><a class="reference internal" href="#apache-tomcat-dl">2.3.1. apache tomcat のDL</a></li>
+<li><a class="reference internal" href="#stsserver">2.3.2. STSへのServerの追加</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#maven">2.4. maven</a><ul>
+<li><a class="reference internal" href="#id9">2.4.1. インストール</a></li>
+<li><a class="reference internal" href="#id10">2.4.2. mavenの各コマンド</a><ul>
+<li><a class="reference internal" href="#mvn-compile">2.4.2.1. mvn compile</a></li>
+<li><a class="reference internal" href="#mvn-test">2.4.2.2. mvn test</a></li>
+<li><a class="reference internal" href="#mvn-packege">2.4.2.3. mvn packege</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id5">1.6. 参考</a></li>
+<li><a class="reference internal" href="#id11">2.5. 参考</a></li>
 </ul>
 </li>
 </ul>
@@ -233,7 +335,7 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="knowledge.html"
-                          title="次の章へ"><span class="section-number">2. </span>java spring</a></p>
+                          title="次の章へ"><span class="section-number">3. </span>java spring</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -263,13 +365,13 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="knowledge.html" title="2. java spring"
+          <a href="knowledge.html" title="3. java spring"
              >次へ</a> |</li>
         <li class="right" >
           <a href="../AWS/AI.html" title="15. AIサービス"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築手順</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Javaとは</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

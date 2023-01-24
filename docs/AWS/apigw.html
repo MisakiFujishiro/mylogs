@@ -59,9 +59,10 @@
 <li><p>統一インターフェース<br />HTTPのリクエストを受付、JSONやXMLなどで返す</p></li>
 </ol>
 </section>
+</section>
 <section id="api-gatewayapi">
-<h3><span class="section-number">6.1.2. </span>API GatewayのAPIの種類<a class="headerlink" href="#api-gatewayapi" title="この見出しへのパーマリンク">¶</a></h3>
-<p>APIは3種類存在し、バックエンドのサービス、エンドポイントのタイプやCloudFrontが利用できるかなどの差がある<br />例えば、OIDCの認証はHTTPのみがサポートしているが、エッジ最適化エンドポイントはRESTのみがサポートしている。</p>
+<h2><span class="section-number">6.2. </span>API GatewayのAPIの種類<a class="headerlink" href="#api-gatewayapi" title="この見出しへのパーマリンク">¶</a></h2>
+<p>APIは3種類存在し、バックエンドのサービス、エンドポイントのタイプやCloudFrontが利用できるかなどの差がある</p>
 <p>APIの種類は３種類</p>
 <ul class="simple">
 <li><p>REST API</p></li>
@@ -82,10 +83,14 @@
 <li><p>プライベートAPIエンドポイント</p></li>
 <li><p>リージョンAPIエンドポイント</p></li>
 </ul>
+<section id="api">
+<h3><span class="section-number">6.2.1. </span>APIで利用できる機能の差分について<a class="headerlink" href="#api" title="この見出しへのパーマリンク">¶</a></h3>
+<p>■認証認可<br />OAuthやOIDCの認証認可はHTTPでしか利用できないが、Cognitoオーソライザは、WebSocketやRESTで利用できる。</p>
+<p>■エッジ最適化<br />エッジ最適化エンドポイントはRESTのみがサポートしている。</p>
 </section>
 </section>
 <section id="api-gw">
-<h2><span class="section-number">6.2. </span>API GWのデプロイとステージ<a class="headerlink" href="#api-gw" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.3. </span>API GWのデプロイとステージ<a class="headerlink" href="#api-gw" title="この見出しへのパーマリンク">¶</a></h2>
 <p>APIは<code class="docutils literal notranslate"><span class="pre">ステージ</span></code>という論理的な環境にデプロイされる。APIがデプロイされると以下の形式のエンドポイントURLが払い出される</p>
 <blockquote>
 <div><p>https://{api-id}.execute-api.{region}.amazonaws.com/{stageName}/...</p>
@@ -93,13 +98,13 @@
 <p><code class="docutils literal notranslate"><span class="pre">{stageName}</span></code>は好きに設定することができ、prd,stg,devのように定義する</p>
 </section>
 <section id="id2">
-<h2><span class="section-number">6.3. </span>API GWのスロットリング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.4. </span>API GWのスロットリング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <p>API GWでは、流量制御の仕組みが実装されている。
 流動制御により、過多なりクエストからAPIを守ったり、クライアントの使用量プランを作成できる。</p>
 <p>流動制御はスロットリングと呼ばれるトークンバケットアルゴリズムであり、1リクエストを処理するたびにバケットないのTokenが消費される。</p>
 </section>
 <section id="id3">
-<h2><span class="section-number">6.4. </span>API GWと認証認可<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.5. </span>API GWと認証認可<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>API GWにより、認証認可の仕組みを適用する場合い、いくつかの実現方法がある</p>
 <ol class="simple">
 <li><p>IAMアクセス権限<br />クライアントは、IAMユーザーのアクセスキーをハッシュ化したAWS署名ver4をリクエストヘッダーに付与する。
@@ -126,12 +131,15 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。</p><
 <li><a class="reference internal" href="#">6. API GateWay</a><ul>
 <li><a class="reference internal" href="#id1">6.1. API Gatewayとは</a><ul>
 <li><a class="reference internal" href="#rest-api">6.1.1. REST APIとは</a></li>
-<li><a class="reference internal" href="#api-gatewayapi">6.1.2. API GatewayのAPIの種類</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#api-gw">6.2. API GWのデプロイとステージ</a></li>
-<li><a class="reference internal" href="#id2">6.3. API GWのスロットリング</a></li>
-<li><a class="reference internal" href="#id3">6.4. API GWと認証認可</a></li>
+<li><a class="reference internal" href="#api-gatewayapi">6.2. API GatewayのAPIの種類</a><ul>
+<li><a class="reference internal" href="#api">6.2.1. APIで利用できる機能の差分について</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-gw">6.3. API GWのデプロイとステージ</a></li>
+<li><a class="reference internal" href="#id2">6.4. API GWのスロットリング</a></li>
+<li><a class="reference internal" href="#id3">6.5. API GWと認証認可</a></li>
 </ul>
 </li>
 </ul>

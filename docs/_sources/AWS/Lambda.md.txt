@@ -70,8 +70,9 @@ Lambdaを呼び出すと、一旦LambdaないのQueueに格納されてからLam
 
 ![](img/lambda_call_ansync.png)
 
-### ③Lambdaがイベントを読み取る
+### ③Lambdaがイベントを読み取る(イベントソースマッピング)
 Lambdaが新しいイベントがないがないかポーリングする。
+
 
 
 ## LambdaとS3・AIなどのAWSサービスの連携

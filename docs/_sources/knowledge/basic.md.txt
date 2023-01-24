@@ -1,4 +1,4 @@
-# IT関連の基礎知識
+# 開発
 
 ## Webサイト
 ### 静的Webサイト
@@ -15,3 +15,16 @@ WebサーバーはOSSのApacheやNginxなどのWebサーバー用のSWをイン�
 
 動的な処理はJavaやPythonなどのプログラミング言語を利用することで実装され、デプロイされたAppを動作させるためには、
 プログラミング言語に合わせたSWをAPサーバーにインストール必要があり、JavaであればTomcatやPythonの場合はGunicornなどがある。
+
+
+# 通信
+## Web Socket
+Web Scoketとは、ブラウザとウェブサーバーで双方向通信を行うための通信規格。
+
+サーバー側とユーザー側が常にオンライン状態を維持するので双方向を可能とする。
+
+ Load Balancerを経由する場合は、同じサーバーと接続ができるように、スティッキーセッションを利用する必要がある。
+
+![](img/network_websocket.png)
+
+[WebSocketとは](https://www.freshvoice.net/knowledge/word/6323/)の解説がわかりやすい

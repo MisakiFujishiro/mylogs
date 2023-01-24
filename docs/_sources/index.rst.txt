@@ -67,7 +67,7 @@ AWS Services
    AWS/Lambda
    AWS/S3
    AWS/DB
-   AWS/Watch
+   AWS/Monitoring
    AWS/EnvAutomation
    AWS/SNS_SQS
    AWS/Streaming
