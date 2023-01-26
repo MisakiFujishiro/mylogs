@@ -247,6 +247,22 @@ AWSコンソールからGUIでテンプレートを作成できる機能
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Serverless Application Model
 CloudFormationの拡張機能で、サーバレスアプリケーションをより簡易的な記述で定義構築する。
 LambdaやAPIGWなどのサーバーレスサービスについては、CloudFormationでも記述構築できるがSAMの方が記述量少なくスマートにテンプレートを記述できる

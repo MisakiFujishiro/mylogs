@@ -185,40 +185,46 @@ Macの「このMacについて」からチップを確認する。</p>
 <p>また、ナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">Java/コンパイラー</span></code>でコンパイルするときのjavaのバージョンを指定する。</p>
 <p><img alt="../_images/java_env_sts_compile.png" src="../_images/java_env_sts_compile.png" /></p>
 </section>
-<section id="x">
-<h3><span class="section-number">2.2.6. </span>3.xの場合<a class="headerlink" href="#x" title="この見出しへのパーマリンク">¶</a></h3>
-<p>stsをDLして、展開すると３つappがあるので全部Applicationにいれる。</p>
-<p><img alt="../_images/sts3_dl.png" src="../_images/sts3_dl.png" /></p>
-<p>Applicationのstsを開こうとするとVMが作成できないエラーが出る場合がある。
-sts.appを右クリック、パッケージ内容を表示して、<code class="docutils literal notranslate"><span class="pre">/Applications/STS.app/Contents/Eclipse/STS.ini</span></code>を編集</p>
-<p>STSの元々</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">vm</span>
-<span class="o">../</span><span class="n">Eclipse</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">justj</span><span class="o">.</span><span class="n">openjdk</span><span class="o">.</span><span class="n">hotspot</span><span class="o">.</span><span class="n">jre</span><span class="o">.</span><span class="n">full</span><span class="o">.</span><span class="n">macosx</span><span class="o">.</span><span class="n">x86_64_17</span><span class="mf">.0.5</span><span class="o">.</span><span class="n">v20221102</span><span class="o">-</span><span class="mi">0933</span><span class="o">/</span><span class="n">jre</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libjli</span><span class="o">.</span><span class="n">dylib</span>
+<section id="id9">
+<h3><span class="section-number">2.2.6. </span>STSの特徴<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>STS内部にWebサーバーを含んでいるため、Tomcatの設定などをしなくても、STS内でアプリを実行することができる。</p>
+<section id="jarwar">
+<h4><span class="section-number">2.2.6.1. </span>jarファイルとwarファイル<a class="headerlink" href="#jarwar" title="この見出しへのパーマリンク">¶</a></h4>
+<p>warファイルの中身は、アプリのみが格納されているため、WebServer(Tomcat)に配置して、実行する必要があった。
+jarファイルの中身は、アプリとWebサーバーが格納されているため、jarファイルのみでアプリの実行が可能となる。</p>
+</section>
+<section id="jar">
+<h4><span class="section-number">2.2.6.2. </span>jarファイルの作成<a class="headerlink" href="#jar" title="この見出しへのパーマリンク">¶</a></h4>
+<blockquote>
+<div><p>実行/Mavenのインストール</p>
+</div></blockquote>
+<p>stsプロジェクトのtargetフォルダにjarファイルが作成される。
+作成されたjarファイルに対して、実行することでもアプリを立ち上げることができる。</p>
+<blockquote>
+<div><p>java -jar xxx.jar</p>
+</div></blockquote>
+</section>
+</section>
+<section id="id10">
+<h3><span class="section-number">2.2.7. </span>ライブラリを追加する<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>pom.xmlに依存関係を追加する</p>
+<p>例えばThymeleafを追加したい場合、pomの[dependencies]に以下を追加する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="n">thymeleaf</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">thymeleaf</span><span class="o">-</span><span class="n">spring6</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="nb">compile</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">vm</span>
-<span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">adoptopenjdk</span><span class="o">-</span><span class="mf">8.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span><span class="o">/</span><span class="nb">bin</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="server">
-<h2><span class="section-number">2.3. </span>serverの追加<a class="headerlink" href="#server" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="apache-tomcat-dl">
-<h3><span class="section-number">2.3.1. </span>apache tomcat のDL<a class="headerlink" href="#apache-tomcat-dl" title="この見出しへのパーマリンク">¶</a></h3>
-<p><a class="reference external" href="https://blanche-toile.com/web/mac-tomcat">macにtomcatをDL</a>この記事を参考に実施</p>
-</section>
-<section id="stsserver">
-<h3><span class="section-number">2.3.2. </span>STSへのServerの追加<a class="headerlink" href="#stsserver" title="この見出しへのパーマリンク">¶</a></h3>
-<p><a class="reference external" href="https://iteng-pom.com/archives/129">STSへTomcat9をインストール</a>この記事を参考に実施</p>
+<p>追加して、pom.xmlを保存するだけで、Maven依存関係のフォルダに必要なライブラリたちをDLしておいてくれる。</p>
 </section>
 </section>
 <section id="maven">
-<h2><span class="section-number">2.4. </span>maven<a class="headerlink" href="#maven" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.3. </span>mavenとは<a class="headerlink" href="#maven" title="この見出しへのパーマリンク">¶</a></h2>
 <p>POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。
 プロジェクトに関わる情報はPOMに集約する。</p>
-<section id="id9">
-<h3><span class="section-number">2.4.1. </span>インストール<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">2.3.1. </span>インストール<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>インストールできるApach Maveを確認</p>
 <blockquote>
 <div><p>brew search maven</p>
@@ -232,15 +238,15 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 <div><p>mvn --version</p>
 </div></blockquote>
 </section>
-<section id="id10">
-<h3><span class="section-number">2.4.2. </span>mavenの各コマンド<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">2.3.2. </span>mavenの各コマンド<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="mvn-compile">
-<h4><span class="section-number">2.4.2.1. </span>mvn compile<a class="headerlink" href="#mvn-compile" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.2.1. </span>mvn compile<a class="headerlink" href="#mvn-compile" title="この見出しへのパーマリンク">¶</a></h4>
 <p>src/main/java/配下のソースファイルのコンパイルが行われます。
 コンパイルにより作成されたクラスファイルはtarger/classesディレクトリに出力されます。</p>
 </section>
 <section id="mvn-test">
-<h4><span class="section-number">2.4.2.2. </span>mvn test<a class="headerlink" href="#mvn-test" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.2.2. </span>mvn test<a class="headerlink" href="#mvn-test" title="この見出しへのパーマリンク">¶</a></h4>
 <p>デフォルてで、以下のパターンにマッチするファイルが実行される</p>
 <ul class="simple">
 <li><p>＊＊/Test＊.java</p></li>
@@ -249,13 +255,13 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 </ul>
 </section>
 <section id="mvn-packege">
-<h4><span class="section-number">2.4.2.3. </span>mvn packege<a class="headerlink" href="#mvn-packege" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.2.3. </span>mvn packege<a class="headerlink" href="#mvn-packege" title="この見出しへのパーマリンク">¶</a></h4>
 <p>成功すると、targetディレクトリに**.jarファイルが作成される。<br />作成されるjarファイルの名前はpom.xmlに記述されているartifactIdとversionできまる。</p>
 </section>
 </section>
 </section>
-<section id="id11">
-<h2><span class="section-number">2.5. </span>参考<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id13">
+<h2><span class="section-number">2.4. </span>参考<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://zenn.dev/nakohama/articles/7ed3953bae7f33">Spring Tool Suite (STS)の環境構築(for Mac)</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/ASHITSUBO/items/6c2aa8dd55043781c6b4">Mavenとは何ぞや</a></p></li>
@@ -303,25 +309,25 @@ sts.appを右クリック、パッケージ内容を表示して、<code class="
 </ul>
 </li>
 <li><a class="reference internal" href="#stsjava">2.2.5. STS内部でjavaバージョンを指定</a></li>
-<li><a class="reference internal" href="#x">2.2.6. 3.xの場合</a></li>
+<li><a class="reference internal" href="#id9">2.2.6. STSの特徴</a><ul>
+<li><a class="reference internal" href="#jarwar">2.2.6.1. jarファイルとwarファイル</a></li>
+<li><a class="reference internal" href="#jar">2.2.6.2. jarファイルの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#server">2.3. serverの追加</a><ul>
-<li><a class="reference internal" href="#apache-tomcat-dl">2.3.1. apache tomcat のDL</a></li>
-<li><a class="reference internal" href="#stsserver">2.3.2. STSへのServerの追加</a></li>
+<li><a class="reference internal" href="#id10">2.2.7. ライブラリを追加する</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#maven">2.4. maven</a><ul>
-<li><a class="reference internal" href="#id9">2.4.1. インストール</a></li>
-<li><a class="reference internal" href="#id10">2.4.2. mavenの各コマンド</a><ul>
-<li><a class="reference internal" href="#mvn-compile">2.4.2.1. mvn compile</a></li>
-<li><a class="reference internal" href="#mvn-test">2.4.2.2. mvn test</a></li>
-<li><a class="reference internal" href="#mvn-packege">2.4.2.3. mvn packege</a></li>
+<li><a class="reference internal" href="#maven">2.3. mavenとは</a><ul>
+<li><a class="reference internal" href="#id11">2.3.1. インストール</a></li>
+<li><a class="reference internal" href="#id12">2.3.2. mavenの各コマンド</a><ul>
+<li><a class="reference internal" href="#mvn-compile">2.3.2.1. mvn compile</a></li>
+<li><a class="reference internal" href="#mvn-test">2.3.2.2. mvn test</a></li>
+<li><a class="reference internal" href="#mvn-packege">2.3.2.3. mvn packege</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id11">2.5. 参考</a></li>
+<li><a class="reference internal" href="#id13">2.4. 参考</a></li>
 </ul>
 </li>
 </ul>

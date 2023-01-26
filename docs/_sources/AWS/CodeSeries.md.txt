@@ -22,11 +22,12 @@ IAMベースでリポジトリに対する操作を生業することができ�
 - SSHを利用した連携
 
 ### HTTPSを利用した連携
-HTTPSを通じて、git連携をして、認証情報にはIAMで作成したクレデンシャル（ID/PASS)を利用する。
+IAMで作成したユーザーに対してgitの認証情報を作成しておいて、HTTPSを通じて、git連携をする。
 
 
 ### GRC(git-remote-codeCommmit)
-クライアント側でGRCをインストールしておくと、AWSCLIの認証情報を使って、CodeCommitと連携してくれる。
+AWS側でCode Commitの権限を持つIAMロールを作成しておく。
+クライアント側でGRCをインストールして、ロールのARNをセットアップすると、AWSCLIの認証情報を使って、CodeCommitと連携してくれる。
 
 
 ### SSHを利用した連携
@@ -88,6 +89,16 @@ localにgithubのリポジトリをcloneして、新しいブランチを作っ�
 
 
 
+
+
+
+
+
+
+
+
+
+
 ## Code Build
 ソースコードをコンパイル・テスト実行して、デプロイ可能なSWパッケージを作成するフルマネージドなビルドサービス
 メリットとして、ビルド用のサーバのプロビジョニング・管理が不要となる  
@@ -101,8 +112,9 @@ codebuildの成果物はartifactと呼ばれる。
    4. ServiceRoleの設定 
 2. buildspec.yamlの作成
 
-### buildspec.uml
-ビルド処理をbuildspec.umlファイルに記述して、APPのソースコードPJのルートディレクトリに置いておく。
+
+### buildspec.yml
+ビルド処理をbuildspec.ymlファイルに記述して、APPのソースコードPJのルートディレクトリに置いておく。
 環境変数や必要な環境のインストール処理、ビルド処理や生成するアプリケーションの定義を記載しておく。
 
 buildspec.ymlの記載項目
@@ -118,6 +130,7 @@ buildspec.ymlの記載項目
     - files：必須項目でデプロイする成果物を指定  
     '**/*'を指定するとディレクトリは以下全てをデプロイする資産として指定  
     - base-directory：デプロイ対象のルートディレクトリを指定
+
 
 ### buildspec.ymlにおける環境変数の設定
 buildspec.ymlファイルに環境変数を設定する場合は、環境から環境変数を設定することができる。
@@ -138,11 +151,19 @@ codebuildで、環境変数を設定する。
 buildspec.yml内部では、設定した環境変数のkeyを${plane_key}や${secret_key}という形で指定すれば引用される。
 
 
-### 定期実効について
+### 定期実行について
 CloudWatchEventと連携して実装もできるし、CodeBuildトリガーも設定されているので、そちらでも設定できる。
 
 ### アーティファクトとしてDockerコンテナを出力する場合
 コンソール画面の設定として、`--privileged`をTrueにしておく必要がある。
+
+
+
+
+
+
+
+
 
 
 
@@ -187,6 +208,23 @@ ECS/Lambda
 - canary
 - Linear
 
+### オンプレミスへのデプロイ
+CodeDeployエージェントはポート番号443を利用したアウトバウンド通信が必要なため、ファイアーウォールで設定が必要
+
+### インターネットを経由しないデプロイ
+VPCから直接接続するためのエンドポイントが準備されているが、EC2/ECS/Lambdaで準備するエンドポイントが異なる
+
+- EC2:codedeployエンドポイントとcodedeploy-commands-secureエンドポイント
+- ECS:codedeployエンドポイントのみ
+- Lambda:codedeployエンドポイントのみ
+
+
+
+
+
+
+
+
 
 
 
@@ -208,6 +246,15 @@ CodeCommitとの連携を設定し、検知するリポジトリやブランチ�
 
 3. デプロイステージ設定  
 デプロイ先を設定する。 S3への直接デプロイや、ECS/EC2へのデプロイが可能
+
+### Sourceステージ
+GitHubとの連携を選択した場合、OAuth2.0のWebIDフェデレーションを利用して、GitHubにアクセスすることができる。
+WebhookについてはGitHub側で設定することができ、Code Pipelineがポーリングする設定も可能。
+
+
+
+
+
 
 
 
@@ -329,6 +376,14 @@ AWSのConsoleを見ながら、設定する
     </dependency>
 </dependencies>
 ```
+
+
+
+
+
+
+
+
 
 
 

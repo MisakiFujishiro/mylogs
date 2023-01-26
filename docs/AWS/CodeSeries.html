@@ -70,11 +70,12 @@ IAMベースでリポジトリに対する操作を生業することができ�
 </section>
 <section id="https">
 <h3><span class="section-number">4.1.3. </span>HTTPSを利用した連携<a class="headerlink" href="#https" title="この見出しへのパーマリンク">¶</a></h3>
-<p>HTTPSを通じて、git連携をして、認証情報にはIAMで作成したクレデンシャル（ID/PASS)を利用する。</p>
+<p>IAMで作成したユーザーに対してgitの認証情報を作成しておいて、HTTPSを通じて、git連携をする。</p>
 </section>
 <section id="grc-git-remote-codecommmit">
 <h3><span class="section-number">4.1.4. </span>GRC(git-remote-codeCommmit)<a class="headerlink" href="#grc-git-remote-codecommmit" title="この見出しへのパーマリンク">¶</a></h3>
-<p>クライアント側でGRCをインストールしておくと、AWSCLIの認証情報を使って、CodeCommitと連携してくれる。</p>
+<p>AWS側でCode Commitの権限を持つIAMロールを作成しておく。
+クライアント側でGRCをインストールして、ロールのARNをセットアップすると、AWSCLIの認証情報を使って、CodeCommitと連携してくれる。</p>
 </section>
 <section id="ssh">
 <h3><span class="section-number">4.1.5. </span>SSHを利用した連携<a class="headerlink" href="#ssh" title="この見出しへのパーマリンク">¶</a></h3>
@@ -155,9 +156,9 @@ jobs:
 <li><p>buildspec.yamlの作成</p></li>
 </ol>
 </section>
-<section id="buildspec-uml">
-<h3><span class="section-number">4.2.2. </span>buildspec.uml<a class="headerlink" href="#buildspec-uml" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ビルド処理をbuildspec.umlファイルに記述して、APPのソースコードPJのルートディレクトリに置いておく。
+<section id="buildspec-yml">
+<h3><span class="section-number">4.2.2. </span>buildspec.yml<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ビルド処理をbuildspec.ymlファイルに記述して、APPのソースコードPJのルートディレクトリに置いておく。
 環境変数や必要な環境のインストール処理、ビルド処理や生成するアプリケーションの定義を記載しておく。</p>
 <p>buildspec.ymlの記載項目</p>
 <ul class="simple">
@@ -180,8 +181,8 @@ jobs:
 </li>
 </ul>
 </section>
-<section id="buildspec-yml">
-<h3><span class="section-number">4.2.3. </span>buildspec.ymlにおける環境変数の設定<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id3">
+<h3><span class="section-number">4.2.3. </span>buildspec.ymlにおける環境変数の設定<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>buildspec.ymlファイルに環境変数を設定する場合は、環境から環境変数を設定することができる。
 また、secretsManagerと連携して、SecretsManagerの値を環境変数として渡すことができる。<br />ただし、SecretManagerと連携するときはCodeBuildのServiceRoleにSecretManagerへのReadPolicyを追加する</p>
 <p>SecretsManager側でSecretsを作成</p>
@@ -194,8 +195,8 @@ jobs:
 <p><img alt="../_images/codebuild_envvar.png" src="../_images/codebuild_envvar.png" /></p>
 <p>buildspec.yml内部では、設定した環境変数のkeyを${plane_key}や${secret_key}という形で指定すれば引用される。</p>
 </section>
-<section id="id3">
-<h3><span class="section-number">4.2.4. </span>定期実効について<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id4">
+<h3><span class="section-number">4.2.4. </span>定期実行について<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatchEventと連携して実装もできるし、CodeBuildトリガーも設定されているので、そちらでも設定できる。</p>
 </section>
 <section id="docker">
@@ -206,8 +207,8 @@ jobs:
 <section id="code-deploy">
 <h2><span class="section-number">4.3. </span>Code Deploy<a class="headerlink" href="#code-deploy" title="この見出しへのパーマリンク">¶</a></h2>
 <p>EC2・Lambda・ECSに対してデプロイを行うサービス<br />AutoScaling構成に対しても自動で反映してくれる</p>
-<section id="id4">
-<h3><span class="section-number">4.3.1. </span>設定手順<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id5">
+<h3><span class="section-number">4.3.1. </span>設定手順<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>codeDeploy用のRoleを作成する</p></li>
 <li><p>codeDeployのアプリケーション作成（詳細は各デプロイ先のセクション）</p></li>
@@ -217,8 +218,8 @@ jobs:
 <h3><span class="section-number">4.3.2. </span>appsepc.yml<a class="headerlink" href="#appsepc-yml" title="この見出しへのパーマリンク">¶</a></h3>
 <p>デプロイの仕様を定義したファイルで、ファイルの配置先やデプロイのライフサイクルで実行するスクリプトを指定</p>
 </section>
-<section id="id5">
-<h3><span class="section-number">4.3.3. </span>デプロイの種類<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id6">
+<h3><span class="section-number">4.3.3. </span>デプロイの種類<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="inplace">
 <h4><span class="section-number">4.3.3.1. </span>Inplace<a class="headerlink" href="#inplace" title="この見出しへのパーマリンク">¶</a></h4>
 <p>稼働中のサーバーを一度止めて、デプロイして、再起動する</p>
@@ -249,12 +250,25 @@ jobs:
 <li><p>Linear</p></li>
 </ul>
 </section>
+<section id="id7">
+<h3><span class="section-number">4.3.5. </span>オンプレミスへのデプロイ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CodeDeployエージェントはポート番号443を利用したアウトバウンド通信が必要なため、ファイアーウォールで設定が必要</p>
+</section>
+<section id="id8">
+<h3><span class="section-number">4.3.6. </span>インターネットを経由しないデプロイ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>VPCから直接接続するためのエンドポイントが準備されているが、EC2/ECS/Lambdaで準備するエンドポイントが異なる</p>
+<ul class="simple">
+<li><p>EC2:codedeployエンドポイントとcodedeploy-commands-secureエンドポイント</p></li>
+<li><p>ECS:codedeployエンドポイントのみ</p></li>
+<li><p>Lambda:codedeployエンドポイントのみ</p></li>
+</ul>
+</section>
 </section>
 <section id="code-pipeline">
 <h2><span class="section-number">4.4. </span>Code Pipeline<a class="headerlink" href="#code-pipeline" title="この見出しへのパーマリンク">¶</a></h2>
 <p>フルマネージドな継続的デリバリーサービス<br />ソースコードの変更をトリガーとして、ビルド・デプロイといった一連の流れを自動的に実行する</p>
-<section id="id6">
-<h3><span class="section-number">4.4.1. </span>設定手順<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">4.4.1. </span>設定手順<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>ソースステージ設定<br />CodeCommitとの連携を設定し、検知するリポジトリやブランチ名を設定する　<br />※sourceのプロバイダーとして、gitlabが提供されていない点は注意</p></li>
 </ol>
@@ -268,6 +282,11 @@ jobs:
 </li>
 <li><p>デプロイステージ設定<br />デプロイ先を設定する。 S3への直接デプロイや、ECS/EC2へのデプロイが可能</p></li>
 </ol>
+</section>
+<section id="source">
+<h3><span class="section-number">4.4.2. </span>Sourceステージ<a class="headerlink" href="#source" title="この見出しへのパーマリンク">¶</a></h3>
+<p>GitHubとの連携を選択した場合、OAuth2.0のWebIDフェデレーションを利用して、GitHubにアクセスすることができる。
+WebhookについてはGitHub側で設定することができ、Code Pipelineがポーリングする設定も可能。</p>
 </section>
 </section>
 <section id="code-artifact">
@@ -360,8 +379,8 @@ CodeArtifactの認証情報を追加</p></li>
 <li><p>AWSのマネジメントコンソールからアップロード資材を確認する</p></li>
 </ol>
 </section>
-<section id="id7">
-<h3><span class="section-number">4.5.4. </span>Code Artifactの資材を呼び出してビルドする<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">4.5.4. </span>Code Artifactの資材を呼び出してビルドする<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>codeArtifactに格納したライブラリの依存関係と接続先をpomに記述</p>
 <ol class="simple">
 <li><p>pom.xmlに接続先を記述</p></li>
@@ -420,8 +439,8 @@ codedeployではappspec.ymlの作成が必要</p>
 <div><p>wget https://aws-codedeploy-ap-northeast-1.s3.ap-northeast-1.amazonaws.com/latest/install</p>
 </div></blockquote>
 </section>
-<section id="id8">
-<h3><span class="section-number">4.7.2. </span>buildspec.ymlの作成<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">4.7.2. </span>buildspec.ymlの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>aws deploy pushでcodedeployのアプリケーションの対象設定をする。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">version</span><span class="p">:</span> <span class="mf">0.2</span>
 
@@ -462,8 +481,8 @@ codedeployではappspec.ymlの作成が必要</p>
 </pre></div>
 </div>
 </section>
-<section id="id9">
-<h3><span class="section-number">4.7.4. </span>トラブルシューティング<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">4.7.4. </span>トラブルシューティング<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>codeBuildを手動で実行するとエラー</p></li>
 </ul>
@@ -541,8 +560,8 @@ files: imagedefinitions.json
 <blockquote>
 <div><p>error pulling image configuration: toomanyrequests: Too Many Requests. Please see https://docs.docker.com/docker-hub/download-rate-limit/</p>
 </div></blockquote>
-<section id="id10">
-<h4><span class="section-number">4.8.3.1. </span>原因<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id13">
+<h4><span class="section-number">4.8.3.1. </span>原因<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
 <p>2020年8月に Docker Hub ではコンテナイメージの Pull 回数にレート制限を設けることを発表している。<br />CodeBuild を非 VPC 環境のプロジェクトとして作成している場合、CodeBuild のグローバル IP は共通アドレスが利用されているため、 自分のビルド環境が 6 時間以内で 1 回目の pull だったとしても、そのときに割り当てられていた CodeBuild のグローバル IP が 6時間以内で 101 回目の pull であった場合、そのリクエストは Too Many Requests. になります。</p>
 </section>
 <section id="builddockerhub">
@@ -604,41 +623,44 @@ files: imagedefinitions.json
 </li>
 <li><a class="reference internal" href="#code-build">4.2. Code Build</a><ul>
 <li><a class="reference internal" href="#id2">4.2.1. 設定手順</a></li>
-<li><a class="reference internal" href="#buildspec-uml">4.2.2. buildspec.uml</a></li>
-<li><a class="reference internal" href="#buildspec-yml">4.2.3. buildspec.ymlにおける環境変数の設定</a></li>
-<li><a class="reference internal" href="#id3">4.2.4. 定期実効について</a></li>
+<li><a class="reference internal" href="#buildspec-yml">4.2.2. buildspec.yml</a></li>
+<li><a class="reference internal" href="#id3">4.2.3. buildspec.ymlにおける環境変数の設定</a></li>
+<li><a class="reference internal" href="#id4">4.2.4. 定期実行について</a></li>
 <li><a class="reference internal" href="#docker">4.2.5. アーティファクトとしてDockerコンテナを出力する場合</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#code-deploy">4.3. Code Deploy</a><ul>
-<li><a class="reference internal" href="#id4">4.3.1. 設定手順</a></li>
+<li><a class="reference internal" href="#id5">4.3.1. 設定手順</a></li>
 <li><a class="reference internal" href="#appsepc-yml">4.3.2. appsepc.yml</a></li>
-<li><a class="reference internal" href="#id5">4.3.3. デプロイの種類</a><ul>
+<li><a class="reference internal" href="#id6">4.3.3. デプロイの種類</a><ul>
 <li><a class="reference internal" href="#inplace">4.3.3.1. Inplace</a></li>
 <li><a class="reference internal" href="#blue-green">4.3.3.2. blue/green</a></li>
 <li><a class="reference internal" href="#canary">4.3.3.3. canary</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#aws">4.3.4. AWSサービスで準備されているデプロイ方式</a></li>
+<li><a class="reference internal" href="#id7">4.3.5. オンプレミスへのデプロイ</a></li>
+<li><a class="reference internal" href="#id8">4.3.6. インターネットを経由しないデプロイ</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#code-pipeline">4.4. Code Pipeline</a><ul>
-<li><a class="reference internal" href="#id6">4.4.1. 設定手順</a></li>
+<li><a class="reference internal" href="#id9">4.4.1. 設定手順</a></li>
+<li><a class="reference internal" href="#source">4.4.2. Sourceステージ</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#code-artifact">4.5. Code Artifact</a><ul>
 <li><a class="reference internal" href="#aws-codeartifact">4.5.1. AWS CodeArtifactの設定</a></li>
 <li><a class="reference internal" href="#code-artifact-curl">4.5.2. Code Artifactへアーティファクトを登録する（curlから）</a></li>
 <li><a class="reference internal" href="#code-artifact-mvn">4.5.3. Code Artifactへアーティファクトを登録する（mvnから）★実際にやりたい</a></li>
-<li><a class="reference internal" href="#id7">4.5.4. Code Artifactの資材を呼び出してビルドする</a></li>
+<li><a class="reference internal" href="#id10">4.5.4. Code Artifactの資材を呼び出してビルドする</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#s3cicd">4.6. S3へのCICD</a></li>
 <li><a class="reference internal" href="#ec2cicd">4.7. EC2へのCICD</a><ul>
 <li><a class="reference internal" href="#ec2">4.7.1. EC2の作成</a></li>
-<li><a class="reference internal" href="#id8">4.7.2. buildspec.ymlの作成</a></li>
+<li><a class="reference internal" href="#id11">4.7.2. buildspec.ymlの作成</a></li>
 <li><a class="reference internal" href="#appspec-yml">4.7.3. appspec.ymlの作成</a></li>
-<li><a class="reference internal" href="#id9">4.7.4. トラブルシューティング</a></li>
+<li><a class="reference internal" href="#id12">4.7.4. トラブルシューティング</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#ecrcicd">4.8. ECRへのCICD</a><ul>
@@ -648,7 +670,7 @@ files: imagedefinitions.json
 </li>
 <li><a class="reference internal" href="#codedeploy">4.8.2. codedeployの設定</a></li>
 <li><a class="reference internal" href="#too-many-requests">4.8.3. トラブルシューティング：Too Many Requests. でビルドが失敗する</a><ul>
-<li><a class="reference internal" href="#id10">4.8.3.1. 原因</a></li>
+<li><a class="reference internal" href="#id13">4.8.3.1. 原因</a></li>
 <li><a class="reference internal" href="#builddockerhub">4.8.3.2. 対策:build中に、dockerhubにログインする</a></li>
 </ul>
 </li>

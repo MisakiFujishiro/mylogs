@@ -5,6 +5,10 @@
 ## JREとは
 
 
+
+
+
+
 # 環境構築手順
 ## Javaのインストール
 - [Oracle](https://www.oracle.com/java/technologies/downloads/)
@@ -53,6 +57,8 @@ JAVA＿HOMEを設定する。[ver]の部分に切り替えたいjavaのバージ
 > PATH=$JAVA_HOME/bin:$PATH
 
 改めてjavaのバージョンを確認すると、バージョンが変更されている。
+
+
 
 
 
@@ -141,45 +147,39 @@ iniファイルでは、STS内で指定されているver17のjavaが動いて�
 
 
 
+### STSの特徴
+STS内部にWebサーバーを含んでいるため、Tomcatの設定などをしなくても、STS内でアプリを実行することができる。
+
+#### jarファイルとwarファイル
+warファイルの中身は、アプリのみが格納されているため、WebServer(Tomcat)に配置して、実行する必要があった。
+jarファイルの中身は、アプリとWebサーバーが格納されているため、jarファイルのみでアプリの実行が可能となる。
+
+#### jarファイルの作成
+> 実行/Mavenのインストール
+
+stsプロジェクトのtargetフォルダにjarファイルが作成される。
+作成されたjarファイルに対して、実行することでもアプリを立ち上げることができる。
+> java -jar xxx.jar
 
 
-### 3.xの場合
-stsをDLして、展開すると３つappがあるので全部Applicationにいれる。
+### ライブラリを追加する
+pom.xmlに依存関係を追加する
 
-![](img/sts3_dl.png)
-
-Applicationのstsを開こうとするとVMが作成できないエラーが出る場合がある。
-sts.appを右クリック、パッケージ内容を表示して、` /Applications/STS.app/Contents/Eclipse/STS.ini `を編集
-
-STSの元々
+例えばThymeleafを追加したい場合、pomの[dependencies]に以下を追加する
 ```
--vm
-../Eclipse/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.macosx.x86_64_17.0.5.v20221102-0933/jre/lib/libjli.dylib
-
+<dependency>
+    <groupId>org.thymeleaf</groupId>
+    <artifactId>thymeleaf-spring6</artifactId>
+    <scope>compile</scope>
+</dependency>
 ```
 
-
-```
--vm
-/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin
-```
+追加して、pom.xmlを保存するだけで、Maven依存関係のフォルダに必要なライブラリたちをDLしておいてくれる。
 
 
 
 
-
-## serverの追加
-### apache tomcat のDL
-[macにtomcatをDL](https://blanche-toile.com/web/mac-tomcat)この記事を参考に実施
-
-
-### STSへのServerの追加
-[STSへTomcat9をインストール](https://iteng-pom.com/archives/129)この記事を参考に実施
-
-
-
-
-## maven
+## mavenとは
 POM(Project Object Model)という考え方に基づいて、プロジェクトのビルド、テスト、ドキュメンテーション、成果物の配備などプロジェクトのライフサイクルを管理するもの。
 プロジェクトに関わる情報はPOMに集約する。
 ### インストール
