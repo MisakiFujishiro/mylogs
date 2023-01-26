@@ -344,7 +344,7 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <blockquote>
 <div><p>Transform: AW::Serverless-2016-10-31</p>
 </div></blockquote>
-<p>CFNと同様にResourcesが必須項目であるが、<em><strong>Transformも必須項目である。</strong></em></p>
+<p>CFNと同様にResourcesが必須項目であるが、<code class="docutils literal notranslate"><span class="pre">Transformも必須項目</span></code>である。</p>
 </section>
 <section id="resource">
 <h4><span class="section-number">11.2.2.2. </span>Resource<a class="headerlink" href="#resource" title="この見出しへのパーマリンク">¶</a></h4>
@@ -461,7 +461,7 @@ Resources:
 </section>
 <section id="elastic-beanstalk">
 <h2><span class="section-number">11.3. </span>Elastic Beanstalk<a class="headerlink" href="#elastic-beanstalk" title="この見出しへのパーマリンク">¶</a></h2>
-<p>典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
+<p>Wev三層モデルAppやキューを用いたバッチ処理などの典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
 PaaSを実現するサービス</p>
 <section id="id24">
 <h3><span class="section-number">11.3.1. </span>設定対象<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
@@ -497,6 +497,17 @@ PaaSを実現するサービス</p>
 <h4><span class="section-number">11.3.2.5. </span>Traffic Splitting（Canary方式）<a class="headerlink" href="#traffic-splitting-canary" title="この見出しへのパーマリンク">¶</a></h4>
 <p>既存と新規を同時に立ち上がる状態にして、どちらにも割り振る状態を経ながら、だんだん新規に流していく</p>
 </section>
+</section>
+<section id="id26">
+<h3><span class="section-number">11.3.3. </span>コンテナサポート<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Elastic BeanstalkでもDockerおよびDocker Composeを使用したコンテナ実行がサポートされている。</p>
+<p>Docker Composeを利用しない場合は３パターンでコンテナ実行できる</p>
+<ul class="simple">
+<li><p>Docker Fileを作成してコンソールからアップロード</p></li>
+<li><p>コンテナイメージをビルドして、リポジトリにプッシュ<br />Dockerrun.aws.jsonファイルを作成して、コンソールへアップロードする</p></li>
+<li><p>Zip形式のAppファイルを作成して、コンソール上からアップロードする。
+アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。</p></li>
+</ul>
 </section>
 </section>
 </section>
@@ -584,6 +595,7 @@ PaaSを実現するサービス</p>
 <li><a class="reference internal" href="#traffic-splitting-canary">11.3.2.5. Traffic Splitting（Canary方式）</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id26">11.3.3. コンテナサポート</a></li>
 </ul>
 </li>
 </ul>

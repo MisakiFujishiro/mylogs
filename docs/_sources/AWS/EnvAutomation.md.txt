@@ -305,7 +305,7 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 最初の定義で、自分がCFNではなくて、SAMであることを宣言する
 > Transform: AW::Serverless-2016-10-31
 
-CFNと同様にResourcesが必須項目であるが、___Transformも必須項目である。___
+CFNと同様にResourcesが必須項目であるが、`Transformも必須項目`である。
 
 #### Resource
 Resourceに置いても、サーバレスに特化した記述方法がある  
@@ -412,8 +412,26 @@ aws cloudformation deploy \
 
 `aws cloudformation deploy` ではなく、`sam deploy`でもOK
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Elastic Beanstalk 
-典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
+Wev三層モデルAppやキューを用いたバッチ処理などの典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
 PaaSを実現するサービス
 
 ### 設定対象
@@ -444,3 +462,13 @@ Rollingは最大数が決まっていて、その中でRolling Deployしてい�
 
 #### Traffic Splitting（Canary方式）
 既存と新規を同時に立ち上がる状態にして、どちらにも割り振る状態を経ながら、だんだん新規に流していく
+
+### コンテナサポート
+Elastic BeanstalkでもDockerおよびDocker Composeを使用したコンテナ実行がサポートされている。
+
+Docker Composeを利用しない場合は３パターンでコンテナ実行できる
+- Docker Fileを作成してコンソールからアップロード
+- コンテナイメージをビルドして、リポジトリにプッシュ  
+Dockerrun.aws.jsonファイルを作成して、コンソールへアップロードする
+- Zip形式のAppファイルを作成して、コンソール上からアップロードする。
+アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。
