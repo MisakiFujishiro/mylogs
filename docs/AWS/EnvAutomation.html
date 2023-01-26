@@ -58,7 +58,7 @@
 <p>Well-Architectedであるという柱の中に「運用上の優秀性」があり、その中のポイントとして「運用をコードとして実行する」がある</p>
 </section>
 <section id="id3">
-<h3><span class="section-number">11.1.2. </span>運用をコードとして実行する<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">11.1.2. </span>環境のコード管理のメリット詳細<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>３つのポイントがある</p>
 <ul class="simple">
 <li><p>コードで全ての構成を定義<br />同じ環境を、迅速に、繰り返し作成することができる。</p></li>
@@ -88,8 +88,10 @@
 <p>必須項目は<code class="docutils literal notranslate"><span class="pre">Resources</span></code>のみ。Resourcesに作成するサービスの詳細を記述していく。
 作成するサービスには論理名（表示名）を付与するが、一つのCFN内でユニークである必要がある。</p>
 </section>
-<section id="id7">
-<h4><span class="section-number">11.1.3.3. </span>テンプレートの文法<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="condition">
+<h4><span class="section-number">11.1.3.3. </span>Conditionを利用した環境構築<a class="headerlink" href="#condition" title="この見出しへのパーマリンク">¶</a></h4>
+<p>CFNを利用する目的として、環境に応じてテンプレートを再利用して作業コストを軽減することが挙げらられる。
+CFNでは、<code class="docutils literal notranslate"><span class="pre">Condition</span></code>を利用することによって、実行時に指定されたパラメータに応じて条件を変更し、作成する設定値や実行対象をコントロールすることができる。</p>
 <p>環境ごとに作成するか否かの条件分岐を行う際には<code class="docutils literal notranslate"><span class="pre">Condistion</span></code>を利用する。</p>
 <ul class="simple">
 <li><p>Parametersセクションで設定するvalueを定義</p></li>
@@ -113,6 +115,21 @@
 </pre></div>
 </div>
 <p><a class="reference external" href="https://oreout.hatenablog.com/entry/aws/cloudformation/6">こちらのサイト</a>がわかりやすい</p>
+</section>
+<section id="id7">
+<h4><span class="section-number">11.1.3.4. </span>ネスト<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>複数のテンプレートで親子関係を構成することができる。
+環境に依存しない子テンプレートを作成しておき、環境情報をもつ親テンプレートから子テンプレートを呼び出すことで、再利用性を高めることができる。</p>
+<p>実行手順</p>
+<ul class="simple">
+<li><p>親側に<code class="docutils literal notranslate"><span class="pre">AWS::CloudFormation::Stack</span></code>リソースでテンプレートのスタックを定義</p></li>
+<li><p>子側のテンプレート作成</p></li>
+<li><p>親側で子テンプレートのパスを指定</p></li>
+<li><p>aws cloudformation packageコマンドを実行してS3にpush</p></li>
+</ul>
+<p><img alt="../_images/cfn_nest.png" src="../_images/cfn_nest.png" /></p>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/create-own-verification-environment-using-cfn-nested-stacks/">CloudFormationでネストされたスタックの作成</a>
+こちらを参考にすると理解が深まる</p>
 </section>
 </section>
 <section id="hands-on">
@@ -271,37 +288,38 @@
 </section>
 <section id="id14">
 <h3><span class="section-number">11.1.7. </span>深掘り機能<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="lambda">
+<h4><span class="section-number">11.1.7.1. </span>カスタムリソース（Lambdaの実行）<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<p>CFNのテンプレートに存在しないリソース処理をLambdaやSNSを実行することで実行するための機能。</p>
+<p><img alt="../_images/cfn_custom.png" src="../_images/cfn_custom.png" /></p>
+<p>基本的な使い方としては</p>
+<ol class="simple">
+<li><p>Lambdaで機能を作り込む</p></li>
+<li><p>CustomのResource(AWS::CloudFormation::CustomResource or Custom::XXXX)リソースにLambdaのARNを指定</p></li>
+</ol>
+</section>
 <section id="id15">
-<h4><span class="section-number">11.1.7.1. </span>ネストッドスタック<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
-<p>複数のテンプレートで親子関係を構成することができる。</p>
-<p>実行手順</p>
-<ul class="simple">
-<li><p>親側に<code class="docutils literal notranslate"><span class="pre">AWS::CloudFormation::Stack</span></code>リソースて押してこテンプレートのスタックを定義</p></li>
-<li><p>子側のテンプレート作成</p></li>
-<li><p>親側で子テンプレートのパスを指定</p></li>
-<li><p>aws cloudformation packageコマンドを実行してS3にpush</p></li>
-</ul>
+<h4><span class="section-number">11.1.7.2. </span>マクロ<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<p>CloudFormationがサポートするリソースを作る際に、変換処理や繰り返し処理をLambdaで実現する機能</p>
 </section>
 <section id="id16">
-<h4><span class="section-number">11.1.7.2. </span>カスタムリソース<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
-<p>CFNのテンプレートに存在しないリソース処理を噛ませる場合にはカスタムリソースを利用する。
-基本的な動きとしてはLambdaで機能を作り込んで、CustomのResourceでLambdaのARNをServiceTokenに指定することで、作り込んだLambdaが実行される</p>
+<h4><span class="section-number">11.1.7.3. </span>チェンジセット<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">テンプレート間の差分検出</span></code><br />作成時のテンプレートと更新しようとしているテンプレートの差分を検出する。</p>
 </section>
 <section id="id17">
-<h4><span class="section-number">11.1.7.3. </span>チェンジセット<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
-<p>更新しようとしているテンプレートと、作成済のテンプレートの差分を検出する機能。</p>
+<h4><span class="section-number">11.1.7.4. </span>ドリフト検出<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">テンプレートとリソースの差分検出</span></code><br />作成時のテンプレートと現状のリソースの差分を検出する。</p>
+<p>手動で変更したことがあればドリフト検出で差分を把握するところから。
+手動で変更したことがなく、更新デプロイしたい場合は変更セットを利用</p>
+<p><img alt="../_images/cfn_change_drift.png" src="../_images/cfn_change_drift.png" /></p>
 </section>
 <section id="id18">
-<h4><span class="section-number">11.1.7.4. </span>ドリフト検出<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
-<p>現状のリソースと作成した際のテンプレート定義の差分を検出する機能</p>
-</section>
-<section id="id19">
-<h4><span class="section-number">11.1.7.5. </span>スタックセット<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">11.1.7.5. </span>スタックセット<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>１つのテンプレートを複数のAWSアカウントおよびリージョンに展開する</p>
 </section>
 </section>
-<section id="id20">
-<h3><span class="section-number">11.1.8. </span>CloudFormation デザイナー<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id19">
+<h3><span class="section-number">11.1.8. </span>CloudFormation デザイナー<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSコンソールからGUIでテンプレートを作成できる機能</p>
 </section>
 </section>
@@ -317,16 +335,16 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <li><p>デプロイ（CFが実行されて、構築される）</p></li>
 </ol>
 </section>
-<section id="id21">
-<h3><span class="section-number">11.2.2. </span>具体的な差分<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h3><span class="section-number">11.2.2. </span>具体的な差分<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>基本的な記述方法はCloudFormationとあまり変わらないが細かい部分で差分はある</p>
-<section id="id22">
-<h4><span class="section-number">11.2.2.1. </span>SAMの宣言<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id21">
+<h4><span class="section-number">11.2.2.1. </span>SAMの宣言<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
 <p>最初の定義で、自分がCFNではなくて、SAMであることを宣言する</p>
 <blockquote>
 <div><p>Transform: AW::Serverless-2016-10-31</p>
 </div></blockquote>
-<p>CFNと同様にResourcesが必須項目であるが、Transformも必須項目である。</p>
+<p>CFNと同様にResourcesが必須項目であるが、<em><strong>Transformも必須項目である。</strong></em></p>
 </section>
 <section id="resource">
 <h4><span class="section-number">11.2.2.2. </span>Resource<a class="headerlink" href="#resource" title="この見出しへのパーマリンク">¶</a></h4>
@@ -342,8 +360,8 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <p>Globalsという複数リソースの設定をまとめて行う設定がある点が差分</p>
 </section>
 </section>
-<section id="id23">
-<h3><span class="section-number">11.2.3. </span>Hands on<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id22">
+<h3><span class="section-number">11.2.3. </span>Hands on<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の詳細説明については、<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-2-2022-reg-event.html?trk=aws_introduction_page">SAMのHandsOnBeginners</a>
 を参考にして、サンプルコードなどを例示する。<br />作成する環境は以下で、構成としてはAPIGWで公開されているAPIに対してリクエストした文字列（JP）を翻訳して（EN）返すアプリケーションを作成する。</p>
 <p><img alt="../_images/sam_arche.png" src="../_images/sam_arche.png" /></p>
@@ -355,8 +373,8 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <div><p>aws s3 mb s3://<em>your-backet-name</em></p>
 </div></blockquote>
 </section>
-<section id="id24">
-<h4><span class="section-number">11.2.3.2. </span>samの作成<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id23">
+<h4><span class="section-number">11.2.3.2. </span>samの作成<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
 <p><a class="reference external" href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html">SAMの公式リファレンス</a>を
 参照しながらLambdaを作成するSAMを作成する。</p>
 <p>作成するのは、SAMのテンプレートコードと作成するLambdaの関数。</p>
@@ -445,12 +463,12 @@ Resources:
 <h2><span class="section-number">11.3. </span>Elastic Beanstalk<a class="headerlink" href="#elastic-beanstalk" title="この見出しへのパーマリンク">¶</a></h2>
 <p>典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
 PaaSを実現するサービス</p>
-<section id="id25">
-<h3><span class="section-number">11.3.1. </span>設定対象<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id24">
+<h3><span class="section-number">11.3.1. </span>設定対象<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーションの言語や環境、インスタンスの構成、利用するサービスの設定、オートスケーリングの設定、ネットワークやDBの設定</p>
 </section>
-<section id="id26">
-<h3><span class="section-number">11.3.2. </span>デプロイ戦略<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id25">
+<h3><span class="section-number">11.3.2. </span>デプロイ戦略<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
 <p>5種類のデプロイ戦略が準備されている</p>
 <section id="all-at-once">
 <h4><span class="section-number">11.3.2.1. </span>All at once<a class="headerlink" href="#all-at-once" title="この見出しへのパーマリンク">¶</a></h4>
@@ -496,11 +514,12 @@ PaaSを実現するサービス</p>
 <li><a class="reference internal" href="#">11. 環境構築自動化</a><ul>
 <li><a class="reference internal" href="#cloudformation">11.1. CloudFormation</a><ul>
 <li><a class="reference internal" href="#id2">11.1.1. 環境のコード管理のメリット</a></li>
-<li><a class="reference internal" href="#id3">11.1.2. 運用をコードとして実行する</a></li>
+<li><a class="reference internal" href="#id3">11.1.2. 環境のコード管理のメリット詳細</a></li>
 <li><a class="reference internal" href="#id4">11.1.3. 基本動作</a><ul>
 <li><a class="reference internal" href="#id5">11.1.3.1. テンプレートとスタック</a></li>
 <li><a class="reference internal" href="#id6">11.1.3.2. テンプレートの基本</a></li>
-<li><a class="reference internal" href="#id7">11.1.3.3. テンプレートの文法</a></li>
+<li><a class="reference internal" href="#condition">11.1.3.3. Conditionを利用した環境構築</a></li>
+<li><a class="reference internal" href="#id7">11.1.3.4. ネスト</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#hands-on">11.1.4. Hands on</a><ul>
@@ -528,27 +547,27 @@ PaaSを実現するサービス</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#id14">11.1.7. 深掘り機能</a><ul>
-<li><a class="reference internal" href="#id15">11.1.7.1. ネストッドスタック</a></li>
-<li><a class="reference internal" href="#id16">11.1.7.2. カスタムリソース</a></li>
-<li><a class="reference internal" href="#id17">11.1.7.3. チェンジセット</a></li>
-<li><a class="reference internal" href="#id18">11.1.7.4. ドリフト検出</a></li>
-<li><a class="reference internal" href="#id19">11.1.7.5. スタックセット</a></li>
+<li><a class="reference internal" href="#lambda">11.1.7.1. カスタムリソース（Lambdaの実行）</a></li>
+<li><a class="reference internal" href="#id15">11.1.7.2. マクロ</a></li>
+<li><a class="reference internal" href="#id16">11.1.7.3. チェンジセット</a></li>
+<li><a class="reference internal" href="#id17">11.1.7.4. ドリフト検出</a></li>
+<li><a class="reference internal" href="#id18">11.1.7.5. スタックセット</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id20">11.1.8. CloudFormation デザイナー</a></li>
+<li><a class="reference internal" href="#id19">11.1.8. CloudFormation デザイナー</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#serverless-application-model">11.2. Serverless Application Model</a><ul>
 <li><a class="reference internal" href="#sam">11.2.1. SAM実行の流れ</a></li>
-<li><a class="reference internal" href="#id21">11.2.2. 具体的な差分</a><ul>
-<li><a class="reference internal" href="#id22">11.2.2.1. SAMの宣言</a></li>
+<li><a class="reference internal" href="#id20">11.2.2. 具体的な差分</a><ul>
+<li><a class="reference internal" href="#id21">11.2.2.1. SAMの宣言</a></li>
 <li><a class="reference internal" href="#resource">11.2.2.2. Resource</a></li>
 <li><a class="reference internal" href="#globals">11.2.2.3. Globals</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id23">11.2.3. Hands on</a><ul>
+<li><a class="reference internal" href="#id22">11.2.3. Hands on</a><ul>
 <li><a class="reference internal" href="#s3">11.2.3.1. S3バケットの作成</a></li>
-<li><a class="reference internal" href="#id24">11.2.3.2. samの作成</a></li>
+<li><a class="reference internal" href="#id23">11.2.3.2. samの作成</a></li>
 <li><a class="reference internal" href="#sampackage">11.2.3.3. SAMのpackage</a></li>
 <li><a class="reference internal" href="#samdeploy">11.2.3.4. SAMのdeploy</a></li>
 </ul>
@@ -556,8 +575,8 @@ PaaSを実現するサービス</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#elastic-beanstalk">11.3. Elastic Beanstalk</a><ul>
-<li><a class="reference internal" href="#id25">11.3.1. 設定対象</a></li>
-<li><a class="reference internal" href="#id26">11.3.2. デプロイ戦略</a><ul>
+<li><a class="reference internal" href="#id24">11.3.1. 設定対象</a></li>
+<li><a class="reference internal" href="#id25">11.3.2. デプロイ戦略</a><ul>
 <li><a class="reference internal" href="#all-at-once">11.3.2.1. All at once</a></li>
 <li><a class="reference internal" href="#rolling">11.3.2.2. Rolling</a></li>
 <li><a class="reference internal" href="#rolling-with-additional-batch">11.3.2.3. Rolling with additional batch</a></li>
