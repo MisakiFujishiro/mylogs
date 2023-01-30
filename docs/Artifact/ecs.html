@@ -144,34 +144,171 @@ Public-Subnetに配置するECS用のインターネットからの接続可能�
 <h2><span class="section-number">2.3. </span>Springを使用したコンテナアプリ実装<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id7">
 <h3><span class="section-number">2.3.1. </span>基本方針<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>backendとbackend-for-frontのPJを作成する。</p>
+<p>backendでは、<code class="docutils literal notranslate"><span class="pre">backend/api/vi/users</span></code>の受け口を作成して、事前定義したuser情報を返却するコードを実装する。</p>
+<p>backend-for-frontでは、backendのサービスを呼び出して、user情報を受け取って、画面に表示する。</p>
+<p><img alt="../_images/ecs_backend_bff_app.png" src="../_images/ecs_backend_bff_app.png" /></p>
+</section>
+<section id="backend">
+<h3><span class="section-number">2.3.2. </span>backend<a class="headerlink" href="#backend" title="この見出しへのパーマリンク">¶</a></h3>
+<p>User情報をmodelに格納して、Controllerでパスの設定や処理を記述する。</p>
+<p>各種ファイルの役割</p>
+<ul class="simple">
+<li><p>backend/app/model/User.java<br />User情報を定義しておく(DBの代わり)</p></li>
+<li><p>backend/app/web/BackendRestController.java<br />パスの設定とUser情報の作成、返り値の定義<br />&quot;/api/v1/users&quot;にアクセスがくると、User情報を返す</p></li>
+<li><p>backend/config/App.java<br />BackendアプリのSpringBoot起動クラス</p></li>
+<li><p>backend/config/MvcConfig.java<br />Controllerを読み取って、RESTAPIとして動作させるため、ComponentScanの対象を指定</p></li>
+<li><p>resources/application.yml<br />サーバー上のWebアプリケションを識別するパスであるコンテキストパスを設定<br />これによって、URLが<code class="docutils literal notranslate"><span class="pre">http://localhost:8080/backend/api/v1/users</span></code>となる。</p></li>
+</ul>
+<section id="user-javalombok">
+<h4><span class="section-number">2.3.2.1. </span>[トラブルシュート]User.javaのLombokで躓いた話<a class="headerlink" href="#user-javalombok" title="この見出しへのパーマリンク">¶</a></h4>
+<p>■背景<br />Lombokとは、getterやsetter、builderなどを自動生成してくれるライブラリである。<br />こちらのサイトがわかりやすい<a class="reference external" href="https://qiita.com/uhooi/items/bb817e7ca7dc128bf475">LombokのBuilderパターン解説</a></p>
+<p>■問題<br />User.javaでlombokを使って&#64;builderしているのに、BackendRestController.java側で認識してくれない。</p>
+<p>■解決策<br />STSではlombokは適用されていないので、STSでLombokを有効にするために、lombok.jarをDLして、STSのiniファイルを対象にする。</p>
+<p><a class="reference external" href="https://snona.hatenablog.com/entry/2016/02/18/024239">stsでlombokを利用する</a>の手順に従えばOK</p>
+</section>
+<section id="application-yml">
+<h4><span class="section-number">2.3.2.2. </span>[実装上の工夫]application.ymlを環境を切り替える<a class="headerlink" href="#application-yml" title="この見出しへのパーマリンク">¶</a></h4>
+<p>構築環境に応じて、エンドポイントなどを切り替える際に、複数のapplication.ymlを準備して、利用対象を切り替える。<br /><img alt="Spring Bootでのプロファイルを使った環境切り分け" src="https://scior.hatenablog.com/entry/2019/03/20/003058" /></p>
+<p>■application-dev.ymlの設定
+基本はapplication.ymlが利用されるがapplication-xxx.ymlを作成すると、xxxとして、application.ymlは認識してくれる。</p>
+<p>■application.ymlの設定<br />以下を設定すると、application-dev.ymlがデフォルトで読み込まれるようになる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
+  <span class="n">profiles</span><span class="p">:</span>
+    <span class="n">active</span><span class="p">:</span> <span class="n">dev</span>
+</pre></div>
+</div>
+<p>■利用profileの設定<br />jarファイルの実行時に指定してあげる。以下だとdevが利用される</p>
+<blockquote>
+<div><p>java -jar spring-boot-application-properties-sample-1.0.0.jar --spring.profiles.active=dev</p>
+</div></blockquote>
+</section>
+</section>
+<section id="bff">
+<h3><span class="section-number">2.3.3. </span>bff<a class="headerlink" href="#bff" title="この見出しへのパーマリンク">¶</a></h3>
+<p>各種ファイルの役割</p>
+<ul class="simple">
+<li><p>backendforfrontend/app/model/User.java<br />User情報を定義しておく(DBの代わり)</p></li>
+<li><p>backendforfrontend/app/web/BackendForFrontendController.java<br />index.htmlからのリクエストを受け取って、backendのAPIへ問い合わせる</p></li>
+<li><p>backendforfrontend/app/web/ServiceProperties.java<br />ConfigurationPropertiesを利用してapplication.ymlのdns名を取得</p></li>
+<li><p>backendforfrontend/config/MvcConfig.java<br />RestOpearationsの生成時にdns名を指定してREST呼び出し先を指定</p></li>
+<li><p>backendforfrontend/config/WebApp.java<br />Backend -for-frontアプリのSpring起動クラス</p></li>
+<li><p>resources/static/index.html<br />最初の画面</p></li>
+<li><p>resources/template/users.html<br />userを取得した後の画面</p></li>
+<li><p>resources/application.yml<br />applicationのコンテキストパスを<code class="docutils literal notranslate"><span class="pre">/backendforfront</span></code>に設定<br />DNSの宛先を指定。これをServicePropertiesやMvcConfigから読み取っている。</p></li>
+</ul>
+</section>
+<section id="chap3">
+<h3><span class="section-number">2.3.4. </span>chap3の疑問点<a class="headerlink" href="#chap3" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id8">
+<h4><span class="section-number">2.3.4.1. </span>application.ymlの指定<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4390/">第4回 Dockerコンテナの作成</a>の設定ファイルの指定について</p></li>
+</ul>
+<blockquote>
+<div><p>CMD java -jar -Dspring.profiles.active=production /usr/local/mynavi-sample-aws-ecs/backend-for-frontend/target/mynavi-sample-aws-ecs-backend-for-frontend-0.0.1-SNAPSHOT.jar</p>
+</div></blockquote>
+<p>ここで、productionを指定しているが、applicaiton-production.ymlは存在しない。<br />productionを指定すると、application.ymlが指定されるかと思ったがそんな記事は見当たらない。</p>
+</section>
+<section id="backenddns">
+<h4><span class="section-number">2.3.4.2. </span>backendのdns指定<a class="headerlink" href="#backenddns" title="この見出しへのパーマリンク">¶</a></h4>
+<p>backend側は、albを指定する必要がないが、application.ymlでserviceとして、albを指定している。これは利用されていない？
+マイナビの説明でも触れていないが、gitには記述されている。</p>
+<blockquote>
+<div><p>service:<br />dns: https://sample-ecs-alb-1379155413.ap-northeast-1.elb.amazonaws.com/</p>
+</div></blockquote>
+</section>
+<section id="java-pj">
+<h4><span class="section-number">2.3.4.3. </span>java PJ全体<a class="headerlink" href="#java-pj" title="この見出しへのパーマリンク">¶</a></h4>
+<p>java PJが親子関係になっているけどそれぞれ独立したPJとして扱っても大丈夫なのか。</p>
+</section>
 </section>
 </section>
 <section id="docker">
 <h2><span class="section-number">2.4. </span>Dockerコンテナの作成<a class="headerlink" href="#docker" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id8">
-<h3><span class="section-number">2.4.1. </span>基本方針<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">2.4.1. </span>基本方針<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>DockerFileを作成して、backendとbffを実行するコンテナを作成する。</p>
+</section>
+<section id="dockerfile">
+<h3><span class="section-number">2.4.2. </span>DockerFileの説明<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="docker-image">
+<h3><span class="section-number">2.4.3. </span>Docker Imageの作成<a class="headerlink" href="#docker-image" title="この見出しへのパーマリンク">¶</a></h3>
+<p>docker buildコマンドで、DockerFileからイメージを作成する。最後の<code class="docutils literal notranslate"><span class="pre">.</span></code>はカレントディレクトリにあるDockerfileを指定している。</p>
+<blockquote>
+<div><p>docker build -t [IMAGE_TAG]:[IMAGE_VER] .</p>
+</div></blockquote>
+</section>
+<section id="docker-container">
+<h3><span class="section-number">2.4.4. </span>Docker Containerの作成<a class="headerlink" href="#docker-container" title="この見出しへのパーマリンク">¶</a></h3>
+<p>docker runコマンドでイメージからコンテナを起動する</p>
+<blockquote>
+<div><p>docker run --name [YOUR_CONTAINER_NAME] -it [IMAGE_TAG]:[IMAGE_VER]</p>
+</div></blockquote>
+<section id="id10">
+<h4><span class="section-number">2.4.4.1. </span>DockerFileトラブルシューティング日記<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<p>■課題<br />Apache Mavenのインストールに必要な資材をwgetコマンドで取得に失敗</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#6 2.044 ERROR: cannot verify repos.fedorapeople.org&#39;s certificate, issued by &#39;/C=US/O=Let\&#39;s Encrypt/CN=R3&#39;:</span>
+</pre></div>
+</div>
+<p>■解決策<br />以下を追加して解消</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RUN</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">ca</span><span class="o">-</span><span class="n">certificates</span>
+</pre></div>
+</div>
+<p>■課題<br />javaのバージョン17のopenjdkがない</p>
+<p>■解決策<br />javaのバージョン11を利用
+うまくいくかわからないので、javaの17をインストールする場合どうすれば良い・・・？</p>
+<p>■課題<br />apache-mavenがインストールできない</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">=&gt;</span> <span class="n">ERROR</span> <span class="p">[</span><span class="mi">6</span><span class="o">/</span><span class="mi">6</span><span class="p">]</span> <span class="n">RUN</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">apache</span><span class="o">-</span><span class="n">maven</span>                                           <span class="mf">7.5</span><span class="n">s</span> 
+<span class="o">------</span>                                                                                         
+ <span class="o">&gt;</span> <span class="p">[</span><span class="mi">6</span><span class="o">/</span><span class="mi">6</span><span class="p">]</span> <span class="n">RUN</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">apache</span><span class="o">-</span><span class="n">maven</span><span class="p">:</span>                                                      
+<span class="c1">#9 0.263 Loaded plugins: fastestmirror, ovl                                                    </span>
+<span class="c1">#9 0.340 Loading mirror speeds from cached hostfile                                            </span>
+<span class="c1">#9 0.341  * base: ftp.yz.yamagata-u.ac.jp                                                      </span>
+<span class="c1">#9 0.341  * extras: ftp.yz.yamagata-u.ac.jp                                                    </span>
+<span class="c1">#9 0.341  * updates: ftp.yz.yamagata-u.ac.jp</span>
+<span class="c1">#9 7.105 http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-6/aarch64/repodata/repomd.xml: [Errno 14] HTTPS Error 404 - Not Found</span>
+<span class="c1">#9 7.105 Trying other mirror.</span>
+<span class="c1">#9 7.105 To address this issue please refer to the below wiki article </span>
+<span class="c1">#9 7.105 </span>
+<span class="c1">#9 7.105 https://wiki.centos.org/yum-errors</span>
+<span class="c1">#9 7.105 </span>
+<span class="c1">#9 7.105 If above article doesn&#39;t help to resolve this issue please use https://bugs.centos.org/.</span>
+<span class="c1">#9 7.105 </span>
+<span class="c1">#9 7.351 No package apache-maven available.</span>
+<span class="c1">#9 7.395 Error: Nothing to do</span>
+</pre></div>
+</div>
+<p>■解決策<br />コマンドを変更してみた</p>
+<blockquote>
+<div><p>yum install -y maven</p>
+</div></blockquote>
+<p>■課題</p>
+<p>■解決策</p>
+</section>
 </section>
 </section>
 <section id="ecs">
 <h2><span class="section-number">2.5. </span>ECSクラスターの作成<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id9">
-<h3><span class="section-number">2.5.1. </span>基本方針<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-</section>
-<section id="id10">
-<h2><span class="section-number">2.6. </span>ECSタスクの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id11">
-<h3><span class="section-number">2.6.1. </span>基本方針<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.1. </span>基本方針<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
 </section>
 <section id="id12">
-<h2><span class="section-number">2.7. </span>ECSサービスの実行<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.6. </span>ECSタスクの定義<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id13">
-<h3><span class="section-number">2.7.1. </span>基本方針<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.6.1. </span>基本方針<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
 </section>
 <section id="id14">
-<h2><span class="section-number">2.8. </span>トラブルシューティング<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.7. </span>ECSサービスの実行<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id15">
+<h3><span class="section-number">2.7.1. </span>基本方針<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+<section id="id16">
+<h2><span class="section-number">2.8. </span>トラブルシューティング<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 </section>
 
@@ -202,25 +339,43 @@ Public-Subnetに配置するECS用のインターネットからの接続可能�
 </li>
 <li><a class="reference internal" href="#spring">2.3. Springを使用したコンテナアプリ実装</a><ul>
 <li><a class="reference internal" href="#id7">2.3.1. 基本方針</a></li>
+<li><a class="reference internal" href="#backend">2.3.2. backend</a><ul>
+<li><a class="reference internal" href="#user-javalombok">2.3.2.1. [トラブルシュート]User.javaのLombokで躓いた話</a></li>
+<li><a class="reference internal" href="#application-yml">2.3.2.2. [実装上の工夫]application.ymlを環境を切り替える</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bff">2.3.3. bff</a></li>
+<li><a class="reference internal" href="#chap3">2.3.4. chap3の疑問点</a><ul>
+<li><a class="reference internal" href="#id8">2.3.4.1. application.ymlの指定</a></li>
+<li><a class="reference internal" href="#backenddns">2.3.4.2. backendのdns指定</a></li>
+<li><a class="reference internal" href="#java-pj">2.3.4.3. java PJ全体</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#docker">2.4. Dockerコンテナの作成</a><ul>
-<li><a class="reference internal" href="#id8">2.4.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id9">2.4.1. 基本方針</a></li>
+<li><a class="reference internal" href="#dockerfile">2.4.2. DockerFileの説明</a></li>
+<li><a class="reference internal" href="#docker-image">2.4.3. Docker Imageの作成</a></li>
+<li><a class="reference internal" href="#docker-container">2.4.4. Docker Containerの作成</a><ul>
+<li><a class="reference internal" href="#id10">2.4.4.1. DockerFileトラブルシューティング日記</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#ecs">2.5. ECSクラスターの作成</a><ul>
-<li><a class="reference internal" href="#id9">2.5.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id11">2.5.1. 基本方針</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id10">2.6. ECSタスクの定義</a><ul>
-<li><a class="reference internal" href="#id11">2.6.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id12">2.6. ECSタスクの定義</a><ul>
+<li><a class="reference internal" href="#id13">2.6.1. 基本方針</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">2.7. ECSサービスの実行</a><ul>
-<li><a class="reference internal" href="#id13">2.7.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id14">2.7. ECSサービスの実行</a><ul>
+<li><a class="reference internal" href="#id15">2.7.1. 基本方針</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">2.8. トラブルシューティング</a></li>
+<li><a class="reference internal" href="#id16">2.8. トラブルシューティング</a></li>
 </ul>
 </li>
 </ul>

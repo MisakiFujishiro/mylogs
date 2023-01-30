@@ -124,10 +124,177 @@ Private-Subnetに構築されるバックエンドAppは内部向けロードバ
 
 ## Springを使用したコンテナアプリ実装
 ### 基本方針
+backendとbackend-for-frontのPJを作成する。
+
+backendでは、`backend/api/vi/users`の受け口を作成して、事前定義したuser情報を返却するコードを実装する。
+
+backend-for-frontでは、backendのサービスを呼び出して、user情報を受け取って、画面に表示する。
+
+![](img/ecs_backend_bff_app.png)
+
+### backend
+User情報をmodelに格納して、Controllerでパスの設定や処理を記述する。
+
+各種ファイルの役割
+- backend/app/model/User.java  
+        User情報を定義しておく(DBの代わり)
+- backend/app/web/BackendRestController.java   
+        パスの設定とUser情報の作成、返り値の定義  
+        "/api/v1/users"にアクセスがくると、User情報を返す
+- backend/config/App.java  
+    BackendアプリのSpringBoot起動クラス
+- backend/config/MvcConfig.java  
+    Controllerを読み取って、RESTAPIとして動作させるため、ComponentScanの対象を指定
+- resources/application.yml  
+    サーバー上のWebアプリケションを識別するパスであるコンテキストパスを設定  
+    これによって、URLが`http://localhost:8080/backend/api/v1/users`となる。
+
+
+#### [トラブルシュート]User.javaのLombokで躓いた話
+■背景  
+Lombokとは、getterやsetter、builderなどを自動生成してくれるライブラリである。  
+こちらのサイトがわかりやすい[LombokのBuilderパターン解説](https://qiita.com/uhooi/items/bb817e7ca7dc128bf475)
+
+■問題  
+User.javaでlombokを使って@builderしているのに、BackendRestController.java側で認識してくれない。
+
+■解決策  
+STSではlombokは適用されていないので、STSでLombokを有効にするために、lombok.jarをDLして、STSのiniファイルを対象にする。
+
+[stsでlombokを利用する](https://snona.hatenablog.com/entry/2016/02/18/024239)の手順に従えばOK
+
+#### [実装上の工夫]application.ymlを環境を切り替える
+構築環境に応じて、エンドポイントなどを切り替える際に、複数のapplication.ymlを準備して、利用対象を切り替える。  
+![Spring Bootでのプロファイルを使った環境切り分け](https://scior.hatenablog.com/entry/2019/03/20/003058)
+
+■application-dev.ymlの設定
+基本はapplication.ymlが利用されるがapplication-xxx.ymlを作成すると、xxxとして、application.ymlは認識してくれる。
+
+
+■application.ymlの設定  
+以下を設定すると、application-dev.ymlがデフォルトで読み込まれるようになる。
+```
+spring:
+  profiles:
+    active: dev
+```
+
+■利用profileの設定  
+jarファイルの実行時に指定してあげる。以下だとdevが利用される
+> java -jar spring-boot-application-properties-sample-1.0.0.jar --spring.profiles.active=dev
+
+### bff
+各種ファイルの役割
+- backendforfrontend/app/model/User.java  
+    User情報を定義しておく(DBの代わり)
+- backendforfrontend/app/web/BackendForFrontendController.java  
+    index.htmlからのリクエストを受け取って、backendのAPIへ問い合わせる
+- backendforfrontend/app/web/ServiceProperties.java  
+    ConfigurationPropertiesを利用してapplication.ymlのdns名を取得
+- backendforfrontend/config/MvcConfig.java  
+    RestOpearationsの生成時にdns名を指定してREST呼び出し先を指定
+- backendforfrontend/config/WebApp.java  
+    Backend -for-frontアプリのSpring起動クラス
+- resources/static/index.html  
+    最初の画面
+- resources/template/users.html  
+    userを取得した後の画面
+- resources/application.yml  
+    applicationのコンテキストパスを`/backendforfront`に設定  
+    DNSの宛先を指定。これをServicePropertiesやMvcConfigから読み取っている。
+
+
+
+### chap3の疑問点
+#### application.ymlの指定
+- [第4回 Dockerコンテナの作成](https://news.mynavi.jp/techplus/article/techp4390/)の設定ファイルの指定について
+
+> CMD java -jar -Dspring.profiles.active=production /usr/local/mynavi-sample-aws-ecs/backend-for-frontend/target/mynavi-sample-aws-ecs-backend-for-frontend-0.0.1-SNAPSHOT.jar
+
+ここで、productionを指定しているが、applicaiton-production.ymlは存在しない。  
+productionを指定すると、application.ymlが指定されるかと思ったがそんな記事は見当たらない。
+
+
+#### backendのdns指定
+backend側は、albを指定する必要がないが、application.ymlでserviceとして、albを指定している。これは利用されていない？
+マイナビの説明でも触れていないが、gitには記述されている。
+> service:  
+>   dns: https://sample-ecs-alb-1379155413.ap-northeast-1.elb.amazonaws.com/
+
+
+#### java PJ全体
+java PJが親子関係になっているけどそれぞれ独立したPJとして扱っても大丈夫なのか。
 
 
 ## Dockerコンテナの作成
 ### 基本方針
+DockerFileを作成して、backendとbffを実行するコンテナを作成する。
+
+### DockerFileの説明
+
+### Docker Imageの作成
+docker buildコマンドで、DockerFileからイメージを作成する。最後の`.`はカレントディレクトリにあるDockerfileを指定している。
+> docker build -t [IMAGE_TAG]:[IMAGE_VER] .
+
+### Docker Containerの作成
+docker runコマンドでイメージからコンテナを起動する
+> docker run --name [YOUR_CONTAINER_NAME] -it [IMAGE_TAG]:[IMAGE_VER]
+
+
+#### DockerFileトラブルシューティング日記
+■課題  
+Apache Mavenのインストールに必要な資材をwgetコマンドで取得に失敗
+```
+#6 2.044 ERROR: cannot verify repos.fedorapeople.org's certificate, issued by '/C=US/O=Let\'s Encrypt/CN=R3':
+```
+
+■解決策  
+以下を追加して解消
+```
+RUN yum install -y ca-certificates
+```
+
+■課題  
+javaのバージョン17のopenjdkがない
+
+■解決策  
+javaのバージョン11を利用
+うまくいくかわからないので、javaの17をインストールする場合どうすれば良い・・・？
+
+
+■課題  
+apache-mavenがインストールできない
+```
+ => ERROR [6/6] RUN yum install -y apache-maven                                           7.5s 
+------                                                                                         
+ > [6/6] RUN yum install -y apache-maven:                                                      
+#9 0.263 Loaded plugins: fastestmirror, ovl                                                    
+#9 0.340 Loading mirror speeds from cached hostfile                                            
+#9 0.341  * base: ftp.yz.yamagata-u.ac.jp                                                      
+#9 0.341  * extras: ftp.yz.yamagata-u.ac.jp                                                    
+#9 0.341  * updates: ftp.yz.yamagata-u.ac.jp
+#9 7.105 http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-6/aarch64/repodata/repomd.xml: [Errno 14] HTTPS Error 404 - Not Found
+#9 7.105 Trying other mirror.
+#9 7.105 To address this issue please refer to the below wiki article 
+#9 7.105 
+#9 7.105 https://wiki.centos.org/yum-errors
+#9 7.105 
+#9 7.105 If above article doesn't help to resolve this issue please use https://bugs.centos.org/.
+#9 7.105 
+#9 7.351 No package apache-maven available.
+#9 7.395 Error: Nothing to do
+```
+
+■解決策  
+コマンドを変更してみた
+> yum install -y maven
+
+■課題  
+
+■解決策  
+
+
+
 
 
 ## ECSクラスターの作成

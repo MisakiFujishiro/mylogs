@@ -47,6 +47,50 @@
             
   <section id="aws-code-seriescicd">
 <h1><span class="section-number">3. </span>AWS Code Seriesを利用したCICD環境<a class="headerlink" href="#aws-code-seriescicd" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="java-projectgit-hub">
+<h2><span class="section-number">3.1. </span>java projectをgit hubと連携<a class="headerlink" href="#java-projectgit-hub" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="git-hubrepository">
+<h3><span class="section-number">3.1.1. </span>Git hubでrepository作成<a class="headerlink" href="#git-hubrepository" title="この見出しへのパーマリンク">¶</a></h3>
+<p>git hubでリポジトリを新規作成する</p>
+<blockquote>
+<div><p>MisakiFujishiro/ecs_backend_for_front</p>
+</div></blockquote>
+<p><img alt="../_images/git_repository.png" src="../_images/git_repository.png" /></p>
+</section>
+<section id="java-pj">
+<h3><span class="section-number">3.1.2. </span>Java PJ作成<a class="headerlink" href="#java-pj" title="この見出しへのパーマリンク">¶</a></h3>
+<p>STSでSpring Starter Projectを作成</p>
+<p><img alt="../_images/sts_pj.png" src="../_images/sts_pj.png" /></p>
+</section>
+<section id="terminalgithubpush">
+<h3><span class="section-number">3.1.3. </span>terminalでGitHubへpush<a class="headerlink" href="#terminalgithubpush" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ターミナルを開いて、作成したプロジェクトのディレクトリに移動</p>
+<blockquote>
+<div><p>cd [YOUR_STS_PJ]</p>
+</div></blockquote>
+<p>実行したディレクトリ以下のファイルがgitで管理される</p>
+<blockquote>
+<div><p>git init</p>
+</div></blockquote>
+<p>STSで作成された各種ファイルをaddとcommit</p>
+<blockquote>
+<div><p>git add .
+git commit -m &quot;first commit&quot;</p>
+</div></blockquote>
+<p>メインブランチ作成</p>
+<blockquote>
+<div><p>git branch -M main</p>
+</div></blockquote>
+<p>現在のローカルリポジトリをリモートリポジトリに追加</p>
+<blockquote>
+<div><p>git remote add origin https://github.com/[YOUR_REMOTE_REPO].git</p>
+</div></blockquote>
+<p>リモートリポジトリにpush</p>
+<blockquote>
+<div><p>git push -u origin main</p>
+</div></blockquote>
+</section>
+</section>
 </section>
 
 
@@ -56,6 +100,21 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">3. AWS Code Seriesを利用したCICD環境</a><ul>
+<li><a class="reference internal" href="#java-projectgit-hub">3.1. java projectをgit hubと連携</a><ul>
+<li><a class="reference internal" href="#git-hubrepository">3.1.1. Git hubでrepository作成</a></li>
+<li><a class="reference internal" href="#java-pj">3.1.2. Java PJ作成</a></li>
+<li><a class="reference internal" href="#terminalgithubpush">3.1.3. terminalでGitHubへpush</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="ecs.html"

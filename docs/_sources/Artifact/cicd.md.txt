@@ -1,1 +1,33 @@
 # AWS Code Seriesを利用したCICD環境
+
+## java projectをgit hubと連携
+### Git hubでrepository作成
+git hubでリポジトリを新規作成する
+> MisakiFujishiro/ecs_backend_for_front
+
+![](img/git_repository.png)
+
+### Java PJ作成
+STSでSpring Starter Projectを作成
+
+![](img/sts_pj.png)
+
+### terminalでGitHubへpush
+ターミナルを開いて、作成したプロジェクトのディレクトリに移動
+> cd [YOUR_STS_PJ]
+
+実行したディレクトリ以下のファイルがgitで管理される
+> git init
+
+STSで作成された各種ファイルをaddとcommit
+> git add .
+> git commit -m "first commit"
+
+メインブランチ作成
+> git branch -M main
+
+現在のローカルリポジトリをリモートリポジトリに追加
+> git remote add origin https://github.com/[YOUR_REMOTE_REPO].git
+
+リモートリポジトリにpush
+> git push -u origin main

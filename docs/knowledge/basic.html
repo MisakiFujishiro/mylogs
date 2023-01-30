@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="3. 環境構築系の基礎知識" href="environment.html" />
+    <link rel="next" title="4. 環境構築系の基礎知識" href="environment.html" />
     <link rel="prev" title="2. マイクロサービスにおける認証認可" href="../microservice/certification_authentication.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="environment.html" title="3. 環境構築系の基礎知識"
+          <a href="environment.html" title="4. 環境構築系の基礎知識"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="../microservice/certification_authentication.html" title="2. マイクロサービスにおける認証認可"
@@ -77,9 +77,18 @@
 </section>
 </section>
 <section id="id4">
-<h1><span class="section-number">2. </span>通信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">2. </span>コーディング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id5">
+<h2><span class="section-number">2.1. </span>シングルトン<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<p>クラスに対するインスタンスが、たくさんできると管理が面倒なので、そのクラスのインスタンスが必ず一つであることを保証するデザインパターン</p>
+<p>JavaにおけるSingletonの定義方法
+<img alt="../_images/singleton.png" src="../_images/singleton.png" /></p>
+</section>
+</section>
+<section id="id6">
+<h1><span class="section-number">3. </span>通信<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="web-socket">
-<h2><span class="section-number">2.1. </span>Web Socket<a class="headerlink" href="#web-socket" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">3.1. </span>Web Socket<a class="headerlink" href="#web-socket" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Web Scoketとは、ブラウザとウェブサーバーで双方向通信を行うための通信規格。</p>
 <p>サーバー側とユーザー側が常にオンライン状態を維持するので双方向を可能とする。</p>
 <p>Load Balancerを経由する場合は、同じサーバーと接続ができるように、スティッキーセッションを利用する必要がある。</p>
@@ -111,8 +120,12 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">2. 通信</a><ul>
-<li><a class="reference internal" href="#web-socket">2.1. Web Socket</a></li>
+<li><a class="reference internal" href="#id4">2. コーディング</a><ul>
+<li><a class="reference internal" href="#id5">2.1. シングルトン</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id6">3. 通信</a><ul>
+<li><a class="reference internal" href="#web-socket">3.1. Web Socket</a></li>
 </ul>
 </li>
 </ul>
@@ -126,7 +139,7 @@
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="environment.html"
-                          title="次の章へ"><span class="section-number">3. </span>環境構築系の基礎知識</a></p>
+                          title="次の章へ"><span class="section-number">4. </span>環境構築系の基礎知識</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -156,7 +169,7 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="environment.html" title="3. 環境構築系の基礎知識"
+          <a href="environment.html" title="4. 環境構築系の基礎知識"
              >次へ</a> |</li>
         <li class="right" >
           <a href="../microservice/certification_authentication.html" title="2. マイクロサービスにおける認証認可"

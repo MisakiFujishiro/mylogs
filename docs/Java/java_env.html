@@ -47,7 +47,8 @@
             
   <section id="java">
 <h1><span class="section-number">1. </span>Javaとは<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h1>
-<p><a class="reference external" href="https://gihyo.jp/article/2022/07/java2022-0701">2022年のJavaまるわかり！最新バージョンからJavaを取り巻く環境まで</a></p>
+<p><a class="reference external" href="https://gihyo.jp/article/2022/07/java2022-0701">2022年のJavaまるわかり！最新バージョンからJavaを取り巻く環境まで</a>
+<a class="reference external" href="https://qiita.com/nowokay/items/c1de127354cd1b0ddc5e">qiiita</a></p>
 <section id="jdk">
 <h2><span class="section-number">1.1. </span>JDKとは<a class="headerlink" href="#jdk" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
@@ -105,9 +106,9 @@ Macの「このMacについて」からチップを確認する。</p>
 <section id="id5">
 <h3><span class="section-number">2.1.4. </span>Javaの切り替え<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>JAVA＿HOMEを設定する。[ver]の部分に切り替えたいjavaのバージョンを入れる</p>
-<blockquote>
-<div><p>export JAVA_HOME=<code class="docutils literal notranslate"><span class="pre">/usr/libexec/java_home</span> <span class="pre">-v</span> <span class="pre">&quot;[ver]&quot;</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export JAVA_HOME=`/usr/libexec/java_home -v &quot;[ver]&quot;`
+</pre></div>
+</div>
 <p>パスを通す。</p>
 <blockquote>
 <div><p>PATH=$JAVA_HOME/bin:$PATH</p>
