@@ -121,7 +121,7 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 <li><p>Consumer：メッセージを取り出して後続処理を行う消費者</p></li>
 <li><p>キュー：ProducerとConsumer両者を疎結合にする</p></li>
 </ul>
-<p>SNSは<code class="docutils literal notranslate"><span class="pre">Push型</span></code>の仕組みであり、SNSは<code class="docutils literal notranslate"><span class="pre">Pull型</span></code>である点。<br />Push型では、TopicからSubscriberへの配信は即時に行われるが、Pull型ではキューからConsumerがメッセージを取り出す必要がある。</p>
+<p>SNSは<code class="docutils literal notranslate"><span class="pre">Push型</span></code>の仕組みであり、SQSは<code class="docutils literal notranslate"><span class="pre">Pull型</span></code>である点。<br />Push型では、TopicからSubscriberへの配信は即時に行われるが、Pull型ではキューからConsumerがメッセージを取り出す必要がある。</p>
 </section>
 <section id="id7">
 <h2><span class="section-number">13.2. </span>SQSのキュー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
@@ -158,15 +158,18 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 <h3><span class="section-number">13.2.3. </span>キューの待機時間設定<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerがキューに格納してからConsumerが取得するまでの時間を遅延させたり、
 Consumerがキューを取得してから他のConsumerがメッセージを取得するまでの時間を遅延させたりすることができる。</p>
+<p>以下の図は、後述する遅延キュー（メッセージタイマーと可視性タイムアウトの関係）</p>
 <p><img alt="../_images/sns_delay.png" src="../_images/sns_delay.png" /></p>
 </section>
 <section id="id11">
 <h3><span class="section-number">13.2.4. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerからキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。<br />遅延キューでは、<code class="docutils literal notranslate"><span class="pre">配信遅延時間</span></code>を設定することでキュー全体に設定が反映され、メッセージタイマーでは特定メッセージに対して設定が反映される</p>
+<p><img alt="../_images/sqs_delay.png" src="../_images/sqs_delay.png" /></p>
 </section>
 <section id="id12">
 <h3><span class="section-number">13.2.5. </span>可視性タイムアウト<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerがメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を防止することができるが、重複性を完全排除はできない点に注意。</p>
+<p><img alt="../_images/sqs_visibility.png" src="../_images/sqs_visibility.png" /></p>
 </section>
 <section id="id13">
 <h3><span class="section-number">13.2.6. </span>デットレターキュー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>

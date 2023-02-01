@@ -107,6 +107,10 @@ Lambdaはリージョンごとに最大同時実行数が決まっており、�
 <p>複数のLambda関数が共通で利用するライブラリをZIPファイルで切り出して共有する機能
 1つのLambda関数から最大5つのLayerを利用することができる。</p>
 </section>
+<section id="url">
+<h3><span class="section-number">7.2.8. </span>署名付きURL<a class="headerlink" href="#url" title="この見出しへのパーマリンク">¶</a></h3>
+<p>AWS SDKやCLIを利用することでSTSの機能によって一時的にS3へ亜k末スカのうなURLを発行させることができる。</p>
+</section>
 </section>
 <section id="id11">
 <h2><span class="section-number">7.3. </span>Lambdaの呼び出しかた分類<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h2>
@@ -118,7 +122,7 @@ Lambdaはリージョンごとに最大同時実行数が決まっており、�
 <section id="id12">
 <h3><span class="section-number">7.3.1. </span>①Lambda関数を同期的に呼び出す<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaを呼び出したら、その実行が完了するのを待つ。<br />イベント元に実行結果を返す。</p>
-<p>エラー発生時にはエラーがレスポンスされるので、CloudWatch Logsのサブスクリプションフィルタなどを利用する。</p>
+<p>エラー発生時にはエラーがレスポンスされるので、CloudWatch Logsのサブスクリプションフィルタなどを利用する。<br />※S3のイベント契機をSQSで受け取ってLambdaがポーリングする場合同期処理になる点に注意。</p>
 </section>
 <section id="id13">
 <h3><span class="section-number">7.3.2. </span>②Lambda関数を非同期的に呼び出す<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
@@ -132,6 +136,16 @@ Lambdaはリージョンごとに最大同時実行数が決まっており、�
 <h3><span class="section-number">7.3.3. </span>③Lambdaがイベントを読み取る(イベントソースマッピング)<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaが新しいイベントがないがないかポーリングする。</p>
 </section>
+<section id="id15">
+<h3><span class="section-number">7.3.4. </span>呼び出し方に応じたエラーハンドリング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>同期処理の場合（1-a）<br />結果をそのままレスポンスに埋め込んで返却するので、CloudWatchに流れていく。
+そのため、エラーに応じた通知などはLambdaをもう一つ作成して処理を作り込む必要がある。</p></li>
+<li><p>非同期処理の場合(1-b)<br />イベントを受け付けると、Lambdaの処理中にエラーが発生しても2回りトライされる。
+処理が以上終了しても呼び出し元へ通知はされないがその代わりデッドレターキューをSNSやSQSで定義することができる。この情報を利用して、通知の設定することが可能。</p></li>
+</ul>
+<p><img alt="../_images/lambda_errorhandling.png" src="../_images/lambda_errorhandling.png" /></p>
+</section>
 </section>
 <section id="lambdas3aiaws">
 <h2><span class="section-number">7.4. </span>LambdaとS3・AIなどのAWSサービスの連携<a class="headerlink" href="#lambdas3aiaws" title="この見出しへのパーマリンク">¶</a></h2>
@@ -139,8 +153,8 @@ Lambdaはリージョンごとに最大同時実行数が決まっており、�
 <h3><span class="section-number">7.4.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">H4B：AWS LambdaとAWS AI Servicesを組み合わせて作る音声文字起こし&amp;感情分析パイプライン</a>
 の内容を踏まえてLambadaの手順などを整理する。</p>
-<section id="id15">
-<h4><span class="section-number">7.4.1.1. </span>全体構成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id16">
+<h4><span class="section-number">7.4.1.1. </span>全体構成<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>S3に音声データをアップロードするとS3のイベントが発出され、Lambdaがそれを受け取る。<br />LambdaがTranscribeを呼び出して、テキストデータに変換し、そのデータをS3にアップロードする。<br />テキストのアップロードを契機として、再度Lambdaを呼び出して、ポジネガ判定を行う。</p>
 <ul class="simple">
 <li><p>Polly:テキストから音声を生成するAIサービス</p></li>
@@ -291,17 +305,19 @@ S3内部の音声データのObjectを指定すると、文字起こしをして
 <li><a class="reference internal" href="#id9">7.2.5. バージョン</a></li>
 <li><a class="reference internal" href="#id10">7.2.6. エイリアス</a></li>
 <li><a class="reference internal" href="#layers">7.2.7. Layers</a></li>
+<li><a class="reference internal" href="#url">7.2.8. 署名付きURL</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id11">7.3. Lambdaの呼び出しかた分類</a><ul>
 <li><a class="reference internal" href="#id12">7.3.1. ①Lambda関数を同期的に呼び出す</a></li>
 <li><a class="reference internal" href="#id13">7.3.2. ②Lambda関数を非同期的に呼び出す</a></li>
 <li><a class="reference internal" href="#id14">7.3.3. ③Lambdaがイベントを読み取る(イベントソースマッピング)</a></li>
+<li><a class="reference internal" href="#id15">7.3.4. 呼び出し方に応じたエラーハンドリング</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#lambdas3aiaws">7.4. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
 <li><a class="reference internal" href="#h4b">7.4.1. H4b</a><ul>
-<li><a class="reference internal" href="#id15">7.4.1.1. 全体構成</a></li>
+<li><a class="reference internal" href="#id16">7.4.1.1. 全体構成</a></li>
 <li><a class="reference internal" href="#s3lambda">7.4.1.2. S3とLambdaの連携</a></li>
 <li><a class="reference internal" href="#lambdatranscribe">7.4.1.3. LambdaとTranscribeの連携</a></li>
 <li><a class="reference internal" href="#s3">7.4.1.4. S3への連携</a></li>

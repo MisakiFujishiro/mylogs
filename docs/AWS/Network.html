@@ -308,21 +308,27 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 </section>
 <section id="id19">
 <h3><span class="section-number">1.5.3. </span>ビヘイビアにおけるキャッシュの設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
-<p>URLが一致した場合などにキャッシュを利用するように設定できるが、そのキャッシュをどう扱うかをキャッシュコントロールで設定することができる。
+<p>URLが一致した場合などにキャッシュを利用するように設定できるが、そのキャッシュをどう扱うかを<code class="docutils literal notranslate"><span class="pre">ビヘイビア</span></code>により設定する。
 CloudFront側で、TTLを設定することができ、オリジン側もCacheControlを設定でき、比較してキャッシュの時間を決定する。</p>
-<p>CloudFront側では以下を設定</p>
+<p>■CloudFront側の設定</p>
 <ul class="simple">
 <li><p>Max-TTL：最大のTTLでこれは越えれない</p></li>
 <li><p>Min-TTL：最小でも確保するTTLでこれより小さくはできない</p></li>
 <li><p>Default-TTL：オリジン側のCache Controlがない場合のTTL</p></li>
 </ul>
-<p>オリジン側では以下を設定</p>
+<p>■オリジン側では以下を設定</p>
 <ul class="simple">
-<li><p>Cache Control：オリジン側からリクエストするTTL</p></li>
+<li><p>Cache Control：オリジン側からリクエストするTTL<br />max-age=0を設定すると、キャッシュが再読み込みされる。</p></li>
 </ul>
-</section>
 <section id="id20">
-<h3><span class="section-number">1.5.4. </span>キャッシュポリシーとオリジンリクエストポリシー<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">1.5.3.1. </span>キャッシュの無効化<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<p>キャッシュの有効期限が切れる前に、キャッシュされているコンテンツを無効化することができる。
+コンソール上やCLIからファイルを選択して、キャッシュを無効化する。</p>
+<p>Invalidationのオペレーションは有料のため、有効期限内に大量の無効化を行うと金額が大きくなる点に注意</p>
+</section>
+</section>
+<section id="id21">
+<h3><span class="section-number">1.5.4. </span>キャッシュポリシーとオリジンリクエストポリシー<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キャッシングルールをパスごとに１つづつ設定指定が、ポリシー化してアタッチすることが可能となった。</p>
 <p>さらに、キャッシュポリシーとオリジンリクエストポリシーを分離して扱うことが可能となっった。
 キャッシュポリシーに指定したパラメータはオリジンリクエストに時効的に含まれる。</p>
@@ -339,8 +345,8 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
 <li><p>ビューワーレスポンス<br />CloudFrontがビューワーにレスポンスを返す前に実行される</p></li>
 </ul>
 </section>
-<section id="id21">
-<h3><span class="section-number">1.5.6. </span>他のAWSサービスとの連携<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id22">
+<h3><span class="section-number">1.5.6. </span>他のAWSサービスとの連携<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatchにより、キャッシュのヒット率やエラー状況などのモニタリングが可能</p>
 <p>アクセスログをS3に配信したり、WAFやACMによってCloudFrontと通信を保護することも可能</p>
 <p><img alt="../_images/cloudfront_image.png" src="../_images/cloudfront_image.png" /></p>
@@ -410,10 +416,13 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
 <li><a class="reference internal" href="#cloud-front">1.5. Cloud Front</a><ul>
 <li><a class="reference internal" href="#cdn">1.5.1. CDNとは</a></li>
 <li><a class="reference internal" href="#id18">1.5.2. Cloud Frontの構成要素</a></li>
-<li><a class="reference internal" href="#id19">1.5.3. ビヘイビアにおけるキャッシュの設定</a></li>
-<li><a class="reference internal" href="#id20">1.5.4. キャッシュポリシーとオリジンリクエストポリシー</a></li>
+<li><a class="reference internal" href="#id19">1.5.3. ビヘイビアにおけるキャッシュの設定</a><ul>
+<li><a class="reference internal" href="#id20">1.5.3.1. キャッシュの無効化</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id21">1.5.4. キャッシュポリシーとオリジンリクエストポリシー</a></li>
 <li><a class="reference internal" href="#lambda-edge">1.5.5. Lambda&#64;Edge</a></li>
-<li><a class="reference internal" href="#id21">1.5.6. 他のAWSサービスとの連携</a></li>
+<li><a class="reference internal" href="#id22">1.5.6. 他のAWSサービスとの連携</a></li>
 </ul>
 </li>
 </ul>
