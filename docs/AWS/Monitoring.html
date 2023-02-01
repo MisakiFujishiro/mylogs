@@ -80,12 +80,12 @@
 <li><p>ネットワークIO</p></li>
 <li><p>ディスクIO</p></li>
 <li><p>EBS ボリュームIO</p></li>
-<li></li>
 </ul>
 <p>■Metrics Math<br />既存のメトリクスと数式を利用して、新しいメトリクスを作成することができる。</p>
 <p>■標準メトリクスとカスタムメトリクス<br />EC2のCPU使用率など、事前にAWSで準備されているメトリクスを標準メトリクスと呼ぶ。
 標準メトリクスに準備されていないメトリクスはカスタムメトリクスとして、独自に定義する必要がある。
-カスタムメトリクスはAWS CLIやPutMEtricData APIを利用して定義する。</p>
+カスタムメトリクスはAWS CLIやPutMEtricData APIを利用して定義する。
+カスタムメトリクスを送信する場合は<code class="docutils literal notranslate"><span class="pre">CloudWatchAgentServerPolicy</span></code>がアタッチされたIAMロールを作成して、割り当てる必要がある。</p>
 </section>
 <section id="id3">
 <h4><span class="section-number">10.1.1.3. </span>異常検出<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>

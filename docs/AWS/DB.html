@@ -149,7 +149,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>RDBに保存してある、マスターデータをキャッシュして、処理を高速化したり、複数Appサーバーでセッション情報を共有するために利用される。</p>
 <section id="memcached">
 <h3><span class="section-number">9.4.1. </span>Memcached<a class="headerlink" href="#memcached" title="この見出しへのパーマリンク">¶</a></h3>
-<p>マルチスレッドでアクセス可能な共通データのキャッシュ用途で利用する<br />インメモリ型のキーバリューストアで、シンプルなキーバリューストアでデータをキャッシュして低レイテンシーでデータ参照するためといった目的で利用する。</p>
+<p>マスターデータなどのマルチスレッドでアクセス可能な<strong>共通データ</strong>のキャッシュ用途で利用する<br />インメモリ型のキーバリューストアで、シンプルなキーバリューストアでデータをキャッシュして低レイテンシーでデータ参照するためといった目的で利用する。</p>
 </section>
 <section id="id7">
 <h3><span class="section-number">9.4.2. </span>基本的な挙動<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
@@ -163,7 +163,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 </section>
 <section id="redis">
 <h3><span class="section-number">9.4.3. </span>Redis<a class="headerlink" href="#redis" title="この見出しへのパーマリンク">¶</a></h3>
-<p>データをいくつかのグループで分割して持つシャードを利用して分散処理して、パフォーマンスや可用性を高める<br />高機能なインメモリ型のキーバリューストアで、CP型のデータベースとなる。</p>
+<p>セッションデータを管理したりする<strong>ユーザーごとに異なる動的なデータ</strong>のキャッシュ用途で利用する。<br />データをいくつかのグループで分割して持つシャードを利用して分散処理して、パフォーマンスや可用性を高める<br />高機能なインメモリ型のキーバリューストアで、CP型のデータベースとなる。</p>
 <p>Redisの構成と用語は以下の通り</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ノード</span></code>：データを保持する単位</p></li>
@@ -183,7 +183,8 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 </section>
 <section id="id9">
 <h4><span class="section-number">9.4.3.2. </span>クラスタモード有効<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
-<p>キャッシュデータ量が多ければ、クラスターモードを有効化することを考えた方が良い。</p>
+<p>キャッシュデータ量が多ければ、クラスターモードを有効化することを考えた方が良い。
+注意点は、可用性には影響しないことと、費用がかなり高くつく点</p>
 <p>クラスターモードが有効だとシャードは1-15で設定可能。エンドポイントは設定エンドポイントのみが提供される。
 キーのハッシュ値（スロット）に応じてシャーディングし、シャードを跨いでプライマリとリードレプリカについても作成する。</p>
 <p><img alt="../_images/db_elasticcache_with_cluster.png" src="../_images/db_elasticcache_with_cluster.png" /></p>
@@ -226,10 +227,11 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <h3><span class="section-number">9.5.3. </span>課金体系<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DynamoDBの課金体系には以下の２つがある</p>
 <ul class="simple">
-<li><p>オンデマンドキャパシティモード：リクエスト数に応じて課金</p></li>
+<li><p>オンデマンドキャパシティモード：リクエスト数に応じて課金（動的）</p></li>
 <li><p>プロビジョンモード：テーブル単位で読み書きのパフォーマンスをスループットとして定義する。</p></li>
 </ul>
-<p>読み込みと書き込みのキャパシティユニットをそれぞれWCUs(Write Capacity Units)とRCUs（Read Capacity Units)と呼ぶ。</p>
+<p>読み込みと書き込みのキャパシティユニットをそれぞれWCUs(Write Capacity Units)とRCUs（Read Capacity Units)と呼ぶ。
+1秒間にどれだけ読み込みするか（RCUs（とどれだけ書き込みするか（WCUs）を算出して、設定する。</p>
 <section id="rcus">
 <h4><span class="section-number">9.5.3.1. </span>RCUs<a class="headerlink" href="#rcus" title="この見出しへのパーマリンク">¶</a></h4>
 <blockquote>
@@ -250,22 +252,56 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 </ul>
 </section>
 </section>
+<section id="id12">
+<h3><span class="section-number">9.5.4. </span>読み込み書き込みの設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<p>GetItemではデフォルトで結果生合成の読み取りを提供している。</p>
+<p>アプリケーションで強い生合成のある読み取りが必要な場合は<code class="docutils literal notranslate"><span class="pre">ConsistentRead</span></code>パラメータをTrueにする。</p>
+</section>
 <section id="ttl-time-to-line">
-<h3><span class="section-number">9.5.4. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.5. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
 <p>項目に対して有効期限を設定することができ、指定されたタイムスタンプの日時にWCUsを利用せずに削除することができる。</p>
 </section>
 <section id="dax-dynamodb-accelarator">
-<h3><span class="section-number">9.5.5. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.6. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
 <p>VPC内でキャッシュクラスタを構築して、DynamoDBへの高速アクセスを可能とするキャッシュサービス。</p>
 <p>リアルタイム入札やソーシャルゲームなどのユースケースに適している。</p>
 </section>
 <section id="dynamodb-stream-trigger">
-<h3><span class="section-number">9.5.6. </span>DynamoDB Stream/Trigger<a class="headerlink" href="#dynamodb-stream-trigger" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.7. </span>DynamoDB Stream/Trigger<a class="headerlink" href="#dynamodb-stream-trigger" title="この見出しへのパーマリンク">¶</a></h3>
 <p>テーブル内で項目の変更に関するデータを記録する機能</p>
 <p>データが作成・更新・削除されたときに項目のPKと変更前後のセータがストリームレコードとして書き込まれる。</p>
 <p><img alt="../_images/db_dynamo_streams.png" src="../_images/db_dynamo_streams.png" /></p>
 <p>LambdaやKinesisと統合されており、StreamAPIを使って、ポーリングを行なって変更を検知すると処理を実行できる（DynamoDB Trigger)</p>
 </section>
+</section>
+<section id="id13">
+<h2><span class="section-number">9.6. </span>エンドポイント整理<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p>RDS</p>
+<ul>
+<li><p>読み取り：リードレプリカエンドポイント</p></li>
+<li><p>書き込み：DBエンドポイント</p></li>
+</ul>
+</li>
+<li><p>Aurora</p>
+<ul>
+<li><p>読み取り：読み込みエンドポイント</p></li>
+<li><p>書き込み：クラスターエンドポイント</p></li>
+</ul>
+</li>
+<li><p>ElasticCache(Redis:クラスターオフ)</p>
+<ul>
+<li><p>読み取り：読み込みエンドポイント</p></li>
+<li><p>書き込み：Primaryエンドポイント</p></li>
+</ul>
+</li>
+<li><p>ElasticCache(Redis:クラスターオン)</p>
+<ul>
+<li><p>読み取り：設定エンドポイント</p></li>
+<li><p>書き込み：設定エンドポイント</p></li>
+</ul>
+</li>
+</ul>
 </section>
 </section>
 
@@ -323,11 +359,13 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <li><a class="reference internal" href="#wcus">9.5.3.2. WCUs</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ttl-time-to-line">9.5.4. TTL(Time To Line)</a></li>
-<li><a class="reference internal" href="#dax-dynamodb-accelarator">9.5.5. DAX(DynamoDB Accelarator)</a></li>
-<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.6. DynamoDB Stream/Trigger</a></li>
+<li><a class="reference internal" href="#id12">9.5.4. 読み込み書き込みの設定</a></li>
+<li><a class="reference internal" href="#ttl-time-to-line">9.5.5. TTL(Time To Line)</a></li>
+<li><a class="reference internal" href="#dax-dynamodb-accelarator">9.5.6. DAX(DynamoDB Accelarator)</a></li>
+<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.7. DynamoDB Stream/Trigger</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id13">9.6. エンドポイント整理</a></li>
 </ul>
 </li>
 </ul>

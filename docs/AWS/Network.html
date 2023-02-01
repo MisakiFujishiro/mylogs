@@ -21,7 +21,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="2. セキュリティ" href="security.html" />
-    <link rel="prev" title="3. 環境構築系の基礎知識" href="../knowledge/environment.html" /> 
+    <link rel="prev" title="4. 環境構築系の基礎知識" href="../knowledge/environment.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -33,7 +33,7 @@
           <a href="security.html" title="2. セキュリティ"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../knowledge/environment.html" title="3. 環境構築系の基礎知識"
+          <a href="../knowledge/environment.html" title="4. 環境構築系の基礎知識"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWSのネットワーク</a></li> 
@@ -122,9 +122,10 @@
 </section>
 </section>
 <section id="id7">
-<h3><span class="section-number">1.3.2. </span>Route53<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Route53では、ホストゾーンを設定することで、権威DNSサーバーを設定することができる。
-DNS Resolverの働きはVPCを作成すると自動で構築されるRoute53 Resolverが行う。</p>
+<h3><span class="section-number">1.3.2. </span>Route53の機能<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Route53では、ホストゾーンを設定することで、権威DNSサーバーを設定することができる。</p>
+<p>DNS Resolverの働きはVPCを作成すると自動で構築されるRoute53 Resolverが行う。
+オンプレへのルーティングなどを設定するに利用する。</p>
 </section>
 <section id="id8">
 <h3><span class="section-number">1.3.3. </span>ホストゾーン<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
@@ -163,9 +164,9 @@ Route53の拡張レコードとして、ELBやCloufFront、S3といったAWSリ�
 <p>いくつかのオプションが準備されている。</p>
 <ul class="simple">
 <li><p>シンプルルーティング：紐づいたアドレスを返す</p></li>
-<li><p>位置情報ルーティング：クライアントのIPアドレスから位置情報を特定して、ルーティング</p></li>
+<li><p>位置情報ルーティング：クライアントのIPアドレスから位置情報を特定して、ルーティング（近いとか関係なくルーティング）</p></li>
 <li><p>フェイルオーバールーティング：ヘルスチェックと合わせて、待機システムへの切り替えが可能</p></li>
-<li><p>地理的近接性ルーティング：クライアントとサーバーの距離に基づいてルーティング</p></li>
+<li><p>地理的近接性ルーティング：クライアントとサーバーの距離に基づいてルーティング（レイテンシが低いとは限らない）</p></li>
 <li><p>レイテンシーベースルーティング：レイテンシーが短くなるように</p></li>
 <li><p>加重ルーティング：特定の割合に基づいて</p></li>
 <li><p>複数回答ルーティング：ランダムに選択されたアドレスを返す</p></li>
@@ -183,7 +184,7 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 <ul class="simple">
 <li><p>アクセス元とVPCおよびセキュリティグループ</p></li>
 <li><p>オンプレ側のドメイン名</p></li>
-<li><p>オンプレ側のDNSサーバーのIPとポートb</p></li>
+<li><p>オンプレ側のDNSサーバーのIPとポート</p></li>
 </ul>
 <p><img alt="../_images/route53_onpre.png" src="../_images/route53_onpre.png" /></p>
 </section>
@@ -215,7 +216,7 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 <p>以下のパターンが代表的</p>
 <ul class="simple">
 <li><p>クライアント→ELB間を暗号化(ELBでターミネーション)</p></li>
-<li><p>クライアント→ELB→インスタンス間を暗号化</p></li>
+<li><p>クライアント→ELB→インスタンス間の通信を暗号化（ELBでターミネーション＋通信の暗号化）</p></li>
 <li><p>パススルー型（EC2側でターミネーション。クライアントで証明書が必要な場合に採用）これはNLBで実装できる。</p></li>
 </ul>
 </section>
@@ -374,7 +375,7 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
 <li><a class="reference internal" href="#id6">1.3.1.2. DNSの動き</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id7">1.3.2. Route53</a></li>
+<li><a class="reference internal" href="#id7">1.3.2. Route53の機能</a></li>
 <li><a class="reference internal" href="#id8">1.3.3. ホストゾーン</a><ul>
 <li><a class="reference internal" href="#id9">1.3.3.1. レコードタイプ</a></li>
 <li><a class="reference internal" href="#id10">1.3.3.2. トラフィックルーティング</a></li>
@@ -423,7 +424,7 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="../knowledge/environment.html"
-                          title="前の章へ"><span class="section-number">3. </span>環境構築系の基礎知識</a></p>
+                          title="前の章へ"><span class="section-number">4. </span>環境構築系の基礎知識</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
@@ -461,7 +462,7 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
           <a href="security.html" title="2. セキュリティ"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../knowledge/environment.html" title="3. 環境構築系の基礎知識"
+          <a href="../knowledge/environment.html" title="4. 環境構築系の基礎知識"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWSのネットワーク</a></li> 

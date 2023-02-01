@@ -44,13 +44,13 @@
 ---
 - 最終報告資料を作成（70%)
 - マイクロサービスの全体像勉強→「マイクロサービスインアクション→読み始め
-- Javaの構築とSTSについて整理する
-- [APIGWとLambdaのHandsOn](https://news.mynavi.jp/techplus/article/techp4316/)→完了まで
-- [ECS構築HandsOn](https://news.mynavi.jp/techplus/article/techp4354/)→完了まで
-- CICD環境の構築→完了まで
-- Cognito部分の構築
-- AWS　ディベロッパーアソシエイト第5/6章整理
-- AWS　ディベロッパーアソシエイト 総仕上げ問題+塾長解説
+- Javaの構築とSTSについて整理する【完】
+- [ECS構築HandsOn](https://news.mynavi.jp/techplus/article/techp4354/)
+  - アプリケーションは作成【完】（localhostで動作確認済み)
+  - Dockerコンテナで実行
+  - ECS上に構築
+  - CICDの仕組み作成
+- AWS　ディベロッパーアソシエイト勉強中→演習
 ---
 
 ## テーマ
