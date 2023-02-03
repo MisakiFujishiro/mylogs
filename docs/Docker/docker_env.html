@@ -21,7 +21,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="1. Sphinx プロジェクトの立ち上げ方" href="../Sphinx/quickStart.html" />
-    <link rel="prev" title="6. チュートリアル11.3：セッション" href="../Java/tutorial11.3.html" /> 
+    <link rel="prev" title="4. チュートリアル" href="../Java/tutorial.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -33,7 +33,7 @@
           <a href="../Sphinx/quickStart.html" title="1. Sphinx プロジェクトの立ち上げ方"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../Java/tutorial11.3.html" title="6. チュートリアル11.3：セッション"
+          <a href="../Java/tutorial.html" title="4. チュートリアル"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築（MacOS）</a></li> 
@@ -53,121 +53,91 @@
 </section>
 <section id="id1">
 <h2><span class="section-number">1.2. </span>インストール<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://style.potepan.com/articles/34060.html#Docker_Visual_Studio_Code">Dockerのインストール</a>こちらを参考にした</p>
 <p><a class="reference external" href="https://docs.docker.com/desktop/install/mac-install/">Docker公式サイト</a>からダウンロードする。<br />MACOSの場合、CPUがIntelチップかM1チップで選択が異なる。<br />PCの🍎マークから「このマックについて」を選択。プロセッサに「Intel」や「M1」の記載から判断する。自分のPCはM1なのでM1をDL
 パスワードなどを入力して、上部にDockerのアイコンが表示されたら成功</p>
 </section>
-<section id="spring">
-<h2><span class="section-number">1.3. </span>Springのプロジェクトをコンテナ化する<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
-<p>最終的なフォルダ構成</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── src/main/java
-    └── helloController.java
-├── src/main/resources
-    └── index.html
-├── Dockerfile
-└── pom.xml
-</pre></div>
-</div>
-<section id="spring-boothello-world">
-<h3><span class="section-number">1.3.1. </span>Spring BootでHello World<a class="headerlink" href="#spring-boothello-world" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id2">
+<h2><span class="section-number">1.3. </span>Dockerのライフサイクル<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p><img alt="../_images/lifecycle.png" src="../_images/lifecycle.png" /></p>
+</section>
+<section id="id3">
+<h2><span class="section-number">1.4. </span>コマンド<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="dockerfiledockerimage">
+<h3><span class="section-number">1.4.1. </span>DockerFileからDockerImageを作成<a class="headerlink" href="#dockerfiledockerimage" title="この見出しへのパーマリンク">¶</a></h3>
+<blockquote>
+<div><p>docker build -t [IMAGE_NAME]:[IMAGE_VER] .</p>
+</div></blockquote>
 <ul class="simple">
-<li><p>ナビゲーションペインから、Create new Spring Starter Projectを選択</p></li>
-<li><p>Nameはdemoに設定</p></li>
-<li><p>TypeをMavePJに変更</p></li>
-<li><p>WebからSpringWebを選択</p></li>
-<li><p>src/main/java配下にHelloControllerを作成</p>
-<ul>
-<li><p>src/main/javaを右クリックして、NewからClassを選択
-helloController.java</p></li>
-</ul>
-</li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">demo</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Controller</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="p">;</span>
-
-<span class="nd">@Controller</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">HelloController</span> <span class="p">{</span>
-
-    <span class="nd">@GetMapping</span><span class="p">(</span><span class="s2">&quot;/hello&quot;</span><span class="p">)</span>
-	<span class="n">private</span> <span class="n">String</span> <span class="n">hello</span><span class="p">(){</span>
-		<span class="k">return</span> <span class="s2">&quot;/index.html&quot;</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>src/main/resourcesにindex.htmlを作成</p>
-<ul>
-<li><p>src/main/resourcesを右クリックしてNewからFile選択してindex.htmlを作成</p></li>
-</ul>
-</li>
-<li><p>SpringPJの実行</p>
-<ul>
-<li><p>DashBoard（左下）からHellowWorldPJを選択して、Restart</p></li>
-</ul>
-</li>
-<li><p>起動確認</p>
-<ul>
-<li><p><a class="reference external" href="http://localhost:8080/hello">http://localhost:8080/hello</a>にアクセス</p></li>
-</ul>
-</li>
+<li><p>.はDockerFileの位置を示しており、カレントディレクトリにあるDockerが対象になる</p></li>
 </ul>
 </section>
-<section id="hello-worlddocker">
-<h3><span class="section-number">1.3.2. </span>Hello WorldをDockerコンテナにする<a class="headerlink" href="#hello-worlddocker" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="dockerimage">
+<h3><span class="section-number">1.4.2. </span>DockerImageからコンテナ起動<a class="headerlink" href="#dockerimage" title="この見出しへのパーマリンク">¶</a></h3>
+<blockquote>
+<div><p>docker run --name [CONTAINER_NAME] -it [IMAGE_TAG]:[IMAGE_VER]</p>
+</div></blockquote>
 <ul class="simple">
-<li><p>pomファイルを以下で記述</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-it</span></code>はコンテナ起動後にコンテナに入るためのコマンド</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--name</span></code>でコンテナの名称を決める</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-	xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
-	&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
-	&lt;parent&gt;
-		&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-		&lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
-		&lt;version&gt;2.7.4&lt;/version&gt;
-		&lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
-	&lt;/parent&gt;
-	&lt;groupId&gt;com.example&lt;/groupId&gt;
-	&lt;artifactId&gt;demo&lt;/artifactId&gt;
-	&lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
-	&lt;name&gt;demo&lt;/name&gt;
-	&lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
-	
-	&lt;properties&gt;
-		&lt;java.version&gt;11&lt;/java.version&gt;
-	&lt;/properties&gt;
-	
-	&lt;dependencies&gt;
-		&lt;dependency&gt;
-			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-			&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-		&lt;/dependency&gt;
-
-		&lt;dependency&gt;
-			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-			&lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
-			&lt;scope&gt;test&lt;/scope&gt;
-		&lt;/dependency&gt;
-	&lt;/dependencies&gt;
-
-    &lt;build&gt;
-        &lt;finalName&gt;app&lt;/finalName&gt;
-        &lt;plugins&gt;
-            &lt;plugin&gt;
-                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
-            &lt;/plugin&gt;
-        &lt;/plugins&gt;
-    &lt;/build&gt;
-
-&lt;/project&gt;
-</pre></div>
-</div>
+<section id="id4">
+<h4><span class="section-number">1.4.2.1. </span>コンテナとホストのポートマッピング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<blockquote>
+<div><p>docker run --name [CONTAINER_NAME] -it [IMAGE_TAG]:[IMAGE_VER] -p [HOST_PORT]:[CONTAINER_PORT]</p>
+</div></blockquote>
 <ul class="simple">
-<li><p>Dockerfileの作成<br /><code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">build</span></code>を実行すると、Dockerfileの内容が順次実行される</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-p</span></code>でポートのマッピング設定が可能</p></li>
 </ul>
+<p>HOST_PORTにホストで受け付けるポート番号を設定し、CONTAINER＿PORTにはアプリケーションで設定したポート番号を設定する。ss</p>
+</section>
+<section id="id5">
+<h4><span class="section-number">1.4.2.2. </span>コンテナからホストマシンにアクセスする<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p><a class="reference external" href="https://gotohayato.com/content/561/">Docker コンテナ内からホストのポートにアクセスする方法</a>を参考にした。</p>
+<blockquote>
+<div><p>docker run --name [CONTAINER_NAME] -it [IMAGE_TAG]:[IMAGE_VER] --add-host=host.docker.internal:host-gateway</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">:host-gateway</span></code>は変更不可だが、<code class="docutils literal notranslate"><span class="pre">host.docker.internal</span></code>の部分は、変更可能</p></li>
+</ul>
+<p>コンテナ内部から`http://host.docker.internalを指定することで、localhostを指し示すのと同じになる。</p>
+</section>
+</section>
+<section id="id6">
+<h3><span class="section-number">1.4.3. </span>状況確認<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Docker Imageの確認</p>
+<blockquote>
+<div><p>docker images</p>
+</div></blockquote>
+<p>Docker Containerの確認</p>
+<blockquote>
+<div><p>docker ps -a</p>
+</div></blockquote>
+<p>Docker Cacheの確認</p>
+<blockquote>
+<div><p>docker system df</p>
+</div></blockquote>
+</section>
+<section id="id7">
+<h3><span class="section-number">1.4.4. </span>資材削除<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Docker Imageの削除</p>
+<blockquote>
+<div><p>docker rmi [ImageID]</p>
+</div></blockquote>
+<p>Docker Containerの削除</p>
+<blockquote>
+<div><p>docker rm [ContainerID]</p>
+</div></blockquote>
+<p>Docker Cacheの削除</p>
+<blockquote>
+<div><p>docker builder prune</p>
+</div></blockquote>
+</section>
+</section>
+<section id="dockerfile">
+<h2><span class="section-number">1.5. </span>DockerFIle<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Docker Imageを作成するためのコマンドで、ベースイメージを決めて、そのイメージをBuildして実行するコマンドを設定する。</p>
+<p>簡単なDocker Fileの例</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FROM</span> <span class="n">maven</span><span class="p">:</span><span class="mf">3.6.3</span><span class="o">-</span><span class="n">jdk</span><span class="o">-</span><span class="mi">11</span> <span class="n">AS</span> <span class="n">builder</span>
 <span class="n">WORKDIR</span> <span class="o">/</span><span class="n">tmp</span>
 <span class="n">COPY</span> <span class="o">./</span><span class="n">src</span> <span class="o">./</span><span class="n">src</span>
@@ -213,39 +183,8 @@ helloController.java</p></li>
 <td>docker runに実行するコマンド</td>
 </tr>
 </tbody>
-</table><ul class="simple">
-<li><p>docker buildの実行</p></li>
-</ul>
-<blockquote>
-<div><p>docker image build -t [Docker Hubのユーザー名（任意）]/[イメージ名（必須）]:[タグ（任意）] [Dockerfileパス]</p>
-</div></blockquote>
-<p>今回は以下で実行</p>
-<blockquote>
-<div><p>docker image build -t spring-docker-demo:0.0.1 ./</p>
-</div></blockquote>
+</table><p>以下のサイトを参考にJava SpringのHello Worldをdockerコンテナに固めるとイメージが湧く</p>
 <ul class="simple">
-<li><p>buildが完了したら、作成されたimageの確認</p></li>
-</ul>
-<blockquote>
-<div><p>docker images</p>
-</div></blockquote>
-<ul class="simple">
-<li><p>作成したdockerを実行</p></li>
-</ul>
-<blockquote>
-<div><p>docker run -it -p [ホスト側のポート番号]:[コンテナのポート番号] [イメージ名]:[タグ]</p>
-</div></blockquote>
-<p>今回は以下で実行</p>
-<blockquote>
-<div><p>docker run -it -p 8080:8080 spring-docker-demo:0.0.1</p>
-</div></blockquote>
-</section>
-</section>
-<section id="references">
-<h2><span class="section-number">1.4. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference external" href="https://knowledge.sakura.ad.jp/13265/">Dockerとは</a></p></li>
-<li><p><a class="reference external" href="https://style.potepan.com/articles/34060.html#Docker_Visual_Studio_Code">Dockerのインストール</a></p></li>
 <li><p><a class="reference external" href="https://searchman.info/java_eclipse/1130.html">SpringでHelloWorld</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/saitoshi/items/a931399e81e63e8e4f1e">SpringをDockerImageに固める</a></p></li>
 </ul>
@@ -265,12 +204,19 @@ helloController.java</p></li>
 <li><a class="reference internal" href="#">1. 環境構築（MacOS）</a><ul>
 <li><a class="reference internal" href="#docker">1.1. Dockerとは</a></li>
 <li><a class="reference internal" href="#id1">1.2. インストール</a></li>
-<li><a class="reference internal" href="#spring">1.3. Springのプロジェクトをコンテナ化する</a><ul>
-<li><a class="reference internal" href="#spring-boothello-world">1.3.1. Spring BootでHello World</a></li>
-<li><a class="reference internal" href="#hello-worlddocker">1.3.2. Hello WorldをDockerコンテナにする</a></li>
+<li><a class="reference internal" href="#id2">1.3. Dockerのライフサイクル</a></li>
+<li><a class="reference internal" href="#id3">1.4. コマンド</a><ul>
+<li><a class="reference internal" href="#dockerfiledockerimage">1.4.1. DockerFileからDockerImageを作成</a></li>
+<li><a class="reference internal" href="#dockerimage">1.4.2. DockerImageからコンテナ起動</a><ul>
+<li><a class="reference internal" href="#id4">1.4.2.1. コンテナとホストのポートマッピング</a></li>
+<li><a class="reference internal" href="#id5">1.4.2.2. コンテナからホストマシンにアクセスする</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#references">1.4. References</a></li>
+<li><a class="reference internal" href="#id6">1.4.3. 状況確認</a></li>
+<li><a class="reference internal" href="#id7">1.4.4. 資材削除</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dockerfile">1.5. DockerFIle</a></li>
 </ul>
 </li>
 </ul>
@@ -278,8 +224,8 @@ helloController.java</p></li>
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../Java/tutorial11.3.html"
-                          title="前の章へ"><span class="section-number">6. </span>チュートリアル11.3：セッション</a></p>
+    <p class="topless"><a href="../Java/tutorial.html"
+                          title="前の章へ"><span class="section-number">4. </span>チュートリアル</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
@@ -317,7 +263,7 @@ helloController.java</p></li>
           <a href="../Sphinx/quickStart.html" title="1. Sphinx プロジェクトの立ち上げ方"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../Java/tutorial11.3.html" title="6. チュートリアル11.3：セッション"
+          <a href="../Java/tutorial.html" title="4. チュートリアル"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>環境構築（MacOS）</a></li> 

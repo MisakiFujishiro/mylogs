@@ -103,31 +103,46 @@
 <p>設定内容はタスク定義名、利用するコンテナイメージのURI、タスクを立てる環境のインフラ設定など。
 ECSでコンテナを稼働させる環境はEC2とFargateがある。
 タスク定義でEC2かFargateを選択し、サービスでの起動タイプと一致させておく必要がある。</p>
+<p>タスク定義は更新されるたびに新しいリビジョンが作成されて、サービスからタスク定義とリビジョンを選択することでどのようなタスク定義でタスクを作成するかを指定する。</p>
+<section id="id6">
+<h4><span class="section-number">3.2.2.1. </span>ポートの設定<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
 <p>タスク定義にてポート設定を行う</p>
 <ul class="simple">
-<li><p>ホストポート：ホストOSがコンテナに割り当てるポート（動的にすることが多い）</p></li>
+<li><p>ホストポート：ホストOSがコンテナに割り当てるポート</p></li>
 <li><p>コンテナポート：コンテナが利用するポート</p></li>
 </ul>
 <p><img alt="../_images/ecs_port_mapping.png" src="../_images/ecs_port_mapping.png" /></p>
-<p>タスク定義は更新されるたびに新しいリビジョンが作成されて、サービスからタスク定義とリビジョンを選択することでどのようなタスク定義でタスクを作成するかを指定する。</p>
-<section id="id6">
-<h4><span class="section-number">3.2.2.1. </span>ボリュームの共有<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<p>動的マッピングを行う場合は、ホストポートを0としておく。
+ALBとの連携部分はServiceの設定時に行う。</p>
+</section>
+<section id="iam">
+<h4><span class="section-number">3.2.2.2. </span>IAMロールの設定<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
+<p><a class="reference external" href="https://www.karakaram.com/difference-between-ecs-task-role-and-task-execution-role/">ECSのタスクロールとタスク実行ロールの違い</a>
+こちらの内容がわかりやすい。</p>
+<p>タスクロールはタスクが利用するIAM権限で、実行ロールはクラスターが利用するIAM権限</p>
+<p><img alt="../_images/ecs_ima_role.png" src="../_images/ecs_ima_role.png" /></p>
+<p>タスク実行ロールには、<code class="docutils literal notranslate"><span class="pre">AmazonECSTaskExecutionRolePolicy</span></code>を付与しておくとECRへのアクセスやCloudWatchへのログ出力が可能となる。</p>
+</section>
+<section id="id7">
+<h4><span class="section-number">3.2.2.3. </span>ボリュームの共有<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
 <p>複数のコンテナでボリュームを共有したい場合、タスク定義の中で複数のコンテナ定義を行い、共有ボリュームをマウントすることでボリューム共有が可能。</p>
 </section>
 </section>
-<section id="id7">
-<h3><span class="section-number">3.2.3. </span>タスク<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
-<p>タスク定義に基づいて、起動されるコンテナ郡。</p>
+<section id="id8">
+<h3><span class="section-number">3.2.3. </span>タスク<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>タスク定義に基づいて、起動されるコンテナ群</p>
 <p>タスク内で指定されたコンテナは同一ホスト上で実行される。</p>
 </section>
-<section id="id8">
-<h3><span class="section-number">3.2.4. </span>サービス<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">3.2.4. </span>サービス<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>タスク定義された内容に基づいて実際に実行されるコンテナを指し示す概念
 こちらでも起動タイプを選択し、クラスタと一致させる必要がある。</p>
-<p>タスクの実行数の定義や、実行中のタスク実行数の維持を行う。<br />また、ELBとの連携もサービスが管理する。</p>
+<p>タスクの実行数の定義や、実行中のタスク実行数の設定を行う。</p>
+<p>サービス定義を作成する際に、ルーティングを行うALBおよびターゲットグループを設定する。サービスでターゲットグループを設定することで、ターゲットグループのターゲットやポートは自動で設定される。</p>
+<p>※ALBとの設定部分の修正はできないのでサービスを作り直す必要がある点に注意。</p>
 </section>
-<section id="id9">
-<h3><span class="section-number">3.2.5. </span>タスク配置戦略とタスク配置制約<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">3.2.5. </span>タスク配置戦略とタスク配置制約<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ECSクラスタがEC2の場合に、タスク数の指定数に従ってどのように配置するかを選択することができる。
 これをタスク配置戦略と呼ぶ</p>
 <ul class="simple">
@@ -141,36 +156,76 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 <li><p>memberOf<br />クラスタークエリ言語を利用して、クラスターコンテナインスタンスをグループ化して、条件を満たすようにタスクを配置する。</p></li>
 </ul>
 </section>
-<section id="ecsiam">
-<h3><span class="section-number">3.2.6. </span>ECSで設定するIAMについて<a class="headerlink" href="#ecsiam" title="この見出しへのパーマリンク">¶</a></h3>
-<p><a class="reference external" href="https://www.karakaram.com/difference-between-ecs-task-role-and-task-execution-role/">ECSのタスクロールとタスク実行ロールの違い</a>
-こちらの内容がわかりやすい。</p>
-<p>タスクロールはタスクが利用するIAM権限で、実行ロールはクラスターが利用するIAM権限</p>
-<p><img alt="../_images/ecs_ima_role.png" src="../_images/ecs_ima_role.png" /></p>
+</section>
+<section id="ecs-alb">
+<h2><span class="section-number">3.3. </span>ECS+ALBで設定するポート整理<a class="headerlink" href="#ecs-alb" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ECSとALBを連携した構成はよく利用される。その際ポートを設定する箇所がいくつかあるので、役割を整理しておく</p>
+<p><img alt="../_images/ecs_port.png" src="../_images/ecs_port.png" /></p>
+<section id="id11">
+<h3><span class="section-number">3.3.1. </span>タスク定義での設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<p>コンテナポートとホストポートを設定すると、タスクがポートマッピングをしてくれる。</p>
+<ul class="simple">
+<li><p>コンテナポート：コンテナ側のポートで、アプリケーションが待ち受けるポート</p></li>
+<li><p>ホストポート：ECSのホストが待ち受けるポート</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3><span class="section-number">3.3.2. </span>サービスでの設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Serviceで設定するLoadBalancersのコンテナポート</p>
+<p>これはタスク定義で設定した、コンテナポートと一致させる</p>
+</section>
+<section id="alb">
+<h3><span class="section-number">3.3.3. </span>ALB周りの設定<a class="headerlink" href="#alb" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h4><span class="section-number">3.3.3.1. </span>ALBのリスナー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<p><img alt="../_images/alb_listener.png" src="../_images/alb_listener.png" /></p>
+<p>外部からALBが接続を受け付けるポート、基本的にはHTTPとHTTPSに対応しているので、利用するプロトコルとポートを設定する。
+HTTPならHTTP:80、HTTPSならHTTPS:443</p>
+<p><img alt="../_images/alb_listener_setting.png" src="../_images/alb_listener_setting.png" /></p>
+</section>
+<section id="tg">
+<h4><span class="section-number">3.3.3.2. </span>TGのルーティング<a class="headerlink" href="#tg" title="この見出しへのパーマリンク">¶</a></h4>
+<p><img alt="../_images/alb_tg_rooting.png" src="../_images/alb_tg_rooting.png" />
+ALBからターゲットに対してルーティングするデフォルトポート番号。</p>
+<p>EC2やECSなどがLISTENしているポート番号を示す。</p>
+<p>この設定は変更することができないので、注意</p>
+<p><img alt="../_images/alb_tg_rooting_setting.png" src="../_images/alb_tg_rooting_setting.png" /></p>
+</section>
+<section id="id14">
+<h4><span class="section-number">3.3.3.3. </span>TGのヘルスチェック<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<p><img alt="../_images/alb_tg_helth.png" src="../_images/alb_tg_helth.png" /></p>
+<p>ALBからターゲットに対してヘルスチェックを行うポート番号</p>
+</section>
+<section id="id15">
+<h4><span class="section-number">3.3.3.4. </span>TGにインスタンス登録<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<p><img alt="../_images/alb_tg_overwrite.png" src="../_images/alb_tg_overwrite.png" /></p>
+<p>ALBからターゲットにルーティングする際に、ポート番号を上書きする際に利用される。
+TG配下のインスタンスで動的ポートマッピングの際に利用する？</p>
+</section>
 </section>
 </section>
 <section id="ecr-elastic-container-resistory">
-<h2><span class="section-number">3.3. </span>ECR(Elastic Container Resistory)<a class="headerlink" href="#ecr-elastic-container-resistory" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">3.4. </span>ECR(Elastic Container Resistory)<a class="headerlink" href="#ecr-elastic-container-resistory" title="この見出しへのパーマリンク">¶</a></h2>
 <p>コンテナを保存・管理するマネージドサービス</p>
 <p>基本的な使い方は、ECSでタスク定義を作成するときに利用するコンテナイメージを指定するが、その時にECRに保存したイメージを指定する。</p>
 </section>
 <section id="h4b">
-<h2><span class="section-number">3.4. </span>H4B<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">3.5. </span>H4B<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSが無料公開している、<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-ECS-2022-reg-event.html?trk=aws_introduction_page">ECSのH4B</a>の内容を実施する</p>
-<section id="id10">
-<h3><span class="section-number">3.4.1. </span>全体アーキテクチャ<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id16">
+<h3><span class="section-number">3.5.1. </span>全体アーキテクチャ<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>H4Bの実施内容</p>
 <p><img alt="../_images/ecs_architecture.png" src="../_images/ecs_architecture.png" /></p>
 </section>
-<section id="id11">
-<h3><span class="section-number">3.4.2. </span>コンテナイメージの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id17">
+<h3><span class="section-number">3.5.2. </span>コンテナイメージの作成<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>Dockerfileを作成して、コンテナイメージの定義を記述</p></li>
 <li><p>docker buildコマンドでコンテナイメージを作成する</p></li>
 </ol>
 <p><img alt="../_images/ecs_docker_build.png" src="../_images/ecs_docker_build.png" /></p>
 <section id="dockerfile">
-<h4><span class="section-number">3.4.2.1. </span>Dockerfileの作成<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.5.2.1. </span>Dockerfileの作成<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ubuntuをベースとして、apacheをインストールするコンテナ</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># コンテナのベースイメージ</span>
 <span class="n">FROM</span> <span class="n">ubuntu</span><span class="p">:</span><span class="mf">18.04</span>
@@ -200,15 +255,17 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 <p>詳細な解説</p>
 <p><img alt="../_images/ecs_dockerfile.png" src="../_images/ecs_dockerfile.png" /></p>
 </section>
-<section id="id12">
-<h4><span class="section-number">3.4.2.2. </span>コンテナイメージの作成<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id18">
+<h4><span class="section-number">3.5.2.2. </span>コンテナイメージの作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>DockerfileからDocker imageを作成する<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">build</span></code>の実行<br />カレントディレクトリにあるDokcerfileを対象として、buildコマンドが走る。</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">-t</span></code>はタグのオプションで、作成されるコンテナイメージの名前はhello-worldになる</p></li>
 </ul>
 <blockquote>
 <div><p>docker build -t [IMAGE_NAME] .</p>
-<p>docker build -t hello-world.</p>
+</div></blockquote>
+<blockquote>
+<div><p>docker build -t hello-world.</p>
 </div></blockquote>
 <p>作成されたイメージの確認</p>
 <blockquote>
@@ -219,9 +276,14 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 <span class="n">hello</span><span class="o">-</span><span class="n">world</span>   <span class="n">latest</span>    <span class="n">f07f769497c4</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="mi">202</span><span class="n">MB</span>
 </pre></div>
 </div>
+<p>ECRへPushして、ECSで利用していく際、M1チップだとエラーが発生する場合がある。
+その場合はDocker Buildの際に以下のオプションを追加する</p>
+<blockquote>
+<div><p>docker build --platform linux/amd64</p>
+</div></blockquote>
 </section>
-<section id="id13">
-<h4><span class="section-number">3.4.2.3. </span>コンテナの起動<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id19">
+<h4><span class="section-number">3.5.2.3. </span>コンテナの起動<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
 <p>docker imageからコンテナを起動するコマンド<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code>の実行</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">-p</span></code>はクライアント側とコンテナ側のポートのマッピング8080がクライアントポート、80がコンテナ側のポート</p></li>
@@ -247,8 +309,8 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 </div></blockquote>
 <p>Hellow world!が表示される。</p>
 </section>
-<section id="id14">
-<h4><span class="section-number">3.4.2.4. </span>コンテナへのログイン<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id20">
+<h4><span class="section-number">3.5.2.4. </span>コンテナへのログイン<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
 <p>dockerコンテナへログインするコマンド<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span></code>の実行</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">-i</span></code>標準入力を開く設定</p></li>
@@ -260,9 +322,9 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 </section>
 </section>
 <section id="ecrpush">
-<h3><span class="section-number">3.4.3. </span>ECRへのpush<a class="headerlink" href="#ecrpush" title="この見出しへのパーマリンク">¶</a></h3>
-<section id="id15">
-<h4><span class="section-number">3.4.3.1. </span>リポジトリの作成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">3.5.3. </span>ECRへのpush<a class="headerlink" href="#ecrpush" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id21">
+<h4><span class="section-number">3.5.3.1. </span>リポジトリの作成<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
 <p>まずは、リポジトリを作成する。AWSコンソールからECRのページに移動して、リポジトリを作成する。
 作成する際には<code class="docutils literal notranslate"><span class="pre">プライベート</span></code>を選択して、適切なリポジトリ名を入れる。</p>
 <p><img alt="../_images/ecs_ecr.png" src="../_images/ecs_ecr.png" /></p>
@@ -270,7 +332,7 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 <p><img alt="../_images/ecs_repository.png" src="../_images/ecs_repository.png" /></p>
 </section>
 <section id="push">
-<h4><span class="section-number">3.4.3.2. </span>コンテナイメージのpush<a class="headerlink" href="#push" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.5.3.2. </span>コンテナイメージのpush<a class="headerlink" href="#push" title="この見出しへのパーマリンク">¶</a></h4>
 <p>コンテナのイメージに、リポジトリのURIを指定することで、イメージとリポジトリの関係性を定義する。</p>
 <p>dockerfileからbuildする時に、リポジトリのURIを指定する場合は<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">build</span></code>でタグ名指定</p>
 <blockquote>
@@ -295,32 +357,32 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 </section>
 </section>
 <section id="vpc">
-<h3><span class="section-number">3.4.4. </span>VPCの設定<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.5.4. </span>VPCの設定<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ECSを作成するために VPCを作成する。 具体的な手順はH4Bの手順書を参照する。</p>
 <p><img alt="../_images/ecs_architecture_detail.png" src="../_images/ecs_architecture_detail.png" /></p>
 <p>インターネットからALBを経由して、ECS上のコンテナにアクセスするアーキテクチャとする。</p>
 </section>
-<section id="id16">
-<h3><span class="section-number">3.4.5. </span>ECSのクラスタ作成<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id22">
+<h3><span class="section-number">3.5.5. </span>ECSのクラスタ作成<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSコンソールのECSから、クラスターの作成を選択。<br />クラスター名と作成した VPCとサブネットを設定する。</p>
 <p><img alt="../_images/ecs_cluster.png" src="../_images/ecs_cluster.png" /></p>
 <p>container insightをONにするとCPUなどのメトリクスを収集してくれる。</p>
 </section>
-<section id="id17">
-<h3><span class="section-number">3.4.6. </span>ECSのタスク定義<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h3><span class="section-number">3.5.6. </span>ECSのタスク定義<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーション環境はFargateを指定</p>
 <p><img alt="../_images/ecs-task-app.png" src="../_images/ecs-task-app.png" />
 タスク定義名と、作成するコンテナのイメージを指定する。 今回はECRにあるコンテナを指定。</p>
 <p><img alt="../_images/ecs-task-definistion.png" src="../_images/ecs-task-definistion.png" /></p>
 </section>
-<section id="id18">
-<h3><span class="section-number">3.4.7. </span>ECSのサービス作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id24">
+<h3><span class="section-number">3.5.7. </span>ECSのサービス作成<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>作成したクラスターを選択して、サービスからデプロイを選択。</p>
 <p>起動する、環境でFargateを指定する。
 サービス名、起動するタスクのタスク定義とリビジョンを指定。</p>
 <p><img alt="../_images/ecs_service.png" src="../_images/ecs_service.png" /></p>
-<section id="alb">
-<h4><span class="section-number">3.4.7.1. </span>ALBの設定<a class="headerlink" href="#alb" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id25">
+<h4><span class="section-number">3.5.7.1. </span>ALBの設定<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ECSのサービス定義の中で、 ALBの設定を行う。</p>
 <p><img alt="../_images/ecs_service_alb.png" src="../_images/ecs_service_alb.png" /></p>
 <p>デプロイが完了すると、AWSのコンソールから、サービスの起動およびタスクの起動が確認できる。</p>
@@ -351,35 +413,48 @@ ECSでコンテナを稼働させる環境はEC2とFargateがある。
 <li><a class="reference internal" href="#ecs-elastic-container-service">3.2. ECS(Elastic Container Service)</a><ul>
 <li><a class="reference internal" href="#id4">3.2.1. クラスター</a></li>
 <li><a class="reference internal" href="#id5">3.2.2. タスク定義</a><ul>
-<li><a class="reference internal" href="#id6">3.2.2.1. ボリュームの共有</a></li>
+<li><a class="reference internal" href="#id6">3.2.2.1. ポートの設定</a></li>
+<li><a class="reference internal" href="#iam">3.2.2.2. IAMロールの設定</a></li>
+<li><a class="reference internal" href="#id7">3.2.2.3. ボリュームの共有</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id7">3.2.3. タスク</a></li>
-<li><a class="reference internal" href="#id8">3.2.4. サービス</a></li>
-<li><a class="reference internal" href="#id9">3.2.5. タスク配置戦略とタスク配置制約</a></li>
-<li><a class="reference internal" href="#ecsiam">3.2.6. ECSで設定するIAMについて</a></li>
+<li><a class="reference internal" href="#id8">3.2.3. タスク</a></li>
+<li><a class="reference internal" href="#id9">3.2.4. サービス</a></li>
+<li><a class="reference internal" href="#id10">3.2.5. タスク配置戦略とタスク配置制約</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ecr-elastic-container-resistory">3.3. ECR(Elastic Container Resistory)</a></li>
-<li><a class="reference internal" href="#h4b">3.4. H4B</a><ul>
-<li><a class="reference internal" href="#id10">3.4.1. 全体アーキテクチャ</a></li>
-<li><a class="reference internal" href="#id11">3.4.2. コンテナイメージの作成</a><ul>
-<li><a class="reference internal" href="#dockerfile">3.4.2.1. Dockerfileの作成</a></li>
-<li><a class="reference internal" href="#id12">3.4.2.2. コンテナイメージの作成</a></li>
-<li><a class="reference internal" href="#id13">3.4.2.3. コンテナの起動</a></li>
-<li><a class="reference internal" href="#id14">3.4.2.4. コンテナへのログイン</a></li>
+<li><a class="reference internal" href="#ecs-alb">3.3. ECS+ALBで設定するポート整理</a><ul>
+<li><a class="reference internal" href="#id11">3.3.1. タスク定義での設定</a></li>
+<li><a class="reference internal" href="#id12">3.3.2. サービスでの設定</a></li>
+<li><a class="reference internal" href="#alb">3.3.3. ALB周りの設定</a><ul>
+<li><a class="reference internal" href="#id13">3.3.3.1. ALBのリスナー</a></li>
+<li><a class="reference internal" href="#tg">3.3.3.2. TGのルーティング</a></li>
+<li><a class="reference internal" href="#id14">3.3.3.3. TGのヘルスチェック</a></li>
+<li><a class="reference internal" href="#id15">3.3.3.4. TGにインスタンス登録</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ecrpush">3.4.3. ECRへのpush</a><ul>
-<li><a class="reference internal" href="#id15">3.4.3.1. リポジトリの作成</a></li>
-<li><a class="reference internal" href="#push">3.4.3.2. コンテナイメージのpush</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#vpc">3.4.4. VPCの設定</a></li>
-<li><a class="reference internal" href="#id16">3.4.5. ECSのクラスタ作成</a></li>
-<li><a class="reference internal" href="#id17">3.4.6. ECSのタスク定義</a></li>
-<li><a class="reference internal" href="#id18">3.4.7. ECSのサービス作成</a><ul>
-<li><a class="reference internal" href="#alb">3.4.7.1. ALBの設定</a></li>
+<li><a class="reference internal" href="#ecr-elastic-container-resistory">3.4. ECR(Elastic Container Resistory)</a></li>
+<li><a class="reference internal" href="#h4b">3.5. H4B</a><ul>
+<li><a class="reference internal" href="#id16">3.5.1. 全体アーキテクチャ</a></li>
+<li><a class="reference internal" href="#id17">3.5.2. コンテナイメージの作成</a><ul>
+<li><a class="reference internal" href="#dockerfile">3.5.2.1. Dockerfileの作成</a></li>
+<li><a class="reference internal" href="#id18">3.5.2.2. コンテナイメージの作成</a></li>
+<li><a class="reference internal" href="#id19">3.5.2.3. コンテナの起動</a></li>
+<li><a class="reference internal" href="#id20">3.5.2.4. コンテナへのログイン</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ecrpush">3.5.3. ECRへのpush</a><ul>
+<li><a class="reference internal" href="#id21">3.5.3.1. リポジトリの作成</a></li>
+<li><a class="reference internal" href="#push">3.5.3.2. コンテナイメージのpush</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vpc">3.5.4. VPCの設定</a></li>
+<li><a class="reference internal" href="#id22">3.5.5. ECSのクラスタ作成</a></li>
+<li><a class="reference internal" href="#id23">3.5.6. ECSのタスク定義</a></li>
+<li><a class="reference internal" href="#id24">3.5.7. ECSのサービス作成</a><ul>
+<li><a class="reference internal" href="#id25">3.5.7.1. ALBの設定</a></li>
 </ul>
 </li>
 </ul>
