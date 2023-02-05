@@ -31,3 +31,13 @@ STSで作成された各種ファイルをaddとcommit
 
 リモートリポジトリにpush
 > git push -u origin main
+
+
+## githubとcodeCommitを連携
+
+## Code Buildでjavaをbuild
+
+## Code DeployでECRへpushしてECSのタスクを更新
+
+## Code Pipelineで全体を管理
+

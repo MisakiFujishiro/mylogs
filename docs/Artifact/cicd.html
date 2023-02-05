@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>3. AWS Code Seriesを利用したCICD環境 &#8212; my_sphinx  ドキュメント</title>
+    <title>2. AWS Code Seriesを利用したCICD環境 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="4. Amazon CognitoとSpring Securityを利用したOAuth2ログイン" href="cognito.html" />
-    <link rel="prev" title="2. AWS ECS上に構築するSpringアプリケーション" href="ecs.html" /> 
+    <link rel="next" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン" href="cognito.html" />
+    <link rel="prev" title="1. AWS ECS上に構築するSpringアプリケーション" href="ecs.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="cognito.html" title="4. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+          <a href="cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="ecs.html" title="2. AWS ECS上に構築するSpringアプリケーション"
+          <a href="ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>AWS Code Seriesを利用したCICD環境</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>AWS Code Seriesを利用したCICD環境</a></li> 
       </ul>
     </div>  
 
@@ -46,11 +46,11 @@
           <div class="body" role="main">
             
   <section id="aws-code-seriescicd">
-<h1><span class="section-number">3. </span>AWS Code Seriesを利用したCICD環境<a class="headerlink" href="#aws-code-seriescicd" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">2. </span>AWS Code Seriesを利用したCICD環境<a class="headerlink" href="#aws-code-seriescicd" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="java-projectgit-hub">
-<h2><span class="section-number">3.1. </span>java projectをgit hubと連携<a class="headerlink" href="#java-projectgit-hub" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.1. </span>java projectをgit hubと連携<a class="headerlink" href="#java-projectgit-hub" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="git-hubrepository">
-<h3><span class="section-number">3.1.1. </span>Git hubでrepository作成<a class="headerlink" href="#git-hubrepository" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.1. </span>Git hubでrepository作成<a class="headerlink" href="#git-hubrepository" title="この見出しへのパーマリンク">¶</a></h3>
 <p>git hubでリポジトリを新規作成する</p>
 <blockquote>
 <div><p>MisakiFujishiro/ecs_backend_for_front</p>
@@ -58,12 +58,12 @@
 <p><img alt="../_images/git_repository.png" src="../_images/git_repository.png" /></p>
 </section>
 <section id="java-pj">
-<h3><span class="section-number">3.1.2. </span>Java PJ作成<a class="headerlink" href="#java-pj" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.2. </span>Java PJ作成<a class="headerlink" href="#java-pj" title="この見出しへのパーマリンク">¶</a></h3>
 <p>STSでSpring Starter Projectを作成</p>
 <p><img alt="../_images/sts_pj.png" src="../_images/sts_pj.png" /></p>
 </section>
 <section id="terminalgithubpush">
-<h3><span class="section-number">3.1.3. </span>terminalでGitHubへpush<a class="headerlink" href="#terminalgithubpush" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.3. </span>terminalでGitHubへpush<a class="headerlink" href="#terminalgithubpush" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ターミナルを開いて、作成したプロジェクトのディレクトリに移動</p>
 <blockquote>
 <div><p>cd [YOUR_STS_PJ]</p>
@@ -91,6 +91,18 @@ git commit -m &quot;first commit&quot;</p>
 </div></blockquote>
 </section>
 </section>
+<section id="githubcodecommit">
+<h2><span class="section-number">2.2. </span>githubとcodeCommitを連携<a class="headerlink" href="#githubcodecommit" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="code-buildjavabuild">
+<h2><span class="section-number">2.3. </span>Code Buildでjavaをbuild<a class="headerlink" href="#code-buildjavabuild" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="code-deployecrpushecs">
+<h2><span class="section-number">2.4. </span>Code DeployでECRへpushしてECSのタスクを更新<a class="headerlink" href="#code-deployecrpushecs" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="code-pipeline">
+<h2><span class="section-number">2.5. </span>Code Pipelineで全体を管理<a class="headerlink" href="#code-pipeline" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
 </section>
 
 
@@ -103,13 +115,17 @@ git commit -m &quot;first commit&quot;</p>
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">3. AWS Code Seriesを利用したCICD環境</a><ul>
-<li><a class="reference internal" href="#java-projectgit-hub">3.1. java projectをgit hubと連携</a><ul>
-<li><a class="reference internal" href="#git-hubrepository">3.1.1. Git hubでrepository作成</a></li>
-<li><a class="reference internal" href="#java-pj">3.1.2. Java PJ作成</a></li>
-<li><a class="reference internal" href="#terminalgithubpush">3.1.3. terminalでGitHubへpush</a></li>
+<li><a class="reference internal" href="#">2. AWS Code Seriesを利用したCICD環境</a><ul>
+<li><a class="reference internal" href="#java-projectgit-hub">2.1. java projectをgit hubと連携</a><ul>
+<li><a class="reference internal" href="#git-hubrepository">2.1.1. Git hubでrepository作成</a></li>
+<li><a class="reference internal" href="#java-pj">2.1.2. Java PJ作成</a></li>
+<li><a class="reference internal" href="#terminalgithubpush">2.1.3. terminalでGitHubへpush</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#githubcodecommit">2.2. githubとcodeCommitを連携</a></li>
+<li><a class="reference internal" href="#code-buildjavabuild">2.3. Code Buildでjavaをbuild</a></li>
+<li><a class="reference internal" href="#code-deployecrpushecs">2.4. Code DeployでECRへpushしてECSのタスクを更新</a></li>
+<li><a class="reference internal" href="#code-pipeline">2.5. Code Pipelineで全体を管理</a></li>
 </ul>
 </li>
 </ul>
@@ -118,12 +134,12 @@ git commit -m &quot;first commit&quot;</p>
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="ecs.html"
-                          title="前の章へ"><span class="section-number">2. </span>AWS ECS上に構築するSpringアプリケーション</a></p>
+                          title="前の章へ"><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="cognito.html"
-                          title="次の章へ"><span class="section-number">4. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a></p>
+                          title="次の章へ"><span class="section-number">3. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -153,13 +169,13 @@ git commit -m &quot;first commit&quot;</p>
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="cognito.html" title="4. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+          <a href="cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="ecs.html" title="2. AWS ECS上に構築するSpringアプリケーション"
+          <a href="ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>AWS Code Seriesを利用したCICD環境</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>AWS Code Seriesを利用したCICD環境</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

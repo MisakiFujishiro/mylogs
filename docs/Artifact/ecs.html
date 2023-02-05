@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>2. AWS ECS上に構築するSpringアプリケーション &#8212; my_sphinx  ドキュメント</title>
+    <title>1. AWS ECS上に構築するSpringアプリケーション &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="3. AWS Code Seriesを利用したCICD環境" href="cicd.html" />
-    <link rel="prev" title="1. API GWとLambdaを利用したサーバーレスSpringアプリケーション" href="apigw_lambda.html" /> 
+    <link rel="next" title="2. AWS Code Seriesを利用したCICD環境" href="cicd.html" />
+    <link rel="prev" title="1. 塾の活動" href="../DAILY/daily.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="cicd.html" title="3. AWS Code Seriesを利用したCICD環境"
+          <a href="cicd.html" title="2. AWS Code Seriesを利用したCICD環境"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="apigw_lambda.html" title="1. API GWとLambdaを利用したサーバーレスSpringアプリケーション"
+          <a href="../DAILY/daily.html" title="1. 塾の活動"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>AWS ECS上に構築するSpringアプリケーション</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></li> 
       </ul>
     </div>  
 
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <section id="aws-ecsspring">
-<h1><span class="section-number">2. </span>AWS ECS上に構築するSpringアプリケーション<a class="headerlink" href="#aws-ecsspring" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション<a class="headerlink" href="#aws-ecsspring" title="この見出しへのパーマリンク">¶</a></h1>
 <p>ECSは、クラスタ単位でDockerコンテナを実行・停止・管理することができるコンテナ管理サービス<br />複数のAZを跨いで、コンテナ実行できるため、可用性が高い。</p>
 <p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/AWS/?page=2">AWSで作るクラウドネイティブアプリケーションの基本</a>を実装していく。</p>
 <ul class="simple">
@@ -61,14 +61,14 @@
 <p>ソースコードは<a class="reference external" href="https://github.com/debugroom/mynavi-sample-aws-ecs">github</a>のものを参考にする</p>
 <p><img alt="../_images/ecs_app.png" src="../_images/ecs_app.png" /></p>
 <section id="vpc">
-<h2><span class="section-number">2.1. </span>VPC環境構築<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.1. </span>VPC環境構築<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id1">
-<h3><span class="section-number">2.1.1. </span>基本方針<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.1. </span>基本方針<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>複数AZに跨って、Private-SubnetとPublic-Subnetを作成する。</p>
 <p>private-subnetには、NAT GWにルーティングされたルートテーブルを付与する。<br />public-subnetには、Internet GWにルーティングされたルートテーブルを付与する</p>
 </section>
 <section id="id2">
-<h3><span class="section-number">2.1.2. </span>VPC作成後の成果物<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.2. </span>VPC作成後の成果物<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>成果物</p>
 <ul class="simple">
 <li><p>VPC</p></li>
@@ -79,7 +79,7 @@
 <li><p>ルートテーブル</p></li>
 </ul>
 <section id="id3">
-<h4><span class="section-number">2.1.2.1. </span>VPC作成<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.1.2.1. </span>VPC作成<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ウィザードからVPCなどを選択して設定すると各種自動で作成される</p>
 <ul class="simple">
 <li><p>名前タグ<br />自動設定をONにして、入力しておくと自動作成されるリソースにPrefixを付与してくれる</p></li>
@@ -99,14 +99,14 @@
 </section>
 </section>
 <section id="alb">
-<h2><span class="section-number">2.2. </span>ALBの作成<a class="headerlink" href="#alb" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.2. </span>ALBの作成<a class="headerlink" href="#alb" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id4">
-<h3><span class="section-number">2.2.1. </span>基本方針<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.1. </span>基本方針<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Public-Subnetに構築されるBFFは外部向けロードバランサー経由でHTTPリクエストを受け取る<br />Private-Subnetに構築されるバックエンドアプリは内部向けロードバランサー経由でリクエストを受け取る。</p>
 <p>パスルーティングを行うため、ALBおよびターゲットグループ、それぞれのセキュリティグループを作成する。</p>
 </section>
 <section id="id5">
-<h3><span class="section-number">2.2.2. </span>ALB作成後の成果物<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.2. </span>ALB作成後の成果物<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Public向けALB
 Public-Subnetに配置するECS用のインターネットからの接続可能なALB</p></li>
@@ -116,7 +116,7 @@ Public-Subnetに配置するECS用のインターネットからの接続可能�
 </ul>
 </section>
 <section id="id6">
-<h3><span class="section-number">2.2.3. </span>ALBの作成<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.3. </span>ALBの作成<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>EC2のナビゲーションペインからロードバランサーを選択</p></li>
 <li><p>Create Load BalancerからALBを選択</p></li>
@@ -147,23 +147,23 @@ Protocol Portは80でOK</p>
 </section>
 </section>
 <section id="spring">
-<h2><span class="section-number">2.3. </span>Springを使用したコンテナアプリ実装<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.3. </span>Springを使用したコンテナアプリ実装<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id7">
-<h3><span class="section-number">2.3.1. </span>基本方針<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.1. </span>基本方針<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>backendとbackend-for-frontのPJを作成する。</p>
 <p>backend-for-frontは、HTML画面を表示、ボタンを押下するとbackendのサービスを呼び出して、user情報を受け取り、画面に表示する。</p>
 <p>backendでは、<code class="docutils literal notranslate"><span class="pre">backend/api/vi/users</span></code>の受け口を作成して、事前定義したuser情報を返却するコードを実装する。</p>
 <p><img alt="../_images/ecs_backend_bff_app.png" src="../_images/ecs_backend_bff_app.png" /></p>
 </section>
 <section id="id8">
-<h3><span class="section-number">2.3.2. </span>成果物<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.2. </span>成果物<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>bffのSpring PJ</p></li>
 <li><p>backendのSpring PJ</p></li>
 </ul>
 </section>
 <section id="backend">
-<h3><span class="section-number">2.3.3. </span>backend<a class="headerlink" href="#backend" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.3. </span>backend<a class="headerlink" href="#backend" title="この見出しへのパーマリンク">¶</a></h3>
 <p>User情報をmodelに格納して、Controllerでパスの設定や処理を記述する。</p>
 <p>各種ファイルの役割</p>
 <ul class="simple">
@@ -174,14 +174,14 @@ Protocol Portは80でOK</p>
 <li><p>resources/application.yml<br />サーバー上のWebアプリケションを識別するパスであるコンテキストパスを設定<br />これによって、URLが<code class="docutils literal notranslate"><span class="pre">http://localhost:8080/backend/api/v1/users</span></code>となる。</p></li>
 </ul>
 <section id="user-javalombok">
-<h4><span class="section-number">2.3.3.1. </span>[トラブルシュート]User.javaのLombokで躓いた話<a class="headerlink" href="#user-javalombok" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.3.1. </span>[トラブルシュート]User.javaのLombokで躓いた話<a class="headerlink" href="#user-javalombok" title="この見出しへのパーマリンク">¶</a></h4>
 <p>■背景<br />Lombokとは、getterやsetter、builderなどを自動生成してくれるライブラリである。<br />こちらのサイトがわかりやすい<a class="reference external" href="https://qiita.com/uhooi/items/bb817e7ca7dc128bf475">LombokのBuilderパターン解説</a></p>
 <p>■問題<br />User.javaでlombokを使って&#64;builderしているのに、BackendRestController.java側で認識してくれない。</p>
 <p>■解決策<br />STSではlombokは適用されていないので、STSでLombokを有効にするために、lombok.jarをDLして、STSのiniファイルを対象にする。</p>
 <p><a class="reference external" href="https://snona.hatenablog.com/entry/2016/02/18/024239">stsでlombokを利用する</a>の手順に従えばOK</p>
 </section>
 <section id="application-yml">
-<h4><span class="section-number">2.3.3.2. </span>[実装上の工夫]application.ymlを環境を切り替える<a class="headerlink" href="#application-yml" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.3.2. </span>[実装上の工夫]application.ymlを環境を切り替える<a class="headerlink" href="#application-yml" title="この見出しへのパーマリンク">¶</a></h4>
 <p>構築環境に応じて、エンドポイントなどを切り替える際に、複数のapplication.ymlを準備して、利用対象を切り替える。<br /><a class="reference external" href="https://scior.hatenablog.com/entry/2019/03/20/003058">Spring Bootでのプロファイルを使った環境切り分け</a></p>
 <p>■application-dev.ymlの設定
 基本はapplication.ymlが利用されるがapplication-xxx.ymlを作成すると、xxxとして、application.ymlは認識してくれる。</p>
@@ -198,7 +198,7 @@ Protocol Portは80でOK</p>
 </section>
 </section>
 <section id="bff">
-<h3><span class="section-number">2.3.4. </span>bff<a class="headerlink" href="#bff" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.4. </span>bff<a class="headerlink" href="#bff" title="この見出しへのパーマリンク">¶</a></h3>
 <p>各種ファイルの役割</p>
 <ul class="simple">
 <li><p>backendforfrontend/app/model/User.java<br />User情報を定義しておく(DBの代わり)</p></li>
@@ -212,9 +212,9 @@ Protocol Portは80でOK</p>
 </ul>
 </section>
 <section id="chap3">
-<h3><span class="section-number">2.3.5. </span>chap3の疑問点<a class="headerlink" href="#chap3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.5. </span>chap3の疑問点<a class="headerlink" href="#chap3" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id9">
-<h4><span class="section-number">2.3.5.1. </span>application.ymlの指定<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.5.1. </span>application.ymlの指定<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4390/">第4回 Dockerコンテナの作成</a>の設定ファイルの指定について</p></li>
 </ul>
@@ -224,7 +224,7 @@ Protocol Portは80でOK</p>
 <p>ここで、productionを指定しているが、applicaiton-production.ymlは存在しない。<br />productionを指定すると、application.ymlが指定されるかと思ったが、実際動かなかった。</p>
 </section>
 <section id="backenddns">
-<h4><span class="section-number">2.3.5.2. </span>backendのdns指定<a class="headerlink" href="#backenddns" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.3.5.2. </span>backendのdns指定<a class="headerlink" href="#backenddns" title="この見出しへのパーマリンク">¶</a></h4>
 <p>backend側は、albを指定する必要がないが、application.ymlでserviceとして、albを指定している。これは利用されていない？
 マイナビの説明でも触れていないが、gitには記述されている。</p>
 <blockquote>
@@ -234,14 +234,14 @@ Protocol Portは80でOK</p>
 </section>
 </section>
 <section id="docker">
-<h2><span class="section-number">2.4. </span>Dockerコンテナの作成<a class="headerlink" href="#docker" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.4. </span>Dockerコンテナの作成<a class="headerlink" href="#docker" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id10">
-<h3><span class="section-number">2.4.1. </span>基本方針<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.1. </span>基本方針<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DockerFileから、DockerImageを作成し、DockerImageからdockerコンテナを起動することで動作確認する。</p>
 <p>最後に作成したdocker ImageをECRにpushする。</p>
 </section>
 <section id="id11">
-<h3><span class="section-number">2.4.2. </span>成果物<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.2. </span>成果物<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Docker File  bffとbackend</p></li>
 <li><p>Docker Image bffとbackend</p></li>
@@ -249,12 +249,12 @@ Protocol Portは80でOK</p>
 </ul>
 </section>
 <section id="ecr">
-<h3><span class="section-number">2.4.3. </span>ECR作成<a class="headerlink" href="#ecr" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.3. </span>ECR作成<a class="headerlink" href="#ecr" title="この見出しへのパーマリンク">¶</a></h3>
 <p>最初に、docker ImageをpushするためのレジストリをAWS上に作成しておく。</p>
 <p>ECRから、新規作成で、bffとbackendのレジストリを作成</p>
 </section>
 <section id="dockerfile">
-<h3><span class="section-number">2.4.4. </span>DockerFileの説明<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.4. </span>DockerFileの説明<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h3>
 <p>BFF側のdockerFile</p>
 <p>今回はjavaのver17で開発したので、色々変更しながら動かしている。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Docker Imageとしてcentos7
@@ -298,7 +298,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </div>
 </section>
 <section id="docker-image">
-<h3><span class="section-number">2.4.5. </span>Docker Imageの作成<a class="headerlink" href="#docker-image" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.5. </span>Docker Imageの作成<a class="headerlink" href="#docker-image" title="この見出しへのパーマリンク">¶</a></h3>
 <p>docker buildコマンドで、DockerFileからイメージを作成する。最後の<code class="docutils literal notranslate"><span class="pre">.</span></code>はカレントディレクトリにあるDockerfileを指定している。</p>
 <blockquote>
 <div><p>docker build -t [IMAGE_TAG]:[IMAGE_VER] .</p>
@@ -312,13 +312,13 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </div></blockquote>
 </section>
 <section id="docker-container">
-<h3><span class="section-number">2.4.6. </span>Docker Containerの作成<a class="headerlink" href="#docker-container" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.6. </span>Docker Containerの作成<a class="headerlink" href="#docker-container" title="この見出しへのパーマリンク">¶</a></h3>
 <p>docker runコマンドでイメージからコンテナを起動する</p>
 <blockquote>
 <div><p>docker run --name [YOUR_CONTAINER_NAME] -it [IMAGE_TAG]:[IMAGE_VER]</p>
 </div></blockquote>
 <section id="localhost">
-<h4><span class="section-number">2.4.6.1. </span>コンテナ内からlocalhostへ接続<a class="headerlink" href="#localhost" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.4.6.1. </span>コンテナ内からlocalhostへ接続<a class="headerlink" href="#localhost" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Dockerコンテナ同士で通信して動作確認するために、<code class="docutils literal notranslate"><span class="pre">--add-host=host.docker.internal:host-gateway</span></code>これを追加してコンテナを立ち上げる。
 これを設定すると、dockerコンテナ内から、host.docker.internalを指定するとホスト側にアクセスしてくれる。</p>
 <blockquote>
@@ -326,7 +326,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </div></blockquote>
 </section>
 <section id="id12">
-<h4><span class="section-number">2.4.6.2. </span>application.ymlの設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.4.6.2. </span>application.ymlの設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
 <p>事前にapplication-dev.ymlやapplication-production.ymlなどを作成しておき、それぞれ接続先を変更しておく。</p>
 <p>docker runする際に、<code class="docutils literal notranslate"><span class="pre">-Dspring.profiles.active</span></code>によって、指定するapplicaiton.ymlの接頭辞を指定する。</p>
 <blockquote>
@@ -335,7 +335,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </section>
 </section>
 <section id="dockerecrpush">
-<h3><span class="section-number">2.4.7. </span>DockerをECRにpush<a class="headerlink" href="#dockerecrpush" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.4.7. </span>DockerをECRにpush<a class="headerlink" href="#dockerecrpush" title="この見出しへのパーマリンク">¶</a></h3>
 <p>認証トークンを取得して、レジストリに対して、dockerクライアントを認証</p>
 <blockquote>
 <div><p>aws ecr get-login-password --region ap-northeast-1 --profile my_profile　| docker login --username AWS --password-stdin 626394096352.dkr.ecr.ap-northeast-1.amazonaws.com</p>
@@ -353,7 +353,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 <div><p>docker push 626394096352.dkr.ecr.ap-northeast-1.amazonaws.com/ma-fujishiroms-ecr-backend:latest</p>
 </div></blockquote>
 <section id="wget">
-<h4><span class="section-number">2.4.7.1. </span>[トラブルシュート]wgetでエラーが発生<a class="headerlink" href="#wget" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.4.7.1. </span>[トラブルシュート]wgetでエラーが発生<a class="headerlink" href="#wget" title="この見出しへのパーマリンク">¶</a></h4>
 <p>■課題<br />Apache Mavenのインストールに必要な資材をwgetコマンドで取得に失敗</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#6 2.044 ERROR: cannot verify repos.fedorapeople.org&#39;s certificate, issued by &#39;/C=US/O=Let\&#39;s Encrypt/CN=R3&#39;:</span>
 </pre></div>
@@ -364,7 +364,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </div>
 </section>
 <section id="apache-maven">
-<h4><span class="section-number">2.4.7.2. </span>[トラブルシュート]apache-mavenがインストールできない<a class="headerlink" href="#apache-maven" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.4.7.2. </span>[トラブルシュート]apache-mavenがインストールできない<a class="headerlink" href="#apache-maven" title="この見出しへのパーマリンク">¶</a></h4>
 <p>■課題<br />apache-mavenがインストールできない</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">=&gt;</span> <span class="n">ERROR</span> <span class="p">[</span><span class="mi">6</span><span class="o">/</span><span class="mi">6</span><span class="p">]</span> <span class="n">RUN</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">apache</span><span class="o">-</span><span class="n">maven</span>                                           <span class="mf">7.5</span><span class="n">s</span> 
 <span class="o">------</span>                                                                                         
@@ -393,7 +393,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </ul>
 </section>
 <section id="mvn-build">
-<h4><span class="section-number">2.4.7.3. </span>[トラブルシュート]mvn buildで、テストが実行されてエラー<a class="headerlink" href="#mvn-build" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.4.7.3. </span>[トラブルシュート]mvn buildで、テストが実行されてエラー<a class="headerlink" href="#mvn-build" title="この見出しへのパーマリンク">¶</a></h4>
 <p>■課題<br />mvn installでテストエラー</p>
 <p>■解決策<br />一旦は、testをスキップする形で対処</p>
 <blockquote>
@@ -401,7 +401,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </div></blockquote>
 </section>
 <section id="ecrpush">
-<h4><span class="section-number">2.4.7.4. </span>[トラブルシュート]ECRにpushできない。<a class="headerlink" href="#ecrpush" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.4.7.4. </span>[トラブルシュート]ECRにpushできない。<a class="headerlink" href="#ecrpush" title="この見出しへのパーマリンク">¶</a></h4>
 <p>■課題<br />ECRにpushできない。EOFとなってタイムアウトしてしまう</p>
 <p>■解決策<br />docker pushを実行してる環境のアクセスキーを設定していないのが原因？？
 <a class="reference external" href="https://qiita.com/NaokiIshimura/items/1886dbd04631c3f7d0e1">サイト</a>を参考に、IAMでアクセスキーを作成して、ローカルPCに登録したらうまくできた。
@@ -410,9 +410,9 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </section>
 </section>
 <section id="ecs">
-<h2><span class="section-number">2.5. </span>ECSクラスターの作成<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.5. </span>ECSクラスターの作成<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id13">
-<h3><span class="section-number">2.5.1. </span>基本方針<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.1. </span>基本方針<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>クラスターの設定を行う。PublicとPrivateそれぞれでクラスターを作成する。</p>
 <p>セキュリティグループの設定として、それぞれのクラスターは、ALBからのリクエストを許可する。
 具体的には、ALBが属するセキュリティグループを対象として、ポートが動的マッピングされることを考慮して32768-61000のポートを許可する</p>
@@ -421,7 +421,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 などで確認しておくこと</p>
 </section>
 <section id="id14">
-<h3><span class="section-number">2.5.2. </span>成果物<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.2. </span>成果物<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ECSクラスター　publicとprivate</p></li>
 <li><p>ECSクラスター用のIAM</p></li>
@@ -429,15 +429,15 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </ul>
 </section>
 <section id="id15">
-<h3><span class="section-number">2.5.3. </span>ECSクラスター作成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.3. </span>ECSクラスター作成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>EC2+ネットワーキングから各種設定を行う。</p>
 <p>EC2はECSに付随して自動で作成される。インスタンスタイプは少し大きめでOK。今回はt2.mediumにした。（作り直しが面倒なので）</p>
 </section>
 </section>
 <section id="id16">
-<h2><span class="section-number">2.6. </span>ECSタスクの定義<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.6. </span>ECSタスクの定義<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id17">
-<h3><span class="section-number">2.6.1. </span>基本方針と成果物<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.6.1. </span>基本方針と成果物<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ECS上に起動するコンテナの各種設定を行う</p>
 <ul class="simple">
 <li><p>タスク実行ロール：ECRとの接続やCloudWatchへのログを送るための実行ロール</p></li>
@@ -446,12 +446,12 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </ul>
 </section>
 <section id="iam">
-<h3><span class="section-number">2.6.2. </span>IAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.6.2. </span>IAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h3>
 <p>IAMからRoleを作成して、ECS Taskを選択して、AmazonECSTaskExecutionRolePolicyを付与</p>
 <p><img alt="../_images/ecs_task1.png" src="../_images/ecs_task1.png" /></p>
 </section>
 <section id="id18">
-<h3><span class="section-number">2.6.3. </span>ポートの設定<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.6.3. </span>ポートの設定<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ポートフォワーディングの設定が必要。</p>
 <ul class="simple">
 <li><p>コンテナポート：アプリと一致させる</p></li>
@@ -459,30 +459,30 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </ul>
 </section>
 <section id="id19">
-<h3><span class="section-number">2.6.4. </span>メモリの設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.6.4. </span>メモリの設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ハードメモリ：コンテナに予約するメモリ
 ソフトメモリ：メモリ使用量の最大値で超えるとコンテナが落ちる</p>
 <p>今回は両方1024にした。</p>
 </section>
 </section>
 <section id="id20">
-<h2><span class="section-number">2.7. </span>ECSサービスの実行<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.7. </span>ECSサービスの実行<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id21">
-<h3><span class="section-number">2.7.1. </span>基本方針<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.7.1. </span>基本方針<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
 <section id="id22">
-<h3><span class="section-number">2.7.2. </span>成果物<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.7.2. </span>成果物<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ECSのサービスとタスク。</p></li>
 <li><p>実際に動く画面</p></li>
 </ul>
 </section>
 <section id="id23">
-<h3><span class="section-number">2.7.3. </span>サービスの作成<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.7.3. </span>サービスの作成<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>サービスを作成していく中で、ALBやTGを設定する。</p>
 <p>これは初回しか設定できないので、設定するときにALBとTGの設定を再確認しておく。</p>
 <section id="exec-format-error">
-<h4><span class="section-number">2.7.3.1. </span>[トラブルシュート]タスクが起動しない：exec format error<a class="headerlink" href="#exec-format-error" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.7.3.1. </span>[トラブルシュート]タスクが起動しない：exec format error<a class="headerlink" href="#exec-format-error" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CloudWatchを確認すると以下のエラー</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">exec</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">exec</span> <span class="nb">format</span> <span class="n">error</span>
 </pre></div>
@@ -509,75 +509,75 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">2. AWS ECS上に構築するSpringアプリケーション</a><ul>
-<li><a class="reference internal" href="#vpc">2.1. VPC環境構築</a><ul>
-<li><a class="reference internal" href="#id1">2.1.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id2">2.1.2. VPC作成後の成果物</a><ul>
-<li><a class="reference internal" href="#id3">2.1.2.1. VPC作成</a></li>
+<li><a class="reference internal" href="#">1. AWS ECS上に構築するSpringアプリケーション</a><ul>
+<li><a class="reference internal" href="#vpc">1.1. VPC環境構築</a><ul>
+<li><a class="reference internal" href="#id1">1.1.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id2">1.1.2. VPC作成後の成果物</a><ul>
+<li><a class="reference internal" href="#id3">1.1.2.1. VPC作成</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#alb">2.2. ALBの作成</a><ul>
-<li><a class="reference internal" href="#id4">2.2.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id5">2.2.2. ALB作成後の成果物</a></li>
-<li><a class="reference internal" href="#id6">2.2.3. ALBの作成</a></li>
+<li><a class="reference internal" href="#alb">1.2. ALBの作成</a><ul>
+<li><a class="reference internal" href="#id4">1.2.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id5">1.2.2. ALB作成後の成果物</a></li>
+<li><a class="reference internal" href="#id6">1.2.3. ALBの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#spring">2.3. Springを使用したコンテナアプリ実装</a><ul>
-<li><a class="reference internal" href="#id7">2.3.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id8">2.3.2. 成果物</a></li>
-<li><a class="reference internal" href="#backend">2.3.3. backend</a><ul>
-<li><a class="reference internal" href="#user-javalombok">2.3.3.1. [トラブルシュート]User.javaのLombokで躓いた話</a></li>
-<li><a class="reference internal" href="#application-yml">2.3.3.2. [実装上の工夫]application.ymlを環境を切り替える</a></li>
+<li><a class="reference internal" href="#spring">1.3. Springを使用したコンテナアプリ実装</a><ul>
+<li><a class="reference internal" href="#id7">1.3.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id8">1.3.2. 成果物</a></li>
+<li><a class="reference internal" href="#backend">1.3.3. backend</a><ul>
+<li><a class="reference internal" href="#user-javalombok">1.3.3.1. [トラブルシュート]User.javaのLombokで躓いた話</a></li>
+<li><a class="reference internal" href="#application-yml">1.3.3.2. [実装上の工夫]application.ymlを環境を切り替える</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#bff">2.3.4. bff</a></li>
-<li><a class="reference internal" href="#chap3">2.3.5. chap3の疑問点</a><ul>
-<li><a class="reference internal" href="#id9">2.3.5.1. application.ymlの指定</a></li>
-<li><a class="reference internal" href="#backenddns">2.3.5.2. backendのdns指定</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#docker">2.4. Dockerコンテナの作成</a><ul>
-<li><a class="reference internal" href="#id10">2.4.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id11">2.4.2. 成果物</a></li>
-<li><a class="reference internal" href="#ecr">2.4.3. ECR作成</a></li>
-<li><a class="reference internal" href="#dockerfile">2.4.4. DockerFileの説明</a></li>
-<li><a class="reference internal" href="#docker-image">2.4.5. Docker Imageの作成</a></li>
-<li><a class="reference internal" href="#docker-container">2.4.6. Docker Containerの作成</a><ul>
-<li><a class="reference internal" href="#localhost">2.4.6.1. コンテナ内からlocalhostへ接続</a></li>
-<li><a class="reference internal" href="#id12">2.4.6.2. application.ymlの設定</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dockerecrpush">2.4.7. DockerをECRにpush</a><ul>
-<li><a class="reference internal" href="#wget">2.4.7.1. [トラブルシュート]wgetでエラーが発生</a></li>
-<li><a class="reference internal" href="#apache-maven">2.4.7.2. [トラブルシュート]apache-mavenがインストールできない</a></li>
-<li><a class="reference internal" href="#mvn-build">2.4.7.3. [トラブルシュート]mvn buildで、テストが実行されてエラー</a></li>
-<li><a class="reference internal" href="#ecrpush">2.4.7.4. [トラブルシュート]ECRにpushできない。</a></li>
+<li><a class="reference internal" href="#bff">1.3.4. bff</a></li>
+<li><a class="reference internal" href="#chap3">1.3.5. chap3の疑問点</a><ul>
+<li><a class="reference internal" href="#id9">1.3.5.1. application.ymlの指定</a></li>
+<li><a class="reference internal" href="#backenddns">1.3.5.2. backendのdns指定</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ecs">2.5. ECSクラスターの作成</a><ul>
-<li><a class="reference internal" href="#id13">2.5.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id14">2.5.2. 成果物</a></li>
-<li><a class="reference internal" href="#id15">2.5.3. ECSクラスター作成</a></li>
+<li><a class="reference internal" href="#docker">1.4. Dockerコンテナの作成</a><ul>
+<li><a class="reference internal" href="#id10">1.4.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id11">1.4.2. 成果物</a></li>
+<li><a class="reference internal" href="#ecr">1.4.3. ECR作成</a></li>
+<li><a class="reference internal" href="#dockerfile">1.4.4. DockerFileの説明</a></li>
+<li><a class="reference internal" href="#docker-image">1.4.5. Docker Imageの作成</a></li>
+<li><a class="reference internal" href="#docker-container">1.4.6. Docker Containerの作成</a><ul>
+<li><a class="reference internal" href="#localhost">1.4.6.1. コンテナ内からlocalhostへ接続</a></li>
+<li><a class="reference internal" href="#id12">1.4.6.2. application.ymlの設定</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">2.6. ECSタスクの定義</a><ul>
-<li><a class="reference internal" href="#id17">2.6.1. 基本方針と成果物</a></li>
-<li><a class="reference internal" href="#iam">2.6.2. IAMの作成</a></li>
-<li><a class="reference internal" href="#id18">2.6.3. ポートの設定</a></li>
-<li><a class="reference internal" href="#id19">2.6.4. メモリの設定</a></li>
+<li><a class="reference internal" href="#dockerecrpush">1.4.7. DockerをECRにpush</a><ul>
+<li><a class="reference internal" href="#wget">1.4.7.1. [トラブルシュート]wgetでエラーが発生</a></li>
+<li><a class="reference internal" href="#apache-maven">1.4.7.2. [トラブルシュート]apache-mavenがインストールできない</a></li>
+<li><a class="reference internal" href="#mvn-build">1.4.7.3. [トラブルシュート]mvn buildで、テストが実行されてエラー</a></li>
+<li><a class="reference internal" href="#ecrpush">1.4.7.4. [トラブルシュート]ECRにpushできない。</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id20">2.7. ECSサービスの実行</a><ul>
-<li><a class="reference internal" href="#id21">2.7.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id22">2.7.2. 成果物</a></li>
-<li><a class="reference internal" href="#id23">2.7.3. サービスの作成</a><ul>
-<li><a class="reference internal" href="#exec-format-error">2.7.3.1. [トラブルシュート]タスクが起動しない：exec format error</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ecs">1.5. ECSクラスターの作成</a><ul>
+<li><a class="reference internal" href="#id13">1.5.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id14">1.5.2. 成果物</a></li>
+<li><a class="reference internal" href="#id15">1.5.3. ECSクラスター作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id16">1.6. ECSタスクの定義</a><ul>
+<li><a class="reference internal" href="#id17">1.6.1. 基本方針と成果物</a></li>
+<li><a class="reference internal" href="#iam">1.6.2. IAMの作成</a></li>
+<li><a class="reference internal" href="#id18">1.6.3. ポートの設定</a></li>
+<li><a class="reference internal" href="#id19">1.6.4. メモリの設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id20">1.7. ECSサービスの実行</a><ul>
+<li><a class="reference internal" href="#id21">1.7.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id22">1.7.2. 成果物</a></li>
+<li><a class="reference internal" href="#id23">1.7.3. サービスの作成</a><ul>
+<li><a class="reference internal" href="#exec-format-error">1.7.3.1. [トラブルシュート]タスクが起動しない：exec format error</a></li>
 </ul>
 </li>
 </ul>
@@ -589,13 +589,13 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="apigw_lambda.html"
-                          title="前の章へ"><span class="section-number">1. </span>API GWとLambdaを利用したサーバーレスSpringアプリケーション</a></p>
+    <p class="topless"><a href="../DAILY/daily.html"
+                          title="前の章へ"><span class="section-number">1. </span>塾の活動</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="cicd.html"
-                          title="次の章へ"><span class="section-number">3. </span>AWS Code Seriesを利用したCICD環境</a></p>
+                          title="次の章へ"><span class="section-number">2. </span>AWS Code Seriesを利用したCICD環境</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -625,13 +625,13 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="cicd.html" title="3. AWS Code Seriesを利用したCICD環境"
+          <a href="cicd.html" title="2. AWS Code Seriesを利用したCICD環境"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="apigw_lambda.html" title="1. API GWとLambdaを利用したサーバーレスSpringアプリケーション"
+          <a href="../DAILY/daily.html" title="1. 塾の活動"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>AWS ECS上に構築するSpringアプリケーション</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -133,7 +133,11 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 スループットは300件/secとなる</p></li>
 </ul>
 <section id="id8">
-<h3><span class="section-number">13.2.1. </span>キューからのメッセージ取得<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">13.2.1. </span>キューの保存期間<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>デフォルトでは４日間が設定されており、最大で14日間まで変更可能</p>
+</section>
+<section id="id9">
+<h3><span class="section-number">13.2.2. </span>キューからのメッセージ取得<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>次の3ステップを踏む</p>
 <ol class="simple">
 <li><p>Consumerがキューをポーリング（キューの監視）</p></li>
@@ -143,8 +147,8 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 <p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。
 メッセージ削除の際は取得したMessageのIDである「ReceiptHandle」を指定するが、他のConsumerがメッセージに触れると「ReceiptHandle」が書き換えられてエラーになるの可能性があるので、可視化タイムアウトなどの設定を使うようにする。</p>
 </section>
-<section id="id9">
-<h3><span class="section-number">13.2.2. </span>ポーリング<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">13.2.3. </span>ポーリング<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。
 ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
 <ul class="simple">
@@ -154,34 +158,39 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける<br />待機時間を設定することで、Producerが生産してからConsumerが消費するまでの待機時間を設定できる</p></li>
 </ul>
 </section>
-<section id="id10">
-<h3><span class="section-number">13.2.3. </span>キューの待機時間設定<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">13.2.4. </span>キューの待機時間設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerがキューに格納してからConsumerが取得するまでの時間を遅延させたり、
 Consumerがキューを取得してから他のConsumerがメッセージを取得するまでの時間を遅延させたりすることができる。</p>
 <p>以下の図は、後述する遅延キュー（メッセージタイマーと可視性タイムアウトの関係）</p>
 <p><img alt="../_images/sns_delay.png" src="../_images/sns_delay.png" /></p>
 </section>
-<section id="id11">
-<h3><span class="section-number">13.2.4. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">13.2.5. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerからキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。<br />遅延キューでは、<code class="docutils literal notranslate"><span class="pre">配信遅延時間</span></code>を設定することでキュー全体に設定が反映され、メッセージタイマーでは特定メッセージに対して設定が反映される</p>
 <p><img alt="../_images/sqs_delay.png" src="../_images/sqs_delay.png" /></p>
 </section>
-<section id="id12">
-<h3><span class="section-number">13.2.5. </span>可視性タイムアウト<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h3><span class="section-number">13.2.6. </span>可視性タイムアウト<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerがメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を防止することができるが、重複性を完全排除はできない点に注意。</p>
 <p><img alt="../_images/sqs_visibility.png" src="../_images/sqs_visibility.png" /></p>
 </section>
-<section id="id13">
-<h3><span class="section-number">13.2.6. </span>デットレターキュー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id14">
+<h3><span class="section-number">13.2.7. </span>デットレターキュー<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>正常に処理できないメッセージがキューに滞留することを避ける機能。</p>
 <p>Redriveポリシーで、移動させるルール（最大受信数）とメッセージ格納先（デットレターキュー）を指定する
 デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
 </section>
-<section id="id14">
-<h3><span class="section-number">13.2.7. </span>セキュリティ<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">13.2.8. </span>セキュリティ<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>KMSによってメッセージを暗号化できるが、ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
 <p>SQSはIAMによるアクセス制御に加えて、キューに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
 </section>
+</section>
+<section id="id16">
+<h2><span class="section-number">13.3. </span>SQSの容量<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SQSでやり取りすることができる容量は最大256kB</p>
+<p>しかし、S3とJava拡張ライブラリを利用することで、SQSのメッセージサイズを超過して2GBまで対応することができる。</p>
 </section>
 </section>
 
@@ -211,15 +220,17 @@ Consumerがキューを取得してから他のConsumerがメッセージを取�
 <li><a class="reference internal" href="#sqs">13. SQS</a><ul>
 <li><a class="reference internal" href="#id6">13.1. SQSの登場人物</a></li>
 <li><a class="reference internal" href="#id7">13.2. SQSのキュー</a><ul>
-<li><a class="reference internal" href="#id8">13.2.1. キューからのメッセージ取得</a></li>
-<li><a class="reference internal" href="#id9">13.2.2. ポーリング</a></li>
-<li><a class="reference internal" href="#id10">13.2.3. キューの待機時間設定</a></li>
-<li><a class="reference internal" href="#id11">13.2.4. 遅延キューとメッセージタイマー</a></li>
-<li><a class="reference internal" href="#id12">13.2.5. 可視性タイムアウト</a></li>
-<li><a class="reference internal" href="#id13">13.2.6. デットレターキュー</a></li>
-<li><a class="reference internal" href="#id14">13.2.7. セキュリティ</a></li>
+<li><a class="reference internal" href="#id8">13.2.1. キューの保存期間</a></li>
+<li><a class="reference internal" href="#id9">13.2.2. キューからのメッセージ取得</a></li>
+<li><a class="reference internal" href="#id10">13.2.3. ポーリング</a></li>
+<li><a class="reference internal" href="#id11">13.2.4. キューの待機時間設定</a></li>
+<li><a class="reference internal" href="#id12">13.2.5. 遅延キューとメッセージタイマー</a></li>
+<li><a class="reference internal" href="#id13">13.2.6. 可視性タイムアウト</a></li>
+<li><a class="reference internal" href="#id14">13.2.7. デットレターキュー</a></li>
+<li><a class="reference internal" href="#id15">13.2.8. セキュリティ</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id16">13.3. SQSの容量</a></li>
 </ul>
 </li>
 </ul>

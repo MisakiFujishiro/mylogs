@@ -205,12 +205,30 @@ Partition keyが同一で他のAttributesで検索をすることができる。
 ![](img/db_dynamo_lsi.png)
 LSIを設定しておくことで、A1をPrimary key、A3をSort kyeとしたテーブルを作成し、検索することが可能となる。
 
+LSIは、テーブル作成前に設定しておく必要がある。
 
 #### グローバルセカンダリインデックス(GSI)
 Prrtition key属性の代わりとなるkeyを指定することができる。
 
 ![](img/db_dynamo_gsi.png)
 GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作成することができる。
+
+
+### DynamoDBのクエリ
+CLIからコマンドを実行することで、データを取得することができる。
+
+データの読み込みでは、GetItemやScan などのオペレーションを使用する。
+デフォルトでは、すべての属性(列)を返すが`--projection-expression`を利用すると、特定の属性(列)のみが返却される。
+
+
+クエリの例
+```
+aws dynamodb get-item \
+--table-name ProductCatalog \
+--key '{"Id":{"N":"123"}}' \
+--projection-expression "Safety.Warning"
+```
+
 
 
 ### DynamoDBの注意点
@@ -259,7 +277,24 @@ VPC内でキャッシュクラスタを構築して、DynamoDBへの高速アク
 
 ![](img/db_dynamo_streams.png)
 
+[DynamoDBの詳細](https://qiita.com/bassaaaaa/items/7477420641080f922a59)
+
 LambdaやKinesisと統合されており、StreamAPIを使って、ポーリングを行なって変更を検知すると処理を実行できる（DynamoDB Trigger)
+
+
+### アトミックカウンター
+書き込みリクエストを妨害することなく、数値をカウントアップ・ダウンすることができる機能。
+UpDateItemと組み合わせて利用することで、更新した回数などをカウントできるが、冪等性がないことに注意。
+
+
+
+
+
+
+
+
+
+
 
 
 ## エンドポイント整理

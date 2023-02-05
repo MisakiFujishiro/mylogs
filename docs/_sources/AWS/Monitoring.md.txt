@@ -296,3 +296,4 @@ SQLクライアントにX-rayの設定を追加する場合は、DBへの接続�
 
 ### CloudWatchとの連携
 X-Rayで収集したデータは、CloudWatchに統合されており、`CloudWatch ServiceLends`でサービスマップやトレースリストなどを確認することができる。
+
