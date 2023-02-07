@@ -116,7 +116,7 @@
 
 ---
 ## 1/20-2/
-詳細は :doc:'Artifact/ecs.md' のページ
+詳細は  [Artifact](../Artifact/cicd.md) のページ
 
 
 ## 1/7-1/20
