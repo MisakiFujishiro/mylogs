@@ -93,15 +93,105 @@ git commit -m &quot;first commit&quot;</p>
 </section>
 <section id="githubcodecommit">
 <h2><span class="section-number">2.2. </span>githubとcodeCommitを連携<a class="headerlink" href="#githubcodecommit" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="codecommit">
+<h3><span class="section-number">2.2.1. </span>CodeCommitの作成<a class="headerlink" href="#codecommit" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CodeCommmitのページから、レポジトリを作成する。
+設定項目は、リポジトリ名のみ。</p>
+</section>
+<section id="github">
+<h3><span class="section-number">2.2.2. </span>githubのミラーリング<a class="headerlink" href="#github" title="この見出しへのパーマリンク">¶</a></h3>
+<p>githubの変更を検知して、CodeCommitに反映されていることを確認する。</p>
+<p>実施項目は以下</p>
+<ol class="simple">
+<li><p>SSHキーをローカルPCで作成</p></li>
+<li><p>IAMユーザーに公開鍵を登録</p></li>
+<li><p>githubに秘密鍵を登録</p></li>
+<li><p>githubにミラーリングの設定</p></li>
+</ol>
+<p>詳細は、別ページ</p>
+</section>
 </section>
 <section id="code-buildjavabuild">
 <h2><span class="section-number">2.3. </span>Code Buildでjavaをbuild<a class="headerlink" href="#code-buildjavabuild" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="codebuild">
+<h3><span class="section-number">2.3.1. </span>CodeBuildのプロジェクト作成<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>CodeBuildのプロジェクト名</p></li>
+<li><p>ソース</p>
+<ul>
+<li><p>CodeCommitとの紐付け</p></li>
+<li><p>対象のブランチ指定
+<img alt="../_images/codebuild_source.png" src="../_images/codebuild_source.png" /></p></li>
+</ul>
+</li>
+<li><p>CodeBuildの環境設定</p>
+<ul>
+<li><p>Dockerを利用する場合特権付与を忘れない
+<img alt="../_images/codebuild_env.png" src="../_images/codebuild_env.png" /></p></li>
+</ul>
+</li>
+</ul>
 </section>
-<section id="code-deployecrpushecs">
-<h2><span class="section-number">2.4. </span>Code DeployでECRへpushしてECSのタスクを更新<a class="headerlink" href="#code-deployecrpushecs" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="iam">
+<h3><span class="section-number">2.3.2. </span>IAMポリシーの変更<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h3>
+<p>新規で作成されたサービスロールにECRへアクセスするためのポリシー<code class="docutils literal notranslate"><span class="pre">AmazonEC2ContainerRegistryPowerUser</span></code>を付与する。</p>
 </section>
-<section id="code-pipeline">
-<h2><span class="section-number">2.5. </span>Code Pipelineで全体を管理<a class="headerlink" href="#code-pipeline" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="buildspec-yml">
+<h3><span class="section-number">2.3.3. </span>buildspec.yml作成<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region ap-northeast-1)
+      - AWS_ACCOUNT_ID=$(echo ${CODEBUILD_BUILD_ARN} | cut -f 5 -d :)
+      - REPOSITORY_URL=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/ma-fujishiroms-ecr-bff
+      - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION} | cut -c 1-7)
+
+  build:
+    commands:      
+      - echo Building the Docker image on `date`
+      - docker build --no-cache -t ma-fujishiroms-ecr-bff:${IMAGE_TAG} .
+      - docker tag ma-fujishiroms-ecr-bff:${IMAGE_TAG} ${REPOSITORY_URL}:${IMAGE_TAG}
+  post_build:
+    commands:
+      - echo Pushing the Docker image on `date`
+      - docker push ${REPOSITORY_URL}:${IMAGE_TAG}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="code-pipelinecodedeploy">
+<h2><span class="section-number">2.4. </span>Code PipelineとCodeDeploy作成<a class="headerlink" href="#code-pipelinecodedeploy" title="この見出しへのパーマリンク">¶</a></h2>
+<p>codeCommitの変更を契機して、ECSへのリリースまでの一連の流れを作成。</p>
+<section id="id1">
+<h3><span class="section-number">2.4.1. </span>buildspec.ymlの変更<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">imagedefinitions.json</span></code>を出力するためにbuildspec.ymlに以下の文言を追加</p>
+<p>コンテナ名とECRのURIをimagedefinition.jsonに書き込む</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  post_build:
+    commands:
+      - printf &#39;[{&quot;name&quot;:&quot;MA-fujishiroms-container-private&quot;,&quot;imageUri&quot;:&quot;%s&quot;}]&#39; $REPOSITORY_URL:$IMAGE_TAG &gt; imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json
+</pre></div>
+</div>
+</section>
+<section id="codepipeline">
+<h3><span class="section-number">2.4.2. </span>codepipelineの作成<a class="headerlink" href="#codepipeline" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>sourceステージの作成
+<img alt="../_images/codepipeline_source.png" src="../_images/codepipeline_source.png" /></p></li>
+<li><p>buildステージの作成
+<img alt="../_images/codepipeline_build.png" src="../_images/codepipeline_build.png" /></p></li>
+<li><p>deployステージの作成
+<img alt="../_images/codepipeline_deploy.png" src="../_images/codepipeline_deploy.png" /></p></li>
+</ul>
+</section>
+<section id="id2">
+<h3><span class="section-number">2.4.3. </span>動作確認<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>githubのmainブランチにpushすると以下のようにCodepipelineが実行されて、ECSに新しいタスクがリリースされる</p>
+<p><img alt="../_images/codepipeline.png" src="../_images/codepipeline.png" /></p>
+</section>
 </section>
 </section>
 
@@ -122,10 +212,23 @@ git commit -m &quot;first commit&quot;</p>
 <li><a class="reference internal" href="#terminalgithubpush">2.1.3. terminalでGitHubへpush</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#githubcodecommit">2.2. githubとcodeCommitを連携</a></li>
-<li><a class="reference internal" href="#code-buildjavabuild">2.3. Code Buildでjavaをbuild</a></li>
-<li><a class="reference internal" href="#code-deployecrpushecs">2.4. Code DeployでECRへpushしてECSのタスクを更新</a></li>
-<li><a class="reference internal" href="#code-pipeline">2.5. Code Pipelineで全体を管理</a></li>
+<li><a class="reference internal" href="#githubcodecommit">2.2. githubとcodeCommitを連携</a><ul>
+<li><a class="reference internal" href="#codecommit">2.2.1. CodeCommitの作成</a></li>
+<li><a class="reference internal" href="#github">2.2.2. githubのミラーリング</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#code-buildjavabuild">2.3. Code Buildでjavaをbuild</a><ul>
+<li><a class="reference internal" href="#codebuild">2.3.1. CodeBuildのプロジェクト作成</a></li>
+<li><a class="reference internal" href="#iam">2.3.2. IAMポリシーの変更</a></li>
+<li><a class="reference internal" href="#buildspec-yml">2.3.3. buildspec.yml作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#code-pipelinecodedeploy">2.4. Code PipelineとCodeDeploy作成</a><ul>
+<li><a class="reference internal" href="#id1">2.4.1. buildspec.ymlの変更</a></li>
+<li><a class="reference internal" href="#codepipeline">2.4.2. codepipelineの作成</a></li>
+<li><a class="reference internal" href="#id2">2.4.3. 動作確認</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

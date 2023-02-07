@@ -97,7 +97,7 @@ githubとの連携時には、初期設定で特定のブランチのみを対�
 <div><p>pbcopy &lt; ~/.ssh/id_rsa</p>
 </div></blockquote>
 <ul class="simple">
-<li><p>IAMユーザーに公開鍵を紐づける<br />IAM&gt;アクセス管理&gt;ユーザー&gt;AWS CodeCommitのSSHキーにパブリックキーをアップロード<br />SSHキーの<code class="docutils literal notranslate"><span class="pre">ID</span></code>をメモしておく</p></li>
+<li><p>IAMユーザーに公開鍵を紐づける<br />IAM&gt;アクセス管理&gt;ユーザー&gt;AWS CodeCommitのSSHキーにパブリックキーをアップロード<br />github側の設定時にSSHキーの<code class="docutils literal notranslate"><span class="pre">ID</span></code>を利用する。</p></li>
 </ul>
 <p><img alt="../_images/codecommit_iam_setting.png" src="../_images/codecommit_iam_setting.png" /></p>
 <ul class="simple">
@@ -112,13 +112,16 @@ githubとの連携時には、初期設定で特定のブランチのみを対�
 <li><p>SSHキーID</p>
 <ul>
 <li><p>Name：CODECOMMIT_SSH_PRIVATE_KEY_ID</p></li>
-<li><p>Value：SSHキーのID</p></li>
+<li><p>Value：SSHキーのID（awsのIAMのページで表示される。)</p></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>githubとgitcommitを紐づける<br />github&gt;Actions&gt;New Work Flow&gt;set up a workflow</p></li>
+<li><p>githubとgitcommitを紐づける<br />対象のリポジトリのフォルダのルートから<code class="docutils literal notranslate"><span class="pre">.github/workflow/main.yml</span></code>を作成する。
+ローカルのリポジトリからgithubにPushしても良いし、github側で設定してmainにコミットしても良い
+github&gt;Actions&gt;New Work Flow&gt;set up a workflow</p></li>
 </ul>
+<p>main.ymlは以下の設定をする。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>name: Mirroring
 
 on: [ push, delete ]
