@@ -42,13 +42,14 @@
 - [ECS構築HandsOn](https://news.mynavi.jp/techplus/article/techp4354/)
 - AWS　ディベロッパーアソシエイト第4章勉強（開発系
 ---
+[詳細](#120-2)
 - 最終報告資料を作成（70%)
 - マイクロサービスの全体像勉強→「マイクロサービスインアクション→読めてない
 - Javaの構築とSTSについて整理する【完】
 - [ECS構築HandsOn](https://news.mynavi.jp/techplus/article/techp4354/)
   - アプリケーションは作成【完】（localhostで動作確認済み)
   - Dockerコンテナで実行【完】（コンテナ間で通信確認済み）
-  - ECS上に構築【完】（ECS上で通信確認済み）[demo](http://ma-fujishiroms-alb-public-2048793671.ap-northeast-1.elb.amazonaws.com/backend-for-front/)
+  - ECS上に構築【完】（ECS上で通信確認済み）
   - Cognitoを利用したAuth2.0の実装【中】spring PJを改良していく予定
   - CICDの仕組み構築【完】（githubへのpushからECSのリリースまで動作確認済み）
 - AWS　ディベロッパーアソシエイト勉強中→演習中
@@ -116,7 +117,17 @@
 
 ---
 ## 1/20-2/
-詳細は  [Artifact](../Artifact/cicd.md) のページ
+### アプリ作成
+- [ECS実施内容](../Artifact/ecs.md) のページ
+- [CICD実施内容](../Artifact/cicd.md) のページ
+- [demo](http://ma-fujishiroms-alb-public-2048793671.ap-northeast-1.elb.amazonaws.com/backend-for-front/)
+### 資料作成
+- 上記のコンテナサービスとCICDの部分と認証認可の考え方や仕組み部分を作成
+### 残りの期間の作業
+- Cognitoを利用したOAuthの実装
+- 書籍を通じたMSの理解深掘り
+- 報告資料のブラッシュアップ
+
 
 
 ## 1/7-1/20

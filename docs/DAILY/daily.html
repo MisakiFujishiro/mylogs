@@ -102,6 +102,7 @@
 <li><p>AWS　ディベロッパーアソシエイト第4章勉強（開発系</p></li>
 </ul>
 <hr class="docutils" />
+<p><a class="reference external" href="#120-2">詳細</a></p>
 <ul class="simple">
 <li><p>最終報告資料を作成（70%)</p></li>
 <li><p>マイクロサービスの全体像勉強→「マイクロサービスインアクション→読めてない</p></li>
@@ -110,7 +111,7 @@
 <ul>
 <li><p>アプリケーションは作成【完】（localhostで動作確認済み)</p></li>
 <li><p>Dockerコンテナで実行【完】（コンテナ間で通信確認済み）</p></li>
-<li><p>ECS上に構築【完】（ECS上で通信確認済み）<a class="reference external" href="http://ma-fujishiroms-alb-public-2048793671.ap-northeast-1.elb.amazonaws.com/backend-for-front/">demo</a></p></li>
+<li><p>ECS上に構築【完】（ECS上で通信確認済み）</p></li>
 <li><p>Cognitoを利用したAuth2.0の実装【中】spring PJを改良していく予定</p></li>
 <li><p>CICDの仕組み構築【完】（githubへのpushからECSのリリースまで動作確認済み）</p></li>
 </ul>
@@ -200,20 +201,41 @@
 <hr class="docutils" />
 <section id="id12">
 <h2><span class="section-number">1.4. </span>1/20-2/<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
-<p>詳細は  <a class="reference internal" href="../Artifact/cicd.html"><span class="doc">Artifact</span></a> のページ</p>
-</section>
 <section id="id13">
-<h2><span class="section-number">1.5. </span>1/7-1/20<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">1.4.1. </span>アプリ作成<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="../Artifact/ecs.html"><span class="doc">ECS実施内容</span></a> のページ</p></li>
+<li><p><a class="reference internal" href="../Artifact/cicd.html"><span class="doc">CICD実施内容</span></a> のページ</p></li>
+<li><p><a class="reference external" href="http://ma-fujishiroms-alb-public-2048793671.ap-northeast-1.elb.amazonaws.com/backend-for-front/">demo</a></p></li>
+</ul>
+</section>
+<section id="id14">
+<h3><span class="section-number">1.4.2. </span>資料作成<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>上記のコンテナサービスとCICDの部分と認証認可の考え方や仕組み部分を作成</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3><span class="section-number">1.4.3. </span>残りの期間の作業<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>Cognitoを利用したOAuthの実装</p></li>
+<li><p>書籍を通じたMSの理解深掘り</p></li>
+<li><p>報告資料のブラッシュアップ</p></li>
+</ul>
+</section>
+</section>
+<section id="id16">
+<h2><span class="section-number">1.5. </span>1/7-1/20<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="logs">
 <h3><span class="section-number">1.5.1. </span>認証認可についてLogsで整理した。<a class="headerlink" href="#logs" title="この見出しへのパーマリンク">¶</a></h3>
 <p>OAuthとOIDC周りの知識は一通り整理できた。</p>
 </section>
-<section id="id14">
-<h3><span class="section-number">1.5.2. </span>タイトルのアップデート含めて事前活動計画シートを更新<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id17">
+<h3><span class="section-number">1.5.2. </span>タイトルのアップデート含めて事前活動計画シートを更新<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>RVをお願いしたい。</p>
 </section>
-<section id="id15">
-<h3><span class="section-number">1.5.3. </span>最終報告資料を作成（40%)<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id18">
+<h3><span class="section-number">1.5.3. </span>最終報告資料を作成（40%)<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>chap1は自己紹介なので中間報告資料を流用</p>
 <p>chap2は、読んだ本や記事の情報からざっくり書きたいことを整理した。</p>
 <p>chap3は、作成したい環境の全体像を作成した。
@@ -228,8 +250,8 @@ ECSのHandsOnを通じて作成するものとCICDはストーリーとして見
 <p>VPCとALBの構築などに着手。完了
 Dockerの中身のアプリケーション開発したいが、Springのスタートで詰まっている。。。</p>
 </section>
-<section id="id16">
-<h3><span class="section-number">1.5.6. </span>相談事項<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id19">
+<h3><span class="section-number">1.5.6. </span>相談事項<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■質問1<br />SAMLはOIDCと同じ認証のプロトコルで、SAMLの方が複雑で、OIDCはシンプルなのでSNSなどで利用という理解。
 OIDCやOAuthを利用するとSSOが実現できて、マイクロサービスにおける認証の煩雑性をなくすことができるという理解なのだが、合っている？</p>
 <p>■質問2<br /><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp4316/">APIGWとLambdaのHandsOn</a>を実施してみて、PJの基本的な始め方がよくわかっていない・・・
@@ -242,10 +264,10 @@ STSの再インストールとJavaのバージョンを見直し中</p>
 <p>可能なら最初の一歩どなたかと一緒にやれるとありがたい。</p>
 </section>
 </section>
-<section id="id17">
-<h2><span class="section-number">1.6. </span>12/17-1/6<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id18">
-<h3><span class="section-number">1.6.1. </span>マイクロサービスの全体像勉強<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h2><span class="section-number">1.6. </span>12/17-1/6<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id21">
+<h3><span class="section-number">1.6.1. </span>マイクロサービスの全体像勉強<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://www.amazon.co.jp/%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%81%8B%E3%82%89%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%B8-%E2%80%95%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%82%92%E9%80%B2%E5%8C%96%E3%81%95%E3%81%9B%E3%82%8B%E5%AE%9F%E8%B7%B5%E7%A7%BB%E8%A1%8C%E3%82%AC%E3%82%A4%E3%83%89-Sam-Newman/dp/4873119316">モノリスからマイクロサービスへ</a>のchap1を読んでいる。
 とりあえず通読。技術的なところは少なかったけど、マイクロサービスの定義とか、マイクロサービスのメリットは整理出来なので、報告資料のイントロら辺はかけそう。
 あとは、デメリットからどういった対策が必要かという流れでAWSのサービスの話に転じていけそう。
@@ -275,13 +297,13 @@ AssumePolicyについて理解できた。他のアカウントとの連携は�
 <p>大雑把にCFNの文法を理解
 あとは、実際に自分で何か作る経験を踏むことができれば、使えるようになりそう。</p>
 </section>
-<section id="id19">
-<h3><span class="section-number">1.6.5. </span>マイクロサービスの認証認可の勉強<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id22">
+<h3><span class="section-number">1.6.5. </span>マイクロサービスの認証認可の勉強<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>youtube上の動画で非常にわかりやすいものがあった
 一通り理解できたつもりなので、最後にsphinx上で集めた情報を整理する予定</p>
 </section>
-<section id="id20">
-<h3><span class="section-number">1.6.6. </span>最終報告資料作成<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h3><span class="section-number">1.6.6. </span>最終報告資料作成<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>一旦、目次を考えてみた。
 今回の学習できた範囲を考えると以下の内容でどうだろうか。マイクロサービスの根幹っぽいところには触れられるのでは？</p>
 <ul class="simple">
@@ -292,16 +314,16 @@ AssumePolicyについて理解できた。他のアカウントとの連携は�
 <li><p>コンテナ開発とCICDの仕組みとECSおよびCodeSeriesを利用した実装</p></li>
 </ul>
 </section>
-<section id="id21">
-<h3><span class="section-number">1.6.7. </span>相談<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id24">
+<h3><span class="section-number">1.6.7. </span>相談<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>最終報告までに一通り実装をするとした、<a class="reference external" href="https://news.mynavi.jp/techplus/series/aws_2/">AWSで作るマイクロサービス</a>
 AWS周りはなんとかなるような気がするけど、Spring周りがついて行けなさそう。
 レベル的に大丈夫？？</p>
 <p>タイトルについて変更したい<br />「コンテナサービスおよびサーバレスサービスを活用した高速なアプリケーション開発環境の構築の整理」<br />↓↓↓<br />「マイクロサービスの基本とAWSサーバレスサービスとコンテナサービスを活用した構築ノウハウの整理」</p>
 </section>
 </section>
-<section id="id22">
-<h2><span class="section-number">1.7. </span>11/25-12/16<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id25">
+<h2><span class="section-number">1.7. </span>11/25-12/16<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="terasolna-11-2">
 <h3><span class="section-number">1.7.1. </span>TERASOLNA 11.2<a class="headerlink" href="#terasolna-11-2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>深追いせずに、全体像を把握するように実装した。
@@ -315,8 +337,8 @@ todoResource型はJSONに変換するように設定を入れているので、R
 実装されているものを解説みながら理解できるレベル感。
 認証認可の部分で、<code class="docutils literal notranslate"><span class="pre">/</span></code>と<code class="docutils literal notranslate"><span class="pre">welcome/home.jsp</span></code>の対応づけがどこで定義されているかよくわからない。</p>
 </section>
-<section id="id23">
-<h3><span class="section-number">1.7.3. </span>マイクロサービスに関する整理（認証認可<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id26">
+<h3><span class="section-number">1.7.3. </span>マイクロサービスに関する整理（認証認可<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マイクロサービスの認証認可について勉強しようとOauthとOpenIDConnectの記事を漁る。
 OAuth2.0は認可の仕組みで認証しないところが問題点。OAuth認証なんてものをするとセキュリティホールが生まれるっぽい。
 そこを解決したのがOIDCで、ID Tokenで認証情報を改ざん不可能にしている。
@@ -325,14 +347,14 @@ OAuth2.0は認可の仕組みで認証しないところが問題点。OAuth認�
 マイクロサービスではどう使えば良いのかとかCognitoを使えば、いい感じにできるよーみたいなことを確認したい。</p>
 <p>UA,SiteA,Authz,GraphAPIとかに、各マッピングしてみると良いかも</p>
 </section>
-<section id="id24">
-<h3><span class="section-number">1.7.4. </span>マイクロサービスに関する整理<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id27">
+<h3><span class="section-number">1.7.4. </span>マイクロサービスに関する整理<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://www.amazon.co.jp/%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%81%8B%E3%82%89%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%B8-%E2%80%95%E3%83%A2%E3%83%8E%E3%83%AA%E3%82%B9%E3%82%92%E9%80%B2%E5%8C%96%E3%81%95%E3%81%9B%E3%82%8B%E5%AE%9F%E8%B7%B5%E7%A7%BB%E8%A1%8C%E3%82%AC%E3%82%A4%E3%83%89-Sam-Newman/dp/4873119316">モノリスからマイクロサービスへ</a>のchap1を読んでいる。
 マイクロサービスアーキテクチャとは独立デプロイできることを取り込むことが一番のポイント
 独立デプロイできる→ CICD→改善を繰り返して提供価値を上げる？→ フィードバックの機構とかって対象じゃないのかな？</p>
 </section>
-<section id="id25">
-<h3><span class="section-number">1.7.5. </span>取り上げたいサービス<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id28">
+<h3><span class="section-number">1.7.5. </span>取り上げたいサービス<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Cognito</p></li>
 <li><p>ECS/EKS</p></li>
@@ -341,8 +363,8 @@ OAuth2.0は認可の仕組みで認証しないところが問題点。OAuth認�
 </ul>
 </section>
 </section>
-<section id="id26">
-<h2><span class="section-number">1.8. </span>11/4-11/24<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id29">
+<h2><span class="section-number">1.8. </span>11/4-11/24<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="java-7h">
 <h3><span class="section-number">1.8.1. </span>java チュートリアル (7h)<a class="headerlink" href="#java-7h" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DIとAOPの理解
@@ -361,8 +383,8 @@ task定義とサービス定義でFargateで起動する設定を行う。</p>
 <h3><span class="section-number">1.8.3. </span>AWS LambdaのH4B 他サービスの連携(3h)<a class="headerlink" href="#aws-lambdah4b-3h" title="この見出しへのパーマリンク">¶</a></h3>
 <p>S3アップロードをイベントを契機として、Lambdaで他のサービスと連携するHandsOn</p>
 </section>
-<section id="id27">
-<h3><span class="section-number">1.8.4. </span>わからなかったところ<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id30">
+<h3><span class="section-number">1.8.4. </span>わからなかったところ<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="ecs">
 <h4><span class="section-number">1.8.4.1. </span>ECS<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ECSのEC2・FargateそれぞれでメモリやCPUがどのように配分されるかは整理しても良いかなと思った。</p>
@@ -445,10 +467,10 @@ DIコンテナの中にBeanがないのではないか？</p>
 </section>
 </section>
 </section>
-<section id="id28">
-<h2><span class="section-number">1.9. </span>10/31-11/3<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id29">
-<h3><span class="section-number">1.9.1. </span>java チュートリアル 7h<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id31">
+<h2><span class="section-number">1.9. </span>10/31-11/3<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id32">
+<h3><span class="section-number">1.9.1. </span>java チュートリアル 7h<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
 <p>動作確認まで完了。mvnarchetype:generateコマンドやMVCの基本を整理
 sts4.xをインストールしていることに気づいて、sts3.xをインストール
 ここで、立ち上がらない問題やrun on serverがでないなどのトラブルで時間をだいぶ使った。
@@ -464,8 +486,8 @@ serverがでなかったのはワークスペースの設定も悪かった？�
 <p>じつ業務の方で利用する機会があったので勉強した。<br />jarファイルなどの成果物を共有することができるリポジトリ。<br />curlコマンドでアップロードはできたが、mvn deployはできていない。
 実際のアプリの時に使ってみて、使い方を整理したい。</p>
 </section>
-<section id="id30">
-<h3><span class="section-number">1.9.3. </span>わからなかったこと<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id33">
+<h3><span class="section-number">1.9.3. </span>わからなかったこと<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>sts4でやったからか、run on serverがなくて困った【解決】</p>
 <ul class="simple">
@@ -518,39 +540,44 @@ serverがでなかったのはワークスペースの設定も悪かった？�
 <li><a class="reference internal" href="#id11">1.3.5. 3月：報告準備期間</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">1.4. 1/20-2/</a></li>
-<li><a class="reference internal" href="#id13">1.5. 1/7-1/20</a><ul>
-<li><a class="reference internal" href="#logs">1.5.1. 認証認可についてLogsで整理した。</a></li>
-<li><a class="reference internal" href="#id14">1.5.2. タイトルのアップデート含めて事前活動計画シートを更新</a></li>
-<li><a class="reference internal" href="#id15">1.5.3. 最終報告資料を作成（40%)</a></li>
-<li><a class="reference internal" href="#apigwlambdahandson">1.5.4. APIGWとLambdaのHandsOn</a></li>
-<li><a class="reference internal" href="#ecshandson">1.5.5. ECS構築HandsOn</a></li>
-<li><a class="reference internal" href="#id16">1.5.6. 相談事項</a></li>
+<li><a class="reference internal" href="#id12">1.4. 1/20-2/</a><ul>
+<li><a class="reference internal" href="#id13">1.4.1. アプリ作成</a></li>
+<li><a class="reference internal" href="#id14">1.4.2. 資料作成</a></li>
+<li><a class="reference internal" href="#id15">1.4.3. 残りの期間の作業</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">1.6. 12/17-1/6</a><ul>
-<li><a class="reference internal" href="#id18">1.6.1. マイクロサービスの全体像勉強</a></li>
+<li><a class="reference internal" href="#id16">1.5. 1/7-1/20</a><ul>
+<li><a class="reference internal" href="#logs">1.5.1. 認証認可についてLogsで整理した。</a></li>
+<li><a class="reference internal" href="#id17">1.5.2. タイトルのアップデート含めて事前活動計画シートを更新</a></li>
+<li><a class="reference internal" href="#id18">1.5.3. 最終報告資料を作成（40%)</a></li>
+<li><a class="reference internal" href="#apigwlambdahandson">1.5.4. APIGWとLambdaのHandsOn</a></li>
+<li><a class="reference internal" href="#ecshandson">1.5.5. ECS構築HandsOn</a></li>
+<li><a class="reference internal" href="#id19">1.5.6. 相談事項</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id20">1.6. 12/17-1/6</a><ul>
+<li><a class="reference internal" href="#id21">1.6.1. マイクロサービスの全体像勉強</a></li>
 <li><a class="reference internal" href="#terasolna11-3">1.6.2. TERASOLNA11.3(セッション)</a></li>
 <li><a class="reference internal" href="#aws-2-3">1.6.3. AWS　ディベロッパーアソシエイト（第２/3章）</a></li>
 <li><a class="reference internal" href="#cfnsam">1.6.4. CFNとSAMの勉強</a></li>
-<li><a class="reference internal" href="#id19">1.6.5. マイクロサービスの認証認可の勉強</a></li>
-<li><a class="reference internal" href="#id20">1.6.6. 最終報告資料作成</a></li>
-<li><a class="reference internal" href="#id21">1.6.7. 相談</a></li>
+<li><a class="reference internal" href="#id22">1.6.5. マイクロサービスの認証認可の勉強</a></li>
+<li><a class="reference internal" href="#id23">1.6.6. 最終報告資料作成</a></li>
+<li><a class="reference internal" href="#id24">1.6.7. 相談</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id22">1.7. 11/25-12/16</a><ul>
+<li><a class="reference internal" href="#id25">1.7. 11/25-12/16</a><ul>
 <li><a class="reference internal" href="#terasolna-11-2">1.7.1. TERASOLNA 11.2</a></li>
 <li><a class="reference internal" href="#terasolna-11-4">1.7.2. TERASOLNA 11.4</a></li>
-<li><a class="reference internal" href="#id23">1.7.3. マイクロサービスに関する整理（認証認可</a></li>
-<li><a class="reference internal" href="#id24">1.7.4. マイクロサービスに関する整理</a></li>
-<li><a class="reference internal" href="#id25">1.7.5. 取り上げたいサービス</a></li>
+<li><a class="reference internal" href="#id26">1.7.3. マイクロサービスに関する整理（認証認可</a></li>
+<li><a class="reference internal" href="#id27">1.7.4. マイクロサービスに関する整理</a></li>
+<li><a class="reference internal" href="#id28">1.7.5. 取り上げたいサービス</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id26">1.8. 11/4-11/24</a><ul>
+<li><a class="reference internal" href="#id29">1.8. 11/4-11/24</a><ul>
 <li><a class="reference internal" href="#java-7h">1.8.1. java チュートリアル (7h)</a></li>
 <li><a class="reference internal" href="#aws-ecsh4b-4h">1.8.2. AWS ECSのH4B(4h)</a></li>
 <li><a class="reference internal" href="#aws-lambdah4b-3h">1.8.3. AWS LambdaのH4B 他サービスの連携(3h)</a></li>
-<li><a class="reference internal" href="#id27">1.8.4. わからなかったところ</a><ul>
+<li><a class="reference internal" href="#id30">1.8.4. わからなかったところ</a><ul>
 <li><a class="reference internal" href="#ecs">1.8.4.1. ECS</a></li>
 <li><a class="reference internal" href="#mapper-beanmapper">1.8.4.2. Mapper beanMapperの役割について</a></li>
 <li><a class="reference internal" href="#controllerjsp">1.8.4.3. Controllerとjspでの変数のやり取りについて</a></li>
@@ -559,10 +586,10 @@ serverがでなかったのはワークスペースの設定も悪かった？�
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id28">1.9. 10/31-11/3</a><ul>
-<li><a class="reference internal" href="#id29">1.9.1. java チュートリアル 7h</a></li>
+<li><a class="reference internal" href="#id31">1.9. 10/31-11/3</a><ul>
+<li><a class="reference internal" href="#id32">1.9.1. java チュートリアル 7h</a></li>
 <li><a class="reference internal" href="#aws-code-artifact-3h">1.9.2. AWS code artifact勉強(3h)</a></li>
-<li><a class="reference internal" href="#id30">1.9.3. わからなかったこと</a></li>
+<li><a class="reference internal" href="#id33">1.9.3. わからなかったこと</a></li>
 </ul>
 </li>
 </ul>
