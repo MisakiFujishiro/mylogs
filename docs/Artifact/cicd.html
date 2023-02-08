@@ -47,8 +47,8 @@
             
   <section id="aws-code-seriescicd">
 <h1><span class="section-number">2. </span>AWS Code Seriesを利用したCICD環境<a class="headerlink" href="#aws-code-seriescicd" title="この見出しへのパーマリンク">¶</a></h1>
-<section id="java-projectgit-hub">
-<h2><span class="section-number">2.1. </span>java projectをgit hubと連携<a class="headerlink" href="#java-projectgit-hub" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="githubspringpj">
+<h2><span class="section-number">2.1. </span>GitHubとSpringPJの連携<a class="headerlink" href="#githubspringpj" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="git-hubrepository">
 <h3><span class="section-number">2.1.1. </span>Git hubでrepository作成<a class="headerlink" href="#git-hubrepository" title="この見出しへのパーマリンク">¶</a></h3>
 <p>git hubでリポジトリを新規作成する</p>
@@ -91,8 +91,8 @@ git commit -m &quot;first commit&quot;</p>
 </div></blockquote>
 </section>
 </section>
-<section id="githubcodecommit">
-<h2><span class="section-number">2.2. </span>githubとcodeCommitを連携<a class="headerlink" href="#githubcodecommit" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="codecommitgithub">
+<h2><span class="section-number">2.2. </span>codeCommitとGitHubのミラーリング<a class="headerlink" href="#codecommitgithub" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="codecommit">
 <h3><span class="section-number">2.2.1. </span>CodeCommitの作成<a class="headerlink" href="#codecommit" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CodeCommmitのページから、レポジトリを作成する。
@@ -111,8 +111,8 @@ git commit -m &quot;first commit&quot;</p>
 <p>詳細は、別ページ</p>
 </section>
 </section>
-<section id="code-buildjavabuild">
-<h2><span class="section-number">2.3. </span>Code Buildでjavaをbuild<a class="headerlink" href="#code-buildjavabuild" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="codebuildbuild">
+<h2><span class="section-number">2.3. </span>CodeBuildによるBuild設定<a class="headerlink" href="#codebuildbuild" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="codebuild">
 <h3><span class="section-number">2.3.1. </span>CodeBuildのプロジェクト作成<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
@@ -161,8 +161,8 @@ phases:
 </div>
 </section>
 </section>
-<section id="code-pipelinecodedeploy">
-<h2><span class="section-number">2.4. </span>Code PipelineとCodeDeploy作成<a class="headerlink" href="#code-pipelinecodedeploy" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="codepipeline">
+<h2><span class="section-number">2.4. </span>CodePipelineによるデプロイ自動化<a class="headerlink" href="#codepipeline" title="この見出しへのパーマリンク">¶</a></h2>
 <p>codeCommitの変更を契機して、ECSへのリリースまでの一連の流れを作成。</p>
 <section id="id1">
 <h3><span class="section-number">2.4.1. </span>buildspec.ymlの変更<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
@@ -176,8 +176,8 @@ artifacts:
 </pre></div>
 </div>
 </section>
-<section id="codepipeline">
-<h3><span class="section-number">2.4.2. </span>codepipelineの作成<a class="headerlink" href="#codepipeline" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id2">
+<h3><span class="section-number">2.4.2. </span>codepipelineの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>sourceステージの作成
 <img alt="../_images/codepipeline_source.png" src="../_images/codepipeline_source.png" /></p></li>
@@ -187,8 +187,8 @@ artifacts:
 <img alt="../_images/codepipeline_deploy.png" src="../_images/codepipeline_deploy.png" /></p></li>
 </ul>
 </section>
-<section id="id2">
-<h3><span class="section-number">2.4.3. </span>動作確認<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id3">
+<h3><span class="section-number">2.4.3. </span>動作確認<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>githubのmainブランチにpushすると以下のようにCodepipelineが実行されて、ECSに新しいタスクがリリースされる</p>
 <p><img alt="../_images/codepipeline.png" src="../_images/codepipeline.png" /></p>
 </section>
@@ -206,27 +206,27 @@ artifacts:
     <h3><a href="../index.html">目次</a></h3>
     <ul>
 <li><a class="reference internal" href="#">2. AWS Code Seriesを利用したCICD環境</a><ul>
-<li><a class="reference internal" href="#java-projectgit-hub">2.1. java projectをgit hubと連携</a><ul>
+<li><a class="reference internal" href="#githubspringpj">2.1. GitHubとSpringPJの連携</a><ul>
 <li><a class="reference internal" href="#git-hubrepository">2.1.1. Git hubでrepository作成</a></li>
 <li><a class="reference internal" href="#java-pj">2.1.2. Java PJ作成</a></li>
 <li><a class="reference internal" href="#terminalgithubpush">2.1.3. terminalでGitHubへpush</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#githubcodecommit">2.2. githubとcodeCommitを連携</a><ul>
+<li><a class="reference internal" href="#codecommitgithub">2.2. codeCommitとGitHubのミラーリング</a><ul>
 <li><a class="reference internal" href="#codecommit">2.2.1. CodeCommitの作成</a></li>
 <li><a class="reference internal" href="#github">2.2.2. githubのミラーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#code-buildjavabuild">2.3. Code Buildでjavaをbuild</a><ul>
+<li><a class="reference internal" href="#codebuildbuild">2.3. CodeBuildによるBuild設定</a><ul>
 <li><a class="reference internal" href="#codebuild">2.3.1. CodeBuildのプロジェクト作成</a></li>
 <li><a class="reference internal" href="#iam">2.3.2. IAMポリシーの変更</a></li>
 <li><a class="reference internal" href="#buildspec-yml">2.3.3. buildspec.yml作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#code-pipelinecodedeploy">2.4. Code PipelineとCodeDeploy作成</a><ul>
+<li><a class="reference internal" href="#codepipeline">2.4. CodePipelineによるデプロイ自動化</a><ul>
 <li><a class="reference internal" href="#id1">2.4.1. buildspec.ymlの変更</a></li>
-<li><a class="reference internal" href="#codepipeline">2.4.2. codepipelineの作成</a></li>
-<li><a class="reference internal" href="#id2">2.4.3. 動作確認</a></li>
+<li><a class="reference internal" href="#id2">2.4.2. codepipelineの作成</a></li>
+<li><a class="reference internal" href="#id3">2.4.3. 動作確認</a></li>
 </ul>
 </li>
 </ul>

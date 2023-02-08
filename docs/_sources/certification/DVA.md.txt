@@ -1,7 +1,14 @@
 # DVA
 ## Udemy 模擬試験1
 ### 余裕があれば確認したい
+- No.8  ElasticBeanstalkでHTTPS通信
+- No.15 X-RAYとECSの設定
+- No.22 X-RAYとElasticBeanstalkの統合
+- No.23 APIGWとCloudWatchの統合
+- No.34 CodeBuildのArtifact暗号化
 - No.39 X-rayの赤っていレート
 - No.46 API GWの連携
+- No.54  Elasticache戦略
+- No.57 RedisAuth
 - No.65 DynamoDBのカーディナリティ
 

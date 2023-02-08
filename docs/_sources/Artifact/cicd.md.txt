@@ -1,6 +1,6 @@
 # AWS Code Seriesを利用したCICD環境
 
-## java projectをgit hubと連携
+## GitHubとSpringPJの連携
 ### Git hubでrepository作成
 git hubでリポジトリを新規作成する
 > MisakiFujishiro/ecs_backend_for_front
@@ -33,7 +33,12 @@ STSで作成された各種ファイルをaddとcommit
 > git push -u origin main
 
 
-## githubとcodeCommitを連携
+
+
+
+
+
+## codeCommitとGitHubのミラーリング
 ### CodeCommitの作成
 CodeCommmitのページから、レポジトリを作成する。
 設定項目は、リポジトリ名のみ。
@@ -51,7 +56,10 @@ githubの変更を検知して、CodeCommitに反映されていることを確�
 
 
 
-## Code Buildでjavaをbuild
+
+
+
+## CodeBuildによるBuild設定
 ### CodeBuildのプロジェクト作成
 - CodeBuildのプロジェクト名
 - ソース
@@ -93,7 +101,9 @@ phases:
 
 
 
-## Code PipelineとCodeDeploy作成
+
+
+## CodePipelineによるデプロイ自動化
 codeCommitの変更を契機して、ECSへのリリースまでの一連の流れを作成。
 
 ### buildspec.ymlの変更

@@ -236,27 +236,42 @@ buildspec.ymlは、APPのソースコードPJのルートディレクトリに�
 <h3><span class="section-number">4.3.2. </span>appsepc.yml<a class="headerlink" href="#appsepc-yml" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">appspec.yml</span></code>とはデプロイの仕様を定義したファイルで、ファイルの配置先やデプロイのライフサイクルで実行するスクリプトを指定</p>
 </section>
+<section id="hook">
+<h3><span class="section-number">4.3.3. </span>Hook<a class="headerlink" href="#hook" title="この見出しへのパーマリンク">¶</a></h3>
+<p>デプロイ時の各ライフサイクルイベントに合わせて処理を行うことができる。デプロイは大きく分けて４つのステップを踏む</p>
+<ul class="simple">
+<li><p>アプリケーションの停止</p></li>
+<li><p>アプリケーションファイルのDL</p></li>
+<li><p>アプリケーションファイルのInstall</p></li>
+<li><p>アプリケーションの起動</p></li>
+</ul>
+<p><img alt="../_images/codedeploy-lifecycle.png" src="../_images/codedeploy-lifecycle.png" /></p>
+<ul class="simple">
+<li><p>ApplicationStop<br />注意が必要。前回の出プロされたリビジョンがない初回の場合は実行されない。</p></li>
+<li><p>ValidateService<br />最終的にデプロイがうまく行ったか否か</p></li>
+</ul>
+</section>
 <section id="id7">
-<h3><span class="section-number">4.3.3. </span>デプロイの種類<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.3.4. </span>デプロイの種類<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="inplace">
-<h4><span class="section-number">4.3.3.1. </span>Inplace<a class="headerlink" href="#inplace" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">4.3.4.1. </span>Inplace<a class="headerlink" href="#inplace" title="この見出しへのパーマリンク">¶</a></h4>
 <p>稼働中のサーバーを一度止めて、デプロイして、再起動する</p>
 <p><img alt="../_images/inplace-deploy.png" src="../_images/inplace-deploy.png" /></p>
 </section>
 <section id="blue-green">
-<h4><span class="section-number">4.3.3.2. </span>blue/green<a class="headerlink" href="#blue-green" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">4.3.4.2. </span>blue/green<a class="headerlink" href="#blue-green" title="この見出しへのパーマリンク">¶</a></h4>
 <p>動作中のサーバー（ブルー）とは別グループのサーバー（グリーン）を立ち上げて、動作確認して移行する</p>
 <p><img alt="../_images/bluegreen-deploy.png" src="../_images/bluegreen-deploy.png" /></p>
 </section>
 <section id="canary">
-<h4><span class="section-number">4.3.3.3. </span>canary<a class="headerlink" href="#canary" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">4.3.4.3. </span>canary<a class="headerlink" href="#canary" title="この見出しへのパーマリンク">¶</a></h4>
 <p>追加で新しいサーバーを立ち上げて、ALB側で一部のユーザーを割り振る。
 一気にデプロイする目的じゃなくて、新しい昨日の動作確認の意味合いも含む</p>
 <p><img alt="../_images/canary-deploy.png" src="../_images/canary-deploy.png" /></p>
 </section>
 </section>
 <section id="aws">
-<h3><span class="section-number">4.3.4. </span>AWSサービスで準備されているデプロイ方式<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.3.5. </span>AWSサービスで準備されているデプロイ方式<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h3>
 <p>EC2</p>
 <ul class="simple">
 <li><p>In-place</p></li>
@@ -269,11 +284,11 @@ buildspec.ymlは、APPのソースコードPJのルートディレクトリに�
 </ul>
 </section>
 <section id="id8">
-<h3><span class="section-number">4.3.5. </span>オンプレミスへのデプロイ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.3.6. </span>オンプレミスへのデプロイ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CodeDeployエージェントはポート番号443を利用したアウトバウンド通信が必要なため、ファイアーウォールで設定が必要</p>
 </section>
 <section id="id9">
-<h3><span class="section-number">4.3.6. </span>インターネットを経由しないデプロイ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.3.7. </span>インターネットを経由しないデプロイ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>VPCから直接接続するためのエンドポイントが準備されているが、EC2/ECS/Lambdaで準備するエンドポイントが異なる</p>
 <ul class="simple">
 <li><p>EC2:codedeployエンドポイントとcodedeploy-commands-secureエンドポイント</p></li>
@@ -669,15 +684,16 @@ files: imagedefinitions.json
 <li><a class="reference internal" href="#code-deploy">4.3. Code Deploy</a><ul>
 <li><a class="reference internal" href="#id6">4.3.1. 利用手順</a></li>
 <li><a class="reference internal" href="#appsepc-yml">4.3.2. appsepc.yml</a></li>
-<li><a class="reference internal" href="#id7">4.3.3. デプロイの種類</a><ul>
-<li><a class="reference internal" href="#inplace">4.3.3.1. Inplace</a></li>
-<li><a class="reference internal" href="#blue-green">4.3.3.2. blue/green</a></li>
-<li><a class="reference internal" href="#canary">4.3.3.3. canary</a></li>
+<li><a class="reference internal" href="#hook">4.3.3. Hook</a></li>
+<li><a class="reference internal" href="#id7">4.3.4. デプロイの種類</a><ul>
+<li><a class="reference internal" href="#inplace">4.3.4.1. Inplace</a></li>
+<li><a class="reference internal" href="#blue-green">4.3.4.2. blue/green</a></li>
+<li><a class="reference internal" href="#canary">4.3.4.3. canary</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aws">4.3.4. AWSサービスで準備されているデプロイ方式</a></li>
-<li><a class="reference internal" href="#id8">4.3.5. オンプレミスへのデプロイ</a></li>
-<li><a class="reference internal" href="#id9">4.3.6. インターネットを経由しないデプロイ</a></li>
+<li><a class="reference internal" href="#aws">4.3.5. AWSサービスで準備されているデプロイ方式</a></li>
+<li><a class="reference internal" href="#id8">4.3.6. オンプレミスへのデプロイ</a></li>
+<li><a class="reference internal" href="#id9">4.3.7. インターネットを経由しないデプロイ</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#code-pipeline">4.4. Code Pipeline</a><ul>

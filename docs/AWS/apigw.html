@@ -108,7 +108,7 @@
 <h2><span class="section-number">6.6. </span>API GWと認証認可<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <p>API GWにより、認証認可の仕組みを適用する場合い、いくつかの実現方法がある</p>
 <ol class="simple">
-<li><p>IAMアクセス権限<br />クライアントは、IAMユーザーのアクセスキーをハッシュ化したAWS署名ver4をリクエストヘッダーに付与する。
+<li><p>IAMアクセス権限<br />クライアントは、IAMユーザーのアクセスキーをハッシュ化した<code class="docutils literal notranslate"><span class="pre">AWS署名ver4</span></code>をリクエストヘッダーに付与する。
 API GWで署名を検証して問題なければAPIを呼び出す。</p></li>
 <li><p>Lambda オーソライザ<br />クライアントがリクエストに認証情報を付与して、Lambdaで認証して、IAMポリシーを返却する。
 API GWでポリシー評価をして問題なければAPIを呼び出す。</p></li>
@@ -118,6 +118,19 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。</p><
 クライアントはOIDCやOAuth2のプロバイダーでで認証してJWTを発行してもらってJWTリクエストのヘッダーに付与する。
 これは最近できたHTTPのみでサポートされている。</p></li>
 </ol>
+</section>
+<section id="apigw">
+<h2><span class="section-number">6.7. </span>APIGWの監視<a class="headerlink" href="#apigw" title="この見出しへのパーマリンク">¶</a></h2>
+<p>CloudWatchでAPIGWを監視した際に取得できるメトリクスは以下</p>
+<ul class="simple">
+<li><p>4XXError：指定された期間に取得されたクライアント側エラーの数。</p></li>
+<li><p>5XXError：指定された期間に取得されたサーバー側エラーの数。</p></li>
+<li><p>CacheHitCount：指定された期間内に API キャッシュから配信されたリクエストの数。</p></li>
+<li><p>CacheMissCoun：API キャッシュが有効になっている特定の期間における、バックエンドから提供されたリクエストの数。</p></li>
+<li><p>Count：指定された期間内の API リクエストの合計数。</p></li>
+<li><p>IntegrationLatency：API Gateway がバックエンドにリクエストを中継してから、レスポンスを受け取るまでの時間。</p></li>
+<li><p>Latency：API Gateway がクライアントからリクエストを受け取ってから、クライアントにレスポンスを返すまでの時間。</p></li>
+</ul>
 </section>
 </section>
 
@@ -141,6 +154,7 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。</p><
 <li><a class="reference internal" href="#id2">6.4. API GWのキャッシュ</a></li>
 <li><a class="reference internal" href="#id3">6.5. API GWのスロットリング</a></li>
 <li><a class="reference internal" href="#id4">6.6. API GWと認証認可</a></li>
+<li><a class="reference internal" href="#apigw">6.7. APIGWの監視</a></li>
 </ul>
 </li>
 </ul>

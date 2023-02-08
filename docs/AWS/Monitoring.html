@@ -274,10 +274,23 @@ CLIからvalidate-logsコマンドより、改竄確認ができる。</p>
 <h3><span class="section-number">10.3.5. </span>X-rayの利用<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーションの中でX-rayのSDKライブラリを経由して、APIを呼び出す。</p>
 <p>呼び出し方としてはAppから直接呼び出すのではなく、X-rayのデーモンを利用することが多い。
-EC2ではデーモンをインストールするが、ECSでは別コンテナでデーモンコンテナを立ち上げる。
+EC2ではデーモンをインストールする。</p>
+<section id="ecsx-ray">
+<h4><span class="section-number">10.3.5.1. </span>ECSでのX-Rayの利用<a class="headerlink" href="#ecsx-ray" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ECSでは別コンテナでデーモンコンテナを立ち上げる。
 その際デーモンコンテナではX-rayのAPIを呼び出す権限をIAMで付与しておくことを忘れないようにする。</p>
 <p><img alt="../_images/x-ray_ecs.png" src="../_images/x-ray_ecs.png" /></p>
+<p>デーモンがECSで正しく検出されるようにするために、タスク定義ファイルにおいてポートマッピングとネットワークモードを設定して、アプリケーションがデーモンコンテナと通信できるように設定する必要がある。</p>
+<p>ポイントとしては</p>
+<ul class="simple">
+<li><p>AWS X-Ray デーモンはUDP ポート 2000 のトラフィックを読取る</p></li>
+<li><p>AWS_XRAY_DAEMON_ADDRESS 環境変数でホストポートの設定</p></li>
+</ul>
+</section>
+<section id="sql">
+<h4><span class="section-number">10.3.5.2. </span>SQLクライアントでの利用<a class="headerlink" href="#sql" title="この見出しへのパーマリンク">¶</a></h4>
 <p>SQLクライアントにX-rayの設定を追加する場合は、DBへの接続ドライバーやSQLクライアントにCーRayの設定を行う。</p>
+</section>
 </section>
 <section id="id14">
 <h3><span class="section-number">10.3.6. </span>フィルタ式<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
@@ -340,7 +353,11 @@ EC2ではデーモンをインストールするが、ECSでは別コンテナ�
 <li><a class="reference internal" href="#id10">10.3.2. X-Rayの仕組み</a></li>
 <li><a class="reference internal" href="#id11">10.3.3. X-Rayの機能</a></li>
 <li><a class="reference internal" href="#id12">10.3.4. 利用できる言語</a></li>
-<li><a class="reference internal" href="#id13">10.3.5. X-rayの利用</a></li>
+<li><a class="reference internal" href="#id13">10.3.5. X-rayの利用</a><ul>
+<li><a class="reference internal" href="#ecsx-ray">10.3.5.1. ECSでのX-Rayの利用</a></li>
+<li><a class="reference internal" href="#sql">10.3.5.2. SQLクライアントでの利用</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#id14">10.3.6. フィルタ式</a></li>
 <li><a class="reference internal" href="#annotations-metadata">10.3.7. 注釈(Annotations)とメタデータ(Metadata)</a></li>
 <li><a class="reference internal" href="#cloudwatch">10.3.8. CloudWatchとの連携</a></li>

@@ -50,3 +50,8 @@ Web Scoketとは、ブラウザとウェブサーバーで双方向通信を行�
 ![](img/network_websocket.png)
 
 [WebSocketとは](https://www.freshvoice.net/knowledge/word/6323/)の解説がわかりやすい
+
+
+# DB
+## スロークエリ
+スロークエリログ (Slow query log) は、MySQL で出力できるログの種類の1つです。 SQL の実行時間が指定した時間よりもかかってしまった SQL を全て出力することができます。 これにより、アプリケーション構築時や本番運用時にパフォーマンスのボトルネックとなっている SQL を発見するのに大いに役に立ちます。s

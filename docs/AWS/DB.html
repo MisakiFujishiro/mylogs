@@ -150,6 +150,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <section id="memcached">
 <h3><span class="section-number">9.4.1. </span>Memcached<a class="headerlink" href="#memcached" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マスターデータなどのマルチスレッドでアクセス可能な<strong>共通データ</strong>のキャッシュ用途で利用する<br />インメモリ型のキーバリューストアで、シンプルなキーバリューストアでデータをキャッシュして低レイテンシーでデータ参照するためといった目的で利用する。</p>
+<p>レプリケーションといった冗長化の効果がない点に注意</p>
 </section>
 <section id="id7">
 <h3><span class="section-number">9.4.2. </span>基本的な挙動<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
@@ -232,13 +233,21 @@ GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作�
 </div>
 </section>
 <section id="id11">
-<h3><span class="section-number">9.5.3. </span>DynamoDBの注意点<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.3. </span>DynamoDBのクエリの種類<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>BatchWriteItem: 1つのテーブルから最大100データを取得</p></li>
+<li><p>Query: 特定のパーティションキーを持つ項目を全て取り出す</p></li>
+<li><p>Scan: 指定されたテーブルやイン出っっくすの全ての項目を取り出す</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3><span class="section-number">9.5.4. </span>DynamoDBの注意点<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>RDBでは当然のようにできていたことができない。
 テーブル間の結合や不軸問い合わせができないことやAND飲みが論理演算子で利用可能など・・・
 Dynamoにはできないことをきちんと把握してから利用する必要がある。</p>
 </section>
-<section id="id12">
-<h3><span class="section-number">9.5.4. </span>課金体系<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h3><span class="section-number">9.5.5. </span>課金体系<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DynamoDBの課金体系には以下の２つがある</p>
 <ul class="simple">
 <li><p>オンデマンドキャパシティモード：リクエスト数に応じて課金（動的）</p></li>
@@ -247,7 +256,7 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <p>読み込みと書き込みのキャパシティユニットをそれぞれWCUs(Write Capacity Units)とRCUs（Read Capacity Units)と呼ぶ。
 1秒間にどれだけ読み込みするか（RCUs（とどれだけ書き込みするか（WCUs）を算出して、設定する。</p>
 <section id="rcus">
-<h4><span class="section-number">9.5.4.1. </span>RCUs<a class="headerlink" href="#rcus" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">9.5.5.1. </span>RCUs<a class="headerlink" href="#rcus" title="この見出しへのパーマリンク">¶</a></h4>
 <blockquote>
 <div><p>1秒当たりの読み込み項目数 * 項目サイズ(4KBまでを1ブロック)</p>
 </div></blockquote>
@@ -257,7 +266,7 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 </ul>
 </section>
 <section id="wcus">
-<h4><span class="section-number">9.5.4.2. </span>WCUs<a class="headerlink" href="#wcus" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">9.5.5.2. </span>WCUs<a class="headerlink" href="#wcus" title="この見出しへのパーマリンク">¶</a></h4>
 <blockquote>
 <div><p>1秒当たりの書き込み項目数 ＊ 項目サイズ（1KBまでを１ブロック）</p>
 </div></blockquote>
@@ -266,36 +275,36 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 </ul>
 </section>
 </section>
-<section id="id13">
-<h3><span class="section-number">9.5.5. </span>読み込み書き込みの設定<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id14">
+<h3><span class="section-number">9.5.6. </span>読み込み書き込みの設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>GetItemではデフォルトで結果生合成の読み取りを提供している。</p>
 <p>アプリケーションで強い生合成のある読み取りが必要な場合は<code class="docutils literal notranslate"><span class="pre">ConsistentRead</span></code>パラメータをTrueにする。</p>
 </section>
 <section id="ttl-time-to-line">
-<h3><span class="section-number">9.5.6. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.7. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
 <p>項目に対して有効期限を設定することができ、指定されたタイムスタンプの日時にWCUsを利用せずに削除することができる。</p>
 </section>
 <section id="dax-dynamodb-accelarator">
-<h3><span class="section-number">9.5.7. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.8. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
 <p>VPC内でキャッシュクラスタを構築して、DynamoDBへの高速アクセスを可能とするキャッシュサービス。</p>
 <p>リアルタイム入札やソーシャルゲームなどのユースケースに適している。</p>
 </section>
 <section id="dynamodb-stream-trigger">
-<h3><span class="section-number">9.5.8. </span>DynamoDB Stream/Trigger<a class="headerlink" href="#dynamodb-stream-trigger" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.9. </span>DynamoDB Stream/Trigger<a class="headerlink" href="#dynamodb-stream-trigger" title="この見出しへのパーマリンク">¶</a></h3>
 <p>テーブル内で項目の変更に関するデータを記録する機能</p>
 <p>データが作成・更新・削除されたときに項目のPKと変更前後のセータがストリームレコードとして書き込まれる。</p>
 <p><img alt="../_images/db_dynamo_streams.png" src="../_images/db_dynamo_streams.png" /></p>
 <p><a class="reference external" href="https://qiita.com/bassaaaaa/items/7477420641080f922a59">DynamoDBの詳細</a></p>
 <p>LambdaやKinesisと統合されており、StreamAPIを使って、ポーリングを行なって変更を検知すると処理を実行できる（DynamoDB Trigger)</p>
 </section>
-<section id="id14">
-<h3><span class="section-number">9.5.9. </span>アトミックカウンター<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">9.5.10. </span>アトミックカウンター<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>書き込みリクエストを妨害することなく、数値をカウントアップ・ダウンすることができる機能。
 UpDateItemと組み合わせて利用することで、更新した回数などをカウントできるが、冪等性がないことに注意。</p>
 </section>
 </section>
-<section id="id15">
-<h2><span class="section-number">9.6. </span>エンドポイント整理<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id16">
+<h2><span class="section-number">9.6. </span>エンドポイント整理<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>RDS</p>
 <ul>
@@ -374,20 +383,21 @@ UpDateItemと組み合わせて利用することで、更新した回数など�
 </ul>
 </li>
 <li><a class="reference internal" href="#dynamodb">9.5.2. DynamoDBのクエリ</a></li>
-<li><a class="reference internal" href="#id11">9.5.3. DynamoDBの注意点</a></li>
-<li><a class="reference internal" href="#id12">9.5.4. 課金体系</a><ul>
-<li><a class="reference internal" href="#rcus">9.5.4.1. RCUs</a></li>
-<li><a class="reference internal" href="#wcus">9.5.4.2. WCUs</a></li>
+<li><a class="reference internal" href="#id11">9.5.3. DynamoDBのクエリの種類</a></li>
+<li><a class="reference internal" href="#id12">9.5.4. DynamoDBの注意点</a></li>
+<li><a class="reference internal" href="#id13">9.5.5. 課金体系</a><ul>
+<li><a class="reference internal" href="#rcus">9.5.5.1. RCUs</a></li>
+<li><a class="reference internal" href="#wcus">9.5.5.2. WCUs</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">9.5.5. 読み込み書き込みの設定</a></li>
-<li><a class="reference internal" href="#ttl-time-to-line">9.5.6. TTL(Time To Line)</a></li>
-<li><a class="reference internal" href="#dax-dynamodb-accelarator">9.5.7. DAX(DynamoDB Accelarator)</a></li>
-<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.8. DynamoDB Stream/Trigger</a></li>
-<li><a class="reference internal" href="#id14">9.5.9. アトミックカウンター</a></li>
+<li><a class="reference internal" href="#id14">9.5.6. 読み込み書き込みの設定</a></li>
+<li><a class="reference internal" href="#ttl-time-to-line">9.5.7. TTL(Time To Line)</a></li>
+<li><a class="reference internal" href="#dax-dynamodb-accelarator">9.5.8. DAX(DynamoDB Accelarator)</a></li>
+<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.9. DynamoDB Stream/Trigger</a></li>
+<li><a class="reference internal" href="#id15">9.5.10. アトミックカウンター</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id15">9.6. エンドポイント整理</a></li>
+<li><a class="reference internal" href="#id16">9.6. エンドポイント整理</a></li>
 </ul>
 </li>
 </ul>

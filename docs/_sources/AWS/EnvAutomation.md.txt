@@ -584,3 +584,8 @@ Docker Composeを利用しない場合は３パターンでコンテナ実行で
 Dockerrun.aws.jsonファイルを作成して、コンソールへアップロードする
 - Zip形式のAppファイルを作成して、コンソール上からアップロードする。
 アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。
+
+
+### .ebextensions
+設定ファイル群を格納するディレクトリです。
+プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が.configのyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。
