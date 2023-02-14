@@ -147,6 +147,12 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 <li><p>ロールAでロールBへのAssumeRoleを設定</p></li>
 </ol>
 </section>
+<section id="iam-policy-simulator">
+<h4><span class="section-number">2.1.3.4. </span>IAM Policy Simulator<a class="headerlink" href="#iam-policy-simulator" title="この見出しへのパーマリンク">¶</a></h4>
+<p>設計したIAMポリシーについて、想定しているアクションが実行できるか簡単に調べることができる。</p>
+<p><img alt="../_images/iam_simulator.png" src="../_images/iam_simulator.png" /></p>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/iam-policy-simulator-howto/">IAM Policy Simulator でお手軽に確認しちゃおう</a></p>
+</section>
 </section>
 </section>
 <section id="sts">
@@ -163,10 +169,20 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 <h2><span class="section-number">2.3. </span>KMS(Key-Management-Service)<a class="headerlink" href="#kms-key-management-service" title="この見出しへのパーマリンク">¶</a></h2>
 <p>データを暗号化するための鍵を管理するサービス</p>
 <p>管理する鍵を利用した暗号化やエンベロープ暗号化のための鍵のやりとりをするエンドポイントを持っている。</p>
-<p>KMSでは、<code class="docutils literal notranslate"><span class="pre">CDK(Customer</span> <span class="pre">Data</span> <span class="pre">Key)</span></code>を利用してAWSサービスを暗号化する。CDK自体もAWS内で暗号化して保管されており、CDKを暗号化するのが、<code class="docutils literal notranslate"><span class="pre">CMS(Customer</span> <span class="pre">Master</span> <span class="pre">Key)</span></code>である。</p>
-<p>KMSでは、<code class="docutils literal notranslate"><span class="pre">SSE(Server</span> <span class="pre">Side</span> <span class="pre">Encryption)</span></code>と<code class="docutils literal notranslate"><span class="pre">CSE(Client</span> <span class="pre">Side</span> <span class="pre">Encrryption)</span></code>の2種類の方式がある。<br />SSEでは、KMSと統合されたAWSサービスのEBSやS3、RDSで利用され、AWSが自動で暗号化と復号化をサービス内でやってくれるので、ユーザーは暗号化をあまり意識しない。<br />CSEでは、アプリケーション側で暗号化を明示的に行う。</p>
+<section id="cmkcdk">
+<h3><span class="section-number">2.3.1. </span>鍵の種類：CMKとCDK<a class="headerlink" href="#cmkcdk" title="この見出しへのパーマリンク">¶</a></h3>
+<p>KMSでは、<code class="docutils literal notranslate"><span class="pre">CDK(Customer</span> <span class="pre">Data</span> <span class="pre">Key)</span></code>と<code class="docutils literal notranslate"><span class="pre">CMS(Customer</span> <span class="pre">Master</span> <span class="pre">Key)</span></code>という２つの鍵が登場する
+CDKはデータを暗号化するための鍵であり、CMKはCDKを暗号化するための鍵である。</p>
+<p><img alt="../_images/kms-keys.png" src="../_images/kms-keys.png" /></p>
+<p>KMSを利用する場合は最初にCMKを作成し、CMKに紐付ける形でCDKを生成する。
+CMKとCDKを利用することで<a class="reference external" href="#%E3%82%A8%E3%83%B3%E3%83%99%E3%83%AD%E3%83%BC%E3%83%97%E6%9A%97%E5%8F%B7%E5%8C%96">エンベロープ暗号化</a>を行い、安全にデータの暗号化が可能となる。</p>
+<p>以下のサイトがわかりやすい</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dev.classmethod.jp/articles/10minutes-kms/#toc-10">10分でわかる！Key Management Service</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/mksamba/items/a7e902c6d5a12f2a36dc">AWS Key Management Service (AWS KMS) を使ってみる</a></p></li>
+</ul>
 <section id="kms">
-<h3><span class="section-number">2.3.1. </span>KMSのキーの種類<a class="headerlink" href="#kms" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">2.3.1.1. </span>KMSのキーの種類詳細<a class="headerlink" href="#kms" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CMK</p>
 <ul class="simple">
 <li><p>カスタマー管理CMK<br />カスタマーがAWSで作成or外部からインポートしたキーでCCSで利用する、AWSが管理するキー</p></li>
@@ -177,15 +193,20 @@ CDK</p></li>
 <li><p>非対称キー<br />プレーンキーの暗号化と復号化を行う鍵B</p></li>
 </ul>
 </section>
+</section>
 <section id="id9">
-<h3><span class="section-number">2.3.2. </span>KMSのエンドポイント<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.2. </span>処理方式の種類<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>KMSでは、<code class="docutils literal notranslate"><span class="pre">SSE(Server</span> <span class="pre">Side</span> <span class="pre">Encryption)</span></code>と<code class="docutils literal notranslate"><span class="pre">CSE(Client</span> <span class="pre">Side</span> <span class="pre">Encrryption)</span></code>の2種類の方式がある。<br />SSEでは、KMSと統合されたAWSサービスのEBSやS3、RDSで利用され、AWSが自動で暗号化と復号化をサービス内でやってくれるので、ユーザーは暗号化をあまり意識しない。<br />CSEでは、アプリケーション側で暗号化を明示的に行う。</p>
+</section>
+<section id="id10">
+<h3><span class="section-number">2.3.3. </span>KMSのエンドポイント<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Encrypt/Decrypt: 暗号化と複合化を行うエンドポイントでサイズ制限あり</p></li>
 <li><p>GenerateDataKey: プレーンデータキーと暗号化されたデータキーを返す（エンベロープ暗号化で利用）</p></li>
 </ul>
 </section>
-<section id="id10">
-<h3><span class="section-number">2.3.3. </span>エンベロープ暗号化<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">2.3.4. </span>エンベロープ暗号化(ハイブリット暗号化)<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>KMSのAPI公開されている直接の暗号化はサイズ制限などがあるので、エンベロープ暗号化を利用する。
 通信に流れるのは暗号化されたテキストと暗号化された鍵
 暗号化された鍵はKMSにアクセスできないと複合化できないので、そこで安全性を担保しているっぽい。（両方盗まれても鍵を複合化できない）</p>
@@ -199,8 +220,8 @@ CDK</p></li>
 </ol>
 <p><img alt="../_images/kms_envelope.png" src="../_images/kms_envelope.png" /></p>
 </section>
-<section id="id11">
-<h3><span class="section-number">2.3.4. </span>主なユースケース<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">2.3.5. </span>主なユースケース<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>SSE(Server Side Encryption)</p>
 <ul>
@@ -218,8 +239,8 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 </li>
 </ul>
 </section>
-<section id="id12">
-<h3><span class="section-number">2.3.5. </span>大量の問い合わせ<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h3><span class="section-number">2.3.6. </span>大量の問い合わせ<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>大量に暗号化や複合化の問い合わせをするとスロット処理がエラーを発生させる可能性がある。</p>
 <p>対応としては、AWSサポートに依頼して、AWS KMSレート制限を引き上げを依頼することや、時間を置いて問い合わせをする（エクスポーネンシャルバックオフ）といった対応が必要。</p>
 </section>
@@ -227,11 +248,11 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 <section id="cognito">
 <h2><span class="section-number">2.4. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Web-AppやMobile-Appに対してAPIベースで認証機能を提供するサービス</p>
-<section id="id13">
-<h3><span class="section-number">2.4.1. </span>ユーザープール<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ユーザーDBに相当するが、AWSがマネージドで管理してくれる。</p>
 <section id="id14">
-<h4><span class="section-number">2.4.1.1. </span>ユースケース<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">2.4.1. </span>ユーザープール<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザーDBに相当するが、AWSがマネージドで管理してくれる。</p>
+<section id="id15">
+<h4><span class="section-number">2.4.1.1. </span>ユースケース<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ざっくり分けると３つのユースケースに分類可能。Appへの認証、IDプールと連携してAWSサービスへのアクセス、CognitoからLambdaのキック。</p>
 <ul class="simple">
 <li><p>EC2やECS常に配置したWeb-AppやMobile-Appの認証：アプリケーションへの認証をする</p></li>
@@ -239,20 +260,20 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 <li><p>Lambdaを使ったオーソライザ：CognitoがLambdaを使って、サインインのワークフロをカスタマイズする</p></li>
 </ul>
 </section>
-<section id="id15">
-<h4><span class="section-number">2.4.1.2. </span>具体的な利用方法<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id16">
+<h4><span class="section-number">2.4.1.2. </span>具体的な利用方法<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>まず、ユーザーディレクトリを定義して、サインアップ方法やパスワードポリシーを設定する。<br />アプリクライアント側（認証を求めてくるクライアント）によって、推奨される認証フローが異なる点に注意</p>
 </section>
-<section id="id16">
-<h4><span class="section-number">2.4.1.3. </span>ユーザープールとアプリケーションの統合<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id17">
+<h4><span class="section-number">2.4.1.3. </span>ユーザープールとアプリケーションの統合<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Cognitoでは、OIDCの標準に準拠したエンドポイントが提供されている。
 そのため、アプリへのリクエストに対して、Cognitoのエンドポイントにリダイレクトすることで認証・認可をCognitoに任せることができる。
 Cognitoで認証してクライアント側にTokenを付与することで、Cognitoと連携するアプリへの一元的なアクセスができるようになる（シングルサインオン）</p>
 <p>Cognitoへの認証を外部フェデレーテッドIDプロバイダと連携して任せることができる。
 具体的なIDプロバイダとしてはGoogle ,Amazon ,Facebook ,Apple ,SAML, OpenIDConnectプロバイダが挙げられる。</p>
 </section>
-<section id="id17">
-<h4><span class="section-number">2.4.1.4. </span>ユーザプールの定義<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id18">
+<h4><span class="section-number">2.4.1.4. </span>ユーザプールの定義<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>認証フローを定義する必要があるが、モバイルで実行されるアプリケーションかサーバーサイドのWebアプリケーション化で設定内容が異なる。</p>
 <ul class="simple">
 <li><p>ALLOW_ADMIN_USER_PASSWORD_AUTH<br />CLIやSDKを使って管理やユーザーとして認証処理する場合のオプション。
@@ -268,7 +289,10 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 </section>
 <section id="id">
 <h3><span class="section-number">2.4.2. </span>IDプール<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ユーザープールや外部フェデレーションで認証したユーザーに対してAWSサービスを認可する機能を提供</p>
+<p>ユーザープールや外部フェデレーションで認証したユーザーに対してAWSサービスを<code class="docutils literal notranslate"><span class="pre">認可</span></code>する機能を提供</p>
+<p>cognitoでは認証をユーザープールが、認可をIDプールが行う。
+したがって、両者が協力している。</p>
+<p>流れとしては以下</p>
 <ol class="simple">
 <li><p>ユーザープールで認証される</p></li>
 <li><p>JWTがクライアントに提供される</p></li>
@@ -277,6 +301,10 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 <li><p>Tokenが正しければ、STSに認証情報をもらう</p></li>
 <li><p>クライアントが所望のサービスにアクセスする</p></li>
 </ol>
+<p><img alt="../_images/cognito_idp.png" src="../_images/cognito_idp.png" /></p>
+<p>付与する認可情報はユーザーに応じたルール設定などが可能であり、認証されていないユーザーに対しても権限付与のルール設定ができるので、ゲストユーザーに対する権限付与を行うことも可能</p>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/">AWS CLIで動かして学ぶCognito IDプールを利用したAWSの一時クレデンシャルキー発行</a>
+この記事は実際に画面からIDプールの設定をしていてわかりやすい。</p>
 </section>
 <section id="jwt">
 <h3><span class="section-number">2.4.3. </span>JWT<a class="headerlink" href="#jwt" title="この見出しへのパーマリンク">¶</a></h3>
@@ -284,15 +312,44 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 <p>署名がJWTの発行元の秘密鍵で暗号化されているため、公開鍵で復号化するだけで署名を検証することができる点が有用</p>
 <p>ただし、期限付きの合鍵となるので奪取されることは避けなくてはいけないので取り扱いに注意が必要。</p>
 </section>
+<section id="cognito-sync">
+<h3><span class="section-number">2.4.4. </span>Cognito Sync<a class="headerlink" href="#cognito-sync" title="この見出しへのパーマリンク">¶</a></h3>
+<p>現在は、AppSyncを利用することが推奨されている点に注意</p>
+<p>Cognitoのユーザープールで特定された個人に対して固有のデータストレージを提供する。
+クラウドで情報を同期しているので、デバイスが変わってもユーザーが同じなら情報は共有される。</p>
+</section>
+</section>
+<section id="acm-aws-certificate-manager">
+<h2><span class="section-number">2.5. </span>ACM(AWS Certificate Manager)<a class="headerlink" href="#acm-aws-certificate-manager" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ACMはSSL/TLSサーバー証明書を管理するサービス</p>
+<p>SSLを有効化するためには、通信を行うサーバーに対してSSL/TLSサーバー証明書を発行準備する必要がある。
+SSLが有効化されていることでHTTPSの通信が可能となる。</p>
+<section id="id19">
+<h3><span class="section-number">2.5.1. </span>証明書の発行元<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<p>公的機関が発行するパブリック証明書と、自前の認証局で発行するプライベート証明書がある。</p>
+<p>パブリック証明書は、接続の安全性を保証するために利用され、不特定多数の人がアクセスするWebサイトなどで利用する。</p>
+</section>
+<section id="acm">
+<h3><span class="section-number">2.5.2. </span>ACMの役割<a class="headerlink" href="#acm" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>証明書の発行：パブリック・プライベートの証明書を発行</p></li>
+<li><p>証明書のインポート：既存の証明書をインポートする</p></li>
+<li><p>証明書のデプロイ：AWSサービスに証明書を配備する</p></li>
+</ul>
+</section>
+<section id="id20">
+<h3><span class="section-number">2.5.3. </span>ACMが利用できないリージョン<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ACMが利用できないリージョンで、証明書をインポートしたい場合には、ACMの代わりにIAMを利用する。</p>
+</section>
 </section>
 <section id="waf">
-<h2><span class="section-number">2.5. </span>WAF<a class="headerlink" href="#waf" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.6. </span>WAF<a class="headerlink" href="#waf" title="この見出しへのパーマリンク">¶</a></h2>
 <p>WAFはWebアプリケーションファイアウォール（Web Application Firewall)機能である。</p>
 <p>ルールを設定して、特定のIPからのアクセスを拒否したりすることができる。</p>
 <p><img alt="../_images/waf.png" src="../_images/waf.png" /></p>
 </section>
 <section id="shield">
-<h2><span class="section-number">2.6. </span>Shield<a class="headerlink" href="#shield" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.7. </span>Shield<a class="headerlink" href="#shield" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ShieldはL3,L4,L7レイヤーへのDDoS攻撃からシステムを保護する。
 StandardとAdvancedが存在</p>
 <ul class="simple">
@@ -303,7 +360,7 @@ StandardとAdvancedが存在</p>
 <p>ただし、Advancedは年間3000ドル＋通信量で費用が多くなるので注意</p>
 </section>
 <section id="guard-duty">
-<h2><span class="section-number">2.7. </span>Guard Duty<a class="headerlink" href="#guard-duty" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.8. </span>Guard Duty<a class="headerlink" href="#guard-duty" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Guard Dutyは見張り役という意味を持つ。</p>
 <p>ユーザーの動作や通信をモニタリング・分析し、脅威を識別する脅威検出サービス。</p>
 <p>以下のログを収集して、機械学習モデルなどを利用しながら、脅威を検出する。</p>
@@ -316,22 +373,22 @@ StandardとAdvancedが存在</p>
 <p><img alt="../_images/guardduty.png" src="../_images/guardduty.png" /></p>
 </section>
 <section id="amazon-macie">
-<h2><span class="section-number">2.8. </span>Amazon Macie<a class="headerlink" href="#amazon-macie" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.9. </span>Amazon Macie<a class="headerlink" href="#amazon-macie" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3バケットを対象として、オブジェクト内部の脅威の検出やクレジットカードが暗号化されていないなどを検知することができる。</p>
 <p>検知には機械学習が利用されている。</p>
 </section>
 <section id="detective">
-<h2><span class="section-number">2.9. </span>Detective<a class="headerlink" href="#detective" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.10. </span>Detective<a class="headerlink" href="#detective" title="この見出しへのパーマリンク">¶</a></h2>
 <p>各種AWSサービスから収集できるデータを分析・可視化することで、インシデンtおの原因を特定（犯人探しを）する。</p>
 </section>
 <section id="inspector">
-<h2><span class="section-number">2.10. </span>Inspector<a class="headerlink" href="#inspector" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.11. </span>Inspector<a class="headerlink" href="#inspector" title="この見出しへのパーマリンク">¶</a></h2>
 <p>EC2のソフトウェアの脆弱性についてサポートするサービス。</p>
 <p>サーバー内部から脆弱性を診断するホスト型診断と外部ネットワークから脆弱性を確認する外部ネットワーク型診断がある。</p>
 <p><img alt="../_images/inspector.png" src="../_images/inspector.png" /></p>
 </section>
 <section id="secrets-manager">
-<h2><span class="section-number">2.11. </span>Secrets Manager<a class="headerlink" href="#secrets-manager" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.12. </span>Secrets Manager<a class="headerlink" href="#secrets-manager" title="この見出しへのパーマリンク">¶</a></h2>
 <p>データベースのパスワードやAPIキーなどデータ流出の危険性がある認証情報を集約して管理するサービス。
 KMSで暗号化して保存できるので、セキュアに管理することができる。</p>
 <p>Secrets Managerにシークレットを管理し、Secrets Managerにアクセスすることで、シークレットを取得する。</p>
@@ -362,6 +419,7 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 <li><a class="reference internal" href="#id5">2.1.3.1. リクエスト元を信頼する（アクセスポリシー）</a></li>
 <li><a class="reference internal" href="#id6">2.1.3.2. リソースに対してアクションを許可する(リソースポリシー)</a></li>
 <li><a class="reference internal" href="#id7">2.1.3.3. クロスアカウント</a></li>
+<li><a class="reference internal" href="#iam-policy-simulator">2.1.3.4. IAM Policy Simulator</a></li>
 </ul>
 </li>
 </ul>
@@ -371,32 +429,43 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 </ul>
 </li>
 <li><a class="reference internal" href="#kms-key-management-service">2.3. KMS(Key-Management-Service)</a><ul>
-<li><a class="reference internal" href="#kms">2.3.1. KMSのキーの種類</a></li>
-<li><a class="reference internal" href="#id9">2.3.2. KMSのエンドポイント</a></li>
-<li><a class="reference internal" href="#id10">2.3.3. エンベロープ暗号化</a></li>
-<li><a class="reference internal" href="#id11">2.3.4. 主なユースケース</a></li>
-<li><a class="reference internal" href="#id12">2.3.5. 大量の問い合わせ</a></li>
+<li><a class="reference internal" href="#cmkcdk">2.3.1. 鍵の種類：CMKとCDK</a><ul>
+<li><a class="reference internal" href="#kms">2.3.1.1. KMSのキーの種類詳細</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id9">2.3.2. 処理方式の種類</a></li>
+<li><a class="reference internal" href="#id10">2.3.3. KMSのエンドポイント</a></li>
+<li><a class="reference internal" href="#id11">2.3.4. エンベロープ暗号化(ハイブリット暗号化)</a></li>
+<li><a class="reference internal" href="#id12">2.3.5. 主なユースケース</a></li>
+<li><a class="reference internal" href="#id13">2.3.6. 大量の問い合わせ</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#cognito">2.4. Cognito</a><ul>
-<li><a class="reference internal" href="#id13">2.4.1. ユーザープール</a><ul>
-<li><a class="reference internal" href="#id14">2.4.1.1. ユースケース</a></li>
-<li><a class="reference internal" href="#id15">2.4.1.2. 具体的な利用方法</a></li>
-<li><a class="reference internal" href="#id16">2.4.1.3. ユーザープールとアプリケーションの統合</a></li>
-<li><a class="reference internal" href="#id17">2.4.1.4. ユーザプールの定義</a></li>
+<li><a class="reference internal" href="#id14">2.4.1. ユーザープール</a><ul>
+<li><a class="reference internal" href="#id15">2.4.1.1. ユースケース</a></li>
+<li><a class="reference internal" href="#id16">2.4.1.2. 具体的な利用方法</a></li>
+<li><a class="reference internal" href="#id17">2.4.1.3. ユーザープールとアプリケーションの統合</a></li>
+<li><a class="reference internal" href="#id18">2.4.1.4. ユーザプールの定義</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id">2.4.2. IDプール</a></li>
 <li><a class="reference internal" href="#jwt">2.4.3. JWT</a></li>
+<li><a class="reference internal" href="#cognito-sync">2.4.4. Cognito Sync</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#waf">2.5. WAF</a></li>
-<li><a class="reference internal" href="#shield">2.6. Shield</a></li>
-<li><a class="reference internal" href="#guard-duty">2.7. Guard Duty</a></li>
-<li><a class="reference internal" href="#amazon-macie">2.8. Amazon Macie</a></li>
-<li><a class="reference internal" href="#detective">2.9. Detective</a></li>
-<li><a class="reference internal" href="#inspector">2.10. Inspector</a></li>
-<li><a class="reference internal" href="#secrets-manager">2.11. Secrets Manager</a></li>
+<li><a class="reference internal" href="#acm-aws-certificate-manager">2.5. ACM(AWS Certificate Manager)</a><ul>
+<li><a class="reference internal" href="#id19">2.5.1. 証明書の発行元</a></li>
+<li><a class="reference internal" href="#acm">2.5.2. ACMの役割</a></li>
+<li><a class="reference internal" href="#id20">2.5.3. ACMが利用できないリージョン</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#waf">2.6. WAF</a></li>
+<li><a class="reference internal" href="#shield">2.7. Shield</a></li>
+<li><a class="reference internal" href="#guard-duty">2.8. Guard Duty</a></li>
+<li><a class="reference internal" href="#amazon-macie">2.9. Amazon Macie</a></li>
+<li><a class="reference internal" href="#detective">2.10. Detective</a></li>
+<li><a class="reference internal" href="#inspector">2.11. Inspector</a></li>
+<li><a class="reference internal" href="#secrets-manager">2.12. Secrets Manager</a></li>
 </ul>
 </li>
 </ul>

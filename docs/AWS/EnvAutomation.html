@@ -134,7 +134,7 @@ CFNでは、<code class="docutils literal notranslate"><span class="pre">Conditi
 <section id="mappings">
 <h4><span class="section-number">11.1.3.6. </span>Mappings<a class="headerlink" href="#mappings" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Conditionsで条件に応じた、環境構築を行うことができる。
-さらに、Mappingsを利用することで、リージョンやユーザーのn入力情報に応じて条件設定をすることができる。</p>
+さらに、Mappingsを利用することで、リージョンやユーザーの入力情報に応じて条件設定をすることができる。</p>
 <p><a class="reference external" href="https://dev.classmethod.jp/articles/cfn-create-resources-depending-on-accounts/">AWS CloudFormationテンプレートでAWSアカウントごとにリソース作成有無を決定する</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWSTemplateFormatVersion: &#39;2010-09-09&#39;
 Mappings: 
@@ -172,6 +172,8 @@ Resources:
 <section id="id10">
 <h4><span class="section-number">11.1.4.2. </span>クロススタックリファレンス<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
 <p>テンプレートを分割する方法の一つであり、OUTPUTで<code class="docutils literal notranslate"><span class="pre">EXPORT</span></code>したリソースは、他のスタックから<code class="docutils literal notranslate"><span class="pre">!ImportValue</span></code>で参照することができるようになる機能。</p>
+<p>注意しなくてはならないのは、スタック間でリソースを参照するので、同一アカウントの同一リージョンの中で、エクスポート名は一位である必要がある。</p>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/cfn-cross-stack-reference/">CloudFormationのスタック間でリソースを参照する</a></p>
 <p>EXPORTする側</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Outputs:
   EC2VPC1:
@@ -590,10 +592,18 @@ PaaSを実現するサービス</p>
 アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。</p></li>
 </ul>
 </section>
-<section id="ebextensions">
-<h3><span class="section-number">11.3.4. </span>.ebextensions<a class="headerlink" href="#ebextensions" title="この見出しへのパーマリンク">¶</a></h3>
-<p>設定ファイル群を格納するディレクトリです。
-プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が.configのyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。</p>
+<section id="id30">
+<h3><span class="section-number">11.3.4. </span>設定ファイル<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">.ebextensions</span></code>は、設定ファイル群を格納するディレクトリです。
+プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が<code class="docutils literal notranslate"><span class="pre">.config</span></code>のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。</p>
+</section>
+<section id="cron-yaml">
+<h3><span class="section-number">11.3.5. </span>cron.yaml<a class="headerlink" href="#cron-yaml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Elastic Beanstalkに置いて、定期実行のワーカーを設定する場合は、cron.yamlファイルを作成しておく</p>
+</section>
+<section id="env-yaml">
+<h3><span class="section-number">11.3.6. </span>env.yaml<a class="headerlink" href="#env-yaml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>AWS Elastic Beanstalkの環境に使用されるパラメータを特定します</p>
 </section>
 </section>
 </section>
@@ -685,7 +695,9 @@ PaaSを実現するサービス</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#id29">11.3.3. コンテナサポート</a></li>
-<li><a class="reference internal" href="#ebextensions">11.3.4. .ebextensions</a></li>
+<li><a class="reference internal" href="#id30">11.3.4. 設定ファイル</a></li>
+<li><a class="reference internal" href="#cron-yaml">11.3.5. cron.yaml</a></li>
+<li><a class="reference internal" href="#env-yaml">11.3.6. env.yaml</a></li>
 </ul>
 </li>
 </ul>

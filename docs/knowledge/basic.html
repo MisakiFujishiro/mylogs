@@ -95,20 +95,35 @@
 </section>
 <section id="id6">
 <h1><span class="section-number">3. </span>通信<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="ssl-tls">
+<h2><span class="section-number">3.1. </span>SSL/TLS<a class="headerlink" href="#ssl-tls" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://www.jipdec.or.jp/library/report/ssl_cert.html">SSL/TLSサーバ証明書とは</a></p>
+<p>SSL/TLSは通信の暗号化のプロトコル</p>
+</section>
+<section id="id7">
+<h2><span class="section-number">3.2. </span>SSL/TLS証明書<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://www.jipdec.or.jp/library/report/ssl_cert.html">SSL/TLSサーバ証明書とは</a></p>
+<p>これは実在証明</p>
+</section>
 <section id="web-socket">
-<h2><span class="section-number">3.1. </span>Web Socket<a class="headerlink" href="#web-socket" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">3.3. </span>Web Socket<a class="headerlink" href="#web-socket" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Web Scoketとは、ブラウザとウェブサーバーで双方向通信を行うための通信規格。</p>
 <p>サーバー側とユーザー側が常にオンライン状態を維持するので双方向を可能とする。</p>
 <p>Load Balancerを経由する場合は、同じサーバーと接続ができるように、スティッキーセッションを利用する必要がある。</p>
 <p><img alt="../_images/network_websocket.png" src="../_images/network_websocket.png" /></p>
 <p><a class="reference external" href="https://www.freshvoice.net/knowledge/word/6323/">WebSocketとは</a>の解説がわかりやすい</p>
 </section>
+<section id="udp-tcp">
+<h2><span class="section-number">3.4. </span>UDP/TCP<a class="headerlink" href="#udp-tcp" title="この見出しへのパーマリンク">¶</a></h2>
+<p>通信相手のコンピューターとデータを送り出すタイミングの調整をしたり、届けられたデータを順番通りに復元したりするなど、通信をおこなう工程を制御しています。</p>
+<p>UDPはTCPと比べて、必要最低限の通信量でデータを送受信できることを目的として考案</p>
+</section>
 </section>
 <section id="db">
 <h1><span class="section-number">4. </span>DB<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h1>
-<section id="id7">
-<h2><span class="section-number">4.1. </span>スロークエリ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
-<p>スロークエリログ (Slow query log) は、MySQL で出力できるログの種類の1つです。 SQL の実行時間が指定した時間よりもかかってしまった SQL を全て出力することができます。 これにより、アプリケーション構築時や本番運用時にパフォーマンスのボトルネックとなっている SQL を発見するのに大いに役に立ちます。s</p>
+<section id="id8">
+<h2><span class="section-number">4.1. </span>スロークエリ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+<p>スロークエリログ (Slow query log) は、MySQL で出力できるログの種類の1つです。 SQL の実行時間が指定した時間よりもかかってしまった SQL を全て出力することができます。 これにより、アプリケーション構築時や本番運用時にパフォーマンスのボトルネックとなっている SQL を発見するのに大いに役に立ちます。</p>
 </section>
 </section>
 
@@ -141,11 +156,14 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#id6">3. 通信</a><ul>
-<li><a class="reference internal" href="#web-socket">3.1. Web Socket</a></li>
+<li><a class="reference internal" href="#ssl-tls">3.1. SSL/TLS</a></li>
+<li><a class="reference internal" href="#id7">3.2. SSL/TLS証明書</a></li>
+<li><a class="reference internal" href="#web-socket">3.3. Web Socket</a></li>
+<li><a class="reference internal" href="#udp-tcp">3.4. UDP/TCP</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#db">4. DB</a><ul>
-<li><a class="reference internal" href="#id7">4.1. スロークエリ</a></li>
+<li><a class="reference internal" href="#id8">4.1. スロークエリ</a></li>
 </ul>
 </li>
 </ul>

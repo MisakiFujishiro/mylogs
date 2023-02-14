@@ -86,7 +86,7 @@ Resources:
 
 #### Mappings
 Conditionsで条件に応じた、環境構築を行うことができる。
-さらに、Mappingsを利用することで、リージョンやユーザーのn入力情報に応じて条件設定をすることができる。
+さらに、Mappingsを利用することで、リージョンやユーザーの入力情報に応じて条件設定をすることができる。
 
 [AWS CloudFormationテンプレートでAWSアカウントごとにリソース作成有無を決定する](https://dev.classmethod.jp/articles/cfn-create-resources-depending-on-accounts/)
 
@@ -132,6 +132,10 @@ CFNでは、テンプレート分割として、`ネステッドスタック`や
 
 #### クロススタックリファレンス
 テンプレートを分割する方法の一つであり、OUTPUTで`EXPORT`したリソースは、他のスタックから`!ImportValue`で参照することができるようになる機能。
+
+注意しなくてはならないのは、スタック間でリソースを参照するので、同一アカウントの同一リージョンの中で、エクスポート名は一位である必要がある。
+
+[CloudFormationのスタック間でリソースを参照する](https://dev.classmethod.jp/articles/cfn-cross-stack-reference/)
 
 EXPORTする側
 ```
@@ -586,6 +590,12 @@ Dockerrun.aws.jsonファイルを作成して、コンソールへアップロ�
 アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。
 
 
-### .ebextensions
-設定ファイル群を格納するディレクトリです。
-プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が.configのyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。
+### 設定ファイル
+`.ebextensions`は、設定ファイル群を格納するディレクトリです。
+プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が`.config`のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。
+
+### cron.yaml
+Elastic Beanstalkに置いて、定期実行のワーカーを設定する場合は、cron.yamlファイルを作成しておく
+
+### env.yaml
+AWS Elastic Beanstalkの環境に使用されるパラメータを特定します

@@ -21,7 +21,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="2. セキュリティ" href="security.html" />
-    <link rel="prev" title="4. 環境構築系の基礎知識" href="../knowledge/environment.html" /> 
+    <link rel="prev" title="5. 環境構築系の基礎知識" href="../knowledge/environment.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -33,7 +33,7 @@
           <a href="security.html" title="2. セキュリティ"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../knowledge/environment.html" title="4. 環境構築系の基礎知識"
+          <a href="../knowledge/environment.html" title="5. 環境構築系の基礎知識"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWSのネットワーク</a></li> 
@@ -230,6 +230,10 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 買い物かご機能を実現するために利用される。
 リクエストの振り分け識別子にはELBによって生成されたCookieが利用される。</p>
 </section>
+<section id="ip">
+<h4><span class="section-number">1.4.1.5. </span>クライアントのIPアドレス<a class="headerlink" href="#ip" title="この見出しへのパーマリンク">¶</a></h4>
+<p>クライアント→ELB→アプリケーションと通信をする際に、アプリケーション側で、クライアントのIPアドレスを知りたい場合は、<code class="docutils literal notranslate"><span class="pre">X-Forwarded-For</span></code>ヘッダーにデータが格納されている。</p>
+</section>
 </section>
 <section id="alb-application-load-balancer">
 <h3><span class="section-number">1.4.2. </span>ALB(Application Load Balancer)<a class="headerlink" href="#alb-application-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
@@ -327,14 +331,18 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
 <p>Invalidationのオペレーションは有料のため、有効期限内に大量の無効化を行うと金額が大きくなる点に注意</p>
 </section>
 </section>
+<section id="behavior">
+<h3><span class="section-number">1.5.4. </span>Behaviorのプロトコルポリシー<a class="headerlink" href="#behavior" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Viewer側との通信に関して、プロトコルポリシーを設定することが可能<br />HTTPやHTTPSのみの許可や、Redirectも可能</p>
+</section>
 <section id="id21">
-<h3><span class="section-number">1.5.4. </span>キャッシュポリシーとオリジンリクエストポリシー<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.5. </span>キャッシュポリシーとオリジンリクエストポリシー<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キャッシングルールをパスごとに１つづつ設定指定が、ポリシー化してアタッチすることが可能となった。</p>
 <p>さらに、キャッシュポリシーとオリジンリクエストポリシーを分離して扱うことが可能となっった。
 キャッシュポリシーに指定したパラメータはオリジンリクエストに時効的に含まれる。</p>
 </section>
 <section id="lambda-edge">
-<h3><span class="section-number">1.5.5. </span>Lambda&#64;Edge<a class="headerlink" href="#lambda-edge" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.6. </span>Lambda&#64;Edge<a class="headerlink" href="#lambda-edge" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudFrontのエッジがわで動作するLambda関数を設定することが可能。
 ４つのパターンでLambda関数を定義可能</p>
 <ul class="simple">
@@ -346,7 +354,7 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
 </ul>
 </section>
 <section id="id22">
-<h3><span class="section-number">1.5.6. </span>他のAWSサービスとの連携<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.5.7. </span>他のAWSサービスとの連携<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatchにより、キャッシュのヒット率やエラー状況などのモニタリングが可能</p>
 <p>アクセスログをS3に配信したり、WAFやACMによってCloudFrontと通信を保護することも可能</p>
 <p><img alt="../_images/cloudfront_image.png" src="../_images/cloudfront_image.png" /></p>
@@ -400,6 +408,7 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
 <li><a class="reference internal" href="#ssl-tls">1.4.1.2. SSL/TLSターミネーション</a></li>
 <li><a class="reference internal" href="#connection-drain">1.4.1.3. Connection Drain</a></li>
 <li><a class="reference internal" href="#id14">1.4.1.4. スティッキーセッション</a></li>
+<li><a class="reference internal" href="#ip">1.4.1.5. クライアントのIPアドレス</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#alb-application-load-balancer">1.4.2. ALB(Application Load Balancer)</a><ul>
@@ -420,9 +429,10 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
 <li><a class="reference internal" href="#id20">1.5.3.1. キャッシュの無効化</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id21">1.5.4. キャッシュポリシーとオリジンリクエストポリシー</a></li>
-<li><a class="reference internal" href="#lambda-edge">1.5.5. Lambda&#64;Edge</a></li>
-<li><a class="reference internal" href="#id22">1.5.6. 他のAWSサービスとの連携</a></li>
+<li><a class="reference internal" href="#behavior">1.5.4. Behaviorのプロトコルポリシー</a></li>
+<li><a class="reference internal" href="#id21">1.5.5. キャッシュポリシーとオリジンリクエストポリシー</a></li>
+<li><a class="reference internal" href="#lambda-edge">1.5.6. Lambda&#64;Edge</a></li>
+<li><a class="reference internal" href="#id22">1.5.7. 他のAWSサービスとの連携</a></li>
 </ul>
 </li>
 </ul>
@@ -433,7 +443,7 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="../knowledge/environment.html"
-                          title="前の章へ"><span class="section-number">4. </span>環境構築系の基礎知識</a></p>
+                          title="前の章へ"><span class="section-number">5. </span>環境構築系の基礎知識</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
@@ -471,7 +481,7 @@ CloudFront側で、TTLを設定することができ、オリジン側もCacheCo
           <a href="security.html" title="2. セキュリティ"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../knowledge/environment.html" title="4. 環境構築系の基礎知識"
+          <a href="../knowledge/environment.html" title="5. 環境構築系の基礎知識"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWSのネットワーク</a></li> 

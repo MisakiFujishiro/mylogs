@@ -40,6 +40,17 @@ JavaにおけるSingletonの定義方法
 ![](img/singleton.png)
 
 # 通信
+## SSL/TLS
+[SSL/TLSサーバ証明書とは](https://www.jipdec.or.jp/library/report/ssl_cert.html)
+
+SSL/TLSは通信の暗号化のプロトコル
+
+## SSL/TLS証明書
+[SSL/TLSサーバ証明書とは](https://www.jipdec.or.jp/library/report/ssl_cert.html)
+
+これは実在証明
+
+
 ## Web Socket
 Web Scoketとは、ブラウザとウェブサーバーで双方向通信を行うための通信規格。
 
@@ -51,7 +62,13 @@ Web Scoketとは、ブラウザとウェブサーバーで双方向通信を行�
 
 [WebSocketとは](https://www.freshvoice.net/knowledge/word/6323/)の解説がわかりやすい
 
+## UDP/TCP
+通信相手のコンピューターとデータを送り出すタイミングの調整をしたり、届けられたデータを順番通りに復元したりするなど、通信をおこなう工程を制御しています。
+
+UDPはTCPと比べて、必要最低限の通信量でデータを送受信できることを目的として考案
+
+
 
 # DB
 ## スロークエリ
-スロークエリログ (Slow query log) は、MySQL で出力できるログの種類の1つです。 SQL の実行時間が指定した時間よりもかかってしまった SQL を全て出力することができます。 これにより、アプリケーション構築時や本番運用時にパフォーマンスのボトルネックとなっている SQL を発見するのに大いに役に立ちます。s
+スロークエリログ (Slow query log) は、MySQL で出力できるログの種類の1つです。 SQL の実行時間が指定した時間よりもかかってしまった SQL を全て出力することができます。 これにより、アプリケーション構築時や本番運用時にパフォーマンスのボトルネックとなっている SQL を発見するのに大いに役に立ちます。

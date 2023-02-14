@@ -162,6 +162,11 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 <li><p>ガバナンスモード<br />Lock解除をすることができる。</p></li>
 </ul>
 </section>
+<section id="id13">
+<h3><span class="section-number">8.3.8. </span>暗号化とS3アップロード<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<p>S3へ暗号化しながらアップロードする場合は、アプリ側に<code class="docutils literal notranslate"><span class="pre">kms:</span> <span class="pre">Encrypt</span></code>のポリシーをアタッチする</p>
+<p>S3の容量が大きい場合はマルチパートアップロードをする必要があり、その際に<code class="docutils literal notranslate"><span class="pre">kms:Deencrypt</span></code>のポリシーをアタッチする必要がある。</p>
+</section>
 </section>
 <section id="cors-cross-origin-resource-sharing">
 <h2><span class="section-number">8.4. </span>CORS(Cross Origin Resource Sharing)<a class="headerlink" href="#cors-cross-origin-resource-sharing" title="この見出しへのパーマリンク">¶</a></h2>
@@ -173,15 +178,15 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 <p>Ajaxなどで、ブラウザで実行されるスクリプトからオリジンを跨いで静的リソースを取得したい場合、接続先のオリジンでCORSの設定を有効化する必要がある。
 S3側でCORSを許可するオリジンやメソッドを許可しておけば、CORSヘッダを含むリクエストに正常に返答することができる。</p>
 </section>
-<section id="id13">
-<h2><span class="section-number">8.5. </span>静的ウェブサイトホスティング<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id14">
+<h2><span class="section-number">8.5. </span>静的ウェブサイトホスティング<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3にWebサーバーの役割を付与することで、アップロードしたHTMLサイトなどの静的なウェブサイトを一般公開すること</p>
 <p>バケットの設定でこの機能を設定すると、以下の形式でWebサイト用のURLが発行される</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">bucket</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">-&lt;</span><span class="n">region</span><span class="o">&gt;.</span><span class="n">amazon</span><span class="o">.</span><span class="n">com</span>
 </pre></div>
 </div>
-<section id="id14">
-<h3><span class="section-number">8.5.1. </span>手順<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">8.5.1. </span>手順<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>バケットのブロックパブリックアクセス設定で、ブロックをオフにする</p></li>
 </ol>
@@ -220,8 +225,8 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 <p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">AWS Lambda と AWS AI Services を組み合わせて作る音声文字起こし &amp; 感情分析パイプライン</a>
 にていおてS3のイベントを起因としたLambdaの呼び出しが実装されているので、こちらを参考に手順を整理する。</p>
 <p><img alt="../_images/lambda_s3_archie.png" src="../_images/lambda_s3_archie.png" /></p>
-<section id="id15">
-<h4><span class="section-number">8.6.1.1. </span>S3の作成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id16">
+<h4><span class="section-number">8.6.1.1. </span>S3の作成<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>バケット名はユニークにする。</p>
 </section>
 <section id="lambda">
@@ -268,8 +273,8 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 </div>
 <p>試しに、S3にファイルをアップロードすると、CloudWatchのログにコンテントタイプが出力される。</p>
 </section>
-<section id="id16">
-<h4><span class="section-number">8.6.1.3. </span>S3イベントの変更<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id17">
+<h4><span class="section-number">8.6.1.3. </span>S3イベントの変更<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Lambdaの設定後、Lambdaを起動するイベントを変更したい場合、バケット、プロパティ、イベント通知から変更が可能</p>
 <p><img alt="../_images/s3-event-edit.png" src="../_images/s3-event-edit.png" /></p>
 <ul class="simple">
@@ -277,8 +282,8 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 </ul>
 </section>
 </section>
-<section id="id17">
-<h3><span class="section-number">8.6.2. </span>S3間でオブジェクトをコピーする<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id18">
+<h3><span class="section-number">8.6.2. </span>S3間でオブジェクトをコピーする<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>基本的には、S3のバケットを二つ作成して、Lambdaに準備されている設計図からgetS3Objの設計図を作成する。</p>
 <p>Lambda側のコードに以下を設定する。<br />S3のイベントで設定したディレクトリへのアップロードを検知して、所定のS3へファイルをコピーする。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
@@ -375,21 +380,22 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 <li><a class="reference internal" href="#id10">8.3.5. ブロックパブリックアクセス</a></li>
 <li><a class="reference internal" href="#id11">8.3.6. アクセスポイント</a></li>
 <li><a class="reference internal" href="#id12">8.3.7. オブジェクトロック</a></li>
+<li><a class="reference internal" href="#id13">8.3.8. 暗号化とS3アップロード</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#cors-cross-origin-resource-sharing">8.4. CORS(Cross Origin Resource Sharing)</a></li>
-<li><a class="reference internal" href="#id13">8.5. 静的ウェブサイトホスティング</a><ul>
-<li><a class="reference internal" href="#id14">8.5.1. 手順</a></li>
+<li><a class="reference internal" href="#id14">8.5. 静的ウェブサイトホスティング</a><ul>
+<li><a class="reference internal" href="#id15">8.5.1. 手順</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#s3lambda">8.6. S3のイベントとLambdaの連携</a><ul>
 <li><a class="reference internal" href="#h4b">8.6.1. H4bの全体像</a><ul>
-<li><a class="reference internal" href="#id15">8.6.1.1. S3の作成</a></li>
+<li><a class="reference internal" href="#id16">8.6.1.1. S3の作成</a></li>
 <li><a class="reference internal" href="#lambda">8.6.1.2. Lambdaの作成</a></li>
-<li><a class="reference internal" href="#id16">8.6.1.3. S3イベントの変更</a></li>
+<li><a class="reference internal" href="#id17">8.6.1.3. S3イベントの変更</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">8.6.2. S3間でオブジェクトをコピーする</a></li>
+<li><a class="reference internal" href="#id18">8.6.2. S3間でオブジェクトをコピーする</a></li>
 </ul>
 </li>
 </ul>

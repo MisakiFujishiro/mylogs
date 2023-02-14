@@ -182,15 +182,25 @@ Consumerがキューを取得してから他のConsumerがメッセージを取�
 デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
 </section>
 <section id="id15">
-<h3><span class="section-number">13.2.8. </span>セキュリティ<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
-<p>KMSによってメッセージを暗号化できるが、ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
+<h3><span class="section-number">13.2.8. </span>重複削除<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<p>FIFOキューでは重複を排除するための機能が備わっている。
+あるメッセージが送付されてから<code class="docutils literal notranslate"><span class="pre">5分間</span></code>の間に同一のメッセージが送られてきた時に重複を削除することができる。</p>
+</section>
+<section id="id16">
+<h3><span class="section-number">13.2.9. </span>セキュリティ<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SQSはKMSと統合されており、KMSによってメッセージを暗号化できる。
+ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
 <p>SQSはIAMによるアクセス制御に加えて、キューに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
 </section>
 </section>
-<section id="id16">
-<h2><span class="section-number">13.3. </span>SQSの容量<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id17">
+<h2><span class="section-number">13.3. </span>SQSの容量<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
 <p>SQSでやり取りすることができる容量は最大256kB</p>
 <p>しかし、S3とJava拡張ライブラリを利用することで、SQSのメッセージサイズを超過して2GBまで対応することができる。</p>
+</section>
+<section id="id18">
+<h2><span class="section-number">13.4. </span>SQSのキューの削除<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Purge</span> <span class="pre">Queue</span></code>を利用すると、指定したキューないのメッセージを削除することができる。</p>
 </section>
 </section>
 
@@ -227,10 +237,12 @@ Consumerがキューを取得してから他のConsumerがメッセージを取�
 <li><a class="reference internal" href="#id12">13.2.5. 遅延キューとメッセージタイマー</a></li>
 <li><a class="reference internal" href="#id13">13.2.6. 可視性タイムアウト</a></li>
 <li><a class="reference internal" href="#id14">13.2.7. デットレターキュー</a></li>
-<li><a class="reference internal" href="#id15">13.2.8. セキュリティ</a></li>
+<li><a class="reference internal" href="#id15">13.2.8. 重複削除</a></li>
+<li><a class="reference internal" href="#id16">13.2.9. セキュリティ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">13.3. SQSの容量</a></li>
+<li><a class="reference internal" href="#id17">13.3. SQSの容量</a></li>
+<li><a class="reference internal" href="#id18">13.4. SQSのキューの削除</a></li>
 </ul>
 </li>
 </ul>
