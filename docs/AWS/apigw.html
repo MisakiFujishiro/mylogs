@@ -96,16 +96,33 @@
 キャッシュを更新した場合は、TTLを一時的に0にしたり、キャッシュをフラッシュすることで一時的にキャッシュを無効化する。</p>
 <p>個別のリクエストがわでキャッシュを無効化したい場合は、Cache-Control:max-age=0を設定してリクエストする。</p>
 </section>
+<section id="api-gwapi">
+<h2><span class="section-number">6.5. </span>API GWのAPIキーと使用量プラン<a class="headerlink" href="#api-gwapi" title="この見出しへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">APIキー</span></code>を発行することで、APIキーを持つユーザーのみがアクセス可能なAPIを作成することができる。</p>
+<p><code class="docutils literal notranslate"><span class="pre">使用量プラン</span></code>を作成することでAPIキーに対して、アクセス可能回数やアクセス頻度を設定することができる。</p>
 <section id="id3">
-<h2><span class="section-number">6.5. </span>API GWのスロットリング<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
-<p>API GWでは、流量制御の仕組みが実装されている。
-流動制御により、過多なりクエストからAPIを守ったり、クライアントの使用量プランを作成できる。</p>
-<p>流動制御はスロットリングと呼ばれるトークンバケットアルゴリズムであり、1リクエストを処理するたびにバケットないのTokenが消費される。</p>
-<p>サーバー側で設定する上限によりバックエンドを守ることができるとともに、クライアント側に設定することで使用量の制限をAPIキーとして設定することができる。</p>
-<p><img alt="../_images/apigw_slot.png" src="../_images/apigw_slot.png" /></p>
+<h3><span class="section-number">6.5.1. </span>実装の流れ<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/try-api-gateway-usage-plan/">API GatewayのAPIキーと使用量プランについて</a>
+が参考になる。</p>
+<p>実装の流れとしては以下のステップを踏む</p>
+<ol class="simple">
+<li><p>APIGWでAPIの作成（APIキーを有効化）</p></li>
+<li><p>APIキーの作成</p></li>
+<li><p>使用量プランの作成</p></li>
+<li><p>使用量プラン、APIのステージ、APIキーを関連づける</p></li>
+</ol>
 </section>
 <section id="id4">
-<h2><span class="section-number">6.6. </span>API GWと認証認可<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">6.5.2. </span>スロットリング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>API GWでは、流量制御の仕組みが実装されている。
+流動制御により、過多なりクエストからAPIを守ったり、クライアントの使用量プランを作成できる。</p>
+<p>流動制御はスロットリングと呼ばれるトークンバケットアルゴリズムであり、1リクエストを処理するたびにバケットないのTokenが消費される。
+サーバー側で設定する上限によりバックエンドを守ることができるとともに、クライアント側に設定することで使用量の制限をAPIキーとして設定することができる。</p>
+<p><img alt="../_images/apigw_slot.png" src="../_images/apigw_slot.png" /></p>
+</section>
+</section>
+<section id="id5">
+<h2><span class="section-number">6.6. </span>API GWと認証認可<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
 <p>API GWにより、認証認可の仕組みを適用する場合い、いくつかの実現方法がある</p>
 <ol class="simple">
 <li><p>IAMアクセス権限<br />クライアントは、IAMユーザーのアクセスキーをハッシュ化した<code class="docutils literal notranslate"><span class="pre">AWS署名ver4</span></code>をリクエストヘッダーに付与する。
@@ -152,8 +169,12 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。</p><
 </li>
 <li><a class="reference internal" href="#api-gw">6.3. API GWのデプロイとステージ</a></li>
 <li><a class="reference internal" href="#id2">6.4. API GWのキャッシュ</a></li>
-<li><a class="reference internal" href="#id3">6.5. API GWのスロットリング</a></li>
-<li><a class="reference internal" href="#id4">6.6. API GWと認証認可</a></li>
+<li><a class="reference internal" href="#api-gwapi">6.5. API GWのAPIキーと使用量プラン</a><ul>
+<li><a class="reference internal" href="#id3">6.5.1. 実装の流れ</a></li>
+<li><a class="reference internal" href="#id4">6.5.2. スロットリング</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">6.6. API GWと認証認可</a></li>
 <li><a class="reference internal" href="#apigw">6.7. APIGWの監視</a></li>
 </ul>
 </li>
