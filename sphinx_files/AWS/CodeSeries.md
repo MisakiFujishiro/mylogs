@@ -8,11 +8,17 @@
 ## Code Commit
 フルマネージドなソース管理（git repository）サービス  
 メリットとして、スケーラブルでセキュアであり、既存のgitツールともシームレスに連携
-IAMベースでリポジトリに対する操作を生業することができる。
+IAMベースでリポジトリに対する操作することができる。
 
-### 設定手順
-1. リポジトリ名を作成
+### Code Commitの操作
+SDKやCLIを利用してリポジトリの追加やブランチ更新、ファイルの作成（put_file)をすることができる。
+また、githubと連携することで、githubに加えられた変更を反映させることができる。
+githubとの連携時には、初期設定で特定のブランチのみを対象にすることができる。
+
+### 利用手順
+1. CodeCommitでリポジトリ名を設定
 2. gitlabやgithubとの連携
+
 
 
 ### CodeCommitとの連携
@@ -21,15 +27,17 @@ IAMベースでリポジトリに対する操作を生業することができ�
 - git-remote-codeCommitを利用した連携
 - SSHを利用した連携
 
-### HTTPSを利用した連携
-HTTPSを通じて、git連携をして、認証情報にはIAMで作成したクレデンシャル（ID/PASS)を利用する。
+#### HTTPSを利用した連携
+IAMで作成したユーザーに対してgitの認証情報を作成しておいて、HTTPSを通じて、git連携をする。  
+プロキシを経由するときなどはこちらになる。
 
 
-### GRC(git-remote-codeCommmit)
-クライアント側でGRCをインストールしておくと、AWSCLIの認証情報を使って、CodeCommitと連携してくれる。
+#### GRC(git-remote-codeCommmit)
+AWS側でCode Commitの権限を持つIAMロールを作成しておく。
+クライアント側でGRCをインストールして、ロールのARNをセットアップすると、AWSCLIの認証情報を使って、CodeCommitと連携してくれる。
 
 
-### SSHを利用した連携
+#### SSHを利用した連携
 公開鍵をCodeCommitアクセス用のIAMに紐づけ、秘密鍵はクライアントに紐付けることでSSHの認証を通す。
 
 LocalPCで公開鍵と秘密鍵を作成
@@ -42,7 +50,7 @@ LocalPCで公開鍵と秘密鍵を作成
 
 - IAMユーザーに公開鍵を紐づける  
 IAM>アクセス管理>ユーザー>AWS CodeCommitのSSHキーにパブリックキーをアップロード  
-SSHキーの`ID`をメモしておく
+github側の設定時にSSHキーの`ID`を利用する。
 
 ![](img/codecommit_iam_setting.png)
 
@@ -54,12 +62,15 @@ github>Setting>Secrets>Actions>New repository secrets
     - Value:プライベートキーの中身
   - SSHキーID
     - Name：CODECOMMIT_SSH_PRIVATE_KEY_ID
-    - Value：SSHキーのID
+    - Value：SSHキーのID（awsのIAMのページで表示される。)
 
 
 - githubとgitcommitを紐づける  
+対象のリポジトリのフォルダのルートから`.github/workflow/main.yml`を作成する。
+ローカルのリポジトリからgithubにPushしても良いし、github側で設定してmainにコミットしても良い
 github>Actions>New Work Flow>set up a workflow
 
+main.ymlは以下の設定をする。
 ```
 name: Mirroring
 
@@ -88,12 +99,24 @@ localにgithubのリポジトリをcloneして、新しいブランチを作っ�
 
 
 
+
+
+
+
+
+
+
+
+
+
 ## Code Build
 ソースコードをコンパイル・テスト実行して、デプロイ可能なSWパッケージを作成するフルマネージドなビルドサービス
 メリットとして、ビルド用のサーバのプロビジョニング・管理が不要となる  
 codebuildの成果物はartifactと呼ばれる。
 
-### 設定手順
+実態としては、コンテナを立ち上げて、その中でコマンドが実行されている。
+
+### 利用手順
 1. codebuildプロジェクトの設定
    1. ソースプロバイダはcodecommitのリポジトリ
    2. build環境/ランタイムは適切なものを設定
@@ -101,8 +124,16 @@ codebuildの成果物はartifactと呼ばれる。
    4. ServiceRoleの設定 
 2. buildspec.yamlの作成
 
-### buildspec.uml
-ビルド処理をbuildspec.umlファイルに記述して、APPのソースコードPJのルートディレクトリに置いておく。
+### CodeBuildのネットワーク
+Code BuildはデフォルトではVPCにアタッチされず、AWS管理下で実行される。
+
+自分が開発したRDSやコンテナなどのリソースにアクセスする場合は、CodeBuildをVPCに接続するような設定を加えることができる。
+ただし注意点として、この設定をした場合に、NAT GWがサブネットにアタッチされていないとインターネットにアクセスすることができない点に注意。
+
+
+### buildspec.yml
+`buildspec.yml`にビルド処理の指示をコマンドとして記載することでCodeBuildが実行してくれる。
+buildspec.ymlは、APPのソースコードPJのルートディレクトリに置いておく。
 環境変数や必要な環境のインストール処理、ビルド処理や生成するアプリケーションの定義を記載しておく。
 
 buildspec.ymlの記載項目
@@ -118,6 +149,7 @@ buildspec.ymlの記載項目
     - files：必須項目でデプロイする成果物を指定  
     '**/*'を指定するとディレクトリは以下全てをデプロイする資産として指定  
     - base-directory：デプロイ対象のルートディレクトリを指定
+
 
 ### buildspec.ymlにおける環境変数の設定
 buildspec.ymlファイルに環境変数を設定する場合は、環境から環境変数を設定することができる。
@@ -138,7 +170,7 @@ codebuildで、環境変数を設定する。
 buildspec.yml内部では、設定した環境変数のkeyを${plane_key}や${secret_key}という形で指定すれば引用される。
 
 
-### 定期実効について
+### 定期実行について
 CloudWatchEventと連携して実装もできるし、CodeBuildトリガーも設定されているので、そちらでも設定できる。
 
 ### アーティファクトとしてDockerコンテナを出力する場合
@@ -150,16 +182,43 @@ CloudWatchEventと連携して実装もできるし、CodeBuildトリガーも�
 
 
 
+
+
+
+
+
+
+
+
 ## Code Deploy
 EC2・Lambda・ECSに対してデプロイを行うサービス  
 AutoScaling構成に対しても自動で反映してくれる
 
-### 設定手順
+ポイントとして、オンプレミスでもエージェントをインストールしておくことで利用することができる。
+
+### 利用手順
 1. codeDeploy用のRoleを作成する  
 2. codeDeployのアプリケーション作成（詳細は各デプロイ先のセクション）
 
 ### appsepc.yml
-デプロイの仕様を定義したファイルで、ファイルの配置先やデプロイのライフサイクルで実行するスクリプトを指定
+`appspec.yml`とはデプロイの仕様を定義したファイルで、ファイルの配置先やデプロイのライフサイクルで実行するスクリプトを指定
+
+### Hook
+デプロイ時の各ライフサイクルイベントに合わせて処理を行うことができる。デプロイは大きく分けて４つのステップを踏む
+- アプリケーションの停止
+- アプリケーションファイルのDL
+- アプリケーションファイルのInstall
+- アプリケーションの起動
+
+
+
+![](img/codedeploy-lifecycle.png)
+
+- ApplicationStop  
+  注意が必要。前回の出プロされたリビジョンがない初回の場合は実行されない。
+- ValidateService  
+  最終的にデプロイがうまく行ったか否か
+
 
 ### デプロイの種類
 #### Inplace
@@ -187,6 +246,24 @@ ECS/Lambda
 - canary
 - Linear
 
+### オンプレミスへのデプロイ
+CodeDeployエージェントはポート番号443を利用したアウトバウンド通信が必要なため、ファイアーウォールで設定が必要
+
+
+### インターネットを経由しないデプロイ
+VPCから直接接続するためのエンドポイントが準備されているが、EC2/ECS/Lambdaで準備するエンドポイントが異なる
+
+- EC2:codedeployエンドポイントとcodedeploy-commands-secureエンドポイント
+- ECS:codedeployエンドポイントのみ
+- Lambda:codedeployエンドポイントのみ
+
+
+
+
+
+
+
+
 
 
 
@@ -195,6 +272,7 @@ ECS/Lambda
 ## Code Pipeline
 フルマネージドな継続的デリバリーサービス  
 ソースコードの変更をトリガーとして、ビルド・デプロイといった一連の流れを自動的に実行する
+
 ### 設定手順
 1. ソースステージ設定  
 CodeCommitとの連携を設定し、検知するリポジトリやブランチ名を設定する　  
@@ -208,6 +286,28 @@ CodeCommitとの連携を設定し、検知するリポジトリやブランチ�
 
 3. デプロイステージ設定  
 デプロイ先を設定する。 S3への直接デプロイや、ECS/EC2へのデプロイが可能
+
+### Sourceステージ
+GitHubとの連携を選択した場合、OAuth2.0のWebIDフェデレーションを利用して、GitHubにアクセスすることができる。
+WebhookについてはGitHub側で設定することができ、Code Pipelineがポーリングする設定も可能。
+
+
+### パイプラインの状態変化と他サービス連携
+パイプラインの状態変化をモニタリングして、他のサービスと連携する場合は`Cloud Watch Events(Event Bridge)`イベントソースとして検知できる。
+
+[EventBridgeによるCodepipelineとSNSの連携](https://blog.denet.co.jp/customized-aws-codepipeline-notifications-using-input-transformers/)
+
+各種ステージの状態は以下の種類があり、パイプラインの状態変化に応じたアクションを設定することができる。
+- キャンセル
+- 失敗
+- 再開
+- 開始
+- 停止
+- 停止中
+- 成功
+
+
+
 
 
 
@@ -329,6 +429,14 @@ AWSのConsoleを見ながら、設定する
     </dependency>
 </dependencies>
 ```
+
+
+
+
+
+
+
+
 
 
 

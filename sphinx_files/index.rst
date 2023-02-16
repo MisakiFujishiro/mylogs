@@ -20,7 +20,6 @@ DAILY
    :maxdepth: 2
    :numbered:
 
-   Artifact/apigw_lambda
    Artifact/ecs
    Artifact/cicd
    Artifact/cognito
@@ -37,6 +36,20 @@ Microservice
    microservice/certification_authentication
 
 
+
+ITの基本
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   knowledge/basic
+   knowledge/environment
+   
+
+
+
 AWS Services
 ==================
 
@@ -51,10 +64,12 @@ AWS Services
    AWS/AutoScaling
    AWS/apigw
    AWS/Lambda
+   AWS/S3
    AWS/DB
+   AWS/Monitoring
    AWS/EnvAutomation
    AWS/SNS_SQS
-   AWS/S3
+   AWS/Streaming
    AWS/AI
 
 
@@ -62,16 +77,12 @@ Java Spring
 ==================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    Java/java_env
    Java/knowledge
-   Java/tutorial11.1
-   Java/tutorial11.2
-   Java/tutorial11.4
-   Java/tutorial11.3
-
+   Java/tutorial
 
 Docker
 ==================
@@ -93,3 +104,14 @@ Sphinx
 
    Sphinx/quickStart
    Sphinx/githubPages
+
+
+
+資格
+==================
+
+.. toctree::
+   :maxdepth: 1
+   :numbered:
+
+   certification/DVA

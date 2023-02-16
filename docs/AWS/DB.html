@@ -141,10 +141,20 @@
 MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>RDBの特性である一貫性をもち、リードレプリカといった特徴とQuorumに基づく結果整合性でデータを分散して保存しているため可用性を高めている。
 あるAZで障害が発生した場合にも、マルチAZでのスタンバイベースを作成していなくても、DBを継続して利用することができる。</p>
-<p>書き込み用のクラスターエンドポイントと読み込み用の読み込みエンドポイントがある。
-<img alt="../_images/db_aurora_endpoint.png" src="../_images/db_aurora_endpoint.png" /></p>
+<p>書き込み用のクラスターエンドポイントと読み込み用の読み込みエンドポイントがある。</p>
+<p><img alt="../_images/db_aurora_endpoint.png" src="../_images/db_aurora_endpoint.png" /></p>
+<section id="id8">
+<h3><span class="section-number">9.3.1. </span>カスタムエンドポイント<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>先ほど説明したように、役割ごとにエンドポイントがあったが、インスタンスの組み合わせを自由に行える<code class="docutils literal notranslate"><span class="pre">カスタムエンドポイント</span></code>が追加された。</p>
+<p><img alt="../_images/aurora_custom_endpoint.png" src="../_images/aurora_custom_endpoint.png" /></p>
+<p>これによって、重い処理のバッチ処理を捌くDBインスタンスを使い分けることができる。</p>
+<p>カスタムエンドポイントがない場合</p>
+<p><img alt="../_images/aurora_custom_kadai.png" src="../_images/aurora_custom_kadai.png" /></p>
+<p>カスタムエンドポイントがある場合</p>
+<p><img alt="../_images/aurora_custom_merit.png" src="../_images/aurora_custom_merit.png" /></p>
+</section>
 <section id="aurora-serverless">
-<h3><span class="section-number">9.3.1. </span>Aurora Serverless<a class="headerlink" href="#aurora-serverless" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.3.2. </span>Aurora Serverless<a class="headerlink" href="#aurora-serverless" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DBサーバーをプロ美女人戯して管理するのではなくて、キャパシティユニットを指定して管理する。
 不定期、断続的、予測不可能なワークロードに対して効率良く利用することができる。</p>
 </section>
@@ -158,8 +168,8 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>マスターデータなどのマルチスレッドでアクセス可能な<strong>共通データ</strong>のキャッシュ用途で利用する<br />インメモリ型のキーバリューストアで、シンプルなキーバリューストアでデータをキャッシュして低レイテンシーでデータ参照するためといった目的で利用する。</p>
 <p>レプリケーションといった冗長化の効果がない点に注意</p>
 </section>
-<section id="id8">
-<h3><span class="section-number">9.4.2. </span>基本的な挙動<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">9.4.2. </span>基本的な挙動<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>複数AZに跨った、クラスターを構成する</p></li>
 <li><p>データはハッシュアルゴリズムに従って格納するデータが決まる</p></li>
@@ -179,8 +189,8 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 </ul>
 <p>Redisでは、シャードにデータを分散保存（シャーディング）することでパフォーマンスと可用性を高めている。
 シャーディングを利用するか否かをクラスターモードの設定が可能。</p>
-<section id="id9">
-<h4><span class="section-number">9.4.3.1. </span>クラスタモード無効<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id10">
+<h4><span class="section-number">9.4.3.1. </span>クラスタモード無効<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
 <p>クラスターモードが無効だとシャードが１つとなる。
 エンドポイントは書き込みと読み取り用途のエンドポイントが提供される。</p>
 <p>データを保存しているプライマリノードとリードレプリカを配置して、負荷分散をする。
@@ -188,8 +198,8 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>障害時は、リードレプリカがプライマリーに昇格する。</p>
 <p><img alt="../_images/db_elasticcache_wo_cluster.png" src="../_images/db_elasticcache_wo_cluster.png" /></p>
 </section>
-<section id="id10">
-<h4><span class="section-number">9.4.3.2. </span>クラスタモード有効<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id11">
+<h4><span class="section-number">9.4.3.2. </span>クラスタモード有効<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>キャッシュデータ量が多ければ、クラスターモードを有効化することを考えた方が良い。
 注意点は、可用性には影響しないことと、費用がかなり高くつく点</p>
 <p>クラスターモードが有効だとシャードは1-15で設定可能。エンドポイントは設定エンドポイントのみが提供される。
@@ -206,8 +216,8 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>DynamoDBはNoSQLデータベースサービスで、項目・属性の定義が不要なスキーマレスのテーブル構成。
 格納するデータの属性が項目ごとに異なって問題ないなどかなり自由度高くデータを格納できる。</p>
 <p><img alt="../_images/db_dynamo_table.png" src="../_images/db_dynamo_table.png" /></p>
-<section id="id11">
-<h3><span class="section-number">9.5.1. </span>データとキー<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">9.5.1. </span>データとキー<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DynamoDBではConsistent Hashingというアルゴリズムに基づいて、親キー（<code class="docutils literal notranslate"><span class="pre">パーティションキー</span></code>）をハッシュ化して、配置するノード決定する。
 さらに、ノード内での順序は子キー（<code class="docutils literal notranslate"><span class="pre">ソートキー</span></code>）が決めることができるが、ソートキーの設定は任意</p>
 <section id="lsi">
@@ -238,22 +248,22 @@ GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作�
 </pre></div>
 </div>
 </section>
-<section id="id12">
-<h3><span class="section-number">9.5.3. </span>DynamoDBのクエリの種類<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h3><span class="section-number">9.5.3. </span>DynamoDBのクエリの種類<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>BatchWriteItem: 1つのテーブルから最大100データを取得</p></li>
 <li><p>Query: 特定のパーティションキーを持つ項目を全て取り出す</p></li>
 <li><p>Scan: 指定されたテーブルやイン出っっくすの全ての項目を取り出す</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3><span class="section-number">9.5.4. </span>DynamoDBの注意点<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id14">
+<h3><span class="section-number">9.5.4. </span>DynamoDBの注意点<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>RDBでは当然のようにできていたことができない。
 テーブル間の結合や不軸問い合わせができないことやAND飲みが論理演算子で利用可能など・・・
 Dynamoにはできないことをきちんと把握してから利用する必要がある。</p>
 </section>
-<section id="id14">
-<h3><span class="section-number">9.5.5. </span>課金体系<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">9.5.5. </span>課金体系<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DynamoDBの課金体系には以下の２つがある</p>
 <ul class="simple">
 <li><p>オンデマンドキャパシティモード：リクエスト数に応じて課金（動的）</p></li>
@@ -280,13 +290,13 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <li><p>トランザクション書き込み（強い整合性）の場合はしっかり書き込むのでスループット半分</p></li>
 </ul>
 </section>
-<section id="id15">
-<h4><span class="section-number">9.5.5.3. </span>DynamoDBのオートスケーリング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id16">
+<h4><span class="section-number">9.5.5.3. </span>DynamoDBのオートスケーリング<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>負荷に応じて、RCUsやWCUsのスループットを上下させることが可能</p>
 </section>
 </section>
-<section id="id16">
-<h3><span class="section-number">9.5.6. </span>読み込み書き込みの設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id17">
+<h3><span class="section-number">9.5.6. </span>読み込み書き込みの設定<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>GetItemではデフォルトで結果生合成の読み取りを提供している。</p>
 <p>アプリケーションで強い生合成のある読み取りが必要な場合は<code class="docutils literal notranslate"><span class="pre">ConsistentRead</span></code>パラメータをTrueにする。</p>
 </section>
@@ -305,22 +315,36 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <p>データが作成・更新・削除されたときに項目のPKと変更前後のセータがストリームレコードとして書き込まれる。</p>
 <p><img alt="../_images/db_dynamo_streams.png" src="../_images/db_dynamo_streams.png" /></p>
 <p><a class="reference external" href="https://qiita.com/bassaaaaa/items/7477420641080f922a59">DynamoDBの詳細</a></p>
-<p>LambdaやKinesisと統合されており、StreamAPIを使って、ポーリングを行なって変更を検知すると処理を実行できる（DynamoDB Trigger)</p>
-<p>Kinesisと連携する場合は、kinesisアダプターを使用して、アプリ側でストリームを消費する。</p>
+<section id="dynamodb-stream">
+<h4><span class="section-number">9.5.9.1. </span>DynamoDB Streamの中身<a class="headerlink" href="#dynamodb-stream" title="この見出しへのパーマリンク">¶</a></h4>
+<p>DynamoDBテーブル内の項目レベルの変更を時系列シーケンスとなっており、24時間ログを溜め込む。
+StreamViewTypeを指定することで、書き込まれる情報を決定することができる</p>
+<ul class="simple">
+<li><p>KEYS_ONLY: 変更されたアイテムのキー属性のみ</p></li>
+<li><p>NEW_IMAGE: 変更後のアイテム全体</p></li>
+<li><p>OLD_IMAGE: 変更されるアイテム全体</p></li>
+<li><p>NEW_AND_OLD_IMAGES: 変更前後のアイテム情報</p></li>
+</ul>
 </section>
-<section id="id17">
-<h3><span class="section-number">9.5.10. </span>アトミックカウンター<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id18">
+<h4><span class="section-number">9.5.9.2. </span>DynamoDB Streamの統合<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<p>LambdaやKinesisと統合されており、StreamAPIを使って、ポーリングを行なって変更を検知すると処理を実行できる（DynamoDB Trigger)
+Kinesisと連携する場合は、kinesisアダプターを使用して、アプリ側でストリームを消費する。</p>
+</section>
+</section>
+<section id="id19">
+<h3><span class="section-number">9.5.10. </span>アトミックカウンター<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>書き込みリクエストを妨害することなく、数値をカウントアップ・ダウンすることができる機能。
 UpDateItemと組み合わせて利用することで、更新した回数などをカウントできるが、冪等性がないことに注意。</p>
 </section>
-<section id="id18">
-<h3><span class="section-number">9.5.11. </span>DynamoDB トランザクション<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h3><span class="section-number">9.5.11. </span>DynamoDB トランザクション<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>複数の処理をひとまとめにして行うので、同じDBを同時に変更するといった可能性がある時に不整合を防ぐことができる。
 処理をまとめて、１つのオールオアナッシングの<code class="docutils literal notranslate"><span class="pre">TransacWriteItems</span></code>と<code class="docutils literal notranslate"><span class="pre">TransacGetItems</span></code>オペレーションとして送信可能。</p>
 </section>
 </section>
-<section id="id19">
-<h2><span class="section-number">9.6. </span>エンドポイント整理<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id21">
+<h2><span class="section-number">9.6. </span>エンドポイント整理<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>RDS</p>
 <ul>
@@ -380,43 +404,48 @@ UpDateItemと組み合わせて利用することで、更新した回数など�
 </ul>
 </li>
 <li><a class="reference internal" href="#aurora">9.3. Aurora</a><ul>
-<li><a class="reference internal" href="#aurora-serverless">9.3.1. Aurora Serverless</a></li>
+<li><a class="reference internal" href="#id8">9.3.1. カスタムエンドポイント</a></li>
+<li><a class="reference internal" href="#aurora-serverless">9.3.2. Aurora Serverless</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#elastic-cache">9.4. Elastic Cache</a><ul>
 <li><a class="reference internal" href="#memcached">9.4.1. Memcached</a></li>
-<li><a class="reference internal" href="#id8">9.4.2. 基本的な挙動</a></li>
+<li><a class="reference internal" href="#id9">9.4.2. 基本的な挙動</a></li>
 <li><a class="reference internal" href="#redis">9.4.3. Redis</a><ul>
-<li><a class="reference internal" href="#id9">9.4.3.1. クラスタモード無効</a></li>
-<li><a class="reference internal" href="#id10">9.4.3.2. クラスタモード有効</a></li>
+<li><a class="reference internal" href="#id10">9.4.3.1. クラスタモード無効</a></li>
+<li><a class="reference internal" href="#id11">9.4.3.2. クラスタモード有効</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#dynamo-db">9.5. Dynamo DB</a><ul>
-<li><a class="reference internal" href="#id11">9.5.1. データとキー</a><ul>
+<li><a class="reference internal" href="#id12">9.5.1. データとキー</a><ul>
 <li><a class="reference internal" href="#lsi">9.5.1.1. ローカルセカンダリインデックス(LSI)</a></li>
 <li><a class="reference internal" href="#gsi">9.5.1.2. グローバルセカンダリインデックス(GSI)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#dynamodb">9.5.2. DynamoDBのクエリ</a></li>
-<li><a class="reference internal" href="#id12">9.5.3. DynamoDBのクエリの種類</a></li>
-<li><a class="reference internal" href="#id13">9.5.4. DynamoDBの注意点</a></li>
-<li><a class="reference internal" href="#id14">9.5.5. 課金体系</a><ul>
+<li><a class="reference internal" href="#id13">9.5.3. DynamoDBのクエリの種類</a></li>
+<li><a class="reference internal" href="#id14">9.5.4. DynamoDBの注意点</a></li>
+<li><a class="reference internal" href="#id15">9.5.5. 課金体系</a><ul>
 <li><a class="reference internal" href="#rcus">9.5.5.1. RCUs</a></li>
 <li><a class="reference internal" href="#wcus">9.5.5.2. WCUs</a></li>
-<li><a class="reference internal" href="#id15">9.5.5.3. DynamoDBのオートスケーリング</a></li>
+<li><a class="reference internal" href="#id16">9.5.5.3. DynamoDBのオートスケーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">9.5.6. 読み込み書き込みの設定</a></li>
+<li><a class="reference internal" href="#id17">9.5.6. 読み込み書き込みの設定</a></li>
 <li><a class="reference internal" href="#ttl-time-to-line">9.5.7. TTL(Time To Line)</a></li>
 <li><a class="reference internal" href="#dax-dynamodb-accelarator">9.5.8. DAX(DynamoDB Accelarator)</a></li>
-<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.9. DynamoDB Stream/Trigger</a></li>
-<li><a class="reference internal" href="#id17">9.5.10. アトミックカウンター</a></li>
-<li><a class="reference internal" href="#id18">9.5.11. DynamoDB トランザクション</a></li>
+<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.9. DynamoDB Stream/Trigger</a><ul>
+<li><a class="reference internal" href="#dynamodb-stream">9.5.9.1. DynamoDB Streamの中身</a></li>
+<li><a class="reference internal" href="#id18">9.5.9.2. DynamoDB Streamの統合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id19">9.6. エンドポイント整理</a></li>
+<li><a class="reference internal" href="#id19">9.5.10. アトミックカウンター</a></li>
+<li><a class="reference internal" href="#id20">9.5.11. DynamoDB トランザクション</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id21">9.6. エンドポイント整理</a></li>
 </ul>
 </li>
 </ul>

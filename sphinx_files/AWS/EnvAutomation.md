@@ -3,13 +3,15 @@
 JSONやYML形式のテンプレートファイルを作成することで、AWSリソースの環境を自動で構築してくれる。
 構築されたリソースの集合をスタックと呼ぶ
 
+作成は設定したリソースを自動で作成することができ、依存関係は自動で解決してくれる。削除に関しても依存関係は自動で解決してロールバックしてくれる。
+
 ### 環境のコード管理のメリット
 コード管理することで環境構築の時間的コストの削減や再現性の担保ができるまた、インフラの品質担保をすることができる。
 バックアップやログ集計に関しても手作業ではなく、コード管理することで人為的ミスを防ぐことができる　
 
 Well-Architectedであるという柱の中に「運用上の優秀性」があり、その中のポイントとして「運用をコードとして実行する」がある
 
-### 運用をコードとして実行する
+### 環境のコード管理のメリット詳細
 ３つのポイントがある
 - コードで全ての構成を定義  
 同じ環境を、迅速に、繰り返し作成することができる。
@@ -26,20 +28,40 @@ Well-Architectedであるという柱の中に「運用上の優秀性」があ�
 
 ![](img/cf_merit3.png)
 
-### 基本動作
-作成は設定したリソースを自動で作成することができ、依存関係は自動で解決してくれる。
-削除に関しても依存関係は自動で解決してくれる。
 
+
+### 基本動作
 #### テンプレートとスタック
 JSONやYMLでテンプレートを作成することができ、CloudFormationによってリソースが作成される。
 作成されたリソースはスタックと呼ばれる。
 作成が失敗した場合、ロールバックする。
 
+#### CLIからの実行
+ローカルにあるテンプレートファイルを対象にして、S3にアップロードしてくれる。
+> aws cloudformation package \
+     --template-file [PATH_YOUR_TEMPLATE].yaml \
+     --stack-name [YOUR_STACK_NAME] \
+
+
+対象のymlファイルからCFNにデプロイしてくれる
+> aws cloudformation deploy \
+     --template-file [PATH_YOUR_TEMPLATE].yaml \
+     --stack-name [YOUR_STACK_NAME] \
+
+
 #### テンプレートの基本
 必須項目は`Resources`のみ。Resourcesに作成するサービスの詳細を記述していく。
 作成するサービスには論理名（表示名）を付与するが、一つのCFN内でユニークである必要がある。
 
-#### テンプレートの文法
+#### 組み込みファンクションと擬似パラメータ
+組み込みファンクションは、関数のようなもので文字列操作やリソースの属性値を取得する
+
+擬似パラメータはリージョン名の取得などができる。
+
+#### Conditionを利用した環境構築
+CFNを利用する目的として、環境に応じてテンプレートを再利用して作業コストを軽減することが挙げらられる。
+CFNでは、`Condition`を利用することによって、実行時に指定されたパラメータに応じて条件を変更し、作成する設定値や実行対象をコントロールすることができる。
+
 環境ごとに作成するか否かの条件分岐を行う際には`Condistion`を利用する。
 - Parametersセクションで設定するvalueを定義
 - Conditionsセクションで条件の論理名と真偽判定
@@ -59,9 +81,134 @@ Resources:
       ...
 ```
 
-
-
 [こちらのサイト](https://oreout.hatenablog.com/entry/aws/cloudformation/6)がわかりやすい
+
+
+#### Mappings
+Conditionsで条件に応じた、環境構築を行うことができる。
+さらに、Mappingsを利用することで、リージョンやユーザーの入力情報に応じて条件設定をすることができる。
+
+[AWS CloudFormationテンプレートでAWSアカウントごとにリソース作成有無を決定する](https://dev.classmethod.jp/articles/cfn-create-resources-depending-on-accounts/)
+
+```
+AWSTemplateFormatVersion: '2010-09-09'
+Mappings: 
+  AccountParams:
+    "111111111111": { CreateResources: yes }
+    "222222222222": { CreateResources: yes }
+    "333333333333": { CreateResources: no  }
+Conditions: 
+  CreateResources: !Equals
+    - !FindInMap [AccountParams, !Ref "AWS::AccountId", CreateResources]
+    - yes
+Resources:
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Condition: CreateResources
+    Properties:
+      TopicName: hoge-topic
+```
+
+
+
+### 深掘り機能
+CFNでは、テンプレート分割として、`ネステッドスタック`や`クロススタックリファレンス`、パラメータ取得を行う`ダイナミックリファレンス`、特殊なテンプレートを設定する`カスタムリソース`など様々な追加機能があるため、それぞれの特徴を理解しておく。
+
+#### ネステッドスタック
+テンプレートを分割した上でで親子関係を構成することができる。
+クロススタックリファレンスとの違いとしては、親が実行される場合、子スタックも必ず実行される点である。  
+※クロススタックリファレンスは、参照できるようにしておくところまでで、ネステッドスタックは親から子供がよばれるところまで宣言
+
+環境に依存しない子テンプレートを作成しておき、環境情報をもつ親テンプレートから子テンプレートを呼び出すことで、再利用性を高めることができる。
+
+プログラミング言語のように親関数から引数を渡して、子関数が実行され、返り値を親関数で利用するイメージ。子スタックの出力したリソースを親スタックで参照する場合は`!GetAtt`を利用する。
+
+![](img/cfn_nest.png)
+
+
+[CloudFormationをゼロから勉強する](https://qiita.com/sakai00kou/items/553aba6cc924aff3c9b8)
+こちらを参考にすると理解が深まる
+
+
+#### クロススタックリファレンス
+テンプレートを分割する方法の一つであり、OUTPUTで`EXPORT`したリソースは、他のスタックから`!ImportValue`で参照することができるようになる機能。
+
+注意しなくてはならないのは、スタック間でリソースを参照するので、同一アカウントの同一リージョンの中で、エクスポート名は一位である必要がある。
+
+[CloudFormationのスタック間でリソースを参照する](https://dev.classmethod.jp/articles/cfn-cross-stack-reference/)
+
+EXPORTする側
+```
+Outputs:
+  EC2VPC1:
+    Value: !Ref EC2VPC1
+    Export:
+      Name: CrossStackVpcId
+```
+
+
+IMPORTする側
+```
+Resources:
+  EC2Subnet1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !ImportValue CrossStackVpcId
+
+```
+
+![](img/cfn_cross.png)
+
+
+
+#### ダイナミックリファレンス
+RDSへの接続先や認証情報など、テンプレートにかけないパラメタをSecretsManagerから取得する際に利用する。
+
+テンプレートに 以下の形式で記述する
+```
+{{resolve:ssm:parameter-name:version}}
+```
+
+#### カスタムリソース（Lambdaの実行）
+CFNのテンプレートに存在しないリソース処理をLambdaやSNSを実行することで実行するための機能。
+
+![](img/cfn_custom.png)
+
+基本的な使い方としては
+1. Lambdaで機能を作り込む
+2. CustomのResource(AWS::CloudFormation::CustomResource or Custom::XXXX)リソースにLambdaのARNを指定
+
+
+#### 差分チェック
+テンプレート間を比較するチェンジセットとテンプレートと環境を比較するドリフト検出がある
+
+■ チェンジセット  
+`テンプレート間の差分検出`  
+作成時のテンプレートと更新しようとしているテンプレートの差分を検出する。
+
+■ ドリフト検出  
+`テンプレートとリソースの差分検出`  
+作成時のテンプレートと現状のリソースの差分を検出する。
+
+手動で変更したことがあればドリフト検出で差分を把握するところから。
+手動で変更したことがなく、更新デプロイしたい場合は変更セットを利用
+
+![](img/cfn_change_drift.png)
+
+
+#### マクロ
+CloudFormationがサポートするリソースを作る際に、変換処理や繰り返し処理をLambdaで実現する機能
+
+
+#### スタックセット
+１つのテンプレートを複数のAWSアカウントおよびリージョンに展開する
+
+### CloudFormation デザイナー
+AWSコンソールからGUIでテンプレートを作成できる機能
+
+
+
+
 
 ### Hands on
 以下の詳細説明については、[CFのHandsOnBeginners](https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-cfn-2022-reg-event.html?trk=aws_introduction_page)
@@ -69,8 +216,6 @@ Resources:
 作成する環境は以下
 
 ![](img/cf_arche.png)
-
-
 
 #### テンプレート
 作成するスタックの設計図
@@ -174,8 +319,8 @@ Outputs:
 ```
 
 
-### 環境構築方法
-#### AWSコンソールからの実行
+#### 環境構築方法
+##### AWSコンソールからの実行
 GUIなので何をしているのかが分かり易いのがメリット、繰り返し実行や試行錯誤はし難い
 
 作成したテンプレートをAWSのマネジメントコンソールからアップロードして利用  
@@ -187,7 +332,7 @@ cfnの「スタックを作成」から、「新しいリソースを利用（�
 
 ![](img/cfn_resources.png)
 
-### AWS CLIからの実行
+##### AWS CLIからの実行
 CLIなので、繰り返し実行や試行錯誤がやり易い  
 H4Bでは、AWS-CLI設定済のCloud9からの実行している。
 
@@ -209,34 +354,20 @@ H4Bでは、AWS-CLI設定済のCloud9からの実行している。
 > aws cloudformation update-stack --stack-name [YOUR_STACK_NAME] --template-body file://[YOUR_TEMPLATE_FILE]
 
 
-### 深掘り機能
-#### ネストッドスタック
-複数のテンプレートで親子関係を構成することができる。
-
-実行手順
-- 親側に`AWS::CloudFormation::Stack`リソースて押してこテンプレートのスタックを定義
-- 子側のテンプレート作成
-- 親側で子テンプレートのパスを指定
-- aws cloudformation packageコマンドを実行してS3にpush
-
-#### カスタムリソース
-CFNのテンプレートに存在しないリソース処理を噛ませる場合にはカスタムリソースを利用する。
-基本的な動きとしてはLambdaで機能を作り込んで、CustomのResourceでLambdaのARNをServiceTokenに指定することで、作り込んだLambdaが実行される
-
-
-#### チェンジセット
-更新しようとしているテンプレートと、作成済のテンプレートの差分を検出する機能。
-
-#### ドリフト検出
-現状のリソースと作成した際のテンプレート定義の差分を検出する機能
-
-#### スタックセット
-１つのテンプレートを複数のAWSアカウントおよびリージョンに展開する
 
 
 
-### CloudFormation デザイナー
-AWSコンソールからGUIでテンプレートを作成できる機能
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -265,7 +396,7 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 最初の定義で、自分がCFNではなくて、SAMであることを宣言する
 > Transform: AW::Serverless-2016-10-31
 
-CFNと同様にResourcesが必須項目であるが、Transformも必須項目である。
+CFNと同様にResourcesが必須項目であるが、`Transformも必須項目`である。
 
 #### Resource
 Resourceに置いても、サーバレスに特化した記述方法がある  
@@ -276,6 +407,25 @@ SAM用のTypeが6つ準備されている
 
 #### Globals
 Globalsという複数リソースの設定をまとめて行う設定がある点が差分
+
+#### ポリシーテンプレート
+CFNでは長くなりがちだった、Lambda関数への権限付与を簡易化したもの。
+
+ポリシーテンプレートを利用することで簡易にLambadaに権限を与えることができる
+```
+Resources:
+  GetOrderFunction
+    Type: AWS::Serverless:Function
+    Properties:
+    CodeUri: xxxx.jar
+    Handler: xxx
+    Runtime: java11
+    Policies: # ここでポリシーテンプレート利用を先天
+    - dynamoDBCrudPolicy: # 利用するポリシー
+      TableName: !Ref xxx # ポリシーに対する引数
+```
+
+
 
 ### Hands on
 以下の詳細説明については、[SAMのHandsOnBeginners](https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-2-2022-reg-event.html?trk=aws_introduction_page)
@@ -372,8 +522,26 @@ aws cloudformation deploy \
 
 `aws cloudformation deploy` ではなく、`sam deploy`でもOK
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Elastic Beanstalk 
-典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
+Web三層モデルAppやキューを用いたバッチ処理などの典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
 PaaSを実現するサービス
 
 ### 設定対象
@@ -381,6 +549,10 @@ PaaSを実現するサービス
 
 ### デプロイ戦略
 5種類のデプロイ戦略が準備されている
+
+[図解でわかりやすい[AWS Elastic Beanstalkで使えるデプロイポリシーを理解する](https://dev.classmethod.jp/articles/elastic-beanstalk-deploy-policy/)
+
+
 #### All at once
 アプロケーションインスタンスをすべて同時に更新する
 
@@ -401,6 +573,29 @@ Rollingは最大数が決まっていて、その中でRolling Deployしてい�
 動作確認が済んだら、既存のオートスケーリンググループに新規のサーバーを割り当て直す
 一時的なオートスケーリンググループと古いサーバーを落とす。
 
+![](img/elasticbeanstalk_immutable.png)
+
 
 #### Traffic Splitting（Canary方式）
 既存と新規を同時に立ち上がる状態にして、どちらにも割り振る状態を経ながら、だんだん新規に流していく
+
+### コンテナサポート
+Elastic BeanstalkでもDockerおよびDocker Composeを使用したコンテナ実行がサポートされている。
+
+Docker Composeを利用しない場合は３パターンでコンテナ実行できる
+- Docker Fileを作成してコンソールからアップロード
+- コンテナイメージをビルドして、リポジトリにプッシュ  
+Dockerrun.aws.jsonファイルを作成して、コンソールへアップロードする
+- Zip形式のAppファイルを作成して、コンソール上からアップロードする。
+アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。
+
+
+### 設定ファイル
+`.ebextensions`は、設定ファイル群を格納するディレクトリです。
+プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が`.config`のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。
+
+### cron.yaml
+Elastic Beanstalkに置いて、定期実行のワーカーを設定する場合は、cron.yamlファイルを作成しておく
+
+### env.yaml
+AWS Elastic Beanstalkの環境に使用されるパラメータを特定します
