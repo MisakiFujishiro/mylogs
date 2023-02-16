@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>1. API GWとLambdaを利用したサーバーレスSpringアプリケーション &#8212; my_sphinx  ドキュメント</title>
+    <title>API GWとLambdaを利用したサーバーレスSpringアプリケーション &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -19,9 +19,7 @@
     <script src="../_static/translations.js"></script>
     
     <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. AWS ECS上に構築するSpringアプリケーション" href="ecs.html" />
-    <link rel="prev" title="1. 塾の活動" href="../DAILY/daily.html" /> 
+    <link rel="search" title="検索" href="../search.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -29,14 +27,8 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="right" >
-          <a href="ecs.html" title="2. AWS ECS上に構築するSpringアプリケーション"
-             accesskey="N">次へ</a> |</li>
-        <li class="right" >
-          <a href="../DAILY/daily.html" title="1. 塾の活動"
-             accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>API GWとLambdaを利用したサーバーレスSpringアプリケーション</a></li> 
+        <li class="nav-item nav-item-this"><a href="">API GWとLambdaを利用したサーバーレスSpringアプリケーション</a></li> 
       </ul>
     </div>  
 
@@ -46,7 +38,7 @@
           <div class="body" role="main">
             
   <section id="api-gwlambdaspring">
-<h1><span class="section-number">1. </span>API GWとLambdaを利用したサーバーレスSpringアプリケーション<a class="headerlink" href="#api-gwlambdaspring" title="この見出しへのパーマリンク">¶</a></h1>
+<h1>API GWとLambdaを利用したサーバーレスSpringアプリケーション<a class="headerlink" href="#api-gwlambdaspring" title="この見出しへのパーマリンク">¶</a></h1>
 <p>アプリケーション開発では、リクエストを受け付けるAppやサーバーが必要になるが、
 それらを意識することなく、最小限どのプログラムでAppの実行環境を構築するサーバーレス開発を
 API GWとLambdaを利用して実装する。</p>
@@ -58,27 +50,27 @@ API GWとLambdaを利用して実装する。</p>
 </ul>
 <p>ソースコードは<a class="reference external" href="https://github.com/debugroom/mynavi-sample-aws-lambda">github</a>のものを参考にする</p>
 <section id="pj">
-<h2><span class="section-number">1.1. </span>PJ構築<a class="headerlink" href="#pj" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>PJ構築<a class="headerlink" href="#pj" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="app-spring-cloud-function">
-<h2><span class="section-number">1.2. </span>App実装（Spring Cloud Function）<a class="headerlink" href="#app-spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>App実装（Spring Cloud Function）<a class="headerlink" href="#app-spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="spring-cloud-function">
-<h3><span class="section-number">1.2.1. </span>Spring Cloud Functionとは<a class="headerlink" href="#spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h3>
+<h3>Spring Cloud Functionとは<a class="headerlink" href="#spring-cloud-function" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaが呼ばれると、Java側では<code class="docutils literal notranslate"><span class="pre">com.amazonaws.services.lambda.runtime.RequestHandler</span></code>が呼び出されるという仕様になっている</p>
 <p>Spring Cloud FunctionはDIコンテナの注入とかしている？？</p>
 <p>a</p>
 </section>
 </section>
 <section id="lambda">
-<h2><span class="section-number">1.3. </span>Lambdaの設定<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>Lambdaの設定<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="api-gw">
-<h2><span class="section-number">1.4. </span>API GWの設定<a class="headerlink" href="#api-gw" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>API GWの設定<a class="headerlink" href="#api-gw" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="id1">
-<h2><span class="section-number">1.5. </span>トラブルシューティング<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>トラブルシューティング<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id2">
-<h3><span class="section-number">1.5.1. </span>PJの始め方がわからない。。。<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3>PJの始め方がわからない。。。<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://debugroom.github.io/technical-academy/kickoff/202210/slides/index.html#/7-1">TerasolunaのTutorial</a>
 では、mvn archeytpe:generate コマンドでPJを作成していたので今回もそれを踏襲して、pomを更新することにしたが、方針として正しいのか。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">%</span> <span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="o">-</span><span class="n">B</span>\
@@ -172,7 +164,7 @@ API GWとLambdaを利用して実装する。</p>
 </div>
 </section>
 <section id="run-on-server">
-<h3><span class="section-number">1.5.2. </span>Run on Serverができない。<a class="headerlink" href="#run-on-server" title="この見出しへのパーマリンク">¶</a></h3>
+<h3>Run on Serverができない。<a class="headerlink" href="#run-on-server" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Spring Initializerでプロジェクトを作成したが、Run on Serverでエラーが発生。</p>
 <p>Spring InitializerからPJを作成して、<a class="reference external" href="https://spring.pleiades.io/quickstart">チュートリアル</a>通り設定</p>
 <p><img alt="../_images/initialize_setting1.png" src="../_images/initialize_setting1.png" /></p>
@@ -184,7 +176,7 @@ API GWとLambdaを利用して実装する。</p>
 PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが同じエラーが出る。。。</p>
 </section>
 <section id="jdkjre">
-<h3><span class="section-number">1.5.3. </span>jdkとjreの設定したけど。。。<a class="headerlink" href="#jdkjre" title="この見出しへのパーマリンク">¶</a></h3>
+<h3>jdkとjreの設定したけど。。。<a class="headerlink" href="#jdkjre" title="この見出しへのパーマリンク">¶</a></h3>
 <p><img alt="../_images/error_java_ver.png" src="../_images/error_java_ver.png" /></p>
 <p><img alt="../_images/error_jdk_jre.png" src="../_images/error_jdk_jre.png" /></p>
 </section>
@@ -201,34 +193,24 @@ PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが�
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">1. API GWとLambdaを利用したサーバーレスSpringアプリケーション</a><ul>
-<li><a class="reference internal" href="#pj">1.1. PJ構築</a></li>
-<li><a class="reference internal" href="#app-spring-cloud-function">1.2. App実装（Spring Cloud Function）</a><ul>
-<li><a class="reference internal" href="#spring-cloud-function">1.2.1. Spring Cloud Functionとは</a></li>
+<li><a class="reference internal" href="#">API GWとLambdaを利用したサーバーレスSpringアプリケーション</a><ul>
+<li><a class="reference internal" href="#pj">PJ構築</a></li>
+<li><a class="reference internal" href="#app-spring-cloud-function">App実装（Spring Cloud Function）</a><ul>
+<li><a class="reference internal" href="#spring-cloud-function">Spring Cloud Functionとは</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#lambda">1.3. Lambdaの設定</a></li>
-<li><a class="reference internal" href="#api-gw">1.4. API GWの設定</a></li>
-<li><a class="reference internal" href="#id1">1.5. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#id2">1.5.1. PJの始め方がわからない。。。</a></li>
-<li><a class="reference internal" href="#run-on-server">1.5.2. Run on Serverができない。</a></li>
-<li><a class="reference internal" href="#jdkjre">1.5.3. jdkとjreの設定したけど。。。</a></li>
+<li><a class="reference internal" href="#lambda">Lambdaの設定</a></li>
+<li><a class="reference internal" href="#api-gw">API GWの設定</a></li>
+<li><a class="reference internal" href="#id1">トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id2">PJの始め方がわからない。。。</a></li>
+<li><a class="reference internal" href="#run-on-server">Run on Serverができない。</a></li>
+<li><a class="reference internal" href="#jdkjre">jdkとjreの設定したけど。。。</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../DAILY/daily.html"
-                          title="前の章へ"><span class="section-number">1. </span>塾の活動</a></p>
-  </div>
-  <div>
-    <h4>次のトピックへ</h4>
-    <p class="topless"><a href="ecs.html"
-                          title="次の章へ"><span class="section-number">2. </span>AWS ECS上に構築するSpringアプリケーション</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -257,14 +239,8 @@ PropertiesからProject FacetsにDynamic Web ModuleとJava1.8を追加したが�
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="right" >
-          <a href="ecs.html" title="2. AWS ECS上に構築するSpringアプリケーション"
-             >次へ</a> |</li>
-        <li class="right" >
-          <a href="../DAILY/daily.html" title="1. 塾の活動"
-             >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>API GWとLambdaを利用したサーバーレスSpringアプリケーション</a></li> 
+        <li class="nav-item nav-item-this"><a href="">API GWとLambdaを利用したサーバーレスSpringアプリケーション</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
