@@ -1,4 +1,6 @@
 # API GateWay
+[BlackBelt](https://pages.awscloud.com/rs/112-TZM-766/images/20190514_AWS-Blackbelt_APIGateway_rev.pdf)
+はこちら
 ## API Gatewayとは
 「Web API」の作成や公開、管理を行うためのフルマネージドサービス。  
 サーバーレスのため、APIの実行基盤のサーバー構築や維持管理はAWSが責任を負う。
@@ -30,7 +32,6 @@ APIの種類は３種類
 ### APIで利用できる機能の差分について
 RESTは古くからあって、HTTP APIはOIDCやOAuth対応など、最近の技術に対応している側面がある。
 
-
 ■認証認可  
 OAuthやOIDCの認証認可はHTTPでしか利用できないが、Cognitoオーソライザは、WebSocketやRESTで利用できる。
 
@@ -46,13 +47,24 @@ APIは`ステージ`という論理的な環境にデプロイされる。APIが
 
 `{stageName}`は好きに設定することができ、prd,stg,devのように定義する
 
+![](img/apigw-stage.png)
+
+
+## API GWの処理フロー
+以下の４つの設定箇所で処理を設定することができる
+- メソッドリクエスト
+- 統合リクエスト
+- 統合レスポンス
+- メソッドレスポンス
+
+![](img/apigw-flow.png)
+
 
 ## API GWのキャッシュ
 API GWはステージごとにキャッシュを定義することができる。
 キャッシュを更新した場合は、TTLを一時的に0にしたり、キャッシュをフラッシュすることで一時的にキャッシュを無効化する。
 
 個別のリクエストがわでキャッシュを無効化したい場合は、Cache-Control:max-age=0を設定してリクエストする。
-
 
 
 ## API GWのAPIキーと使用量プラン
@@ -99,6 +111,38 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。
 4. JWT オーソライザ(OAuth/OIDC)
 クライアントはOIDCやOAuth2のプロバイダーでで認証してJWTを発行してもらってJWTリクエストのヘッダーに付与する。
 これは最近できたHTTPのみでサポートされている。
+
+
+## API GWの統合タイプ
+全部で４つの統合タイプが準備されている。
+実装時に、統合タイプとして、統合リソースのtypeを選択する
+- Lambda関数：プロキシ統合であればtypeはAWS_PROXYX
+- HTTP：HTTP_PROXYおよびHTTP
+- Mock：MOCK
+- AWSサービス：AWS
+- VPCリンク：
+
+![](img/apigw-tougoutype.png)
+
+### Lambda関数との統合
+プロキシ統合と非プロキシ統合がある。
+- プロキシ統合：Lambdaからの返り値のフォーマットが固定
+- 非プロキシ統合：フォーマットが決まっていないので、マッピングテンプレートを利用して、APIからの返り値を変更可能
+
+指定するtypeについても、プロキシの場合はAWSではなくAWS_PROXYとなる点に注意
+
+![](img/apigw-lambda_tougou.png)
+
+
+#### マッピングテンプレート
+統合リクエストや統合レスポンスで指定するテンプレートドキュメントで、データの形式を変換する
+
+![](img/apigw-mapping.png)
+
+### HTTPとの統合
+
+![](img/apigw-http_tougou.png)
+
 
 ## APIGWの監視
 CloudWatchでAPIGWを監視した際に取得できるメトリクスは以下
