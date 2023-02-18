@@ -81,7 +81,25 @@
 </section>
 <section id="id1">
 <h3><span class="section-number">14.1.3. </span>保存期間<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
-<p>デフォルトでは24時間の保存期間が設定されており、最大で168 時間まで設定可能。</p>
+<p>デフォルトでは24時間の保存期間が設定されており、最大で168時間まで設定可能。</p>
+</section>
+<section id="id2">
+<h3><span class="section-number">14.1.4. </span>トラブルシューティング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="provisionedthroughputexceededexception">
+<h4><span class="section-number">14.1.4.1. </span>ProvisionedThroughputExceededException<a class="headerlink" href="#provisionedthroughputexceededexception" title="この見出しへのパーマリンク">¶</a></h4>
+<p>現在のパフォーマンスでは要求された量のデータが処理できていないことが原因のエラー</p>
+<p>kinesisシャードの読み取り性能は</p>
+<ul class="simple">
+<li><p>1秒あたり5件</p></li>
+<li><p>1秒あたり2MB</p></li>
+</ul>
+<p>GetRecords処理では、レコードのバッチを取得できて、最大10MBまで取得可能で、これを超えると、ProvisionedThrouphputExceededExeptionエラーが発生する。</p>
+<p>対策として、以下が挙げられる</p>
+<ul class="simple">
+<li><p>エクスポ年シャルバックオフアルゴリズムによる、再試行の感覚を長くする対策</p></li>
+<li><p>GetRecord処理をする際にバッチ処理を高速分散化する対策</p></li>
+</ul>
+</section>
 </section>
 </section>
 <section id="kinesis-data-firehose">
@@ -124,6 +142,10 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
 <li><a class="reference internal" href="#data-streams">14.1.1. Data Streamsの登場人物</a></li>
 <li><a class="reference internal" href="#data-stream">14.1.2. Data Streamの暗号化</a></li>
 <li><a class="reference internal" href="#id1">14.1.3. 保存期間</a></li>
+<li><a class="reference internal" href="#id2">14.1.4. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#provisionedthroughputexceededexception">14.1.4.1. ProvisionedThroughputExceededException</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#kinesis-data-firehose">14.2. Kinesis Data Firehose</a></li>

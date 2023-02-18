@@ -238,18 +238,18 @@ buildspec.ymlは、APPのソースコードPJのルートディレクトリに�
 </section>
 <section id="hook">
 <h3><span class="section-number">4.3.3. </span>Hook<a class="headerlink" href="#hook" title="この見出しへのパーマリンク">¶</a></h3>
-<p>デプロイ時の各ライフサイクルイベントに合わせて処理を行うことができる。デプロイは大きく分けて４つのステップを踏む</p>
+<p>デプロイ時の各ライフサイクルイベントに合わせて処理を行うことができる。</p>
 <ul class="simple">
 <li><p>アプリケーションの停止</p></li>
 <li><p>アプリケーションファイルのDL</p></li>
 <li><p>アプリケーションファイルのInstall</p></li>
 <li><p>アプリケーションの起動</p></li>
-</ul>
-<p><img alt="../_images/codedeploy-lifecycle.png" src="../_images/codedeploy-lifecycle.png" /></p>
-<ul class="simple">
 <li><p>ApplicationStop<br />注意が必要。前回の出プロされたリビジョンがない初回の場合は実行されない。</p></li>
 <li><p>ValidateService<br />最終的にデプロイがうまく行ったか否か</p></li>
 </ul>
+<p><img alt="../_images/codedeploy-lifecycle.png" src="../_images/codedeploy-lifecycle.png" /></p>
+<p>LB周りやバージョン変更の際には、Applicationへのトラフィック変更に関する<code class="docutils literal notranslate"><span class="pre">AllowTraffic</span></code>に関するHookがValidationの後に追加される。</p>
+<p><img alt="../_images/codedeploy_lifecycle_lambda.png" src="../_images/codedeploy_lifecycle_lambda.png" /></p>
 </section>
 <section id="id7">
 <h3><span class="section-number">4.3.4. </span>デプロイの種類<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>

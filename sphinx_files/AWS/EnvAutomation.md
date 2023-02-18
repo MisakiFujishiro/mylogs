@@ -63,8 +63,8 @@ CFNを利用する目的として、環境に応じてテンプレートを再�
 CFNでは、`Condition`を利用することによって、実行時に指定されたパラメータに応じて条件を変更し、作成する設定値や実行対象をコントロールすることができる。
 
 環境ごとに作成するか否かの条件分岐を行う際には`Condistion`を利用する。
-- Parametersセクションで設定するvalueを定義
-- Conditionsセクションで条件の論理名と真偽判定
+- Parametersセクションで評価するデータを入力する→valueを定義
+- Conditionsセクションで条件の論理名と真偽判定→true/falseを定義
 ```
 Conditions:
   IsProduction: !Equals [!Ref Env, "production"]
@@ -82,6 +82,21 @@ Resources:
 ```
 
 [こちらのサイト](https://oreout.hatenablog.com/entry/aws/cloudformation/6)がわかりやすい
+
+
+#### ヘルパーコマンド
+CFNで作成するEC2インスタンスの構築や変更を便利する機能が準備されており、以下の４つのコマンドがある
+
+[ハンズオン](https://dev.classmethod.jp/articles/cfn-helper-scripts/)を実際に触るとわかりやすそう
+
+- cfn-init   
+  サービス開始時に実行されるコマンドなどを定義できる。
+- cfn-signal  
+  EC2リソースが正常に作成/更新されたかを示すシグナルをCFNに送信する
+- cfn-get-metadata  
+  CFNのメタデータの変更を検知する。
+- cfn-hup  
+  CFNのメタデータの変更を検知して、指定しておいたコマンドを実行することができる
 
 
 #### Mappings
@@ -110,6 +125,14 @@ Resources:
 ```
 
 
+#### Lambdaを作成する場合
+ソースコードを指定する方法は２つ
+- ZipFile  
+  テンプレートファイルの中で直接ソースコードを記述する。
+- S3Bucket/S3Key  
+  あらかじめ作成したFileをアップロードしておいて、そのパスを指定する。
+  ただし、ソースコードを修正したい場合に毎回S3をアップロードし直すのは面倒。  
+  その課題を解決するのが`aws cloudformation packeage`
 
 ### 深掘り機能
 CFNでは、テンプレート分割として、`ネステッドスタック`や`クロススタックリファレンス`、パラメータ取得を行う`ダイナミックリファレンス`、特殊なテンプレートを設定する`カスタムリソース`など様々な追加機能があるため、それぞれの特徴を理解しておく。
@@ -550,7 +573,7 @@ PaaSを実現するサービス
 ### デプロイ戦略
 5種類のデプロイ戦略が準備されている
 
-[図解でわかりやすい[AWS Elastic Beanstalkで使えるデプロイポリシーを理解する](https://dev.classmethod.jp/articles/elastic-beanstalk-deploy-policy/)
+図解でわかりやすい[AWS Elastic Beanstalkで使えるデプロイポリシーを理解する](https://dev.classmethod.jp/articles/elastic-beanstalk-deploy-policy/)
 
 
 #### All at once
@@ -591,11 +614,16 @@ Dockerrun.aws.jsonファイルを作成して、コンソールへアップロ�
 
 
 ### 設定ファイル
-`.ebextensions`は、設定ファイル群を格納するディレクトリです。
-プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が`.config`のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。
+`.ebextensions`は、設定ファイル群を格納するディレクトリで、プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が`.config`のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。
+
+.ebextenstionsで定義されたリソースはCloudFormationのスタックの一部となるため、環境が終了すると同様に削除される。
 
 ### cron.yaml
 Elastic Beanstalkに置いて、定期実行のワーカーを設定する場合は、cron.yamlファイルを作成しておく
 
 ### env.yaml
 AWS Elastic Beanstalkの環境に使用されるパラメータを特定します
+
+### ワーカー環境
+完了するまでに長い時間のかかるオペレーション処理やワークロードを専用のワーカー環境にオフロードすることができる。
+これによって、負荷のかかる処理の影響を抑えることができる。

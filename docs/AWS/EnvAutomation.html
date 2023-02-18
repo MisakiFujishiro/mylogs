@@ -109,8 +109,8 @@
 CFNでは、<code class="docutils literal notranslate"><span class="pre">Condition</span></code>を利用することによって、実行時に指定されたパラメータに応じて条件を変更し、作成する設定値や実行対象をコントロールすることができる。</p>
 <p>環境ごとに作成するか否かの条件分岐を行う際には<code class="docutils literal notranslate"><span class="pre">Condistion</span></code>を利用する。</p>
 <ul class="simple">
-<li><p>Parametersセクションで設定するvalueを定義</p></li>
-<li><p>Conditionsセクションで条件の論理名と真偽判定</p></li>
+<li><p>Parametersセクションで評価するデータを入力する→valueを定義</p></li>
+<li><p>Conditionsセクションで条件の論理名と真偽判定→true/falseを定義</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Conditions:
   IsProduction: !Equals [!Ref Env, &quot;production&quot;]
@@ -131,8 +131,19 @@ CFNでは、<code class="docutils literal notranslate"><span class="pre">Conditi
 </div>
 <p><a class="reference external" href="https://oreout.hatenablog.com/entry/aws/cloudformation/6">こちらのサイト</a>がわかりやすい</p>
 </section>
+<section id="id8">
+<h4><span class="section-number">11.1.3.6. </span>ヘルパーコマンド<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<p>CFNで作成するEC2インスタンスの構築や変更を便利する機能が準備されており、以下の４つのコマンドがある</p>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/cfn-helper-scripts/">ハンズオン</a>を実際に触るとわかりやすそう</p>
+<ul class="simple">
+<li><p>cfn-init<br />サービス開始時に実行されるコマンドなどを定義できる。</p></li>
+<li><p>cfn-signal<br />EC2リソースが正常に作成/更新されたかを示すシグナルをCFNに送信する</p></li>
+<li><p>cfn-get-metadata<br />CFNのメタデータの変更を検知する。</p></li>
+<li><p>cfn-hup<br />CFNのメタデータの変更を検知して、指定しておいたコマンドを実行することができる</p></li>
+</ul>
+</section>
 <section id="mappings">
-<h4><span class="section-number">11.1.3.6. </span>Mappings<a class="headerlink" href="#mappings" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">11.1.3.7. </span>Mappings<a class="headerlink" href="#mappings" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Conditionsで条件に応じた、環境構築を行うことができる。
 さらに、Mappingsを利用することで、リージョンやユーザーの入力情報に応じて条件設定をすることができる。</p>
 <p><a class="reference external" href="https://dev.classmethod.jp/articles/cfn-create-resources-depending-on-accounts/">AWS CloudFormationテンプレートでAWSアカウントごとにリソース作成有無を決定する</a></p>
@@ -155,12 +166,21 @@ Resources:
 </pre></div>
 </div>
 </section>
+<section id="lambda">
+<h4><span class="section-number">11.1.3.8. </span>Lambdaを作成する場合<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ソースコードを指定する方法は２つ</p>
+<ul class="simple">
+<li><p>ZipFile<br />テンプレートファイルの中で直接ソースコードを記述する。</p></li>
+<li><p>S3Bucket/S3Key<br />あらかじめ作成したFileをアップロードしておいて、そのパスを指定する。
+ただし、ソースコードを修正したい場合に毎回S3をアップロードし直すのは面倒。<br />その課題を解決するのが<code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">cloudformation</span> <span class="pre">packeage</span></code></p></li>
+</ul>
 </section>
-<section id="id8">
-<h3><span class="section-number">11.1.4. </span>深掘り機能<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
-<p>CFNでは、テンプレート分割として、<code class="docutils literal notranslate"><span class="pre">ネステッドスタック</span></code>や<code class="docutils literal notranslate"><span class="pre">クロススタックリファレンス</span></code>、パラメータ取得を行う<code class="docutils literal notranslate"><span class="pre">ダイナミックリファレンス</span></code>、特殊なテンプレートを設定する<code class="docutils literal notranslate"><span class="pre">カスタムリソース</span></code>など様々な追加機能があるため、それぞれの特徴を理解しておく。</p>
+</section>
 <section id="id9">
-<h4><span class="section-number">11.1.4.1. </span>ネステッドスタック<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">11.1.4. </span>深掘り機能<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CFNでは、テンプレート分割として、<code class="docutils literal notranslate"><span class="pre">ネステッドスタック</span></code>や<code class="docutils literal notranslate"><span class="pre">クロススタックリファレンス</span></code>、パラメータ取得を行う<code class="docutils literal notranslate"><span class="pre">ダイナミックリファレンス</span></code>、特殊なテンプレートを設定する<code class="docutils literal notranslate"><span class="pre">カスタムリソース</span></code>など様々な追加機能があるため、それぞれの特徴を理解しておく。</p>
+<section id="id10">
+<h4><span class="section-number">11.1.4.1. </span>ネステッドスタック<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
 <p>テンプレートを分割した上でで親子関係を構成することができる。
 クロススタックリファレンスとの違いとしては、親が実行される場合、子スタックも必ず実行される点である。<br />※クロススタックリファレンスは、参照できるようにしておくところまでで、ネステッドスタックは親から子供がよばれるところまで宣言</p>
 <p>環境に依存しない子テンプレートを作成しておき、環境情報をもつ親テンプレートから子テンプレートを呼び出すことで、再利用性を高めることができる。</p>
@@ -169,8 +189,8 @@ Resources:
 <p><a class="reference external" href="https://qiita.com/sakai00kou/items/553aba6cc924aff3c9b8">CloudFormationをゼロから勉強する</a>
 こちらを参考にすると理解が深まる</p>
 </section>
-<section id="id10">
-<h4><span class="section-number">11.1.4.2. </span>クロススタックリファレンス<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id11">
+<h4><span class="section-number">11.1.4.2. </span>クロススタックリファレンス<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>テンプレートを分割する方法の一つであり、OUTPUTで<code class="docutils literal notranslate"><span class="pre">EXPORT</span></code>したリソースは、他のスタックから<code class="docutils literal notranslate"><span class="pre">!ImportValue</span></code>で参照することができるようになる機能。</p>
 <p>注意しなくてはならないのは、スタック間でリソースを参照するので、同一アカウントの同一リージョンの中で、エクスポート名は一位である必要がある。</p>
 <p><a class="reference external" href="https://dev.classmethod.jp/articles/cfn-cross-stack-reference/">CloudFormationのスタック間でリソースを参照する</a></p>
@@ -192,16 +212,16 @@ Resources:
 </div>
 <p><img alt="../_images/cfn_cross.png" src="../_images/cfn_cross.png" /></p>
 </section>
-<section id="id11">
-<h4><span class="section-number">11.1.4.3. </span>ダイナミックリファレンス<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id12">
+<h4><span class="section-number">11.1.4.3. </span>ダイナミックリファレンス<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
 <p>RDSへの接続先や認証情報など、テンプレートにかけないパラメタをSecretsManagerから取得する際に利用する。</p>
 <p>テンプレートに 以下の形式で記述する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{{</span><span class="n">resolve</span><span class="p">:</span><span class="n">ssm</span><span class="p">:</span><span class="n">parameter</span><span class="o">-</span><span class="n">name</span><span class="p">:</span><span class="n">version</span><span class="p">}}</span>
 </pre></div>
 </div>
 </section>
-<section id="lambda">
-<h4><span class="section-number">11.1.4.4. </span>カスタムリソース（Lambdaの実行）<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id13">
+<h4><span class="section-number">11.1.4.4. </span>カスタムリソース（Lambdaの実行）<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CFNのテンプレートに存在しないリソース処理をLambdaやSNSを実行することで実行するための機能。</p>
 <p><img alt="../_images/cfn_custom.png" src="../_images/cfn_custom.png" /></p>
 <p>基本的な使い方としては</p>
@@ -210,8 +230,8 @@ Resources:
 <li><p>CustomのResource(AWS::CloudFormation::CustomResource or Custom::XXXX)リソースにLambdaのARNを指定</p></li>
 </ol>
 </section>
-<section id="id12">
-<h4><span class="section-number">11.1.4.5. </span>差分チェック<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id14">
+<h4><span class="section-number">11.1.4.5. </span>差分チェック<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
 <p>テンプレート間を比較するチェンジセットとテンプレートと環境を比較するドリフト検出がある</p>
 <p>■ チェンジセット<br /><code class="docutils literal notranslate"><span class="pre">テンプレート間の差分検出</span></code><br />作成時のテンプレートと更新しようとしているテンプレートの差分を検出する。</p>
 <p>■ ドリフト検出<br /><code class="docutils literal notranslate"><span class="pre">テンプレートとリソースの差分検出</span></code><br />作成時のテンプレートと現状のリソースの差分を検出する。</p>
@@ -219,17 +239,17 @@ Resources:
 手動で変更したことがなく、更新デプロイしたい場合は変更セットを利用</p>
 <p><img alt="../_images/cfn_change_drift.png" src="../_images/cfn_change_drift.png" /></p>
 </section>
-<section id="id13">
-<h4><span class="section-number">11.1.4.6. </span>マクロ<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id15">
+<h4><span class="section-number">11.1.4.6. </span>マクロ<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CloudFormationがサポートするリソースを作る際に、変換処理や繰り返し処理をLambdaで実現する機能</p>
 </section>
-<section id="id14">
-<h4><span class="section-number">11.1.4.7. </span>スタックセット<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id16">
+<h4><span class="section-number">11.1.4.7. </span>スタックセット<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>１つのテンプレートを複数のAWSアカウントおよびリージョンに展開する</p>
 </section>
 </section>
-<section id="id15">
-<h3><span class="section-number">11.1.5. </span>CloudFormation デザイナー<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id17">
+<h3><span class="section-number">11.1.5. </span>CloudFormation デザイナー<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSコンソールからGUIでテンプレートを作成できる機能</p>
 </section>
 <section id="hands-on">
@@ -237,8 +257,8 @@ Resources:
 <p>以下の詳細説明については、<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-cfn-2022-reg-event.html?trk=aws_introduction_page">CFのHandsOnBeginners</a>
 を参考にして、サンプルコードなどを例示する。<br />作成する環境は以下</p>
 <p><img alt="../_images/cf_arche.png" src="../_images/cf_arche.png" /></p>
-<section id="id16">
-<h4><span class="section-number">11.1.6.1. </span>テンプレート<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id18">
+<h4><span class="section-number">11.1.6.1. </span>テンプレート<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>作成するスタックの設計図</p>
 <p>細かい利用方法などは<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/template-reference.html">テンプレートリファレンス</a>を参照する。</p>
 <section id="vpc">
@@ -303,10 +323,10 @@ Resources:
 </div>
 </section>
 </section>
-<section id="id17">
-<h4><span class="section-number">11.1.6.2. </span>テンプレートの詳細説明<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
-<section id="id18">
-<h5><span class="section-number">11.1.6.2.1. </span>組み込み関数<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h5>
+<section id="id19">
+<h4><span class="section-number">11.1.6.2. </span>テンプレートの詳細説明<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id20">
+<h5><span class="section-number">11.1.6.2.1. </span>組み込み関数<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h5>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -346,8 +366,8 @@ Resources:
 </div>
 </section>
 </section>
-<section id="id19">
-<h4><span class="section-number">11.1.6.3. </span>環境構築方法<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id21">
+<h4><span class="section-number">11.1.6.3. </span>環境構築方法<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
 <section id="aws">
 <h5><span class="section-number">11.1.6.3.1. </span>AWSコンソールからの実行<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h5>
 <p>GUIなので何をしているのかが分かり易いのがメリット、繰り返し実行や試行錯誤はし難い</p>
@@ -361,14 +381,14 @@ Resources:
 <p>CLIなので、繰り返し実行や試行錯誤がやり易い<br />H4Bでは、AWS-CLI設定済のCloud9からの実行している。</p>
 </section>
 </section>
-<section id="id20">
-<h4><span class="section-number">11.1.6.4. </span>スタックの作成<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id22">
+<h4><span class="section-number">11.1.6.4. </span>スタックの作成<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
 <blockquote>
 <div><p>aws cloudformation create-stack --stack-name [YOUR_STACK_NAME] --template-body file://[YOUR_TEMPLATE_FILE]</p>
 </div></blockquote>
 </section>
-<section id="id21">
-<h4><span class="section-number">11.1.6.5. </span>作成したスタックの更新<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id23">
+<h4><span class="section-number">11.1.6.5. </span>作成したスタックの更新<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
 <p>作成したテンプレートファイルの文法チェック</p>
 <blockquote>
 <div><p>aws cloudformation validate-template --template-body file://[YOUR_TEMPLATE_FILE]</p>
@@ -399,11 +419,11 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <li><p>デプロイ（CFが実行されて、構築される）</p></li>
 </ol>
 </section>
-<section id="id22">
-<h3><span class="section-number">11.2.2. </span>具体的な差分<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id24">
+<h3><span class="section-number">11.2.2. </span>具体的な差分<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>基本的な記述方法はCloudFormationとあまり変わらないが細かい部分で差分はある</p>
-<section id="id23">
-<h4><span class="section-number">11.2.2.1. </span>SAMの宣言<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id25">
+<h4><span class="section-number">11.2.2.1. </span>SAMの宣言<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h4>
 <p>最初の定義で、自分がCFNではなくて、SAMであることを宣言する</p>
 <blockquote>
 <div><p>Transform: AW::Serverless-2016-10-31</p>
@@ -423,8 +443,8 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <h4><span class="section-number">11.2.2.3. </span>Globals<a class="headerlink" href="#globals" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Globalsという複数リソースの設定をまとめて行う設定がある点が差分</p>
 </section>
-<section id="id24">
-<h4><span class="section-number">11.2.2.4. </span>ポリシーテンプレート<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id26">
+<h4><span class="section-number">11.2.2.4. </span>ポリシーテンプレート<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CFNでは長くなりがちだった、Lambda関数への権限付与を簡易化したもの。</p>
 <p>ポリシーテンプレートを利用することで簡易にLambadaに権限を与えることができる</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Resources:
@@ -441,8 +461,8 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 </div>
 </section>
 </section>
-<section id="id25">
-<h3><span class="section-number">11.2.3. </span>Hands on<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id27">
+<h3><span class="section-number">11.2.3. </span>Hands on<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の詳細説明については、<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-2-2022-reg-event.html?trk=aws_introduction_page">SAMのHandsOnBeginners</a>
 を参考にして、サンプルコードなどを例示する。<br />作成する環境は以下で、構成としてはAPIGWで公開されているAPIに対してリクエストした文字列（JP）を翻訳して（EN）返すアプリケーションを作成する。</p>
 <p><img alt="../_images/sam_arche.png" src="../_images/sam_arche.png" /></p>
@@ -454,8 +474,8 @@ LambdaやAPIGWなどのサーバーレスサービスについては、CloudForm
 <div><p>aws s3 mb s3://<em>your-backet-name</em></p>
 </div></blockquote>
 </section>
-<section id="id26">
-<h4><span class="section-number">11.2.3.2. </span>samの作成<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id28">
+<h4><span class="section-number">11.2.3.2. </span>samの作成<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h4>
 <p><a class="reference external" href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html">SAMの公式リファレンス</a>を
 参照しながらLambdaを作成するSAMを作成する。</p>
 <p>作成するのは、SAMのテンプレートコードと作成するLambdaの関数。</p>
@@ -544,14 +564,14 @@ Resources:
 <h2><span class="section-number">11.3. </span>Elastic Beanstalk<a class="headerlink" href="#elastic-beanstalk" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Web三層モデルAppやキューを用いたバッチ処理などの典型的なシステム構成をテンプレートから選択して、自動でアプリケーション環境を構築するサービス。
 PaaSを実現するサービス</p>
-<section id="id27">
-<h3><span class="section-number">11.3.1. </span>設定対象<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id29">
+<h3><span class="section-number">11.3.1. </span>設定対象<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーションの言語や環境、インスタンスの構成、利用するサービスの設定、オートスケーリングの設定、ネットワークやDBの設定</p>
 </section>
-<section id="id28">
-<h3><span class="section-number">11.3.2. </span>デプロイ戦略<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id30">
+<h3><span class="section-number">11.3.2. </span>デプロイ戦略<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h3>
 <p>5種類のデプロイ戦略が準備されている</p>
-<p>[図解でわかりやすい<a class="reference external" href="https://dev.classmethod.jp/articles/elastic-beanstalk-deploy-policy/">AWS Elastic Beanstalkで使えるデプロイポリシーを理解する</a></p>
+<p>図解でわかりやすい<a class="reference external" href="https://dev.classmethod.jp/articles/elastic-beanstalk-deploy-policy/">AWS Elastic Beanstalkで使えるデプロイポリシーを理解する</a></p>
 <section id="all-at-once">
 <h4><span class="section-number">11.3.2.1. </span>All at once<a class="headerlink" href="#all-at-once" title="この見出しへのパーマリンク">¶</a></h4>
 <p>アプロケーションインスタンスをすべて同時に更新する</p>
@@ -581,8 +601,8 @@ PaaSを実現するサービス</p>
 <p>既存と新規を同時に立ち上がる状態にして、どちらにも割り振る状態を経ながら、だんだん新規に流していく</p>
 </section>
 </section>
-<section id="id29">
-<h3><span class="section-number">11.3.3. </span>コンテナサポート<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id31">
+<h3><span class="section-number">11.3.3. </span>コンテナサポート<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Elastic BeanstalkでもDockerおよびDocker Composeを使用したコンテナ実行がサポートされている。</p>
 <p>Docker Composeを利用しない場合は３パターンでコンテナ実行できる</p>
 <ul class="simple">
@@ -592,10 +612,10 @@ PaaSを実現するサービス</p>
 アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。</p></li>
 </ul>
 </section>
-<section id="id30">
-<h3><span class="section-number">11.3.4. </span>設定ファイル<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">.ebextensions</span></code>は、設定ファイル群を格納するディレクトリです。
-プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が<code class="docutils literal notranslate"><span class="pre">.config</span></code>のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。</p>
+<section id="id32">
+<h3><span class="section-number">11.3.4. </span>設定ファイル<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">.ebextensions</span></code>は、設定ファイル群を格納するディレクトリで、プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が<code class="docutils literal notranslate"><span class="pre">.config</span></code>のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。</p>
+<p>.ebextenstionsで定義されたリソースはCloudFormationのスタックの一部となるため、環境が終了すると同様に削除される。</p>
 </section>
 <section id="cron-yaml">
 <h3><span class="section-number">11.3.5. </span>cron.yaml<a class="headerlink" href="#cron-yaml" title="この見出しへのパーマリンク">¶</a></h3>
@@ -604,6 +624,11 @@ PaaSを実現するサービス</p>
 <section id="env-yaml">
 <h3><span class="section-number">11.3.6. </span>env.yaml<a class="headerlink" href="#env-yaml" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWS Elastic Beanstalkの環境に使用されるパラメータを特定します</p>
+</section>
+<section id="id33">
+<h3><span class="section-number">11.3.7. </span>ワーカー環境<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h3>
+<p>完了するまでに長い時間のかかるオペレーション処理やワークロードを専用のワーカー環境にオフロードすることができる。
+これによって、負荷のかかる処理の影響を抑えることができる。</p>
 </section>
 </section>
 </section>
@@ -628,56 +653,58 @@ PaaSを実現するサービス</p>
 <li><a class="reference internal" href="#id6">11.1.3.3. テンプレートの基本</a></li>
 <li><a class="reference internal" href="#id7">11.1.3.4. 組み込みファンクションと擬似パラメータ</a></li>
 <li><a class="reference internal" href="#condition">11.1.3.5. Conditionを利用した環境構築</a></li>
-<li><a class="reference internal" href="#mappings">11.1.3.6. Mappings</a></li>
+<li><a class="reference internal" href="#id8">11.1.3.6. ヘルパーコマンド</a></li>
+<li><a class="reference internal" href="#mappings">11.1.3.7. Mappings</a></li>
+<li><a class="reference internal" href="#lambda">11.1.3.8. Lambdaを作成する場合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">11.1.4. 深掘り機能</a><ul>
-<li><a class="reference internal" href="#id9">11.1.4.1. ネステッドスタック</a></li>
-<li><a class="reference internal" href="#id10">11.1.4.2. クロススタックリファレンス</a></li>
-<li><a class="reference internal" href="#id11">11.1.4.3. ダイナミックリファレンス</a></li>
-<li><a class="reference internal" href="#lambda">11.1.4.4. カスタムリソース（Lambdaの実行）</a></li>
-<li><a class="reference internal" href="#id12">11.1.4.5. 差分チェック</a></li>
-<li><a class="reference internal" href="#id13">11.1.4.6. マクロ</a></li>
-<li><a class="reference internal" href="#id14">11.1.4.7. スタックセット</a></li>
+<li><a class="reference internal" href="#id9">11.1.4. 深掘り機能</a><ul>
+<li><a class="reference internal" href="#id10">11.1.4.1. ネステッドスタック</a></li>
+<li><a class="reference internal" href="#id11">11.1.4.2. クロススタックリファレンス</a></li>
+<li><a class="reference internal" href="#id12">11.1.4.3. ダイナミックリファレンス</a></li>
+<li><a class="reference internal" href="#id13">11.1.4.4. カスタムリソース（Lambdaの実行）</a></li>
+<li><a class="reference internal" href="#id14">11.1.4.5. 差分チェック</a></li>
+<li><a class="reference internal" href="#id15">11.1.4.6. マクロ</a></li>
+<li><a class="reference internal" href="#id16">11.1.4.7. スタックセット</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id15">11.1.5. CloudFormation デザイナー</a></li>
+<li><a class="reference internal" href="#id17">11.1.5. CloudFormation デザイナー</a></li>
 <li><a class="reference internal" href="#hands-on">11.1.6. Hands on</a><ul>
-<li><a class="reference internal" href="#id16">11.1.6.1. テンプレート</a><ul>
+<li><a class="reference internal" href="#id18">11.1.6.1. テンプレート</a><ul>
 <li><a class="reference internal" href="#vpc">11.1.6.1.1. VPC作成のテンプレート例</a></li>
 <li><a class="reference internal" href="#ec2">11.1.6.1.2. EC2作成のテンプレート例</a></li>
 <li><a class="reference internal" href="#securitygroup">11.1.6.1.3. SecurityGroup作成のテンプレート例</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">11.1.6.2. テンプレートの詳細説明</a><ul>
-<li><a class="reference internal" href="#id18">11.1.6.2.1. 組み込み関数</a></li>
+<li><a class="reference internal" href="#id19">11.1.6.2. テンプレートの詳細説明</a><ul>
+<li><a class="reference internal" href="#id20">11.1.6.2.1. 組み込み関数</a></li>
 <li><a class="reference internal" href="#parameters">11.1.6.2.2. Parameters</a></li>
 <li><a class="reference internal" href="#outputs">11.1.6.2.3. Outputs</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id19">11.1.6.3. 環境構築方法</a><ul>
+<li><a class="reference internal" href="#id21">11.1.6.3. 環境構築方法</a><ul>
 <li><a class="reference internal" href="#aws">11.1.6.3.1. AWSコンソールからの実行</a></li>
 <li><a class="reference internal" href="#aws-cli">11.1.6.3.2. AWS CLIからの実行</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id20">11.1.6.4. スタックの作成</a></li>
-<li><a class="reference internal" href="#id21">11.1.6.5. 作成したスタックの更新</a></li>
+<li><a class="reference internal" href="#id22">11.1.6.4. スタックの作成</a></li>
+<li><a class="reference internal" href="#id23">11.1.6.5. 作成したスタックの更新</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#serverless-application-model">11.2. Serverless Application Model</a><ul>
 <li><a class="reference internal" href="#sam">11.2.1. SAM実行の流れ</a></li>
-<li><a class="reference internal" href="#id22">11.2.2. 具体的な差分</a><ul>
-<li><a class="reference internal" href="#id23">11.2.2.1. SAMの宣言</a></li>
+<li><a class="reference internal" href="#id24">11.2.2. 具体的な差分</a><ul>
+<li><a class="reference internal" href="#id25">11.2.2.1. SAMの宣言</a></li>
 <li><a class="reference internal" href="#resource">11.2.2.2. Resource</a></li>
 <li><a class="reference internal" href="#globals">11.2.2.3. Globals</a></li>
-<li><a class="reference internal" href="#id24">11.2.2.4. ポリシーテンプレート</a></li>
+<li><a class="reference internal" href="#id26">11.2.2.4. ポリシーテンプレート</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id25">11.2.3. Hands on</a><ul>
+<li><a class="reference internal" href="#id27">11.2.3. Hands on</a><ul>
 <li><a class="reference internal" href="#s3">11.2.3.1. S3バケットの作成</a></li>
-<li><a class="reference internal" href="#id26">11.2.3.2. samの作成</a></li>
+<li><a class="reference internal" href="#id28">11.2.3.2. samの作成</a></li>
 <li><a class="reference internal" href="#sampackage">11.2.3.3. SAMのpackage</a></li>
 <li><a class="reference internal" href="#samdeploy">11.2.3.4. SAMのdeploy</a></li>
 </ul>
@@ -685,8 +712,8 @@ PaaSを実現するサービス</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#elastic-beanstalk">11.3. Elastic Beanstalk</a><ul>
-<li><a class="reference internal" href="#id27">11.3.1. 設定対象</a></li>
-<li><a class="reference internal" href="#id28">11.3.2. デプロイ戦略</a><ul>
+<li><a class="reference internal" href="#id29">11.3.1. 設定対象</a></li>
+<li><a class="reference internal" href="#id30">11.3.2. デプロイ戦略</a><ul>
 <li><a class="reference internal" href="#all-at-once">11.3.2.1. All at once</a></li>
 <li><a class="reference internal" href="#rolling">11.3.2.2. Rolling</a></li>
 <li><a class="reference internal" href="#rolling-with-additional-batch">11.3.2.3. Rolling with additional batch</a></li>
@@ -694,10 +721,11 @@ PaaSを実現するサービス</p>
 <li><a class="reference internal" href="#traffic-splitting-canary">11.3.2.5. Traffic Splitting（Canary方式）</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id29">11.3.3. コンテナサポート</a></li>
-<li><a class="reference internal" href="#id30">11.3.4. 設定ファイル</a></li>
+<li><a class="reference internal" href="#id31">11.3.3. コンテナサポート</a></li>
+<li><a class="reference internal" href="#id32">11.3.4. 設定ファイル</a></li>
 <li><a class="reference internal" href="#cron-yaml">11.3.5. cron.yaml</a></li>
 <li><a class="reference internal" href="#env-yaml">11.3.6. env.yaml</a></li>
+<li><a class="reference internal" href="#id33">11.3.7. ワーカー環境</a></li>
 </ul>
 </li>
 </ul>

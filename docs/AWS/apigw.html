@@ -92,15 +92,20 @@
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">{stageName}</span></code>は好きに設定することができ、prd,stg,devのように定義する</p>
 <p><img alt="../_images/apigw-stage.png" src="../_images/apigw-stage.png" /></p>
+<section id="canary">
+<h3><span class="section-number">6.3.1. </span>Canaryリリース<a class="headerlink" href="#canary" title="この見出しへのパーマリンク">¶</a></h3>
+<p>API GWでは既存ステージ上で、カナリアリリースを利用することができる。
+新しいバージョンがCanaryリリースとして、デプロイされ、一部のユーザーが新しいバージョンを利用する。</p>
+</section>
 </section>
 <section id="id2">
 <h2><span class="section-number">6.4. </span>API GWの処理フロー<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <p>以下の４つの設定箇所で処理を設定することができる</p>
 <ul class="simple">
-<li><p>メソッドリクエスト</p></li>
+<li><p>メソッドリクエスト<br />実行時に必要なデータやオプションデータを提供する</p></li>
 <li><p>統合リクエスト</p></li>
 <li><p>統合レスポンス</p></li>
-<li><p>メソッドレスポンス</p></li>
+<li><p>メソッドレスポンス<br />メソッドレスポンスステータスコード、ヘッダー、本文を定義して、クライアントに返される前のバックエンドレスポンスをマッピングする</p></li>
 </ul>
 <p><img alt="../_images/apigw-flow.png" src="../_images/apigw-flow.png" /></p>
 </section>
@@ -145,8 +150,7 @@ API GWで署名を検証して問題なければAPIを呼び出す。</p></li>
 API GWでポリシー評価をして問題なければAPIを呼び出す。</p></li>
 <li><p>Cognito オーソライザ<br />クライアントはCognitoで認証してJWTを発行してもらってJWTリクエストのヘッダーに付与する。
 これは古くからあるRESTでも利用できる。</p></li>
-<li><p>JWT オーソライザ(OAuth/OIDC)
-クライアントはOIDCやOAuth2のプロバイダーでで認証してJWTを発行してもらってJWTリクエストのヘッダーに付与する。
+<li><p>JWT オーソライザ(OAuth/OIDC)<br />クライアントはOIDCやOAuth2のプロバイダーでで認証してJWTを発行してもらってJWTリクエストのヘッダーに付与する。
 これは最近できたHTTPのみでサポートされている。</p></li>
 </ol>
 </section>
@@ -190,12 +194,34 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。</p><
 <ul class="simple">
 <li><p>4XXError：指定された期間に取得されたクライアント側エラーの数。</p></li>
 <li><p>5XXError：指定された期間に取得されたサーバー側エラーの数。</p></li>
-<li><p>CacheHitCount：指定された期間内に API キャッシュから配信されたリクエストの数。</p></li>
-<li><p>CacheMissCoun：API キャッシュが有効になっている特定の期間における、バックエンドから提供されたリクエストの数。</p></li>
+<li><p>Cache<code class="docutils literal notranslate"><span class="pre">Hit</span></code>Count：指定された期間内に <code class="docutils literal notranslate"><span class="pre">API</span> <span class="pre">キャッシュ</span></code>から配信されたリクエストの数。(Cacheにヒットした数)</p></li>
+<li><p>Cache<code class="docutils literal notranslate"><span class="pre">Miss</span></code>Coun：API キャッシュが有効になっている特定の期間における、<code class="docutils literal notranslate"><span class="pre">バックエンド</span></code>から提供されたリクエストの数。(CacheからMissしてバックエンドへ問い合わせた数)</p></li>
 <li><p>Count：指定された期間内の API リクエストの合計数。</p></li>
 <li><p>IntegrationLatency：API Gateway がバックエンドにリクエストを中継してから、レスポンスを受け取るまでの時間。</p></li>
 <li><p>Latency：API Gateway がクライアントからリクエストを受け取ってから、クライアントにレスポンスを返すまでの時間。</p></li>
 </ul>
+</section>
+<section id="id9">
+<h2><span class="section-number">6.10. </span>新規APIの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
+<p>API GWでAPIのインポート機能があり、外部定義ファイルからREST APIをインストールすることができる</p>
+<p><img alt="../_images/apigw_swagger.png" src="../_images/apigw_swagger.png" /></p>
+<p>対象としては、SwaggerとOpenAPIの定義ファイルがサポートされている。</p>
+</section>
+<section id="id10">
+<h2><span class="section-number">6.11. </span>APIGWのエラーメッセージ<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="bad-gateway">
+<h3><span class="section-number">6.11.1. </span>502BAD Gateway<a class="headerlink" href="#bad-gateway" title="この見出しへのパーマリンク">¶</a></h3>
+<p>プロキシ統合では、フォーマットが決まっているが、この形式に従わない場合プロキシ統合で形式違のエラーが発生する。</p>
+</section>
+<section id="integration-failure">
+<h3><span class="section-number">6.11.2. </span>INTEGRATION_FAILURE<a class="headerlink" href="#integration-failure" title="この見出しへのパーマリンク">¶</a></h3>
+<p>統合が失敗した場合のGWレスポンスで、レスポンスタイプが未指定の場合。</p>
+</section>
+<section id="integrataion-timeout">
+<h3><span class="section-number">6.11.3. </span>INTEGRATAION_TIMEOUT<a class="headerlink" href="#integrataion-timeout" title="この見出しへのパーマリンク">¶</a></h3>
+<p>API GWでタイムアウト値をカスタマイズすることができ、50msec-29secの間で設定可能
+Lambda、Lambdaプロキシ、HTTP、HTTPプロキシ、AWS統合全てにおいて、最大29secになっている。</p>
+</section>
 </section>
 </section>
 
@@ -215,7 +241,10 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。</p><
 <li><a class="reference internal" href="#api">6.2.1. APIで利用できる機能の差分について</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#api-gw">6.3. API GWのデプロイとステージ</a></li>
+<li><a class="reference internal" href="#api-gw">6.3. API GWのデプロイとステージ</a><ul>
+<li><a class="reference internal" href="#canary">6.3.1. Canaryリリース</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#id2">6.4. API GWの処理フロー</a></li>
 <li><a class="reference internal" href="#id3">6.5. API GWのキャッシュ</a></li>
 <li><a class="reference internal" href="#api-gwapi">6.6. API GWのAPIキーと使用量プラン</a><ul>
@@ -233,6 +262,13 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。</p><
 </ul>
 </li>
 <li><a class="reference internal" href="#apigw">6.9. APIGWの監視</a></li>
+<li><a class="reference internal" href="#id9">6.10. 新規APIの作成</a></li>
+<li><a class="reference internal" href="#id10">6.11. APIGWのエラーメッセージ</a><ul>
+<li><a class="reference internal" href="#bad-gateway">6.11.1. 502BAD Gateway</a></li>
+<li><a class="reference internal" href="#integration-failure">6.11.2. INTEGRATION_FAILURE</a></li>
+<li><a class="reference internal" href="#integrataion-timeout">6.11.3. INTEGRATAION_TIMEOUT</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

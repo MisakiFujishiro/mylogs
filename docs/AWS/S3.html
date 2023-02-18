@@ -191,8 +191,12 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">bucket</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">-&lt;</span><span class="n">region</span><span class="o">&gt;.</span><span class="n">amazon</span><span class="o">.</span><span class="n">com</span>
 </pre></div>
 </div>
+<section id="web">
+<h3><span class="section-number">8.6.1. </span>Webドメインとの連携<a class="headerlink" href="#web" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Route53を利用してWebドメインをS3の静的ウェブサイトホスティングと連携する場合、ドメインネームとバケット名が一致している必要性があることに注意</p>
+</section>
 <section id="id16">
-<h3><span class="section-number">8.6.1. </span>手順<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.6.2. </span>手順<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>バケットのブロックパブリックアクセス設定で、ブロックをオフにする</p></li>
 </ol>
@@ -394,7 +398,8 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 </li>
 <li><a class="reference internal" href="#cors-cross-origin-resource-sharing">8.5. CORS(Cross Origin Resource Sharing)</a></li>
 <li><a class="reference internal" href="#id15">8.6. 静的ウェブサイトホスティング</a><ul>
-<li><a class="reference internal" href="#id16">8.6.1. 手順</a></li>
+<li><a class="reference internal" href="#web">8.6.1. Webドメインとの連携</a></li>
+<li><a class="reference internal" href="#id16">8.6.2. 手順</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#s3lambda">8.7. S3のイベントとLambdaの連携</a><ul>

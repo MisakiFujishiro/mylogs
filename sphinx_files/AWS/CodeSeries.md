@@ -188,8 +188,6 @@ CloudWatchEventと連携して実装もできるし、CodeBuildトリガーも�
 
 
 
-
-
 ## Code Deploy
 EC2・Lambda・ECSに対してデプロイを行うサービス  
 AutoScaling構成に対しても自動で反映してくれる
@@ -204,20 +202,25 @@ AutoScaling構成に対しても自動で反映してくれる
 `appspec.yml`とはデプロイの仕様を定義したファイルで、ファイルの配置先やデプロイのライフサイクルで実行するスクリプトを指定
 
 ### Hook
-デプロイ時の各ライフサイクルイベントに合わせて処理を行うことができる。デプロイは大きく分けて４つのステップを踏む
+デプロイ時の各ライフサイクルイベントに合わせて処理を行うことができる。
 - アプリケーションの停止
 - アプリケーションファイルのDL
 - アプリケーションファイルのInstall
 - アプリケーションの起動
-
-
-
-![](img/codedeploy-lifecycle.png)
-
 - ApplicationStop  
   注意が必要。前回の出プロされたリビジョンがない初回の場合は実行されない。
 - ValidateService  
   最終的にデプロイがうまく行ったか否か
+
+![](img/codedeploy-lifecycle.png)
+
+
+
+
+LB周りやバージョン変更の際には、Applicationへのトラフィック変更に関する`AllowTraffic`に関するHookがValidationの後に追加される。
+
+![](img/codedeploy_lifecycle_lambda.png)
+
 
 
 ### デプロイの種類

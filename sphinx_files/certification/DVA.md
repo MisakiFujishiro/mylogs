@@ -21,3 +21,17 @@
 - No.47 STSのGetSessionToken
 - No.50 ACMが利用できないリージョン
 - No.65 DynamoDBの大容量書き込み
+
+## Udemy 模擬試験3
+- No.9  CFNのヘルパースクリプト
+- No.16 AWS CLI --dry-run
+- No.20 CodeBuildの依存関係バンドル
+- No.36 APIGWのリクエスト
+- No.38 X-rayのコマンド（BatchGetTracesとGetTraceSummaries)
+- No.39 X-rayのコマンド(PutTraceSegments)とサブセグメント
+- No.43 ElasticBeanstalkのデプロイコマンドと事前準備
+- No.50 DynamoDBのReturnConsumedCapacityパラメータ
+- No.58 AutoScalingのecs.configファイル
+- Np.62 ElasticBeanstalkのワーカー環境
+- No.64 ElasticBeanstalkとCodepipelineやCFNの連携
+

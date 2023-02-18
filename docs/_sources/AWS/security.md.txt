@@ -29,13 +29,22 @@ IAMグループを作成して動的変数を利用したポリシーを付与�
 - [IAMポリシーで変数を利用してみる](https://qiita.com/mechamogera/items/c31009d481961eea0f56)
 
 
+### アクセスキー
+AWS環境外で実行されるAppがAWSリソースにアクセスする場合、アクセスキーが必要になる。
+アクセスキーはIAMで発行し、AWS CLIやリクエストに署名を行う。
+AWS SDKを利用する場合は、いかにファイルを作成てアクセス設定を保存する
+- Linux: `~/.aws/credentials`
+- Windows: `C:/Users/USER_NAME/.aws/credentials`
+
+
 
 
 
 
 
 ### IAM RoleとAssumeRole
-[AssumeRoleの解説](https://dev.classmethod.jp/articles/iam-role-and-assumerole/)
+[IAM ロールの PassRole と AssumeRole をもう二度と忘れない](https://dev.classmethod.jp/articles/iam-role-passrole-assumerole/)がお面を使ってわかりやすく説明している。[AssumeRoleの解説](https://dev.classmethod.jp/articles/iam-role-and-assumerole/)こちらもわかりやすい。
+
 
 IAM Roleは「API権限を委譲する」機能である。
 
@@ -293,11 +302,16 @@ cognitoでは認証をユーザープールが、認可をIDプールが行う�
 
 ![](img/cognito_idp.png)
 
+#### 認証されていないゲストユーザー
+付与する認可情報はユーザーに応じたルール設定などが可能であり、認証されていないユーザーに対しても権限付与のルール設定ができるので、ゲストユーザーに対する権限付与を行うことも可能  
 
-付与する認可情報はユーザーに応じたルール設定などが可能であり、認証されていないユーザーに対しても権限付与のルール設定ができるので、ゲストユーザーに対する権限付与を行うことも可能
+認証に関わるところなのでユーザープールで設定すると勘違いしやすいが、
+ゲストユーザー（未認証）と認証して、IDプール側で認可情報を与えたあげる処理をする
 
 [AWS CLIで動かして学ぶCognito IDプールを利用したAWSの一時クレデンシャルキー発行](https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/)
 この記事は実際に画面からIDプールの設定をしていてわかりやすい。
+
+
 ### JWT
 `署名付きの認証情報を含むToken`
 
@@ -318,7 +332,10 @@ Cognitoのユーザープールで特定された個人に対して固有のデ�
 
 
 
+## AWS SSO
+複数のAWSアカウントの管理やビジネスアプリケーションへのログインを一元管理できるSSOサービス、
 
+[AWS SSOを図解してみた](https://dev.classmethod.jp/articles/aws-sso-wakewakame/)を後で整理したい。
 
 
 
