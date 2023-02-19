@@ -5,11 +5,16 @@
 - No.22 X-RAYとElasticBeanstalkの統合
 - No.23 APIGWとCloudWatchの統合
 - No.34 CodeBuildのArtifact暗号化
-- No.39 X-rayのレート
 - No.46 API GWの連携
+---
+- No.37 ECSのコマンド実行？
+- No.39 X-rayのレート
 - No.54  Elasticache戦略
 - No.57 RedisAuth
+- No.60 CloudWatchのCLI
 - No.65 DynamoDBのカーディナリティ
+
+
 
 ## Udemy 模擬試験2
 - NO.12 API Gatewayのエンドポイント

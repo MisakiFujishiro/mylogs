@@ -160,8 +160,8 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 <section id="iam-policy-simulator">
 <h4><span class="section-number">2.1.4.4. </span>IAM Policy Simulator<a class="headerlink" href="#iam-policy-simulator" title="この見出しへのパーマリンク">¶</a></h4>
 <p>設計したIAMポリシーについて、想定しているアクションが実行できるか簡単に調べることができる。</p>
-<p><img alt="../_images/iam_simulator.png" src="../_images/iam_simulator.png" /></p>
-<p><a class="reference external" href="https://dev.classmethod.jp/articles/iam-policy-simulator-howto/">IAM Policy Simulator でお手軽に確認しちゃおう</a></p>
+<p><img alt="../_images/iam_simulator.png" src="../_images/iam_simulator.png" />
+<a class="reference external" href="https://dev.classmethod.jp/articles/iam-policy-simulator-howto/">IAM Policy Simulator でお手軽に確認しちゃおう</a></p>
 </section>
 </section>
 </section>
@@ -173,6 +173,10 @@ AssumeRoleとは、stsに信頼できるリクエスト元を定義しておい�
 <p>AppからS3にアクセスするという挙動が一般的な作りだが、Appに返すのが性能要件になる場合は、S3に直接アクセスさせることを考える。</p>
 <p>その場合、クライアントに一時的にS3へ直接アクセスすることができる署名付きのURLを発行する。
 デフォルトは15分程度の期限がある。</p>
+</section>
+<section id="assumeroleapi">
+<h3><span class="section-number">2.2.2. </span>AssumeRoleのAPI<a class="headerlink" href="#assumeroleapi" title="この見出しへのパーマリンク">¶</a></h3>
+<p>AssumeRole APIを利用することで、適切なIAMのARNを返却し、この情報を利用して、一時的にリソースにアクセスする。</p>
 </section>
 </section>
 <section id="kms-key-management-service">
@@ -250,7 +254,16 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 </ul>
 </section>
 <section id="id14">
-<h3><span class="section-number">2.3.6. </span>大量の問い合わせ<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.6. </span>KMSによる暗号化リクエストヘッダー<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<p>バッチジョブなどでS3にファイルアップロードする際にはヘッダーに以下を追加する</p>
+<ul class="simple">
+<li><p>x-amz-server-side-encryption<br />KMSのサーバーサイドキーで暗号化する</p></li>
+<li><p>x-amz-server-side-encryption-custoemr-algorithm<br />アルゴリズムを指定する</p></li>
+<li><p>x-amz-server-side-encryption-customer-key<br />鍵を指定する</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3><span class="section-number">2.3.7. </span>大量の問い合わせ<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>大量に暗号化や複合化の問い合わせをするとスロット処理がエラーを発生させる可能性がある。</p>
 <p>対応としては、AWSサポートに依頼して、AWS KMSレート制限を引き上げを依頼することや、時間を置いて問い合わせをする（エクスポーネンシャルバックオフ）といった対応が必要。</p>
 </section>
@@ -258,11 +271,11 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 <section id="cognito">
 <h2><span class="section-number">2.4. </span>Cognito<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Web-AppやMobile-Appに対してAPIベースで認証機能を提供するサービス</p>
-<section id="id15">
-<h3><span class="section-number">2.4.1. </span>ユーザープール<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ユーザーDBに相当するが、AWSがマネージドで管理してくれる。</p>
 <section id="id16">
-<h4><span class="section-number">2.4.1.1. </span>ユースケース<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">2.4.1. </span>ユーザープール<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザーDBに相当するが、AWSがマネージドで管理してくれる。</p>
+<section id="id17">
+<h4><span class="section-number">2.4.1.1. </span>ユースケース<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ざっくり分けると３つのユースケースに分類可能。Appへの認証、IDプールと連携してAWSサービスへのアクセス、CognitoからLambdaのキック。</p>
 <ul class="simple">
 <li><p>EC2やECS常に配置したWeb-AppやMobile-Appの認証：アプリケーションへの認証をする</p></li>
@@ -270,20 +283,20 @@ S3へのファイルアップロードで、クライアントで準備した鍵
 <li><p>Lambdaを使ったオーソライザ：CognitoがLambdaを使って、サインインのワークフロをカスタマイズする</p></li>
 </ul>
 </section>
-<section id="id17">
-<h4><span class="section-number">2.4.1.2. </span>具体的な利用方法<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id18">
+<h4><span class="section-number">2.4.1.2. </span>具体的な利用方法<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>まず、ユーザーディレクトリを定義して、サインアップ方法やパスワードポリシーを設定する。<br />アプリクライアント側（認証を求めてくるクライアント）によって、推奨される認証フローが異なる点に注意</p>
 </section>
-<section id="id18">
-<h4><span class="section-number">2.4.1.3. </span>ユーザープールとアプリケーションの統合<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id19">
+<h4><span class="section-number">2.4.1.3. </span>ユーザープールとアプリケーションの統合<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Cognitoでは、OIDCの標準に準拠したエンドポイントが提供されている。
 そのため、アプリへのリクエストに対して、Cognitoのエンドポイントにリダイレクトすることで認証・認可をCognitoに任せることができる。
 Cognitoで認証してクライアント側にTokenを付与することで、Cognitoと連携するアプリへの一元的なアクセスができるようになる（シングルサインオン）</p>
 <p>Cognitoへの認証を外部フェデレーテッドIDプロバイダと連携して任せることができる。
 具体的なIDプロバイダとしてはGoogle ,Amazon ,Facebook ,Apple ,SAML, OpenIDConnectプロバイダが挙げられる。</p>
 </section>
-<section id="id19">
-<h4><span class="section-number">2.4.1.4. </span>ユーザプールの定義<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id20">
+<h4><span class="section-number">2.4.1.4. </span>ユーザプールの定義<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
 <p>認証フローを定義する必要があるが、モバイルで実行されるアプリケーションかサーバーサイドのWebアプリケーション化で設定内容が異なる。</p>
 <ul class="simple">
 <li><p>ALLOW_ADMIN_USER_PASSWORD_AUTH<br />CLIやSDKを使って管理やユーザーとして認証処理する場合のオプション。
@@ -312,8 +325,8 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 <li><p>クライアントが所望のサービスにアクセスする</p></li>
 </ol>
 <p><img alt="../_images/cognito_idp.png" src="../_images/cognito_idp.png" /></p>
-<section id="id20">
-<h4><span class="section-number">2.4.2.1. </span>認証されていないゲストユーザー<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id21">
+<h4><span class="section-number">2.4.2.1. </span>認証されていないゲストユーザー<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
 <p>付与する認可情報はユーザーに応じたルール設定などが可能であり、認証されていないユーザーに対しても権限付与のルール設定ができるので、ゲストユーザーに対する権限付与を行うことも可能</p>
 <p>認証に関わるところなのでユーザープールで設定すると勘違いしやすいが、
 ゲストユーザー（未認証）と認証して、IDプール側で認可情報を与えたあげる処理をする</p>
@@ -344,8 +357,8 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 <p>ACMはSSL/TLSサーバー証明書を管理するサービス</p>
 <p>SSLを有効化するためには、通信を行うサーバーに対してSSL/TLSサーバー証明書を発行準備する必要がある。
 SSLが有効化されていることでHTTPSの通信が可能となる。</p>
-<section id="id21">
-<h3><span class="section-number">2.6.1. </span>証明書の発行元<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id22">
+<h3><span class="section-number">2.6.1. </span>証明書の発行元<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>公的機関が発行するパブリック証明書と、自前の認証局で発行するプライベート証明書がある。</p>
 <p>パブリック証明書は、接続の安全性を保証するために利用され、不特定多数の人がアクセスするWebサイトなどで利用する。</p>
 </section>
@@ -357,8 +370,8 @@ SSLが有効化されていることでHTTPSの通信が可能となる。</p>
 <li><p>証明書のデプロイ：AWSサービスに証明書を配備する</p></li>
 </ul>
 </section>
-<section id="id22">
-<h3><span class="section-number">2.6.3. </span>ACMが利用できないリージョン<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h3><span class="section-number">2.6.3. </span>ACMが利用できないリージョン<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ACMが利用できないリージョンで、証明書をインポートしたい場合には、ACMの代わりにIAMを利用する。</p>
 </section>
 </section>
@@ -447,6 +460,7 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 </li>
 <li><a class="reference internal" href="#sts">2.2. STS</a><ul>
 <li><a class="reference internal" href="#id9">2.2.1. STSによる一時的な認証許可</a></li>
+<li><a class="reference internal" href="#assumeroleapi">2.2.2. AssumeRoleのAPI</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#kms-key-management-service">2.3. KMS(Key-Management-Service)</a><ul>
@@ -458,19 +472,20 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 <li><a class="reference internal" href="#id11">2.3.3. KMSのエンドポイント</a></li>
 <li><a class="reference internal" href="#id12">2.3.4. エンベロープ暗号化(ハイブリット暗号化)</a></li>
 <li><a class="reference internal" href="#id13">2.3.5. 主なユースケース</a></li>
-<li><a class="reference internal" href="#id14">2.3.6. 大量の問い合わせ</a></li>
+<li><a class="reference internal" href="#id14">2.3.6. KMSによる暗号化リクエストヘッダー</a></li>
+<li><a class="reference internal" href="#id15">2.3.7. 大量の問い合わせ</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#cognito">2.4. Cognito</a><ul>
-<li><a class="reference internal" href="#id15">2.4.1. ユーザープール</a><ul>
-<li><a class="reference internal" href="#id16">2.4.1.1. ユースケース</a></li>
-<li><a class="reference internal" href="#id17">2.4.1.2. 具体的な利用方法</a></li>
-<li><a class="reference internal" href="#id18">2.4.1.3. ユーザープールとアプリケーションの統合</a></li>
-<li><a class="reference internal" href="#id19">2.4.1.4. ユーザプールの定義</a></li>
+<li><a class="reference internal" href="#id16">2.4.1. ユーザープール</a><ul>
+<li><a class="reference internal" href="#id17">2.4.1.1. ユースケース</a></li>
+<li><a class="reference internal" href="#id18">2.4.1.2. 具体的な利用方法</a></li>
+<li><a class="reference internal" href="#id19">2.4.1.3. ユーザープールとアプリケーションの統合</a></li>
+<li><a class="reference internal" href="#id20">2.4.1.4. ユーザプールの定義</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id">2.4.2. IDプール</a><ul>
-<li><a class="reference internal" href="#id20">2.4.2.1. 認証されていないゲストユーザー</a></li>
+<li><a class="reference internal" href="#id21">2.4.2.1. 認証されていないゲストユーザー</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#jwt">2.4.3. JWT</a></li>
@@ -479,9 +494,9 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 </li>
 <li><a class="reference internal" href="#aws-sso">2.5. AWS SSO</a></li>
 <li><a class="reference internal" href="#acm-aws-certificate-manager">2.6. ACM(AWS Certificate Manager)</a><ul>
-<li><a class="reference internal" href="#id21">2.6.1. 証明書の発行元</a></li>
+<li><a class="reference internal" href="#id22">2.6.1. 証明書の発行元</a></li>
 <li><a class="reference internal" href="#acm">2.6.2. ACMの役割</a></li>
-<li><a class="reference internal" href="#id22">2.6.3. ACMが利用できないリージョン</a></li>
+<li><a class="reference internal" href="#id23">2.6.3. ACMが利用できないリージョン</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#waf">2.7. WAF</a></li>

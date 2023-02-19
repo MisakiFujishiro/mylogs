@@ -613,8 +613,11 @@ Dockerrun.aws.jsonファイルを作成して、コンソールへアップロ�
 アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。
 
 
-### 設定ファイル
-`.ebextensions`は、設定ファイル群を格納するディレクトリで、プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が`.config`のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。
+### .ebextensions配下の.configファイル
+環境構築するAWSリソースをカスタマイズすることができる。
+
+`.ebextensions`は、設定ファイル群を格納するディレクトリで、プロジェクトルートの直下に.ebextensionsディレクトリを作流。
+その中に拡張子が`.config`のyaml形式かjson形式のファイルを置くことで、Elastic Beanstalkが自動的に読み取って設定してくれる。
 
 .ebextenstionsで定義されたリソースはCloudFormationのスタックの一部となるため、環境が終了すると同様に削除される。
 

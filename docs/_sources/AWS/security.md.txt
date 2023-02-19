@@ -119,9 +119,6 @@ AssumeRoleを利用することで異なるアカウントのリソースにア�
 設計したIAMポリシーについて、想定しているアクションが実行できるか簡単に調べることができる。
 
 ![](img/iam_simulator.png)
-
-
-
 [IAM Policy Simulator でお手軽に確認しちゃおう](https://dev.classmethod.jp/articles/iam-policy-simulator-howto/)
 
 
@@ -138,7 +135,8 @@ AppからS3にアクセスするという挙動が一般的な作りだが、App
 その場合、クライアントに一時的にS3へ直接アクセスすることができる署名付きのURLを発行する。
 デフォルトは15分程度の期限がある。
 
-
+### AssumeRoleのAPI
+AssumeRole APIを利用することで、適切なIAMのARNを返却し、この情報を利用して、一時的にリソースにアクセスする。
 
 
 
@@ -222,6 +220,16 @@ KMSのAPI公開されている直接の暗号化はサイズ制限などがあ�
   KMSで管理しているキーを利用して、クライアントサイドで暗号化を実施する
   - CSE-C  
   ユーザー側で用意したキーを利用して、クライアントサイドで暗号化を実施する
+
+### KMSによる暗号化リクエストヘッダー
+バッチジョブなどでS3にファイルアップロードする際にはヘッダーに以下を追加する
+- x-amz-server-side-encryption  
+  KMSのサーバーサイドキーで暗号化する
+- x-amz-server-side-encryption-custoemr-algorithm  
+  アルゴリズムを指定する
+- x-amz-server-side-encryption-customer-key  
+  鍵を指定する
+
 
 ### 大量の問い合わせ
 大量に暗号化や複合化の問い合わせをするとスロット処理がエラーを発生させる可能性がある。

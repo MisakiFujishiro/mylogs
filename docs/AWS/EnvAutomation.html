@@ -612,9 +612,11 @@ PaaSを実現するサービス</p>
 アーカイブファイルのルートディレクトリにDockerFileとDockerrun.aws.jsonを配置する。</p></li>
 </ul>
 </section>
-<section id="id32">
-<h3><span class="section-number">11.3.4. </span>設定ファイル<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">.ebextensions</span></code>は、設定ファイル群を格納するディレクトリで、プロジェクトルートの直下に.ebextensionsディレクトリを作り、その中に拡張子が<code class="docutils literal notranslate"><span class="pre">.config</span></code>のyaml形式かjson形式のファイルを置くことで、自動的に読み取って設定してくれる。</p>
+<section id="ebextensions-config">
+<h3><span class="section-number">11.3.4. </span>.ebextensions配下の.configファイル<a class="headerlink" href="#ebextensions-config" title="この見出しへのパーマリンク">¶</a></h3>
+<p>環境構築するAWSリソースをカスタマイズすることができる。</p>
+<p><code class="docutils literal notranslate"><span class="pre">.ebextensions</span></code>は、設定ファイル群を格納するディレクトリで、プロジェクトルートの直下に.ebextensionsディレクトリを作流。
+その中に拡張子が<code class="docutils literal notranslate"><span class="pre">.config</span></code>のyaml形式かjson形式のファイルを置くことで、Elastic Beanstalkが自動的に読み取って設定してくれる。</p>
 <p>.ebextenstionsで定義されたリソースはCloudFormationのスタックの一部となるため、環境が終了すると同様に削除される。</p>
 </section>
 <section id="cron-yaml">
@@ -625,8 +627,8 @@ PaaSを実現するサービス</p>
 <h3><span class="section-number">11.3.6. </span>env.yaml<a class="headerlink" href="#env-yaml" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWS Elastic Beanstalkの環境に使用されるパラメータを特定します</p>
 </section>
-<section id="id33">
-<h3><span class="section-number">11.3.7. </span>ワーカー環境<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id32">
+<h3><span class="section-number">11.3.7. </span>ワーカー環境<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
 <p>完了するまでに長い時間のかかるオペレーション処理やワークロードを専用のワーカー環境にオフロードすることができる。
 これによって、負荷のかかる処理の影響を抑えることができる。</p>
 </section>
@@ -722,10 +724,10 @@ PaaSを実現するサービス</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#id31">11.3.3. コンテナサポート</a></li>
-<li><a class="reference internal" href="#id32">11.3.4. 設定ファイル</a></li>
+<li><a class="reference internal" href="#ebextensions-config">11.3.4. .ebextensions配下の.configファイル</a></li>
 <li><a class="reference internal" href="#cron-yaml">11.3.5. cron.yaml</a></li>
 <li><a class="reference internal" href="#env-yaml">11.3.6. env.yaml</a></li>
-<li><a class="reference internal" href="#id33">11.3.7. ワーカー環境</a></li>
+<li><a class="reference internal" href="#id32">11.3.7. ワーカー環境</a></li>
 </ul>
 </li>
 </ul>
