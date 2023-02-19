@@ -56,10 +56,7 @@
 ---
 - 最終報告資料の成形（75%)
 - 認証認可の仕組み構築→30%
-- 実案件に即して深掘りテーマの検討
-  - OktaでのSSOを実施しているので、他idpによる認証
-  - Auth0を利用して、外部idpに問い合わせする
-  - Cognitoで持っているユーザーとの統合
+- 実案件に即して深掘りテーマの検討（別idpとの連携によるSSOとユーザー管理）
 ---
 
 
@@ -115,7 +112,7 @@
 - 成果物作成【中】
 
 ### 2月：バッファ
-多分上記が計画通りにいかない
+多分上記が計画通りにいかない（うまくいっていないので、深掘り部分実装中）
 
 ### 3月：報告準備期間
 バッファ＋報告準備
@@ -123,9 +120,29 @@
 
 
 ## 2/12-2/21
-### アプリ作成
+### 認証認可の設定
 
 
+### 深掘りテーマの検討
+Cognitoのユーザープールを利用するのではなく、お客さんが利用しているidpでの認証をしてSSOするという要件がある。
+これはCognitoとお客さんのidpを連携することで、実現できる。
+（このお客さん調整をしていた先輩社員が異動してしまったので、今後別顧客と同様の設定調整をする場合藤城が担当していくことになるので、一通り実装したい）
+
+また、現在の顧客はSSOのユーザーだけでログインを提供しているが、今後はSSOとID/PASS両方でログインできるようにする方針である。
+Cognito側のユーザーとSSOのユーザーの統合や、異なるidpでSSOした場合のユーザー統合についても触れていきたい。
+
+手順
+  - Cognitoの設定
+  - Auth0の構築
+  - Appの作成
+  - CognitoとAuth0の連携設定
+  - Cognitoで持っているユーザーとの統合
+
+参考情報
+- [Amazon Cognito ユーザープールを使用して、SAML ID プロバイダーと連携](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-saml-cognito-user-pool/)
+- [Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定する](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/)
+- [Cognito で複数の Idp を使って同一のユーザーを認証する方法](https://dev.classmethod.jp/articles/how-to-link-each-idp-profile-to-the-same-cognito-profile/)
+- [Cognitoで複数のIDP認証を単一ユーザー認証として扱う](https://www.ragate.co.jp/blog/articles/3826)
 
 
 ## 1/20-2/11

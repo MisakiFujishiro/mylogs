@@ -47,7 +47,8 @@
             
   <section id="amazon-cognitospring-securityoauth2">
 <h1><span class="section-number">3. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン<a class="headerlink" href="#amazon-cognitospring-securityoauth2" title="この見出しへのパーマリンク">¶</a></h1>
-<p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/aws_2/">AWSで作るマイクロサービス</a>を参考に認証認可の仕組みを実装する。</p>
+<p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/aws_2/">AWSで作るマイクロサービス</a>を参考に認証認可の仕組みを実装する。
+図は<a class="reference external" href="https://debugroom.github.io/mynavi-doc-draft/microservice/microservice_cognito-oauth2-login-2.html">ドラフト版</a>の方が見やすい</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp5319/">Cognitoの設定①</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp5368/">Cognitoの設定②</a></p></li>
@@ -57,8 +58,182 @@
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/aws_2-20/">Spring Securityの設定②</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/aws_2-21/">Spring Securityの設定③</a></p></li>
 </ul>
+<section id="cognito">
+<h2><span class="section-number">3.1. </span>Cognitoの設定<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<p>CognitoはAWSの認証/認可のサービス</p>
+<p>ユーザープールとIDプールという２つの大きな機能を提供する</p>
+<ul class="simple">
+<li><p>ユーザープール（ユーザー情報データベース）</p>
+<ul>
+<li><p>ユーザー情報やユーザー属性を定義可能</p></li>
+<li><p>ユーザーの作成やサインイン管理</p></li>
+<li><p>サードパーティとの連携</p></li>
+<li><p>MFAの設定が可能</p></li>
+</ul>
+</li>
+<li><p>IDプール（認可情報機能を提供する）<br />認証されたユーザーに対して、Tokenを検証して、一時的な認可情報を付与する</p></li>
+</ul>
 <section id="id1">
-<h2><span class="section-number">3.1. </span><a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">3.1.1. </span>Cognitoのユーザープールの作成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下の項目を設定していく</p>
+<ul class="simple">
+<li><p>名前<br />userpoolの名前</p></li>
+<li><p>属性<br />ログインIDなど、ログインユーザーの情報に関しての設定</p></li>
+<li><p>ポリシー<br />パスワードに関するポリシーを設定</p></li>
+<li><p>MFAとアカウント回復<br />MFAの設定やアカウントの回復方法の設定</p></li>
+<li><p>メッセージのカスタマイズ<br />ユーザーに発出するメールに関する設定</p></li>
+<li><p>タグ<br />Cognitoに関するタグの設定</p></li>
+<li><p>デバイス<br />一度ログイン完了したブラウザ情報を通じてログインを継続する機能</p></li>
+<li><p>アプリクライアント<br />アプリクライアントの設定を行い、クライアント名ややりとりするトークンの設定、クライアントシークレットに関する設定を行う。</p></li>
+<li><p>トリガー<br />ユーザープールにおけるイベントを契機として実行するLambdaの設定を行う</p></li>
+</ul>
+<p><img alt="../_images/cognito_userpool_settings.png" src="../_images/cognito_userpool_settings.png" /></p>
+<section id="id2">
+<h4><span class="section-number">3.1.1.1. </span>名前の設定<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h4>
+<p>userpoolの名前を設定する</p>
+<p><img alt="../_images/cognito_userpool_name.png" src="../_images/cognito_userpool_name.png" /></p>
+</section>
+<section id="id3">
+<h4><span class="section-number">3.1.1.2. </span>属性<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ログインユーザーのIDや基本設定を定義する</p>
+<ul class="simple">
+<li><p>ユーザー名<br />サインイン時の識別子IDについて設定<br />今回は検証した（ユーザーからの応答があった）Eメールを設定</p></li>
+<li><p>Eメール・電話番号<br />Eメールや電話番号自体をユーザーIDにする場合に設定するオプション</p></li>
+<li><p>大文字小文字の区別<br />大文字小文字の区別設定で、区別を推奨している</p></li>
+<li><p>標準属性<br />標準で準備されている、ユーザープールで保持する属性情報（今回は氏名と名前）</p></li>
+<li><p>カスタム属性<br />開発者がカスタムで設定できる、ユーザープールで保持する属性情報（今回はログインIDと管理者フラグ）</p></li>
+</ul>
+<p><img alt="../_images/cognito_zokusei.png" src="../_images/cognito_zokusei.png" /></p>
+</section>
+<section id="id4">
+<h4><span class="section-number">3.1.1.3. </span>ポリシー<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<p>パスワードに関するポリシーを設定</p>
+<ul class="simple">
+<li><p>パスワード強度<br />文字数などを設定</p></li>
+<li><p>自己サインアップ<br />管理者だけが、ユーザー登録できるか、一般ユーザーが自分でできるか</p></li>
+<li><p>有効期限<br />ユーザー作成時の一時パスワードについての有効期限で、これを過ぎるとユーザーの作り直しとなる。</p></li>
+</ul>
+<p><img alt="../_images/cognito_password.png" src="../_images/cognito_password.png" /></p>
+</section>
+<section id="mfa">
+<h4><span class="section-number">3.1.1.4. </span>MFAとアカウント回復<a class="headerlink" href="#mfa" title="この見出しへのパーマリンク">¶</a></h4>
+<p>MFAの設定とパスワードを忘れたときなどのアカウントの回復方法を定義する</p>
+<ul class="simple">
+<li><p>MFAの有効<br />Cognitoを利用したサインアップ・サインインについてMFAを利用するかの設定（今回は不要）</p></li>
+<li><p>回復方法<br />パスワードを忘れたときのリセット方法としてEメールや電話が利用できる</p></li>
+<li><p>確認する属性<br />サインアップやリセット時に確認する属性情報を設定</p></li>
+<li><p>SMSのロール<br />MFAや回復にはSMSを利用するので、そのためのロールを作成する（デフォルトでOK）</p></li>
+</ul>
+<p><img alt="../_images/cognito_mfa.png" src="../_images/cognito_mfa.png" /></p>
+</section>
+<section id="id5">
+<h4><span class="section-number">3.1.1.5. </span>メッセージのカスタマイズ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoから発出するメールの設定を行う</p>
+<ul class="simple">
+<li><p>Eメールアドレスのカスタマイズ<br />発信リージョンは限られているが、利用しているリージョンと異なっていても特に問題はない<br />発信元のメール設定やリプライ先について設定可能</p></li>
+<li><p>SESによるメール発信設定<br />大規模なユーザーに向けて、サービスを提供する場合はEメール対応のための設定（今回は不要）</p></li>
+<li><p>Eメール検証メッセージ設定<br />検証メールのカスタマイズ</p></li>
+<li><p>ユーザー招待メッセージ設定<br />初回ログイン時の招待メールのメッセージをカスタマイズ</p></li>
+</ul>
+<p><img alt="../_images/cognito_email.png" src="../_images/cognito_email.png" /></p>
+<p><img alt="../_images/cognito_message.png" src="../_images/cognito_message.png" /></p>
+</section>
+<section id="id6">
+<h4><span class="section-number">3.1.1.6. </span>タグ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoリソースに対するタグ設定を必要に応じて実施</p>
+</section>
+<section id="id7">
+<h4><span class="section-number">3.1.1.7. </span>デバイス<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ブラウザやデバイス情報を記憶して、ログインを保持する、Remembermeサービス設定を必要に応じて設定</p>
+<p><img alt="../_images/cognito_device.png" src="../_images/cognito_device.png" /></p>
+</section>
+<section id="id8">
+<h4><span class="section-number">3.1.1.8. </span>アプリクライアント<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ユーザープールを利用するアプリクライアントの設定や、やりとりするトークンやクライアントシークレットの設定を行う。</p>
+<ul class="simple">
+<li><p>アプリクライアント名<br />Cognitoへアクセスするアプリケーションクライアントの設定（適当なものを設定）</p></li>
+<li><p>トークンの有効期限<br />リフレッシュトークンの有効期限で、30days</p></li>
+<li><p>アクセストークンの有効期限<br />アクセストークン（認可情報）の有効期限で、60minがデフォルト</p></li>
+<li><p>IDトークンの有効期限<br />IDトークン（認証情報）の有効期限で、60minがデフォルト</p></li>
+<li><p>クライアントシークレットの生成<br />アプリクライアントの正当性を確認するパスワードのようなもので、サーバーサイド側でやりとりするべき情報<br />JSやモバイルアプリケーションは脆弱性に直結するので利用しない点に注意</p></li>
+<li><p>認証フローの設定<br />OAuth2の認証フローではなくて、ユーザーサインアップ時のユーザー認証フローを指しており、以下の5つから設定する</p>
+<ul>
+<li><p>ALLOW_ADMIN_USER_PASSWORD_AUTH<br />CLIやSDKを利用して、管理者ユーザーとして認証を処理する</p></li>
+<li><p>ALLOW_CUSTOM_AUTH<br />Lambdaでカスタム認証を行う</p></li>
+<li><p>ALLOW_USER_PASSWORD_AUTH<br />CLIやSDKを利用して、一般ユーザーとして処理を行うオプション</p></li>
+<li><p>ALLOW_USER_SRP_AUTH<br />Saltやチャレンジレスポンスなど、パスワード交換の安全性を高めた方法</p></li>
+<li><p>ALLOW_REFRESH_TOKEN_AUTH(必須)<br />リフレッシュトークンを利用した、認証</p></li>
+</ul>
+</li>
+<li><p>セキュリティ設定<br />ユーザーが存在しない時のエラーに対応（デフォルトでOK</p></li>
+<li><p>高度なトークン設定<br />個別にリフレッシュトークンを無効化することが可能になるらしい</p></li>
+</ul>
+<p><img alt="../_images/cognito_app_client.png" src="../_images/cognito_app_client.png" /></p>
+</section>
+<section id="id9">
+<h4><span class="section-number">3.1.1.9. </span>トリガー<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ユーザープールにおけるイベントを契機として実行するLambdaの設定を行う(今回はデフォルト)</p>
+<p><img alt="../_images/cognito_trigger.png" src="../_images/cognito_trigger.png" /></p>
+</section>
+</section>
+<section id="cognitoid">
+<h3><span class="section-number">3.1.2. </span>CognitoのIDプールの作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h3>
+<p>OAuth2Loginに向けて、アプリクライアントの設定とユーザープールで発行したトークンを検証するIDプールを作成する。</p>
+<section id="id10">
+<h4><span class="section-number">3.1.2.1. </span>アプリクライアントの設定<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoのユーザープールの画面のナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">アプリクライアントの設定</span></code>を選択</p>
+<p>以下の項目を選択していく</p>
+<ul class="simple">
+<li><p>有効なIDプロバイダ<br />プロバイダとして利用するユーザーディレクトリ</p></li>
+<li><p>サインインとサインアウトのURL</p>
+<ul>
+<li><p>コールバックURL<br />アプリクライアントからリダイレクトされたCognitoで認証が完了した後、アプリクライアントへ再度リダイレクトするURL<br />Spring Securityでリダイレクトを受け入れるURLは<code class="docutils literal notranslate"><span class="pre">https://domain_name/context_path/login/oauth2/code/provice_name</span></code><br />今回はローカルで実行されるアプリケーション向けに<code class="docutils literal notranslate"><span class="pre">http://localhost:8080/frontend/login/oauth2/code/cognito</span></code>とする。<br />この設定が、正しく一致しないと動作しないので注意</p></li>
+<li><p>サインアウトURL<br />サインアウト後にリダイレクトするアプリケーションのクライアントURL<br />今回は<code class="docutils literal notranslate"><span class="pre">http://localhost:8080/frontend</span></code></p></li>
+</ul>
+</li>
+<li><p>OAuth2.0のフローとスコープ</p>
+<ul>
+<li><p>OAuthの認可フロー<br />セキュリティ的な安全性が担保されている<code class="docutils literal notranslate"><span class="pre">Authorization</span> <span class="pre">code</span> <span class="pre">grant</span></code>が推奨</p></li>
+<li><p>スコープ<br />OAuth2.0では、保護されたリソースに対するアクセス制御する方法としてスコープという概念を使用している。<br />Cognitoが保護されたリソースへのアクセス権を指定する。（認可の指定)<br />今回は以下を許可する</p>
+<ul>
+<li><p>openid: IDトークン</p></li>
+<li><p>aws.cognito.signin.user.admin: ユーザープールのAPIオペレーション</p></li>
+<li><p>profile: ユーザー情報へのプロファイルアクセス</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/cognito_app_client_setting.png" src="../_images/cognito_app_client_setting.png" /></p>
+</section>
+<section id="id11">
+<h4><span class="section-number">3.1.2.2. </span>ドメインの設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoのユーザープールの画面のナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">ドメイン名</span></code>を選択して、ドメイン名を設定</p>
+<p><img alt="../_images/cognito_domain.png" src="../_images/cognito_domain.png" /></p>
+</section>
+<section id="id">
+<h4><span class="section-number">3.1.2.3. </span>IDプールの設定<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoのコンソール画面から、IDプールの管理&gt;IDプールを作成を選択</p>
+<ul class="simple">
+<li><p>IDプール名<br />MA-fujishiroms-idpool</p></li>
+<li><p>ユーザープールID<br />ユーザープールの全般設定にある</p></li>
+<li><p>アプリクライアントID<br />ユーザープールのアプリクライアントの設定の一番上にある</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="spring">
+<h2><span class="section-number">3.2. </span>Springの設定<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
+<p>あんまり難しく考えないで、SpringSecurityを利用して、ログイン画面を作成する</p>
+<section id="id12">
+<h3><span class="section-number">3.2.1. </span>ユーザープールを利用した認証<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="id13">
+<h3><span class="section-number">3.2.2. </span>アクセストークンを利用した認可の設定<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+<section id="auth0">
+<h2><span class="section-number">3.3. </span>Auth0との連携をする<a class="headerlink" href="#auth0" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 </section>
 
@@ -73,7 +248,33 @@
     <h3><a href="../index.html">目次</a></h3>
     <ul>
 <li><a class="reference internal" href="#">3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a><ul>
-<li><a class="reference internal" href="#id1">3.1. </a></li>
+<li><a class="reference internal" href="#cognito">3.1. Cognitoの設定</a><ul>
+<li><a class="reference internal" href="#id1">3.1.1. Cognitoのユーザープールの作成</a><ul>
+<li><a class="reference internal" href="#id2">3.1.1.1. 名前の設定</a></li>
+<li><a class="reference internal" href="#id3">3.1.1.2. 属性</a></li>
+<li><a class="reference internal" href="#id4">3.1.1.3. ポリシー</a></li>
+<li><a class="reference internal" href="#mfa">3.1.1.4. MFAとアカウント回復</a></li>
+<li><a class="reference internal" href="#id5">3.1.1.5. メッセージのカスタマイズ</a></li>
+<li><a class="reference internal" href="#id6">3.1.1.6. タグ</a></li>
+<li><a class="reference internal" href="#id7">3.1.1.7. デバイス</a></li>
+<li><a class="reference internal" href="#id8">3.1.1.8. アプリクライアント</a></li>
+<li><a class="reference internal" href="#id9">3.1.1.9. トリガー</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognitoid">3.1.2. CognitoのIDプールの作成</a><ul>
+<li><a class="reference internal" href="#id10">3.1.2.1. アプリクライアントの設定</a></li>
+<li><a class="reference internal" href="#id11">3.1.2.2. ドメインの設定</a></li>
+<li><a class="reference internal" href="#id">3.1.2.3. IDプールの設定</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spring">3.2. Springの設定</a><ul>
+<li><a class="reference internal" href="#id12">3.2.1. ユーザープールを利用した認証</a></li>
+<li><a class="reference internal" href="#id13">3.2.2. アクセストークンを利用した認可の設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auth0">3.3. Auth0との連携をする</a></li>
 </ul>
 </li>
 </ul>
