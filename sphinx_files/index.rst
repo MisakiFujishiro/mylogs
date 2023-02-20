@@ -59,6 +59,7 @@ AWS Services
 
    AWS/Network
    AWS/security
+   AWS/EC2
    AWS/ECS
    AWS/CodeSeries
    AWS/AutoScaling

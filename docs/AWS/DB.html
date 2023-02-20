@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>9. DataBase &#8212; my_sphinx  ドキュメント</title>
+    <title>10. DataBase &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="10. 監視系" href="Monitoring.html" />
-    <link rel="prev" title="8. S3" href="S3.html" /> 
+    <link rel="next" title="11. 監視系" href="Monitoring.html" />
+    <link rel="prev" title="9. S3" href="S3.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="Monitoring.html" title="10. 監視系"
+          <a href="Monitoring.html" title="11. 監視系"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="S3.html" title="8. S3"
+          <a href="S3.html" title="9. S3"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>DataBase</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>DataBase</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,9 @@
           <div class="body" role="main">
             
   <section id="database">
-<h1><span class="section-number">9. </span>DataBase<a class="headerlink" href="#database" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">10. </span>DataBase<a class="headerlink" href="#database" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id1">
-<h2><span class="section-number">9.1. </span>データベースの種類<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.1. </span>データベースの種類<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>CAPの定理に従ってDBを分類すると効果的</p>
 <p>CAPの定理：「広域な環境で分散してデータを保存する場合以下の３つの特性のうち、２つまでしか同時に満たすことができない」</p>
 <ul class="simple">
@@ -60,14 +60,14 @@
 <p>CAPの定理から各DBサービスをCA型、AP型、CP型に分類することができ、それぞれ代表的なRDS・DynamoDB・Elastic Cacheについて説明する。</p>
 <p><a class="reference external" href="https://debugroom.github.io/mynavi-doc-draft/cloud_native/aws-nosql-1-1.html">川畑塾長の記事</a></p>
 <section id="ca">
-<h3><span class="section-number">9.1.1. </span>CA型<a class="headerlink" href="#ca" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.1.1. </span>CA型<a class="headerlink" href="#ca" title="この見出しへのパーマリンク">¶</a></h3>
 <p>データの一貫性と可用性を高める構成で構成で、RDBが相当する<br />複雑な検索や厳密なトランザクションに対応できる。</p>
 <p>複数のAZに分散して、DBを構成して、同期をとることで一貫性と可用性を満たそうとする。
 ネットワークが分散されると一貫性と可用性が満たせなくなる。</p>
 <p><img alt="../_images/db_ca.png" src="../_images/db_ca.png" /></p>
 </section>
 <section id="cp">
-<h3><span class="section-number">9.1.2. </span>CP型<a class="headerlink" href="#cp" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.1.2. </span>CP型<a class="headerlink" href="#cp" title="この見出しへのパーマリンク">¶</a></h3>
 <p>一貫性とネットワーク分断耐性を高める構成で、MongoDBやElastic CacheのRedisが該当する<br />高速処理が可能</p>
 <p>データを複数のAZに分けて保存するシャーディングを利用している。
 シャーディングでは、１つのノードが機能しなくても、そのノードに配置されたデータが利用できなくなるが、DB全体が利用できなくなることはない。
@@ -75,7 +75,7 @@
 <p><img alt="../_images/db_cp.png" src="../_images/db_cp.png" /></p>
 </section>
 <section id="ap">
-<h3><span class="section-number">9.1.3. </span>AP型<a class="headerlink" href="#ap" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.1.3. </span>AP型<a class="headerlink" href="#ap" title="この見出しへのパーマリンク">¶</a></h3>
 <p>可用性とネットワーク分断耐性を高める構成で、DynamoDBが該当する<br />障害が発生しないことを利用した多数アプリやIoTからのアクセスなどへの対応が可能。</p>
 <p>複数のAZにDBを配置し、全体で1つのDBとして動作する。
 1つのノードやネットワークに障害が起きてもデータが損なわれないように各ノードにデータを分散して配置する。
@@ -86,7 +86,7 @@
 </section>
 </section>
 <section id="rds">
-<h2><span class="section-number">9.2. </span>RDS<a class="headerlink" href="#rds" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.2. </span>RDS<a class="headerlink" href="#rds" title="この見出しへのパーマリンク">¶</a></h2>
 <p>構築や運用を容易にするRDBサービスで、CA型のデータベースサービスとなる<br />以下のエンジンがサポートされている</p>
 <ul class="simple">
 <li><p>MySQL</p></li>
@@ -97,19 +97,19 @@
 <li><p>Aurora</p></li>
 </ul>
 <section id="id2">
-<h3><span class="section-number">9.2.1. </span>RDSの特徴<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.2.1. </span>RDSの特徴<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マネージドなサービスであり、アプリケーション最適化以外の部分についてはAWSが管理しており、以下の特徴を持つ。</p>
 <section id="id3">
-<h4><span class="section-number">9.2.1.1. </span>拡張性<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.2.1.1. </span>拡張性<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
 <p>スケールアップやスケールダウンをインスタンスタイプを指定することで容易に実行可能。
 ストレージについてもDBを停止することなく、増加させることができる。</p>
 </section>
 <section id="id4">
-<h4><span class="section-number">9.2.1.2. </span>高可用性<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.2.1.2. </span>高可用性<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
 <p>稼働中のシステムがダウンした際に、待機系のシステムに自動で切り替える<code class="docutils literal notranslate"><span class="pre">自動フェイルオーバー</span></code>や、DBの構築時に<code class="docutils literal notranslate"><span class="pre">Multi-AZ配置</span></code>にすることができる。</p>
 </section>
 <section id="db">
-<h4><span class="section-number">9.2.1.3. </span>DBバックアップ<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.2.1.3. </span>DBバックアップ<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">自動バックアップ機能</span></code>が準備されており、次の２つのデータをS3に保存する</p>
 <ul class="simple">
 <li><p>1日1回、バックアップウィンドウで指定した時間のスナップショット</p></li>
@@ -117,26 +117,26 @@
 </ul>
 </section>
 <section id="id5">
-<h4><span class="section-number">9.2.1.4. </span>パッチ適用<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.2.1.4. </span>パッチ適用<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
 <p>DBやOSのパッチは自動で行われる</p>
 </section>
 </section>
 <section id="id6">
-<h3><span class="section-number">9.2.2. </span>リードレプリカ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.2.2. </span>リードレプリカ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>パフォーマンス向上のために、プライマリとなるDBを非同期で複製する機能。</p>
 <p>最大で5台のリードレプリカを作成して、負荷分散することができるが、非同期であるので、常に最新のデータが返却去るとは限らない点に注意
 また、エンドポイントもプライマリと異なっているので、アプリ側で書き込みと読み込みで異なるエンドポイントを指定する必要がある。</p>
 <p>災害対策でベルのリージョンにリードレプリカを作成することができる。</p>
 </section>
 <section id="id7">
-<h3><span class="section-number">9.2.3. </span>DBのバックアップ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.2.3. </span>DBのバックアップ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>RDSには定期実行のバックアップ機能がある。
 スナップショット機能で自動でLambdaが実行されてバックアップが作成される。保存期間はデフォルトで7日間、最大で35日。</p>
 <p>これを超える期間のバックアップが必要な場合はユーザー側の作り込みが必要</p>
 </section>
 </section>
 <section id="aurora">
-<h2><span class="section-number">9.3. </span>Aurora<a class="headerlink" href="#aurora" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.3. </span>Aurora<a class="headerlink" href="#aurora" title="この見出しへのパーマリンク">¶</a></h2>
 <p>RDSのデータベースエンジンの一つで、クラウドの普及に伴ってAmazonが内部のアーキテクチャを再設計したデータベース
 MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>RDBの特性である一貫性をもち、リードレプリカといった特徴とQuorumに基づく結果整合性でデータを分散して保存しているため可用性を高めている。
@@ -144,7 +144,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>書き込み用のクラスターエンドポイントと読み込み用の読み込みエンドポイントがある。</p>
 <p><img alt="../_images/db_aurora_endpoint.png" src="../_images/db_aurora_endpoint.png" /></p>
 <section id="id8">
-<h3><span class="section-number">9.3.1. </span>カスタムエンドポイント<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.1. </span>カスタムエンドポイント<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>先ほど説明したように、役割ごとにエンドポイントがあったが、インスタンスの組み合わせを自由に行える<code class="docutils literal notranslate"><span class="pre">カスタムエンドポイント</span></code>が追加された。</p>
 <p><img alt="../_images/aurora_custom_endpoint.png" src="../_images/aurora_custom_endpoint.png" /></p>
 <p>これによって、重い処理のバッチ処理を捌くDBインスタンスを使い分けることができる。</p>
@@ -154,17 +154,17 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p><img alt="../_images/aurora_custom_merit.png" src="../_images/aurora_custom_merit.png" /></p>
 </section>
 <section id="aurora-serverless">
-<h3><span class="section-number">9.3.2. </span>Aurora Serverless<a class="headerlink" href="#aurora-serverless" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.2. </span>Aurora Serverless<a class="headerlink" href="#aurora-serverless" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DBサーバーをプロ美女人戯して管理するのではなくて、キャパシティユニットを指定して管理する。
 不定期、断続的、予測不可能なワークロードに対して効率良く利用することができる。</p>
 </section>
 </section>
 <section id="elastic-cache">
-<h2><span class="section-number">9.4. </span>Elastic Cache<a class="headerlink" href="#elastic-cache" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.4. </span>Elastic Cache<a class="headerlink" href="#elastic-cache" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSが提供するセットアップ、運用、拡張が良いなマネージドキャッシュサービス</p>
 <p>RDBに保存してある、マスターデータをキャッシュして、処理を高速化したり、複数Appサーバーでセッション情報を共有するために利用される。</p>
 <section id="id9">
-<h3><span class="section-number">9.4.1. </span>キャッシュ戦略<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.4.1. </span>キャッシュ戦略<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>遅延書き込み戦略<br />必要な時にキャッシュを読み込む</p></li>
 <li><p>書き込みスルー戦略<br />データが書き込まれると、キャッシュを更新する</p></li>
@@ -173,12 +173,12 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 </ul>
 </section>
 <section id="memcached">
-<h3><span class="section-number">9.4.2. </span>Memcached<a class="headerlink" href="#memcached" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.4.2. </span>Memcached<a class="headerlink" href="#memcached" title="この見出しへのパーマリンク">¶</a></h3>
 <p>マスターデータなどのマルチスレッドでアクセス可能な<strong>共通データ</strong>のキャッシュ用途で利用する（名前の通りメモリ的な役割）<br />インメモリ型のキーバリューストアで、シンプルなキーバリューストアでデータをキャッシュして低レイテンシーでデータ参照するためといった目的で利用する。</p>
 <p>レプリケーションといった冗長化の効果がない点に注意（名前の通りメモリ的な役割）</p>
 </section>
 <section id="id10">
-<h3><span class="section-number">9.4.3. </span>基本的な挙動<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.4.3. </span>基本的な挙動<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>複数AZに跨った、クラスターを構成する</p></li>
 <li><p>データはハッシュアルゴリズムに従って格納するデータが決まる</p></li>
@@ -188,7 +188,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>※Elastic Cache Clientが提供されているのが、C#,Java,PHPなので、それ以外はApp側で問い合わせ先のノードを計算する必要がある。</p>
 </section>
 <section id="redis">
-<h3><span class="section-number">9.4.4. </span>Redis<a class="headerlink" href="#redis" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.4.4. </span>Redis<a class="headerlink" href="#redis" title="この見出しへのパーマリンク">¶</a></h3>
 <p>セッションデータを管理したりする<strong>ユーザーごとに異なる動的なデータ</strong>のキャッシュ用途で利用する。<br />データをいくつかのグループで分割して持つシャードを利用して分散処理して、パフォーマンスや可用性を高める<br />高機能なインメモリ型のキーバリューストアで、CP型のデータベースとなる。</p>
 <p>Redisの構成と用語は以下の通り</p>
 <ul class="simple">
@@ -199,7 +199,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p>Redisでは、シャードにデータを分散保存（シャーディング）することでパフォーマンスと可用性を高めている。
 シャーディングを利用するか否かをクラスターモードの設定が可能。</p>
 <section id="id11">
-<h4><span class="section-number">9.4.4.1. </span>クラスタモード無効<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.4.4.1. </span>クラスタモード無効<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>クラスターモードが無効だとシャードが１つとなる。
 エンドポイントは書き込みと読み取り用途のエンドポイントが提供される。</p>
 <p>データを保存しているプライマリノードとリードレプリカを配置して、負荷分散をする。
@@ -208,7 +208,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 <p><img alt="../_images/db_elasticcache_wo_cluster.png" src="../_images/db_elasticcache_wo_cluster.png" /></p>
 </section>
 <section id="id12">
-<h4><span class="section-number">9.4.4.2. </span>クラスタモード有効<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.4.4.2. </span>クラスタモード有効<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
 <p>キャッシュデータ量が多ければ、クラスターモードを有効化することを考えた方が良い。
 注意点は、可用性には影響しないことと、費用がかなり高くつく点</p>
 <p>クラスターモードが有効だとシャードは1-15で設定可能。エンドポイントは設定エンドポイントのみが提供される。
@@ -218,7 +218,7 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 </section>
 </section>
 <section id="dynamo-db">
-<h2><span class="section-number">9.5. </span>Dynamo DB<a class="headerlink" href="#dynamo-db" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.5. </span>Dynamo DB<a class="headerlink" href="#dynamo-db" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AP型のデータベースの代表例で、クラウドならではの水平スケーラビリティに優れており、大規模分散処理構成のユースケースが得意<br />水平スケーラビリティとは、リソースの数を増やして、システム全体のパフォーマンスを高める手法で、性能向上は垂直スケーラビリティと呼ぶ。</p>
 <p>リージョン単位でDBが構成され、3箇所の異なるAZにデータがレプリケーションされる。
 単一障害点がないのが特徴。</p>
@@ -226,11 +226,11 @@ MySQLとPostgreSQL互換のバージョンが提供されている。</p>
 格納するデータの属性が項目ごとに異なって問題ないなどかなり自由度高くデータを格納できる。</p>
 <p><img alt="../_images/db_dynamo_table.png" src="../_images/db_dynamo_table.png" /></p>
 <section id="id13">
-<h3><span class="section-number">9.5.1. </span>データとキー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.1. </span>データとキー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DynamoDBではConsistent Hashingというアルゴリズムに基づいて、親キー（<code class="docutils literal notranslate"><span class="pre">パーティションキー</span></code>）をハッシュ化して、配置するノード決定する。
 さらに、ノード内での順序は子キー（<code class="docutils literal notranslate"><span class="pre">ソートキー</span></code>）が決めることができるが、ソートキーの設定は任意</p>
 <section id="lsi">
-<h4><span class="section-number">9.5.1.1. </span>ローカルセカンダリインデックス(LSI)<a class="headerlink" href="#lsi" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.1.1. </span>ローカルセカンダリインデックス(LSI)<a class="headerlink" href="#lsi" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Sort kye以外に絞り込み検索を行うkeyを持つことができる。
 Partition keyが同一で他のAttributesで検索をすることができる。</p>
 <p><img alt="../_images/db_dynamo_lsi.png" src="../_images/db_dynamo_lsi.png" />
@@ -238,7 +238,7 @@ LSIを設定しておくことで、A1をPrimary key、A3をSort kyeとしたテ
 <p>LSIは、<code class="docutils literal notranslate"><span class="pre">テーブル作成前</span></code>に設定しておく必要がある。</p>
 </section>
 <section id="gsi">
-<h4><span class="section-number">9.5.1.2. </span>グローバルセカンダリインデックス(GSI)<a class="headerlink" href="#gsi" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.1.2. </span>グローバルセカンダリインデックス(GSI)<a class="headerlink" href="#gsi" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Prrtition key属性の代わりとなるkeyを指定することができる。</p>
 <p><img alt="../_images/db_dynamo_gsi.png" src="../_images/db_dynamo_gsi.png" />
 GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作成することができる。</p>
@@ -246,7 +246,7 @@ GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作�
 </section>
 </section>
 <section id="dynamodb">
-<h3><span class="section-number">9.5.2. </span>DynamoDBのクエリ<a class="headerlink" href="#dynamodb" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.2. </span>DynamoDBのクエリ<a class="headerlink" href="#dynamodb" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CLIからコマンドを実行することで、データを取得することができる。</p>
 <p>データの読み込みでは、GetItemやScan などのオペレーションを使用する。
 デフォルトでは、すべての属性(列)を返すが<code class="docutils literal notranslate"><span class="pre">--projection-expression</span></code>を利用すると、特定の属性(列)のみが返却される。</p>
@@ -259,18 +259,18 @@ GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作�
 </div>
 </section>
 <section id="id14">
-<h3><span class="section-number">9.5.3. </span>DynamoDBのクエリの種類<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.3. </span>DynamoDBのクエリの種類<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>BatchWriteItem: 1つのテーブルから最大100データを取得</p></li>
 <li><p>Query: 特定のパーティションキーを持つ項目を全て取り出す</p></li>
 <li><p>Scan: 指定されたテーブルやイン出っっくすの全ての項目を取り出す</p></li>
 </ul>
 <section id="id15">
-<h4><span class="section-number">9.5.3.1. </span>条件付きクエリ<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.3.1. </span>条件付きクエリ<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
 <p>更新や書き込みに対して、条件を付与することができる</p>
 </section>
 <section id="id16">
-<h4><span class="section-number">9.5.3.2. </span>返り値の設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.3.2. </span>返り値の設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ReturnConsumerCapacityパラメータでオプションを指定できる</p>
 <ul class="simple">
 <li><p>TOTAL: 消費された書き込みキャパシティユニットの総数</p></li>
@@ -280,13 +280,13 @@ GSIを設定しておくことで、A2をPrimary Keyとしてテーブルを作�
 </section>
 </section>
 <section id="id17">
-<h3><span class="section-number">9.5.4. </span>DynamoDBの注意点<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.4. </span>DynamoDBの注意点<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>RDBでは当然のようにできていたことができない。
 テーブル間の結合や不軸問い合わせができないことやAND飲みが論理演算子で利用可能など・・・
 Dynamoにはできないことをきちんと把握してから利用する必要がある。</p>
 </section>
 <section id="id18">
-<h3><span class="section-number">9.5.5. </span>課金体系<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.5. </span>課金体系<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DynamoDBの課金体系には以下の２つがある</p>
 <ul class="simple">
 <li><p>オンデマンドキャパシティモード：リクエスト数に応じて課金（動的）</p></li>
@@ -295,7 +295,7 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 <p>読み込みと書き込みのキャパシティユニットをそれぞれWCUs(Write Capacity Units)とRCUs（Read Capacity Units)と呼ぶ。
 1秒間にどれだけ読み込みするか（RCUs（とどれだけ書き込みするか（WCUs）を算出して、設定する。</p>
 <section id="rcus">
-<h4><span class="section-number">9.5.5.1. </span>RCUs<a class="headerlink" href="#rcus" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.5.1. </span>RCUs<a class="headerlink" href="#rcus" title="この見出しへのパーマリンク">¶</a></h4>
 <blockquote>
 <div><p>1秒当たりの読み込み項目数 * 項目サイズ(4KBまでを1ブロック)</p>
 </div></blockquote>
@@ -305,7 +305,7 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 </ul>
 </section>
 <section id="wcus">
-<h4><span class="section-number">9.5.5.2. </span>WCUs<a class="headerlink" href="#wcus" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.5.2. </span>WCUs<a class="headerlink" href="#wcus" title="この見出しへのパーマリンク">¶</a></h4>
 <blockquote>
 <div><p>1秒当たりの書き込み項目数 ＊ 項目サイズ（1KBまでを１ブロック）</p>
 </div></blockquote>
@@ -314,32 +314,32 @@ Dynamoにはできないことをきちんと把握してから利用する必�
 </ul>
 </section>
 <section id="id19">
-<h4><span class="section-number">9.5.5.3. </span>DynamoDBのオートスケーリング<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.5.3. </span>DynamoDBのオートスケーリング<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
 <p>負荷に応じて、RCUsやWCUsのスループットを上下させることが可能</p>
 </section>
 </section>
 <section id="id20">
-<h3><span class="section-number">9.5.6. </span>読み込み書き込みの設定<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.6. </span>読み込み書き込みの設定<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>GetItemではデフォルトで結果生合成の読み取りを提供している。</p>
 <p>アプリケーションで強い生合成のある読み取りが必要な場合は<code class="docutils literal notranslate"><span class="pre">ConsistentRead</span></code>パラメータをTrueにする。</p>
 </section>
 <section id="ttl-time-to-line">
-<h3><span class="section-number">9.5.7. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.7. </span>TTL(Time To Line)<a class="headerlink" href="#ttl-time-to-line" title="この見出しへのパーマリンク">¶</a></h3>
 <p>項目に対して有効期限を設定することができ、指定されたタイムスタンプの日時にWCUsを利用せずに削除することができる。</p>
 </section>
 <section id="dax-dynamodb-accelarator">
-<h3><span class="section-number">9.5.8. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.8. </span>DAX(DynamoDB Accelarator)<a class="headerlink" href="#dax-dynamodb-accelarator" title="この見出しへのパーマリンク">¶</a></h3>
 <p>VPC内でキャッシュクラスタを構築して、DynamoDBへの高速アクセスを可能とするキャッシュサービス。</p>
 <p>リアルタイム入札やソーシャルゲームなどのユースケースに適している。</p>
 </section>
 <section id="dynamodb-stream-trigger">
-<h3><span class="section-number">9.5.9. </span>DynamoDB Stream/Trigger<a class="headerlink" href="#dynamodb-stream-trigger" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.9. </span>DynamoDB Stream/Trigger<a class="headerlink" href="#dynamodb-stream-trigger" title="この見出しへのパーマリンク">¶</a></h3>
 <p>テーブル内で項目の変更に関するデータを記録する機能</p>
 <p>データが作成・更新・削除されたときに項目のPKと変更前後のセータがストリームレコードとして書き込まれる。</p>
 <p><img alt="../_images/db_dynamo_streams.png" src="../_images/db_dynamo_streams.png" /></p>
 <p><a class="reference external" href="https://qiita.com/bassaaaaa/items/7477420641080f922a59">DynamoDBの詳細</a></p>
 <section id="dynamodb-stream">
-<h4><span class="section-number">9.5.9.1. </span>DynamoDB Streamの中身<a class="headerlink" href="#dynamodb-stream" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.9.1. </span>DynamoDB Streamの中身<a class="headerlink" href="#dynamodb-stream" title="この見出しへのパーマリンク">¶</a></h4>
 <p>DynamoDBテーブル内の項目レベルの変更を時系列シーケンスとなっており、24時間ログを溜め込む。
 StreamViewTypeを指定することで、書き込まれる情報を決定することができる</p>
 <ul class="simple">
@@ -350,24 +350,24 @@ StreamViewTypeを指定することで、書き込まれる情報を決定する
 </ul>
 </section>
 <section id="id21">
-<h4><span class="section-number">9.5.9.2. </span>DynamoDB Streamの統合<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.5.9.2. </span>DynamoDB Streamの統合<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
 <p>LambdaやKinesisと統合されており、StreamAPIを使って、ポーリングを行なって変更を検知すると処理を実行できる（DynamoDB Trigger)
 Kinesisと連携する場合は、kinesisアダプターを使用して、アプリ側でストリームを消費する。</p>
 </section>
 </section>
 <section id="id22">
-<h3><span class="section-number">9.5.10. </span>アトミックカウンター<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.10. </span>アトミックカウンター<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>書き込みリクエストを妨害することなく、数値をカウントアップ・ダウンすることができる機能。
 UpDateItemと組み合わせて利用することで、更新した回数などをカウントできるが、冪等性がないことに注意。</p>
 </section>
 <section id="id23">
-<h3><span class="section-number">9.5.11. </span>DynamoDB トランザクション<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.11. </span>DynamoDB トランザクション<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>複数の処理をひとまとめにして行うので、同じDBを同時に変更するといった可能性がある時に不整合を防ぐことができる。
 処理をまとめて、１つのオールオアナッシングの<code class="docutils literal notranslate"><span class="pre">TransacWriteItems</span></code>と<code class="docutils literal notranslate"><span class="pre">TransacGetItems</span></code>オペレーションとして送信可能。</p>
 </section>
 </section>
 <section id="id24">
-<h2><span class="section-number">9.6. </span>エンドポイント整理<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.6. </span>エンドポイント整理<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>RDS</p>
 <ul>
@@ -407,73 +407,73 @@ UpDateItemと組み合わせて利用することで、更新した回数など�
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">9. DataBase</a><ul>
-<li><a class="reference internal" href="#id1">9.1. データベースの種類</a><ul>
-<li><a class="reference internal" href="#ca">9.1.1. CA型</a></li>
-<li><a class="reference internal" href="#cp">9.1.2. CP型</a></li>
-<li><a class="reference internal" href="#ap">9.1.3. AP型</a></li>
+<li><a class="reference internal" href="#">10. DataBase</a><ul>
+<li><a class="reference internal" href="#id1">10.1. データベースの種類</a><ul>
+<li><a class="reference internal" href="#ca">10.1.1. CA型</a></li>
+<li><a class="reference internal" href="#cp">10.1.2. CP型</a></li>
+<li><a class="reference internal" href="#ap">10.1.3. AP型</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#rds">9.2. RDS</a><ul>
-<li><a class="reference internal" href="#id2">9.2.1. RDSの特徴</a><ul>
-<li><a class="reference internal" href="#id3">9.2.1.1. 拡張性</a></li>
-<li><a class="reference internal" href="#id4">9.2.1.2. 高可用性</a></li>
-<li><a class="reference internal" href="#db">9.2.1.3. DBバックアップ</a></li>
-<li><a class="reference internal" href="#id5">9.2.1.4. パッチ適用</a></li>
+<li><a class="reference internal" href="#rds">10.2. RDS</a><ul>
+<li><a class="reference internal" href="#id2">10.2.1. RDSの特徴</a><ul>
+<li><a class="reference internal" href="#id3">10.2.1.1. 拡張性</a></li>
+<li><a class="reference internal" href="#id4">10.2.1.2. 高可用性</a></li>
+<li><a class="reference internal" href="#db">10.2.1.3. DBバックアップ</a></li>
+<li><a class="reference internal" href="#id5">10.2.1.4. パッチ適用</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">9.2.2. リードレプリカ</a></li>
-<li><a class="reference internal" href="#id7">9.2.3. DBのバックアップ</a></li>
+<li><a class="reference internal" href="#id6">10.2.2. リードレプリカ</a></li>
+<li><a class="reference internal" href="#id7">10.2.3. DBのバックアップ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aurora">9.3. Aurora</a><ul>
-<li><a class="reference internal" href="#id8">9.3.1. カスタムエンドポイント</a></li>
-<li><a class="reference internal" href="#aurora-serverless">9.3.2. Aurora Serverless</a></li>
+<li><a class="reference internal" href="#aurora">10.3. Aurora</a><ul>
+<li><a class="reference internal" href="#id8">10.3.1. カスタムエンドポイント</a></li>
+<li><a class="reference internal" href="#aurora-serverless">10.3.2. Aurora Serverless</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#elastic-cache">9.4. Elastic Cache</a><ul>
-<li><a class="reference internal" href="#id9">9.4.1. キャッシュ戦略</a></li>
-<li><a class="reference internal" href="#memcached">9.4.2. Memcached</a></li>
-<li><a class="reference internal" href="#id10">9.4.3. 基本的な挙動</a></li>
-<li><a class="reference internal" href="#redis">9.4.4. Redis</a><ul>
-<li><a class="reference internal" href="#id11">9.4.4.1. クラスタモード無効</a></li>
-<li><a class="reference internal" href="#id12">9.4.4.2. クラスタモード有効</a></li>
+<li><a class="reference internal" href="#elastic-cache">10.4. Elastic Cache</a><ul>
+<li><a class="reference internal" href="#id9">10.4.1. キャッシュ戦略</a></li>
+<li><a class="reference internal" href="#memcached">10.4.2. Memcached</a></li>
+<li><a class="reference internal" href="#id10">10.4.3. 基本的な挙動</a></li>
+<li><a class="reference internal" href="#redis">10.4.4. Redis</a><ul>
+<li><a class="reference internal" href="#id11">10.4.4.1. クラスタモード無効</a></li>
+<li><a class="reference internal" href="#id12">10.4.4.2. クラスタモード有効</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dynamo-db">9.5. Dynamo DB</a><ul>
-<li><a class="reference internal" href="#id13">9.5.1. データとキー</a><ul>
-<li><a class="reference internal" href="#lsi">9.5.1.1. ローカルセカンダリインデックス(LSI)</a></li>
-<li><a class="reference internal" href="#gsi">9.5.1.2. グローバルセカンダリインデックス(GSI)</a></li>
+<li><a class="reference internal" href="#dynamo-db">10.5. Dynamo DB</a><ul>
+<li><a class="reference internal" href="#id13">10.5.1. データとキー</a><ul>
+<li><a class="reference internal" href="#lsi">10.5.1.1. ローカルセカンダリインデックス(LSI)</a></li>
+<li><a class="reference internal" href="#gsi">10.5.1.2. グローバルセカンダリインデックス(GSI)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dynamodb">9.5.2. DynamoDBのクエリ</a></li>
-<li><a class="reference internal" href="#id14">9.5.3. DynamoDBのクエリの種類</a><ul>
-<li><a class="reference internal" href="#id15">9.5.3.1. 条件付きクエリ</a></li>
-<li><a class="reference internal" href="#id16">9.5.3.2. 返り値の設定</a></li>
+<li><a class="reference internal" href="#dynamodb">10.5.2. DynamoDBのクエリ</a></li>
+<li><a class="reference internal" href="#id14">10.5.3. DynamoDBのクエリの種類</a><ul>
+<li><a class="reference internal" href="#id15">10.5.3.1. 条件付きクエリ</a></li>
+<li><a class="reference internal" href="#id16">10.5.3.2. 返り値の設定</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">9.5.4. DynamoDBの注意点</a></li>
-<li><a class="reference internal" href="#id18">9.5.5. 課金体系</a><ul>
-<li><a class="reference internal" href="#rcus">9.5.5.1. RCUs</a></li>
-<li><a class="reference internal" href="#wcus">9.5.5.2. WCUs</a></li>
-<li><a class="reference internal" href="#id19">9.5.5.3. DynamoDBのオートスケーリング</a></li>
+<li><a class="reference internal" href="#id17">10.5.4. DynamoDBの注意点</a></li>
+<li><a class="reference internal" href="#id18">10.5.5. 課金体系</a><ul>
+<li><a class="reference internal" href="#rcus">10.5.5.1. RCUs</a></li>
+<li><a class="reference internal" href="#wcus">10.5.5.2. WCUs</a></li>
+<li><a class="reference internal" href="#id19">10.5.5.3. DynamoDBのオートスケーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id20">9.5.6. 読み込み書き込みの設定</a></li>
-<li><a class="reference internal" href="#ttl-time-to-line">9.5.7. TTL(Time To Line)</a></li>
-<li><a class="reference internal" href="#dax-dynamodb-accelarator">9.5.8. DAX(DynamoDB Accelarator)</a></li>
-<li><a class="reference internal" href="#dynamodb-stream-trigger">9.5.9. DynamoDB Stream/Trigger</a><ul>
-<li><a class="reference internal" href="#dynamodb-stream">9.5.9.1. DynamoDB Streamの中身</a></li>
-<li><a class="reference internal" href="#id21">9.5.9.2. DynamoDB Streamの統合</a></li>
+<li><a class="reference internal" href="#id20">10.5.6. 読み込み書き込みの設定</a></li>
+<li><a class="reference internal" href="#ttl-time-to-line">10.5.7. TTL(Time To Line)</a></li>
+<li><a class="reference internal" href="#dax-dynamodb-accelarator">10.5.8. DAX(DynamoDB Accelarator)</a></li>
+<li><a class="reference internal" href="#dynamodb-stream-trigger">10.5.9. DynamoDB Stream/Trigger</a><ul>
+<li><a class="reference internal" href="#dynamodb-stream">10.5.9.1. DynamoDB Streamの中身</a></li>
+<li><a class="reference internal" href="#id21">10.5.9.2. DynamoDB Streamの統合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id22">9.5.10. アトミックカウンター</a></li>
-<li><a class="reference internal" href="#id23">9.5.11. DynamoDB トランザクション</a></li>
+<li><a class="reference internal" href="#id22">10.5.10. アトミックカウンター</a></li>
+<li><a class="reference internal" href="#id23">10.5.11. DynamoDB トランザクション</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id24">9.6. エンドポイント整理</a></li>
+<li><a class="reference internal" href="#id24">10.6. エンドポイント整理</a></li>
 </ul>
 </li>
 </ul>
@@ -482,12 +482,12 @@ UpDateItemと組み合わせて利用することで、更新した回数など�
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="S3.html"
-                          title="前の章へ"><span class="section-number">8. </span>S3</a></p>
+                          title="前の章へ"><span class="section-number">9. </span>S3</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="Monitoring.html"
-                          title="次の章へ"><span class="section-number">10. </span>監視系</a></p>
+                          title="次の章へ"><span class="section-number">11. </span>監視系</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -517,13 +517,13 @@ UpDateItemと組み合わせて利用することで、更新した回数など�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="Monitoring.html" title="10. 監視系"
+          <a href="Monitoring.html" title="11. 監視系"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="S3.html" title="8. S3"
+          <a href="S3.html" title="9. S3"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>DataBase</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>DataBase</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

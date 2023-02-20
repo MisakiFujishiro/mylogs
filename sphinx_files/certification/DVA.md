@@ -40,3 +40,19 @@
 - Np.62 ElasticBeanstalkのワーカー環境
 - No.64 ElasticBeanstalkとCodepipelineやCFNの連携
 
+## Udemy 模擬試験4
+- No.5  CloudFrontでの認証
+- No.7  Console.log
+- No.24 X-ray サンプリング  
+- No.33 認証失敗メッセージのエンコード
+- No.35 API GWの認証者のみを対象としてAPIキャッシュ無効化
+- No.44 X-RayでLambdaの分析
+- No.47 SWF（Amazon Sinple Workflow)の実行履歴
+- No.59 X-RayのIAM
+- No.60 CLIでのregion指定
+- No.64 Perfect Forward Security：通信関連のサービスという消去法なら選択可能
+- No.64 EMRとkinesis
+- No.65 透過的暗号化とDBの暗号化
+
+
+

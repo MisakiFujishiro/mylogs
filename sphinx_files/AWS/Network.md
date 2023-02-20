@@ -32,15 +32,25 @@ AWSとの通信には、ネットワークを通じた通信と専用回線に�
   - HTTPS/SSH
   - VPN
 - 専用回線
+
 ### Direct Connect
 専用回線による通信のソリューション
 キャリアから調達した専用線の片端とAWS をDirect Connctionロケーションで接続するサービスを指す。
 
 
+### Gateway
+AWSでは、インターネット接続に必要な、NAT GWとInternet GWがある。
+それぞれの違いは以下
+- インターネットゲートウェイ  
+  パブリック内のEC2のプライベートIPとパブリックIPを一対一変換する
+- NATゲートウェイ  
+  プライベートないのEC2のプライベートIPとパブリックIPを多対一で変換する
 
 
+![](img/network_gw.png)
 
-
+### VPCフローログ
+VPCのネットワークインターフェースで行き来するIPトラフィック情報をキャプチャする機能
 
 
 
@@ -304,7 +314,20 @@ Invalidationのオペレーションは有料のため、有効期限内に大�
 
 ### Behaviorのプロトコルポリシー
 Viewer側との通信に関して、プロトコルポリシーを設定することが可能  
-HTTPやHTTPSのみの許可や、Redirectも可能
+
+
+### 暗号化
+- ビューワー接続  
+  ビューワープロトコルポリシーを設定することで、クライアントとCloudFrontの間にSSL/TLSプロトコルをサポートしている  
+  HTTPやHTTPSのみの許可や、Redirectも可能
+  
+![](img/cloudfront_viwer_security.png)
+
+- オリジン暗号化通信  
+オリジンプロトコルポリシーを設定することで、オリジンサーバーにSSL／TLS証明書をインストール可能
+  CloudFrontエッジとオリジン間の通信を制御
+
+![](img/cloudfront_origin_security.png)
 
 
 ### キャッシュポリシーとオリジンリクエストポリシー

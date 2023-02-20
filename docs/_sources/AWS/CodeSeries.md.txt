@@ -176,7 +176,10 @@ CloudWatchEventと連携して実装もできるし、CodeBuildトリガーも�
 ### アーティファクトとしてDockerコンテナを出力する場合
 コンソール画面の設定として、`--privileged`をTrueにしておく必要がある。
 
-
+### コードビルドの細かい設定
+コードビルドの細かい設定をAWS CLIから変更する場合
+- queuedTimeoutMinitesOverride：ビルドの同時実行制限に引っかかった場合にキューに貯められる時間
+- timeoutInMinitesOverride: 構成されたビルドに時間がかかり過ぎるとタイムアウトになる時間でデフォルトは60min
 
 
 

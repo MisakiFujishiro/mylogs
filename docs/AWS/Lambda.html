@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>7. Lambda &#8212; my_sphinx  ドキュメント</title>
+    <title>8. Lambda &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="8. S3" href="S3.html" />
-    <link rel="prev" title="6. API GateWay" href="apigw.html" /> 
+    <link rel="next" title="9. S3" href="S3.html" />
+    <link rel="prev" title="7. API GateWay" href="apigw.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="S3.html" title="8. S3"
+          <a href="S3.html" title="9. S3"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="apigw.html" title="6. API GateWay"
+          <a href="apigw.html" title="7. API GateWay"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>Lambda</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>Lambda</a></li> 
       </ul>
     </div>  
 
@@ -46,40 +46,48 @@
           <div class="body" role="main">
             
   <section id="lambda">
-<h1><span class="section-number">7. </span>Lambda<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">8. </span>Lambda<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h1>
 <p>サーバーのプロビジョニングや管理なしでプログラムを実行できるサービス</p>
 <section id="id1">
-<h2><span class="section-number">7.1. </span>Lambdaのメリット<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">8.1. </span>Lambdaのメリット<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>コードの実行やスケーリングをLambada側で実施するので、開発者はコーディングに集中できる。</p>
 </section>
 <section id="id2">
-<h2><span class="section-number">7.2. </span>Lambdaの詳細<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">8.2. </span>Lambdaの詳細<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id3">
-<h3><span class="section-number">7.2.1. </span>Lambda関数<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.1. </span>Lambda関数<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaで実行するソースコードとそのソースコードを実行するランタイムを合わせてLambda関数と呼ぶ</p>
 </section>
 <section id="id4">
-<h3><span class="section-number">7.2.2. </span>依存関係の解決<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.2. </span>依存関係の解決<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambda標準で同梱していないモジュールを利用したい場合は、依存関係を解決した資材一式をZipFileとしてまとめて、コンソールからDLする。<br />※この設定から、CFNでLambdaのResourceにZipFileセクションでソースコードを直接書く？</p>
 <p><img alt="../_images/lambda_zipfile.png" src="../_images/lambda_zipfile.png" /></p>
 </section>
 <section id="id5">
-<h3><span class="section-number">7.2.3. </span>環境設定<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.3. </span>環境設定<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーションの実行に必要なライブラリやパッケージをランタイムとして設定する。</p>
 <section id="id6">
-<h4><span class="section-number">7.2.3.1. </span>メモリ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.2.3.1. </span>メモリ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CPUは設定することができないが、メモリスペックを設定することができる。</p>
 <blockquote>
 <div><p>Lambdaでは関数の実行時に使用できるメモリ量は128 MB～10,240 MB の値を 1 MB 単位で設定することができます。</p>
 </div></blockquote>
 </section>
 <section id="id7">
-<h4><span class="section-number">7.2.3.2. </span>ストレージ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.2.3.2. </span>ストレージ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
 <p>展開パッケージのサイズは250MBに制限されており、そのサイズを超えた場合は、/tmpにアップロードする。/tmpの容量は512MB</p>
 </section>
 </section>
 <section id="id8">
-<h3><span class="section-number">7.2.4. </span>同時実行数<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.4. </span>Lambdaのネットワーク<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaは基本的に、VPC外に作成される。
+VPCを明示的に指定することで、LambdaをVPC内から呼び出すことができる。</p>
+<p>注意点として、VPC内でLambdaを利用する場合は、プライベートIPは割り振られるが、パブリックIPは割り振られない。
+外部へのアクセスをする場合は、NAT GWの設定と、セキュリティグループの確認が必要となる。</p>
+<p><img alt="../_images/lambda_in_vpc.png" src="../_images/lambda_in_vpc.png" /></p>
+</section>
+<section id="id9">
+<h3><span class="section-number">8.2.5. </span>同時実行数<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaのある時点における実行している関数の数を<code class="docutils literal notranslate"><span class="pre">同時実行数</span></code>と呼ぶ。
 同時実行数は以下の式で算出する。</p>
 <blockquote>
@@ -89,11 +97,11 @@
 東京の最大同時実行数は1000であり、Lambdaではリクエストとコンテナ数が1対1となるので、1000以上のリクエストを同時に捌きたい場合は申請が必要となる。</p>
 <p>注意点として、Lambdaの最大実行数はLambda関数全体で共有している。すなわち、Lambda-AとLambda-Bが存在するときに合計で1000の実行数となる。</p>
 </section>
-<section id="id9">
-<h3><span class="section-number">7.2.5. </span>環境変数<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Lambdaには環境変数を設定することができる。</p>
 <section id="id10">
-<h4><span class="section-number">7.2.5.1. </span>環境変数の暗号化<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">8.2.6. </span>環境変数<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaには環境変数を設定することができる。</p>
+<section id="id11">
+<h4><span class="section-number">8.2.6.1. </span>環境変数の暗号化<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>例えば、githubにLambda関数をアップロードした際に環境変数は平文で置かれてしまうので、パスワードなどを公開するのは危険。</p>
 <p>対策として環境変数はオプションとして、KMSによる暗号化が準備されている。以下の暗号化が行われる</p>
 <ul class="simple">
@@ -113,8 +121,8 @@
 </ol>
 </section>
 </section>
-<section id="id11">
-<h3><span class="section-number">7.2.6. </span>Lambda関数のライフサイクル<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">8.2.7. </span>Lambda関数のライフサイクル<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaの実態は、EC2(Amazon Linux)かDockerコンテナであり、以下の順序を踏んで実行される</p>
 <ol class="simple">
 <li><p>コンテナ作成</p></li>
@@ -124,52 +132,52 @@
 <li><p>関数の実行</p></li>
 <li><p>コンテナの破棄</p></li>
 </ol>
-<section id="id12">
-<h4><span class="section-number">7.2.6.1. </span>ウォームスタート<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id13">
+<h4><span class="section-number">8.2.7.1. </span>ウォームスタート<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Lambdaに継続的なリクエストが飛んできている場合、1-4のプロセスはスキップされて、5から処理される。</p>
 </section>
-<section id="id13">
-<h4><span class="section-number">7.2.6.2. </span>コールドスタート<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id14">
+<h4><span class="section-number">8.2.7.2. </span>コールドスタート<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
 <p>コンテナが不要と判断されると破棄されてしまうので、1番からやり直しとなる。</p>
 </section>
 <section id="provisioned-concurrency">
-<h4><span class="section-number">7.2.6.3. </span>Provisioned Concurrency<a class="headerlink" href="#provisioned-concurrency" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.2.7.3. </span>Provisioned Concurrency<a class="headerlink" href="#provisioned-concurrency" title="この見出しへのパーマリンク">¶</a></h4>
 <p>性能要件が厳しい場合は、事前にプロビジョニングしておくことが可能</p>
 </section>
 </section>
-<section id="id14">
-<h3><span class="section-number">7.2.7. </span>バージョン<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">8.2.8. </span>バージョン<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambda関数はバージョニング機能があるが、バージョンとして公開されると編集することができない点に注意</p>
 </section>
-<section id="id15">
-<h3><span class="section-number">7.2.8. </span>エイリアス<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id16">
+<h3><span class="section-number">8.2.9. </span>エイリアス<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>エイリアスとはLambda関数の別名であり、prd,stg,devなどを設定できる。
 エイリアスは同名で２つまで付与することができるので、エイリアスでルーティングをするとカナリアリリースを実現することができる。</p>
 </section>
 <section id="layers">
-<h3><span class="section-number">7.2.9. </span>Layers<a class="headerlink" href="#layers" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.10. </span>Layers<a class="headerlink" href="#layers" title="この見出しへのパーマリンク">¶</a></h3>
 <p>複数のLambda関数が共通で利用するライブラリをZIPファイルで切り出して共有する機能
 1つのLambda関数から最大5つのLayerを利用することができる。</p>
 </section>
-<section id="id16">
-<h3><span class="section-number">7.2.10. </span>一時ファイル<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id17">
+<h3><span class="section-number">8.2.11. </span>一時ファイル<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaは512MBの一時ファイルを<code class="docutils literal notranslate"><span class="pre">/tmp</span></code>として持つ。
 注意が必要なのは、Lambdaが連続で起動している時に、tmpが共有されてしまうこと。</p>
 <p><a class="reference external" href="https://cloud5.jp/lambda_tmp_directory/">Lambdaで/tmpディレクトリの利用</a></p>
 </section>
 <section id="url">
-<h3><span class="section-number">7.2.11. </span>署名付きURL<a class="headerlink" href="#url" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.12. </span>署名付きURL<a class="headerlink" href="#url" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWS SDKやCLIを利用することでSTSの機能によって一時的にS3へアクセス可能なURLを発行させることができる。</p>
 </section>
-<section id="id17">
-<h3><span class="section-number">7.2.12. </span>デッドレターキュー<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id18">
+<h3><span class="section-number">8.2.13. </span>デッドレターキュー<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>非同期呼び出しの場合、2回まで再実行を設定することができる（合計3回実行される）</p>
 <p>再実行の設定は、Lambda関数のDeadLetterConfigパラメーターによって行う。
 DeadLetterConfigに、Amazon SQSのARNを指定することでDLQを送信できる。</p>
 </section>
 </section>
-<section id="id18">
-<h2><span class="section-number">7.3. </span>Lambdaの呼び出しかた分類<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id19">
+<h2><span class="section-number">8.3. </span>Lambdaの呼び出しかた分類<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Lambdaは呼び出し元のサービスによって、呼び出され方が異なる。
 Lambdaを実行(Invoke)するときに<code class="docutils literal notranslate"><span class="pre">InvokeType</span></code>を選択することができる。</p>
 <p><img alt="../_images/lambda_call.png" src="../_images/lambda_call.png" /></p>
@@ -177,24 +185,28 @@ Lambdaを実行(Invoke)するときに<code class="docutils literal notranslate"
 <p><img alt="../_images/lambda_call_detail.png" src="../_images/lambda_call_detail.png" />
 大きな分類手である、ポーリングとはLambdaがイベントを取りに行くのか、呼ばれるのかの分類である。</p>
 <section id="lambda-invoketype-requestresponse">
-<h3><span class="section-number">7.3.1. </span>①Lambda関数を同期的に呼び出す(InvokeType:RequestResponse)<a class="headerlink" href="#lambda-invoketype-requestresponse" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.3.1. </span>①Lambda関数を同期的に呼び出す(InvokeType:RequestResponse)<a class="headerlink" href="#lambda-invoketype-requestresponse" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaを呼び出したら、その実行が完了するのを待つ。<br />イベント元に実行結果を返す。</p>
 <p>エラー発生時にはエラーがレスポンスされるので、CloudWatch Logsのサブスクリプションフィルタなどを利用する。<br />※S3のイベント契機をSQSで受け取ってLambdaがポーリングする場合同期処理になる点に注意。</p>
 </section>
 <section id="lambda-invoketype-event">
-<h3><span class="section-number">7.3.2. </span>②Lambda関数を非同期的に呼び出す(InvokeType:Event)<a class="headerlink" href="#lambda-invoketype-event" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.3.2. </span>②Lambda関数を非同期的に呼び出す(InvokeType:Event)<a class="headerlink" href="#lambda-invoketype-event" title="この見出しへのパーマリンク">¶</a></h3>
 <p>イベント型のAWSサービスは非同期となる(S3/SNS/CloudWatch Events/EventBridge)</p>
 <p>Lambdaを呼び出すと、一旦Lambda内のQueueに格納されてからLambdaが実行される。
 イベントソースには、キューへの格納成功だけが返されるので、結果は返されない。</p>
 <p>エラー時の挙動はリトライ設定がある(最大2回の再実行で合計3回実行)<br />呼び出し元に通知はいかないので、デッドレターキューなどを利用する。</p>
 <p><img alt="../_images/lambda_call_ansync.png" src="../_images/lambda_call_ansync.png" /></p>
 </section>
-<section id="id19">
-<h3><span class="section-number">7.3.3. </span>③Lambdaがイベントを読み取る(イベントソースマッピング)<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h3><span class="section-number">8.3.3. </span>③Lambdaがイベントを読み取る(イベントソースマッピング)<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaが新しいイベントがないがないかポーリングする。</p>
 </section>
-<section id="id20">
-<h3><span class="section-number">7.3.4. </span>呼び出し方に応じたエラーハンドリング<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="dryrun">
+<h3><span class="section-number">8.3.4. </span>DryRun<a class="headerlink" href="#dryrun" title="この見出しへのパーマリンク">¶</a></h3>
+<p>InvocationTypeにDryRunを指定すると、実際に実行をせずにパラメータの値を検証してIAM権限があることを確認することができる。</p>
+</section>
+<section id="id21">
+<h3><span class="section-number">8.3.5. </span>呼び出し方に応じたエラーハンドリング<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>同期処理の場合（1-a）<br />結果をそのままレスポンスに埋め込んで返却するので、CloudWatchに流れていく。
 そのため、エラーに応じた通知などはLambdaをもう一つ作成して処理を作り込む必要がある。</p></li>
@@ -205,13 +217,13 @@ Lambdaを実行(Invoke)するときに<code class="docutils literal notranslate"
 </section>
 </section>
 <section id="lambdas3aiaws">
-<h2><span class="section-number">7.4. </span>LambdaとS3・AIなどのAWSサービスの連携<a class="headerlink" href="#lambdas3aiaws" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">8.4. </span>LambdaとS3・AIなどのAWSサービスの連携<a class="headerlink" href="#lambdas3aiaws" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="h4b">
-<h3><span class="section-number">7.4.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.4.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">H4B：AWS LambdaとAWS AI Servicesを組み合わせて作る音声文字起こし&amp;感情分析パイプライン</a>
 の内容を踏まえてLambadaの手順などを整理する。</p>
-<section id="id21">
-<h4><span class="section-number">7.4.1.1. </span>全体構成<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id22">
+<h4><span class="section-number">8.4.1.1. </span>全体構成<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
 <p>S3に音声データをアップロードするとS3のイベントが発出され、Lambdaがそれを受け取る。<br />LambdaがTranscribeを呼び出して、テキストデータに変換し、そのデータをS3にアップロードする。<br />テキストのアップロードを契機として、再度Lambdaを呼び出して、ポジネガ判定を行う。</p>
 <ul class="simple">
 <li><p>Polly:テキストから音声を生成するAIサービス</p></li>
@@ -221,12 +233,12 @@ Lambdaを実行(Invoke)するときに<code class="docutils literal notranslate"
 <p><img alt="../_images/lambda_archie.png" src="../_images/lambda_archie.png" /></p>
 </section>
 <section id="s3lambda">
-<h4><span class="section-number">7.4.1.2. </span>S3とLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.4.1.2. </span>S3とLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h4>
 <p><a class="reference internal" href="S3.html"><span class="doc">S3の手順書</span></a>に記載
 S3バケットの作成をして、Lambdaからpython-get-s3-objectからコードを作成する。</p>
 </section>
 <section id="lambdatranscribe">
-<h4><span class="section-number">7.4.1.3. </span>LambdaとTranscribeの連携<a class="headerlink" href="#lambdatranscribe" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.4.1.3. </span>LambdaとTranscribeの連携<a class="headerlink" href="#lambdatranscribe" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Transcribeの基本的使い方は<a class="reference internal" href="AI.html"><span class="doc">AIのメモ</span></a>を確認。
 S3内部の音声データのObjectを指定すると、文字起こしをして指定したs3のディレクトリにjsonファイルを吐き出す。</p>
 <p>LambdaのIAM Roleについて、TranscribeやS3への権限を付与する</p>
@@ -276,7 +288,7 @@ S3内部の音声データのObjectを指定すると、文字起こしをして
 <p>Lambdaファンクションを修正したら、Deployを忘れずに！</p>
 </section>
 <section id="s3">
-<h4><span class="section-number">7.4.1.4. </span>S3への連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.4.1.4. </span>S3への連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h4>
 <p>TranscribeがS3に格納したイベントを契機にして、Comprehendにデータを渡す。<br />Transcribeの基本的使い方は<a class="reference internal" href="AI.html"><span class="doc">AIのメモ</span></a>を確認。</p>
 <ol class="simple">
 <li><p>Lambdaの作成<br />前回同様に、S3へのファイルアップロードを契機とする。<br />アップロードされたjsonファイル飲みを対象とするので、Suffixで指定</p></li>
@@ -347,48 +359,50 @@ S3内部の音声データのObjectを指定すると、文字起こしをして
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">7. Lambda</a><ul>
-<li><a class="reference internal" href="#id1">7.1. Lambdaのメリット</a></li>
-<li><a class="reference internal" href="#id2">7.2. Lambdaの詳細</a><ul>
-<li><a class="reference internal" href="#id3">7.2.1. Lambda関数</a></li>
-<li><a class="reference internal" href="#id4">7.2.2. 依存関係の解決</a></li>
-<li><a class="reference internal" href="#id5">7.2.3. 環境設定</a><ul>
-<li><a class="reference internal" href="#id6">7.2.3.1. メモリ</a></li>
-<li><a class="reference internal" href="#id7">7.2.3.2. ストレージ</a></li>
+<li><a class="reference internal" href="#">8. Lambda</a><ul>
+<li><a class="reference internal" href="#id1">8.1. Lambdaのメリット</a></li>
+<li><a class="reference internal" href="#id2">8.2. Lambdaの詳細</a><ul>
+<li><a class="reference internal" href="#id3">8.2.1. Lambda関数</a></li>
+<li><a class="reference internal" href="#id4">8.2.2. 依存関係の解決</a></li>
+<li><a class="reference internal" href="#id5">8.2.3. 環境設定</a><ul>
+<li><a class="reference internal" href="#id6">8.2.3.1. メモリ</a></li>
+<li><a class="reference internal" href="#id7">8.2.3.2. ストレージ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">7.2.4. 同時実行数</a></li>
-<li><a class="reference internal" href="#id9">7.2.5. 環境変数</a><ul>
-<li><a class="reference internal" href="#id10">7.2.5.1. 環境変数の暗号化</a></li>
+<li><a class="reference internal" href="#id8">8.2.4. Lambdaのネットワーク</a></li>
+<li><a class="reference internal" href="#id9">8.2.5. 同時実行数</a></li>
+<li><a class="reference internal" href="#id10">8.2.6. 環境変数</a><ul>
+<li><a class="reference internal" href="#id11">8.2.6.1. 環境変数の暗号化</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id11">7.2.6. Lambda関数のライフサイクル</a><ul>
-<li><a class="reference internal" href="#id12">7.2.6.1. ウォームスタート</a></li>
-<li><a class="reference internal" href="#id13">7.2.6.2. コールドスタート</a></li>
-<li><a class="reference internal" href="#provisioned-concurrency">7.2.6.3. Provisioned Concurrency</a></li>
+<li><a class="reference internal" href="#id12">8.2.7. Lambda関数のライフサイクル</a><ul>
+<li><a class="reference internal" href="#id13">8.2.7.1. ウォームスタート</a></li>
+<li><a class="reference internal" href="#id14">8.2.7.2. コールドスタート</a></li>
+<li><a class="reference internal" href="#provisioned-concurrency">8.2.7.3. Provisioned Concurrency</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">7.2.7. バージョン</a></li>
-<li><a class="reference internal" href="#id15">7.2.8. エイリアス</a></li>
-<li><a class="reference internal" href="#layers">7.2.9. Layers</a></li>
-<li><a class="reference internal" href="#id16">7.2.10. 一時ファイル</a></li>
-<li><a class="reference internal" href="#url">7.2.11. 署名付きURL</a></li>
-<li><a class="reference internal" href="#id17">7.2.12. デッドレターキュー</a></li>
+<li><a class="reference internal" href="#id15">8.2.8. バージョン</a></li>
+<li><a class="reference internal" href="#id16">8.2.9. エイリアス</a></li>
+<li><a class="reference internal" href="#layers">8.2.10. Layers</a></li>
+<li><a class="reference internal" href="#id17">8.2.11. 一時ファイル</a></li>
+<li><a class="reference internal" href="#url">8.2.12. 署名付きURL</a></li>
+<li><a class="reference internal" href="#id18">8.2.13. デッドレターキュー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id18">7.3. Lambdaの呼び出しかた分類</a><ul>
-<li><a class="reference internal" href="#lambda-invoketype-requestresponse">7.3.1. ①Lambda関数を同期的に呼び出す(InvokeType:RequestResponse)</a></li>
-<li><a class="reference internal" href="#lambda-invoketype-event">7.3.2. ②Lambda関数を非同期的に呼び出す(InvokeType:Event)</a></li>
-<li><a class="reference internal" href="#id19">7.3.3. ③Lambdaがイベントを読み取る(イベントソースマッピング)</a></li>
-<li><a class="reference internal" href="#id20">7.3.4. 呼び出し方に応じたエラーハンドリング</a></li>
+<li><a class="reference internal" href="#id19">8.3. Lambdaの呼び出しかた分類</a><ul>
+<li><a class="reference internal" href="#lambda-invoketype-requestresponse">8.3.1. ①Lambda関数を同期的に呼び出す(InvokeType:RequestResponse)</a></li>
+<li><a class="reference internal" href="#lambda-invoketype-event">8.3.2. ②Lambda関数を非同期的に呼び出す(InvokeType:Event)</a></li>
+<li><a class="reference internal" href="#id20">8.3.3. ③Lambdaがイベントを読み取る(イベントソースマッピング)</a></li>
+<li><a class="reference internal" href="#dryrun">8.3.4. DryRun</a></li>
+<li><a class="reference internal" href="#id21">8.3.5. 呼び出し方に応じたエラーハンドリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#lambdas3aiaws">7.4. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
-<li><a class="reference internal" href="#h4b">7.4.1. H4b</a><ul>
-<li><a class="reference internal" href="#id21">7.4.1.1. 全体構成</a></li>
-<li><a class="reference internal" href="#s3lambda">7.4.1.2. S3とLambdaの連携</a></li>
-<li><a class="reference internal" href="#lambdatranscribe">7.4.1.3. LambdaとTranscribeの連携</a></li>
-<li><a class="reference internal" href="#s3">7.4.1.4. S3への連携</a></li>
+<li><a class="reference internal" href="#lambdas3aiaws">8.4. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
+<li><a class="reference internal" href="#h4b">8.4.1. H4b</a><ul>
+<li><a class="reference internal" href="#id22">8.4.1.1. 全体構成</a></li>
+<li><a class="reference internal" href="#s3lambda">8.4.1.2. S3とLambdaの連携</a></li>
+<li><a class="reference internal" href="#lambdatranscribe">8.4.1.3. LambdaとTranscribeの連携</a></li>
+<li><a class="reference internal" href="#s3">8.4.1.4. S3への連携</a></li>
 </ul>
 </li>
 </ul>
@@ -401,12 +415,12 @@ S3内部の音声データのObjectを指定すると、文字起こしをして
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="apigw.html"
-                          title="前の章へ"><span class="section-number">6. </span>API GateWay</a></p>
+                          title="前の章へ"><span class="section-number">7. </span>API GateWay</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="S3.html"
-                          title="次の章へ"><span class="section-number">8. </span>S3</a></p>
+                          title="次の章へ"><span class="section-number">9. </span>S3</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -436,13 +450,13 @@ S3内部の音声データのObjectを指定すると、文字起こしをして
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="S3.html" title="8. S3"
+          <a href="S3.html" title="9. S3"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="apigw.html" title="6. API GateWay"
+          <a href="apigw.html" title="7. API GateWay"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>Lambda</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>Lambda</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

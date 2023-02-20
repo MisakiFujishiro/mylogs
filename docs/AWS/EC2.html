@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>EC2 &#8212; my_sphinx  ドキュメント</title>
+    <title>3. EC2 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -19,7 +19,9 @@
     <script src="../_static/translations.js"></script>
     
     <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="検索" href="../search.html" /> 
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="4. ECS" href="ECS.html" />
+    <link rel="prev" title="2. セキュリティ" href="security.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -27,8 +29,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="ECS.html" title="4. ECS"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="security.html" title="2. セキュリティ"
+             accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">EC2</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>EC2</a></li> 
       </ul>
     </div>  
 
@@ -38,19 +46,19 @@
           <div class="body" role="main">
             
   <section id="ec2">
-<h1>EC2<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h1>
-<section id="autoscaling">
-<h2>AutoScaling<a class="headerlink" href="#autoscaling" title="この見出しへのパーマリンク">¶</a></h2>
+<h1><span class="section-number">3. </span>EC2<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id1">
-<h3>スケジュールスケーリング<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">3.1. </span>インスタンスメタデータ<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">169.254.169.254</span></code>→<code class="docutils literal notranslate"><span class="pre">10.100.100</span></code>と<code class="docutils literal notranslate"><span class="pre">111.111.10</span></code>にアクセスするとEC2のホスト名などにアクセスすることができる。</p>
 </section>
+<section id="iam">
+<h2><span class="section-number">3.2. </span>IAM関連<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id2">
-<h3>ターゲット追跡スケーリング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-<section id="h4b">
-<h3>H4B<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
-<p>AWSのハンズオン<a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Auto_Scaling-2022-confirmation_842.html">Amazon EC2 Auto Scaling</a>の内容</p>
-<p><img alt="../_images/ec2_autoscaling_handson.png" src="../_images/ec2_autoscaling_handson.png" /></p>
+<h3><span class="section-number">3.2.1. </span>インスタンスプロファイル<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>普段コンソール上からEC2にIAMロールを結びづけているが、内部的にはEC2とIAMロールを直接結びづけることはできない。
+実態としては<code class="docutils literal notranslate"><span class="pre">インスタンスプロファイル</span></code>経由でIAMロールを結びづけている。</p>
+<p><img alt="../_images/ec2_instance_profile.png" src="../_images/ec2_instance_profile.png" /></p>
+<p><a class="reference external" href="https://qiita.com/sakai00kou/items/a4b96dcfa6bb3e656cd9">ポリシーロールの整理</a>この記事が全体を整理しているので、IAMと合わせてドキュメントに落とし込みたい。</p>
 </section>
 </section>
 </section>
@@ -65,17 +73,26 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">EC2</a><ul>
-<li><a class="reference internal" href="#autoscaling">AutoScaling</a><ul>
-<li><a class="reference internal" href="#id1">スケジュールスケーリング</a></li>
-<li><a class="reference internal" href="#id2">ターゲット追跡スケーリング</a></li>
-<li><a class="reference internal" href="#h4b">H4B</a></li>
+<li><a class="reference internal" href="#">3. EC2</a><ul>
+<li><a class="reference internal" href="#id1">3.1. インスタンスメタデータ</a></li>
+<li><a class="reference internal" href="#iam">3.2. IAM関連</a><ul>
+<li><a class="reference internal" href="#id2">3.2.1. インスタンスプロファイル</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="security.html"
+                          title="前の章へ"><span class="section-number">2. </span>セキュリティ</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="ECS.html"
+                          title="次の章へ"><span class="section-number">4. </span>ECS</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -104,8 +121,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
+        <li class="right" >
+          <a href="ECS.html" title="4. ECS"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="security.html" title="2. セキュリティ"
+             >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">EC2</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>EC2</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
