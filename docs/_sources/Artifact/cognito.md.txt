@@ -1,6 +1,6 @@
 # Amazon CognitoとSpring Securityを利用したOAuth2ログイン
 塾長の記事[AWSで作るマイクロサービス](https://news.mynavi.jp/techplus/series/aws_2/)を参考に認証認可の仕組みを実装する。
-図は[ドラフト版](https://debugroom.github.io/mynavi-doc-draft/microservice/microservice_cognito-oauth2-login-2.html)の方が見やすい
+図は[ドラフト版](https://debugroom.github.io/mynavi-doc-draft/index.html)の方が見やすい
 - [Cognitoの設定①](https://news.mynavi.jp/techplus/article/techp5319/)
 - [Cognitoの設定②](https://news.mynavi.jp/techplus/article/techp5368/)
 - [Lambda関数の設定①](https://news.mynavi.jp/techplus/article/techp5466/)
@@ -221,24 +221,126 @@ Cognitoのコンソール画面から、IDプールの管理>IDプールを作�
 
 
 
+## Auth0の設定
+### Auth0にサインアップ
+[Auth0](https://auth0.com/signup)
+
+### テナントの作成
+リージョンとテナント名を指定して、テナントを作成
+
+![](img/auth0_tenant.png)
+
+### アプリケーションの作成
+作成したテナントからアプリケーションを選択して、アプリケーションの作成
+
+![](img/auth0-app-create.png)
+
+アプリケーションの名前を設定して、`SIngle Page Web Application`を選択してCreate
+
+![](img/auth0-app-setting.png)
+
+作成した、アプリケーションのSettingから以下の情報を控えておく
+- Name
+- Domain
+- Client ID
+- Client Secret
+
+![](img/auth0-info.png)
+
+許可されたコールバックURLで以下のドメインを設定しておく（以下の形式に従う必要がある）
+> https://<cognito-domain>.auth. <region>.amazoncognito.com/oauth2/idpresponse
+
+> https://ma-fujishiroms-domain.auth. ap-northeast-1.amazoncognito.com/oauth2/idpresponse
 
 
 
 
-
-
-
-
-
-
-
-
+## Lambdaの構築
+Cognitoの初期化処理を自動化するLambda関数を構築
+- アプリクライアントのクライアントシークレットをSystems Managerに登録する
+- CognitoのユーザープールにOAuth2Login用のユーザーを作成
+- OAuth2 Loginユーザーのサインアップステータスを変更する
 
 
 ## Springの設定
 あんまり難しく考えないで、SpringSecurityを利用して、ログイン画面を作成する
 
 
+### Spring Securityの実装（フロントエンド）
+#### Spring Securityとは？
+Spring Frameworkを用いいてWebAppを作成する場合に認証にか処理を簡単に実装できるフレームワーク
+
+セキュリティ対策は難解であるものの、SpringSecurityを利用することで少量のコーディングで多様なセキュリティ対策処理を実装可能
+- サーブレットフィルタリングによる、リクエスト処理の正当性チェック
+- 不正リクエストのブロック
+- パスワードのハッシュ化、暗号化
+- OAuth2を使ったトークン検証など
+
+#### 作成するアプリケーション
+- WebApp  
+    SpringBootAppを実行する起動クラス   
+- MvcConfig  
+    SpringMVCの設定クラス    
+- SecurityConfig     
+    SpringSecurityの設定クラス   
+- SampleController     
+    ログイン画面やログイン後にポータル画面に遷移するよう定義するクラス   
+- CustomUserDetails     
+    SpringSecurityでユーザー情報を表すモデルオブジェクトを継承したカスタムクラス   
+- CustomeUserDetailServiece     
+    CustomUserDetailsを取得するためのカスタムクラス   
+- LoginSuccessHandler     
+    ログインが成功したのちに実行されるハンドラクラス   
+- SessionExpiredDetectingLoginUrlAuthenticationEntryPoint     
+    セッションが無効になったことを検出してログイン画面へ遷移するためのハンドラクラス   
+
+```
+src/main/java/***/frontend
+|
+|-- app/web
+|   |
+|   |-- SampleController
+|   |
+|   |-- security
+|        |
+|        |-- CustomUserDetails
+|        |
+|        |-- CustomUserDetailsService
+|        |
+|        |-- LoginSuccessHandler
+|        |
+|        |-- SessionExpiredDetectingLoginUrlAuthenticationEntryPoint
+|
+|
+|-- congig
+     |
+     |-- MvcConfig
+     |
+     |-- SecurityConfig
+     |
+     |-- WebApp
+
+```
+
+
+#### トラブルシュート: SpringSecurityのモジュールインポートエラー
+pomでSpringbootを指定したところ、以下のモジュールが見つからないエラーが発生した
+> import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+SpringSecurtityでは、[5.4〜6.0でセキュリティ設定の書き方が大幅に変わる](https://qiita.com/suke_masa/items/908805dd45df08ba28d8)
+いので、pomで明示的にバージョンを5.4になるように指定
+```
+	<properties>
+		<spring-security.version>5.3.4.RELEASE</spring-security.version>
+	</properties>
+
+```
+
+
+
+
+
+## SpringSecurityとCognitoの連携
 ### ユーザープールを利用した認証
 
 
@@ -248,4 +350,34 @@ Cognitoのコンソール画面から、IDプールの管理>IDプールを作�
 
 
 
-## Auth0との連携をする
+
+
+
+
+
+
+
+
+## CognitoとAuth0の連携
+以下を参考に設定
+- [Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定するにはどうすればよいですか?](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/)を参考にする。
+- [Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定するにはどうすればよいですか?](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/)
+- [Cognito の OIDC プロバイダに Auth0 を設定](https://tech-blog.s-yoshiki.com/entry/284)
+
+
+### CognitoでAuth0をSAML IdPとして設定
+ユーザープール>IDプロバイダーから、OpenID Connectを選択して以下を設定
+- プロバイダー名：任意
+- クライアントID：Auth0で控えたClientID
+- クライアントシークレット：Auth0で控えたClient Secret
+- 属性のリクエストメソッド:GET
+- 認証のスコープ:openid
+- 発行者URL: Auth0で作成したアプリのドメイン（https://xxxxxxx.auth0.com)
+- 属性マッピング: email=email
+
+![](img/cognito_auth0_setting.png)
+
+### クライアントアプリの設定
+ユーザープール>クライアントアプリの設定から、OpenIDが選択可能となっている。
+
+##　ユーザーの統合？

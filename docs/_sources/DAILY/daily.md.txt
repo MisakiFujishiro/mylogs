@@ -55,8 +55,14 @@
 - AWS　ディベロッパーアソシエイト勉強中→演習中
 ---
 - 最終報告資料の成形（75%)
-- 認証認可の仕組み構築→30%
 - 実案件に即して深掘りテーマの検討（別idpとの連携によるSSOとユーザー管理）
+- 認証認可の仕組み構築→30%
+  - cognitoの設定【完】
+  - Auth0の設定【完】
+  - Spring SecurityをECSのハンズオンに追加【中】
+  - LambdaでCognitoの初期設定自動化【未】
+  - Spring SecurityとCognitoの連携【未】
+  - CognitoとAuth0の連携【未】
 ---
 
 
@@ -121,28 +127,25 @@
 
 ## 2/12-2/21
 ### 認証認可の設定
+- Cognioは各種設定項目をあらためて理解し、整理までして設定した。
+- Auth0についても登録してテナントと連携アプリケーションの設定まで完了
+- 一旦は、マイナビの記事に従って、SpringSecurityとCognitoで認証認可を実装して、その後にCognitoとAuth0をSSOで繋ぐ想定
+- マイナビ記事でECSのハンズオンを作成して、BFFとバックエンドがあるので、こちらにSpring Securityを組み込もうとしている。
 
 
 ### 深掘りテーマの検討
-Cognitoのユーザープールを利用するのではなく、お客さんが利用しているidpでの認証をしてSSOするという要件がある。
+じつ案件でも、Cognitoのユーザープールとお客さんが利用しているidpでの認証をSSOするという要件がある。
 これはCognitoとお客さんのidpを連携することで、実現できる。
 （このお客さん調整をしていた先輩社員が異動してしまったので、今後別顧客と同様の設定調整をする場合藤城が担当していくことになるので、一通り実装したい）
-
-また、現在の顧客はSSOのユーザーだけでログインを提供しているが、今後はSSOとID/PASS両方でログインできるようにする方針である。
-Cognito側のユーザーとSSOのユーザーの統合や、異なるidpでSSOした場合のユーザー統合についても触れていきたい。
-
-手順
-  - Cognitoの設定
-  - Auth0の構築
-  - Appの作成
-  - CognitoとAuth0の連携設定
-  - Cognitoで持っているユーザーとの統合
 
 参考情報
 - [Amazon Cognito ユーザープールを使用して、SAML ID プロバイダーと連携](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-saml-cognito-user-pool/)
 - [Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定する](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/)
 - [Cognito で複数の Idp を使って同一のユーザーを認証する方法](https://dev.classmethod.jp/articles/how-to-link-each-idp-profile-to-the-same-cognito-profile/)
 - [Cognitoで複数のIDP認証を単一ユーザー認証として扱う](https://www.ragate.co.jp/blog/articles/3826)
+
+### 困っていること
+
 
 
 ## 1/20-2/11
