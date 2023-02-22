@@ -11,6 +11,7 @@ API Gatewayを利用することでRESTなWebAPIを作成、公開、管理す�
 
 ## API GatewayのAPIの種類
 APIは3種類存在し、バックエンドのサービス、エンドポイントのタイプやCloudFrontが利用できるかなどの差がある   
+注意点として、APIのエンドポイント自体は`HTTPS`のみ
 
 APIの種類は３種類
 - REST API
@@ -48,6 +49,13 @@ APIは`ステージ`という論理的な環境にデプロイされる。APIが
 `{stageName}`は好きに設定することができ、prd,stg,devのように定義する
 
 ![](img/apigw-stage.png)
+
+### ステージ変数
+ステージごとに変数を定義することができ、呼び出すLambda関数のバージョンと関連づけることで、API GWのステージとリリースされるLambdaを関連づけることができる。
+
+![](img/apigw_stage_var.png)
+
+[ハンズオン](https://blog.serverworks.co.jp/tech/2017/02/01/apigateway-lambda-cloudwatchlogs/)
 
 ### Canaryリリース
 API GWでは既存ステージ上で、カナリアリリースを利用することができる。

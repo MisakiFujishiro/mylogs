@@ -56,7 +56,7 @@
 </section>
 <section id="api-gatewayapi">
 <h2><span class="section-number">7.2. </span>API GatewayのAPIの種類<a class="headerlink" href="#api-gatewayapi" title="この見出しへのパーマリンク">¶</a></h2>
-<p>APIは3種類存在し、バックエンドのサービス、エンドポイントのタイプやCloudFrontが利用できるかなどの差がある</p>
+<p>APIは3種類存在し、バックエンドのサービス、エンドポイントのタイプやCloudFrontが利用できるかなどの差がある<br />注意点として、APIのエンドポイント自体は<code class="docutils literal notranslate"><span class="pre">HTTPS</span></code>のみ</p>
 <p>APIの種類は３種類</p>
 <ul class="simple">
 <li><p>REST API</p></li>
@@ -92,14 +92,20 @@
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">{stageName}</span></code>は好きに設定することができ、prd,stg,devのように定義する</p>
 <p><img alt="../_images/apigw-stage.png" src="../_images/apigw-stage.png" /></p>
+<section id="id2">
+<h3><span class="section-number">7.3.1. </span>ステージ変数<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ステージごとに変数を定義することができ、呼び出すLambda関数のバージョンと関連づけることで、API GWのステージとリリースされるLambdaを関連づけることができる。</p>
+<p><img alt="../_images/apigw_stage_var.png" src="../_images/apigw_stage_var.png" /></p>
+<p><a class="reference external" href="https://blog.serverworks.co.jp/tech/2017/02/01/apigateway-lambda-cloudwatchlogs/">ハンズオン</a></p>
+</section>
 <section id="canary">
-<h3><span class="section-number">7.3.1. </span>Canaryリリース<a class="headerlink" href="#canary" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.3.2. </span>Canaryリリース<a class="headerlink" href="#canary" title="この見出しへのパーマリンク">¶</a></h3>
 <p>API GWでは既存ステージ上で、カナリアリリースを利用することができる。
 新しいバージョンがCanaryリリースとして、デプロイされ、一部のユーザーが新しいバージョンを利用する。</p>
 </section>
 </section>
-<section id="id2">
-<h2><span class="section-number">7.4. </span>API GWの処理フロー<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id3">
+<h2><span class="section-number">7.4. </span>API GWの処理フロー<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>以下の４つの設定箇所で処理を設定することができる</p>
 <ul class="simple">
 <li><p>メソッドリクエスト<br />実行時に必要なデータやオプションデータを提供する</p></li>
@@ -109,8 +115,8 @@
 </ul>
 <p><img alt="../_images/apigw-flow.png" src="../_images/apigw-flow.png" /></p>
 </section>
-<section id="id3">
-<h2><span class="section-number">7.5. </span>API GWのキャッシュ<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id4">
+<h2><span class="section-number">7.5. </span>API GWのキャッシュ<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <p>API GWはステージごとにキャッシュを定義することができる。
 キャッシュを更新した場合は、TTLを一時的に0にしたり、キャッシュをフラッシュすることで一時的にキャッシュを無効化する。</p>
 <p>個別のリクエストがわでキャッシュを無効化したい場合は、Cache-Control:max-age=0を設定してリクエストする。</p>
@@ -119,8 +125,8 @@
 <h2><span class="section-number">7.6. </span>API GWのAPIキーと使用量プラン<a class="headerlink" href="#api-gwapi" title="この見出しへのパーマリンク">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">APIキー</span></code>を発行することで、APIキーを持つユーザーのみがアクセス可能なAPIを作成することができる。</p>
 <p><code class="docutils literal notranslate"><span class="pre">使用量プラン</span></code>を作成することでAPIキーに対して、アクセス可能回数やアクセス頻度を設定することができる。</p>
-<section id="id4">
-<h3><span class="section-number">7.6.1. </span>実装の流れ<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id5">
+<h3><span class="section-number">7.6.1. </span>実装の流れ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://dev.classmethod.jp/articles/try-api-gateway-usage-plan/">API GatewayのAPIキーと使用量プランについて</a>
 が参考になる。</p>
 <p>実装の流れとしては以下のステップを踏む</p>
@@ -131,8 +137,8 @@
 <li><p>使用量プラン、APIのステージ、APIキーを関連づける</p></li>
 </ol>
 </section>
-<section id="id5">
-<h3><span class="section-number">7.6.2. </span>スロットリング<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id6">
+<h3><span class="section-number">7.6.2. </span>スロットリング<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>API GWでは、流量制御の仕組みが実装されている。
 流動制御により、過多なりクエストからAPIを守ったり、クライアントの使用量プランを作成できる。</p>
 <p>流動制御はスロットリングと呼ばれるトークンバケットアルゴリズムであり、1リクエストを処理するたびにバケットないのTokenが消費される。
@@ -140,8 +146,8 @@
 <p><img alt="../_images/apigw_slot.png" src="../_images/apigw_slot.png" /></p>
 </section>
 </section>
-<section id="id6">
-<h2><span class="section-number">7.7. </span>API GWと認証認可<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id7">
+<h2><span class="section-number">7.7. </span>API GWと認証認可<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
 <p>API GWにより、認証認可の仕組みを適用する場合い、いくつかの実現方法がある</p>
 <ol class="simple">
 <li><p>IAMアクセス権限<br />クライアントは、IAMユーザーのアクセスキーをハッシュ化した<code class="docutils literal notranslate"><span class="pre">AWS署名ver4</span></code>をリクエストヘッダーに付与する。
@@ -160,8 +166,8 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。
 これは最近できたHTTPのみでサポートされている。</p></li>
 </ol>
 </section>
-<section id="id7">
-<h2><span class="section-number">7.8. </span>API GWの統合タイプ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id8">
+<h2><span class="section-number">7.8. </span>API GWの統合タイプ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
 <p>全部で４つの統合タイプが準備されている。
 実装時に、統合タイプとして、統合リソースのtypeを選択する</p>
 <ul class="simple">
@@ -181,8 +187,8 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。
 </ul>
 <p>指定するtypeについても、プロキシの場合はAWSではなくAWS_PROXYとなる点に注意</p>
 <p><img alt="../_images/apigw-lambda_tougou.png" src="../_images/apigw-lambda_tougou.png" /></p>
-<section id="id8">
-<h4><span class="section-number">7.8.1.1. </span>マッピングテンプレート<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id9">
+<h4><span class="section-number">7.8.1.1. </span>マッピングテンプレート<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
 <p>統合リクエストや統合レスポンスで指定するテンプレートドキュメントで、データの形式を変換する</p>
 <p><img alt="../_images/apigw-mapping.png" src="../_images/apigw-mapping.png" /></p>
 </section>
@@ -207,14 +213,14 @@ API GWでポリシー評価をして問題なければAPIを呼び出す。
 <li><p>Latency：API Gateway がクライアントからリクエストを受け取ってから、クライアントにレスポンスを返すまでの時間。</p></li>
 </ul>
 </section>
-<section id="id9">
-<h2><span class="section-number">7.10. </span>新規APIの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id10">
+<h2><span class="section-number">7.10. </span>新規APIの作成<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
 <p>API GWでAPIのインポート機能があり、外部定義ファイルからREST APIをインストールすることができる</p>
 <p><img alt="../_images/apigw_swagger.png" src="../_images/apigw_swagger.png" /></p>
 <p>対象としては、SwaggerとOpenAPIの定義ファイルがサポートされている。</p>
 </section>
-<section id="id10">
-<h2><span class="section-number">7.11. </span>APIGWのエラーメッセージ<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id11">
+<h2><span class="section-number">7.11. </span>APIGWのエラーメッセージ<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="bad-gateway">
 <h3><span class="section-number">7.11.1. </span>502BAD Gateway<a class="headerlink" href="#bad-gateway" title="この見出しへのパーマリンク">¶</a></h3>
 <p>プロキシ統合では、フォーマットが決まっているが、この形式に従わない場合プロキシ統合で形式違のエラーが発生する。</p>
@@ -248,28 +254,29 @@ Lambda、Lambdaプロキシ、HTTP、HTTPプロキシ、AWS統合全てにおい
 </ul>
 </li>
 <li><a class="reference internal" href="#api-gw">7.3. API GWのデプロイとステージ</a><ul>
-<li><a class="reference internal" href="#canary">7.3.1. Canaryリリース</a></li>
+<li><a class="reference internal" href="#id2">7.3.1. ステージ変数</a></li>
+<li><a class="reference internal" href="#canary">7.3.2. Canaryリリース</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">7.4. API GWの処理フロー</a></li>
-<li><a class="reference internal" href="#id3">7.5. API GWのキャッシュ</a></li>
+<li><a class="reference internal" href="#id3">7.4. API GWの処理フロー</a></li>
+<li><a class="reference internal" href="#id4">7.5. API GWのキャッシュ</a></li>
 <li><a class="reference internal" href="#api-gwapi">7.6. API GWのAPIキーと使用量プラン</a><ul>
-<li><a class="reference internal" href="#id4">7.6.1. 実装の流れ</a></li>
-<li><a class="reference internal" href="#id5">7.6.2. スロットリング</a></li>
+<li><a class="reference internal" href="#id5">7.6.1. 実装の流れ</a></li>
+<li><a class="reference internal" href="#id6">7.6.2. スロットリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">7.7. API GWと認証認可</a></li>
-<li><a class="reference internal" href="#id7">7.8. API GWの統合タイプ</a><ul>
+<li><a class="reference internal" href="#id7">7.7. API GWと認証認可</a></li>
+<li><a class="reference internal" href="#id8">7.8. API GWの統合タイプ</a><ul>
 <li><a class="reference internal" href="#lambda">7.8.1. Lambda関数との統合</a><ul>
-<li><a class="reference internal" href="#id8">7.8.1.1. マッピングテンプレート</a></li>
+<li><a class="reference internal" href="#id9">7.8.1.1. マッピングテンプレート</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#http">7.8.2. HTTPとの統合</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#apigw">7.9. APIGWの監視</a></li>
-<li><a class="reference internal" href="#id9">7.10. 新規APIの作成</a></li>
-<li><a class="reference internal" href="#id10">7.11. APIGWのエラーメッセージ</a><ul>
+<li><a class="reference internal" href="#id10">7.10. 新規APIの作成</a></li>
+<li><a class="reference internal" href="#id11">7.11. APIGWのエラーメッセージ</a><ul>
 <li><a class="reference internal" href="#bad-gateway">7.11.1. 502BAD Gateway</a></li>
 <li><a class="reference internal" href="#integration-failure">7.11.2. INTEGRATION_FAILURE</a></li>
 <li><a class="reference internal" href="#integrataion-timeout">7.11.3. INTEGRATAION_TIMEOUT</a></li>

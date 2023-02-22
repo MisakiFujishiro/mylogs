@@ -20,11 +20,18 @@
 - NO.12 API Gatewayのエンドポイント
 - NO.13 X-Rayのトレースとセグメントの抽出コマンド
 - NO.15 kinesisのシャード
+- No.46 DynamoDBとkinesisの連携
+
+
+---
+- No.23 ElasticBeanstalkのエラーをCFNで解析
+- No.25 KMSキー設定と暗号化ヘルパー
+- No.26 CodeBuildのログ
+- No.34 X -Rayのセグメントの設定
 - No.44 EC2のプレースメントやフリート
 - No.45 DynamoDBのオプティミスティックロック
-- No.46 DynamoDBとkinesisの連携
-- No.47 STSのGetSessionToken
-- No.50 ACMが利用できないリージョン
+- No.48 クラスタークエリ言語
+- No.61 CloudFormationの依存サービス
 - No.65 DynamoDBの大容量書き込み
 
 ## Udemy 模擬試験3

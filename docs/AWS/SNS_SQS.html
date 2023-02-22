@@ -134,7 +134,8 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 </ul>
 <section id="id8">
 <h3><span class="section-number">14.2.1. </span>キューの保存期間<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
-<p>デフォルトでは４日間が設定されており、最大で14日間まで変更可能</p>
+<p>デフォルトでは４日間が設定されており、最大で14日間まで変更可能
+この設定は、<code class="docutils literal notranslate"><span class="pre">MessageRetentionPeriod</span></code>で設定する</p>
 </section>
 <section id="id9">
 <h3><span class="section-number">14.2.2. </span>キューからのメッセージ取得<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
@@ -150,7 +151,7 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 <section id="id10">
 <h3><span class="section-number">14.2.3. </span>ポーリング<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。
-ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
+ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間(ReciveMessageWaitTimeSeconds)</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
 <ul class="simple">
 <li><p>ショートポーリング<br />受信待機時間を0にすると設定できる。
 分散されたSQSのサーバーから一部をサンプリングして即時返答<br />即時返答のため、SNSのようにProducerが生産してからすぐConsumerが消費できる</p></li>
