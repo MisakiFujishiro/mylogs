@@ -320,8 +320,32 @@
 </pre></div>
 </div>
 </section>
+<section id="id17">
+<h4><span class="section-number">3.4.1.3. </span>静的ファイルのコピー<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<p>staticやresources配下のhtmlファイルなどはgithubからコピーしておく</p>
+</section>
+<section id="securityconfig">
+<h4><span class="section-number">3.4.1.4. </span>SecurityConfig<a class="headerlink" href="#securityconfig" title="この見出しへのパーマリンク">¶</a></h4>
+<p>以下の内容など、Secruty関連の内容を指定していく</p>
+<ul class="simple">
+<li><p>SpringSecurityの対象外のパス</p></li>
+<li><p>ログインログアウト処理を行うURIのパス</p></li>
+</ul>
+</section>
+<section id="customuserdetails">
+<h4><span class="section-number">3.4.1.5. </span>CustomUserDetails<a class="headerlink" href="#customuserdetails" title="この見出しへのパーマリンク">¶</a></h4>
+<p>送信されたID/Passwordを検証するロジック</p>
+<p>SpringSecurityによる、ログイン処理では、リクエストパラメータとして送信されたIDとパスワードを検証するロジックが必要。</p>
+<p>このロジックは既に実装されており、org.springframework.security.core.userdetails.UserDetailsを使って実装する。</p>
+</section>
+<section id="customuserdetailsservice">
+<h4><span class="section-number">3.4.1.6. </span>CustomUserDetailsService<a class="headerlink" href="#customuserdetailsservice" title="この見出しへのパーマリンク">¶</a></h4>
+<p>CustomUserDetailsを実装するためには、org.springframework.security.core.userdetails.UserDetailsServiceのインターフェースを実装しておく必要があるので、実装する。</p>
+<p>UserDetailsServiceでは、loadUserByUserNameメソッドを実装し、 UserDetailsインターフェースが実装したクラスを返却する。
+このオブジェクトを利用して、SpringSecurtyが検証を行う。</p>
+</section>
 <section id="springsecurity">
-<h4><span class="section-number">3.4.1.3. </span>トラブルシュート: SpringSecurityのモジュールインポートエラー<a class="headerlink" href="#springsecurity" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.4.1.7. </span>トラブルシュート①: SpringSecurityのモジュールインポートエラー<a class="headerlink" href="#springsecurity" title="この見出しへのパーマリンク">¶</a></h4>
 <p>pomでSpringbootを指定したところ、以下のモジュールが見つからないエラーが発生した</p>
 <blockquote>
 <div><p>import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;</p>
@@ -334,15 +358,187 @@
 </pre></div>
 </div>
 </section>
+<section id="javaximport">
+<h4><span class="section-number">3.4.1.8. </span>トラブルシュート②：　javaxのimportエラー<a class="headerlink" href="#javaximport" title="この見出しへのパーマリンク">¶</a></h4>
+<p>SampleControllerでjavaxのimportがエラー</p>
+<blockquote>
+<div><p>import javax.servlet.http.HttpSession;</p>
+</div></blockquote>
+<p>pomで依存関係を追加してあげることで解決</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>		<span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+			<span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+			<span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+			<span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">4.0.0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+			<span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+		<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h4><span class="section-number">3.4.1.9. </span>トラブルシュート③：循環？<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The dependencies of some of the beans in the application context form a cycle:
+
+┌──-&gt;──┐
+|  securityConfig (field org.springframework.security.crypto.password.PasswordEncoder org.debugroom.mynavi.sample.ecs.backendforfront.config.SecurityConfig.passwordEncoder)
+└──&lt;-──┘
+
+
+Action:
+
+Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+
+</pre></div>
+</div>
+<p>PasswordEncoderフィールドに対して、&#64;Autowiredと&#64;Beanの定義をしているせいで循環してしまっているっぽい。</p>
+<p>SecurityConfigの&#64;AutoWired部分を削除して、Beanを直接指定するように変更</p>
+<p>削除</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Autowired</span>
+    <span class="n">PasswordEncoder</span> <span class="n">passwordEncoder</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>修正</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="nd">@Override</span>
+    <span class="n">protected</span> <span class="n">void</span> <span class="n">configure</span><span class="p">(</span><span class="n">AuthenticationManagerBuilder</span> <span class="n">auth</span><span class="p">)</span> <span class="n">throws</span> <span class="ne">Exception</span> <span class="p">{</span>
+        <span class="n">auth</span>
+                <span class="o">.</span><span class="n">userDetailsService</span><span class="p">(</span><span class="n">userDetailsService</span><span class="p">())</span>
+                <span class="o">.</span><span class="n">passwordEncoder</span><span class="p">(</span><span class="n">passwordEncoder</span><span class="p">());</span>
+    <span class="p">}</span>
+
+</pre></div>
+</div>
+<p>※application.ymlで、重複を許可してしまうやり方もある</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">spring</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">:</span>
+      <span class="n">allow</span><span class="o">-</span><span class="n">circular</span><span class="o">-</span><span class="n">references</span><span class="p">:</span> <span class="n">true</span>
+</pre></div>
+</div>
+</section>
+<section id="javax-servlet-filtercast">
+<h4><span class="section-number">3.4.1.10. </span>トラブルシュート④：javax.servlet.Filterをcastできない<a class="headerlink" href="#javax-servlet-filtercast" title="この見出しへのパーマリンク">¶</a></h4>
+<p>実行すると以下のエラーが発生。</p>
+<p>SpringSecurityのフィルターチェーンの構成が正しくできていない原因っぽい。
+WebSecurityConfigurationがjavax.servlet.Filterインターフェースをcastできていないっぽい</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">beans</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">BeanCreationException</span><span class="p">:</span> <span class="n">Error</span> <span class="n">creating</span> <span class="n">bean</span> <span class="k">with</span> <span class="n">name</span> <span class="s1">&#39;springSecurityFilterChain&#39;</span> <span class="n">defined</span> <span class="ow">in</span> <span class="k">class</span> <span class="nc">path</span> <span class="n">resource</span> <span class="p">[</span><span class="n">org</span><span class="o">/</span><span class="n">springframework</span><span class="o">/</span><span class="n">security</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">annotation</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">configuration</span><span class="o">/</span><span class="n">WebSecurityConfiguration</span><span class="o">.</span><span class="n">class</span><span class="p">]:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">instantiate</span> <span class="p">[</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span><span class="p">]:</span> <span class="n">Factory</span> <span class="n">method</span> <span class="s1">&#39;springSecurityFilterChain&#39;</span> <span class="n">threw</span> <span class="n">exception</span> <span class="k">with</span> <span class="n">message</span><span class="p">:</span> <span class="k">class</span> <span class="nc">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">ExceptionTranslationFilter</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">cast</span> <span class="n">to</span> <span class="k">class</span> <span class="nc">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span> <span class="p">(</span><span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">ExceptionTranslationFilter</span> <span class="ow">and</span> <span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span> <span class="n">are</span> <span class="ow">in</span> <span class="n">unnamed</span> <span class="n">module</span> <span class="n">of</span> <span class="n">loader</span> <span class="s1">&#39;app&#39;</span><span class="p">)</span>
+
+<span class="o">//</span><span class="n">omit</span>
+
+<span class="n">Caused</span> <span class="n">by</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">beans</span><span class="o">.</span><span class="n">BeanInstantiationException</span><span class="p">:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">instantiate</span> <span class="p">[</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span><span class="p">]:</span> <span class="n">Factory</span> <span class="n">method</span> <span class="s1">&#39;springSecurityFilterChain&#39;</span> <span class="n">threw</span> <span class="n">exception</span> <span class="k">with</span> <span class="n">message</span><span class="p">:</span> <span class="k">class</span> <span class="nc">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">ExceptionTranslationFilter</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">cast</span> <span class="n">to</span> <span class="k">class</span> <span class="nc">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span> <span class="p">(</span><span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">ExceptionTranslationFilter</span> <span class="ow">and</span> <span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span> <span class="n">are</span> <span class="ow">in</span> <span class="n">unnamed</span> <span class="n">module</span> <span class="n">of</span> <span class="n">loader</span> <span class="s1">&#39;app&#39;</span><span class="p">)</span>
+	<span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">beans</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">support</span><span class="o">.</span><span class="n">SimpleInstantiationStrategy</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">SimpleInstantiationStrategy</span><span class="o">.</span><span class="n">java</span><span class="p">:</span><span class="mi">171</span><span class="p">)</span> <span class="o">~</span><span class="p">[</span><span class="n">spring</span><span class="o">-</span><span class="n">beans</span><span class="o">-</span><span class="mf">6.0.4</span><span class="o">.</span><span class="n">jar</span><span class="p">:</span><span class="mf">6.0.4</span><span class="p">]</span>
+	<span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">beans</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">support</span><span class="o">.</span><span class="n">ConstructorResolver</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">ConstructorResolver</span><span class="o">.</span><span class="n">java</span><span class="p">:</span><span class="mi">653</span><span class="p">)</span> <span class="o">~</span><span class="p">[</span><span class="n">spring</span><span class="o">-</span><span class="n">beans</span><span class="o">-</span><span class="mf">6.0.4</span><span class="o">.</span><span class="n">jar</span><span class="p">:</span><span class="mf">6.0.4</span><span class="p">]</span>
+	<span class="o">...</span> <span class="mi">21</span> <span class="n">common</span> <span class="n">frames</span> <span class="n">omitted</span>
+<span class="n">Caused</span> <span class="n">by</span><span class="p">:</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">ClassCastException</span><span class="p">:</span> <span class="k">class</span> <span class="nc">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">ExceptionTranslationFilter</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">cast</span> <span class="n">to</span> <span class="k">class</span> <span class="nc">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span> <span class="p">(</span><span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">ExceptionTranslationFilter</span> <span class="ow">and</span> <span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">Filter</span> <span class="n">are</span> <span class="ow">in</span> <span class="n">unnamed</span> <span class="n">module</span> <span class="n">of</span> <span class="n">loader</span> <span class="s1">&#39;app&#39;</span><span class="p">)</span>
+	<span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="n">springframework</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">builders</span><span class="o">.</span><span class="n">FilterComparator</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">FilterComparator</span><span class="o">.</span><span class="n">java</span><span class="p">:</span><span class="mi">57</span><span class="p">)</span> <span class="o">~</span><span class="p">[</span><span class="n">spring</span><span class="o">-</span><span class="n">security</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="mf">5.3.4</span><span class="o">.</span><span class="n">RELEASE</span><span class="o">.</span><span class="n">jar</span><span class="p">:</span><span class="mf">5.3.4</span><span class="o">.</span><span class="n">RELEASE</span><span class="p">]</span>
+	<span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">TimSort</span><span class="o">.</span><span class="n">countRunAndMakeAscending</span><span class="p">(</span><span class="n">TimSort</span><span class="o">.</span><span class="n">java</span><span class="p">:</span><span class="mi">355</span><span class="p">)</span> <span class="o">~</span><span class="p">[</span><span class="n">na</span><span class="p">:</span><span class="n">na</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://stackoverflow.com/questions/39849534/maven-cannot-be-cast-to-javax-servlet-filter">参考サイト</a>のpom.xmlでprovideを追加するという対策をしてみたが、変化なし。。。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">4.0.0</span><span class="o">-</span><span class="n">b01</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://qiita.com/ponsuke0531/items/608d074b7e106c7fd1a0">参考サイト</a>では、微妙に違うエラーだが、tomcatのバージョンが10だからとあった。
+今回利用しているのもtomcat10だった。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Apache</span> <span class="n">Tomcat</span><span class="o">/</span><span class="mf">10.1.5</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>tomcatのバージョンを変えてみた。pomでインストール済みのtomcat9を指定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">properties</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">java</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span><span class="mi">17</span><span class="o">&lt;/</span><span class="n">java</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">spring</span><span class="o">-</span><span class="n">security</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">5.3.4</span><span class="o">.</span><span class="n">RELEASE</span><span class="o">&lt;/</span><span class="n">spring</span><span class="o">-</span><span class="n">security</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">tomcat</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">9.0.71</span><span class="o">&lt;/</span><span class="n">tomcat</span><span class="o">.</span><span class="n">version</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">properties</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>結果、違うエラーが発生したが、改善傾向？</p>
+</section>
+<section id="jakarta">
+<h4><span class="section-number">3.4.1.11. </span>トラブルシュート⑤：jakartaがない<a class="headerlink" href="#jakarta" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">jakarta/servlet/ServletException</span></code>とあるので、jakakrtaが利用できていない？</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;securityConfig&#39; defined in file [/Users/misakifujishiro/java_workspaces/mynavi-sample-aws-ecs-backend-for-front/target/classes/org/debugroom/mynavi/sample/ecs/backendforfront/config/SecurityConfig.class]: Failed to instantiate [org.debugroom.mynavi.sample.ecs.backendforfront.config.SecurityConfig$$SpringCGLIB$$0]: Constructor threw exception
+
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.debugroom.mynavi.sample.ecs.backendforfront.config.SecurityConfig$$SpringCGLIB$$0]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:223) ~[spring-beans-6.0.4.jar:6.0.4]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:87) ~[spring-beans-6.0.4.jar:6.0.4]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1300) ~[spring-beans-6.0.4.jar:6.0.4]
+	... 16 common frames omitted
+
+
+Caused by: java.lang.NoClassDefFoundError: jakarta/servlet/ServletException
+</pre></div>
+</div>
+<p>pomでjakartaを追加</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">jakarta</span><span class="o">.</span><span class="n">servlet</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">jakarta</span><span class="o">.</span><span class="n">servlet</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">5.0.0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>			
+</pre></div>
+</div>
+<p>SampleControllerでjakartaをimportする形に変更</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jakarta.servlet.http.HttpSession</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>次なるエラーが発生</p>
+</section>
+<section id="id19">
+<h4><span class="section-number">3.4.1.12. </span>トラブルシュート⑥：クラスが存在しない？<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+An attempt was made to call a method that does not exist. The attempt was made from the following location:
+
+    org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.configureContext(TomcatServletWebServerFactory.java:378)
+
+The following method did not exist:
+
+    &#39;void org.apache.catalina.Context.addServletContainerInitializer(jakarta.servlet.ServletContainerInitializer, java.util.Set)&#39;
+
+The calling method&#39;s class, org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory, was loaded from the following location:
+
+    jar:file:/Users/misakifujishiro/.m2/repository/org/springframework/boot/spring-boot/3.0.2/spring-boot-3.0.2.jar!/org/springframework/boot/web/embedded/tomcat/TomcatServletWebServerFactory.class
+
+The called method&#39;s class, org.apache.catalina.Context, is available from the following locations:
+
+    jar:file:/Users/misakifujishiro/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.71/tomcat-embed-core-9.0.71.jar!/org/apache/catalina/Context.class
+
+The called method&#39;s class hierarchy was loaded from the following locations:
+
+    org.apache.catalina.Context: file:/Users/misakifujishiro/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.71/tomcat-embed-core-9.0.71.jar
+
+
+Action:
+
+Correct the classpath of your application so that it contains compatible versions of the classes org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory and org.apache.catalina.Context
+
+</pre></div>
+</div>
+<p><a class="reference external" href="https://stackoverflow.com/questions/66336509/im-having-a-problem-of-dependency-with-springboot-web-embed-tomcat-it-gives-me-t">このサイト</a>的には、tomcat9を利用しているのが原因？？
+だが、tomcat10に戻すとjavax.servlet.Filterをcastできないエラーに逆戻り・・・</p>
+</section>
 </section>
 </section>
 <section id="springsecuritycognito">
 <h2><span class="section-number">3.5. </span>SpringSecurityとCognitoの連携<a class="headerlink" href="#springsecuritycognito" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id17">
-<h3><span class="section-number">3.5.1. </span>ユーザープールを利用した認証<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h3><span class="section-number">3.5.1. </span>ユーザープールを利用した認証<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
-<section id="id18">
-<h3><span class="section-number">3.5.2. </span>アクセストークンを利用した認可の設定<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id21">
+<h3><span class="section-number">3.5.2. </span>アクセストークンを利用した認可の設定<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
 </section>
 <section id="cognitoauth0">
@@ -367,8 +563,8 @@
 </ul>
 <p><img alt="../_images/cognito_auth0_setting.png" src="../_images/cognito_auth0_setting.png" /></p>
 </section>
-<section id="id19">
-<h3><span class="section-number">3.6.2. </span>クライアントアプリの設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id22">
+<h3><span class="section-number">3.6.2. </span>クライアントアプリの設定<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ユーザープール&gt;クライアントアプリの設定から、OpenIDが選択可能となっている。</p>
 <p>##　ユーザーの統合？</p>
 </section>
@@ -418,19 +614,28 @@
 <li><a class="reference internal" href="#spring-security">3.4.1. Spring Securityの実装（フロントエンド）</a><ul>
 <li><a class="reference internal" href="#id15">3.4.1.1. Spring Securityとは？</a></li>
 <li><a class="reference internal" href="#id16">3.4.1.2. 作成するアプリケーション</a></li>
-<li><a class="reference internal" href="#springsecurity">3.4.1.3. トラブルシュート: SpringSecurityのモジュールインポートエラー</a></li>
+<li><a class="reference internal" href="#id17">3.4.1.3. 静的ファイルのコピー</a></li>
+<li><a class="reference internal" href="#securityconfig">3.4.1.4. SecurityConfig</a></li>
+<li><a class="reference internal" href="#customuserdetails">3.4.1.5. CustomUserDetails</a></li>
+<li><a class="reference internal" href="#customuserdetailsservice">3.4.1.6. CustomUserDetailsService</a></li>
+<li><a class="reference internal" href="#springsecurity">3.4.1.7. トラブルシュート①: SpringSecurityのモジュールインポートエラー</a></li>
+<li><a class="reference internal" href="#javaximport">3.4.1.8. トラブルシュート②：　javaxのimportエラー</a></li>
+<li><a class="reference internal" href="#id18">3.4.1.9. トラブルシュート③：循環？</a></li>
+<li><a class="reference internal" href="#javax-servlet-filtercast">3.4.1.10. トラブルシュート④：javax.servlet.Filterをcastできない</a></li>
+<li><a class="reference internal" href="#jakarta">3.4.1.11. トラブルシュート⑤：jakartaがない</a></li>
+<li><a class="reference internal" href="#id19">3.4.1.12. トラブルシュート⑥：クラスが存在しない？</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#springsecuritycognito">3.5. SpringSecurityとCognitoの連携</a><ul>
-<li><a class="reference internal" href="#id17">3.5.1. ユーザープールを利用した認証</a></li>
-<li><a class="reference internal" href="#id18">3.5.2. アクセストークンを利用した認可の設定</a></li>
+<li><a class="reference internal" href="#id20">3.5.1. ユーザープールを利用した認証</a></li>
+<li><a class="reference internal" href="#id21">3.5.2. アクセストークンを利用した認可の設定</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#cognitoauth0">3.6. CognitoとAuth0の連携</a><ul>
 <li><a class="reference internal" href="#cognitoauth0saml-idp">3.6.1. CognitoでAuth0をSAML IdPとして設定</a></li>
-<li><a class="reference internal" href="#id19">3.6.2. クライアントアプリの設定</a></li>
+<li><a class="reference internal" href="#id22">3.6.2. クライアントアプリの設定</a></li>
 </ul>
 </li>
 </ul>

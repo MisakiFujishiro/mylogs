@@ -321,9 +321,32 @@ src/main/java/***/frontend
      |-- WebApp
 
 ```
+#### 静的ファイルのコピー
+staticやresources配下のhtmlファイルなどはgithubからコピーしておく
+
+#### SecurityConfig
+以下の内容など、Secruty関連の内容を指定していく
+- SpringSecurityの対象外のパス
+- ログインログアウト処理を行うURIのパス
+
+#### CustomUserDetails
+送信されたID/Passwordを検証するロジック
+
+SpringSecurityによる、ログイン処理では、リクエストパラメータとして送信されたIDとパスワードを検証するロジックが必要。
+
+このロジックは既に実装されており、org.springframework.security.core.userdetails.UserDetailsを使って実装する。
 
 
-#### トラブルシュート: SpringSecurityのモジュールインポートエラー
+#### CustomUserDetailsService
+CustomUserDetailsを実装するためには、org.springframework.security.core.userdetails.UserDetailsServiceのインターフェースを実装しておく必要があるので、実装する。
+
+UserDetailsServiceでは、loadUserByUserNameメソッドを実装し、 UserDetailsインターフェースが実装したクラスを返却する。
+このオブジェクトを利用して、SpringSecurtyが検証を行う。
+
+
+
+
+#### トラブルシュート①: SpringSecurityのモジュールインポートエラー
 pomでSpringbootを指定したところ、以下のモジュールが見つからないエラーが発生した
 > import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -336,6 +359,193 @@ SpringSecurtityでは、[5.4〜6.0でセキュリティ設定の書き方が大�
 
 ```
 
+#### トラブルシュート②：　javaxのimportエラー
+SampleControllerでjavaxのimportがエラー
+> import javax.servlet.http.HttpSession;
+
+
+pomで依存関係を追加してあげることで解決
+```
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+```
+
+#### トラブルシュート③：循環？
+```
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The dependencies of some of the beans in the application context form a cycle:
+
+┌──->──┐
+|  securityConfig (field org.springframework.security.crypto.password.PasswordEncoder org.debugroom.mynavi.sample.ecs.backendforfront.config.SecurityConfig.passwordEncoder)
+└──<-──┘
+
+
+Action:
+
+Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+
+
+```
+
+PasswordEncoderフィールドに対して、@Autowiredと@Beanの定義をしているせいで循環してしまっているっぽい。
+
+SecurityConfigの@AutoWired部分を削除して、Beanを直接指定するように変更
+
+削除
+```
+@Autowired
+    PasswordEncoder passwordEncoder;
+```
+
+修正
+```
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService())
+                .passwordEncoder(passwordEncoder());
+    }
+
+
+```
+
+※application.ymlで、重複を許可してしまうやり方もある
+```
+  spring:
+    main:
+      allow-circular-references: true
+```
+
+
+#### トラブルシュート④：javax.servlet.Filterをcastできない
+実行すると以下のエラーが発生。
+
+SpringSecurityのフィルターチェーンの構成が正しくできていない原因っぽい。
+WebSecurityConfigurationがjavax.servlet.Filterインターフェースをcastできていないっぽい
+
+```
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'springSecurityFilterChain' defined in class path resource [org/springframework/security/config/annotation/web/configuration/WebSecurityConfiguration.class]: Failed to instantiate [javax.servlet.Filter]: Factory method 'springSecurityFilterChain' threw exception with message: class org.springframework.security.web.access.ExceptionTranslationFilter cannot be cast to class javax.servlet.Filter (org.springframework.security.web.access.ExceptionTranslationFilter and javax.servlet.Filter are in unnamed module of loader 'app')
+
+//omit
+
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [javax.servlet.Filter]: Factory method 'springSecurityFilterChain' threw exception with message: class org.springframework.security.web.access.ExceptionTranslationFilter cannot be cast to class javax.servlet.Filter (org.springframework.security.web.access.ExceptionTranslationFilter and javax.servlet.Filter are in unnamed module of loader 'app')
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:171) ~[spring-beans-6.0.4.jar:6.0.4]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-6.0.4.jar:6.0.4]
+	... 21 common frames omitted
+Caused by: java.lang.ClassCastException: class org.springframework.security.web.access.ExceptionTranslationFilter cannot be cast to class javax.servlet.Filter (org.springframework.security.web.access.ExceptionTranslationFilter and javax.servlet.Filter are in unnamed module of loader 'app')
+	at org.springframework.security.config.annotation.web.builders.FilterComparator.compare(FilterComparator.java:57) ~[spring-security-config-5.3.4.RELEASE.jar:5.3.4.RELEASE]
+	at java.base/java.util.TimSort.countRunAndMakeAscending(TimSort.java:355) ~[na:na]
+```
+
+[参考サイト](https://stackoverflow.com/questions/39849534/maven-cannot-be-cast-to-javax-servlet-filter)のpom.xmlでprovideを追加するという対策をしてみたが、変化なし。。。    
+```
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.0-b01</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+[参考サイト](https://qiita.com/ponsuke0531/items/608d074b7e106c7fd1a0)では、微妙に違うエラーだが、tomcatのバージョンが10だからとあった。
+今回利用しているのもtomcat10だった。
+```
+[Apache Tomcat/10.1.5]
+```
+
+tomcatのバージョンを変えてみた。pomでインストール済みのtomcat9を指定
+```
+<properties>
+    <java.version>17</java.version>
+    <spring-security.version>5.3.4.RELEASE</spring-security.version>
+        <tomcat.version>9.0.71</tomcat.version>
+</properties>
+```
+
+結果、違うエラーが発生したが、改善傾向？
+
+#### トラブルシュート⑤：jakartaがない
+`jakarta/servlet/ServletException`とあるので、jakakrtaが利用できていない？
+```
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'securityConfig' defined in file [/Users/misakifujishiro/java_workspaces/mynavi-sample-aws-ecs-backend-for-front/target/classes/org/debugroom/mynavi/sample/ecs/backendforfront/config/SecurityConfig.class]: Failed to instantiate [org.debugroom.mynavi.sample.ecs.backendforfront.config.SecurityConfig$$SpringCGLIB$$0]: Constructor threw exception
+
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.debugroom.mynavi.sample.ecs.backendforfront.config.SecurityConfig$$SpringCGLIB$$0]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:223) ~[spring-beans-6.0.4.jar:6.0.4]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:87) ~[spring-beans-6.0.4.jar:6.0.4]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1300) ~[spring-beans-6.0.4.jar:6.0.4]
+	... 16 common frames omitted
+
+
+Caused by: java.lang.NoClassDefFoundError: jakarta/servlet/ServletException
+```
+
+pomでjakartaを追加
+```
+<dependency>
+    <groupId>jakarta.servlet</groupId>
+    <artifactId>jakarta.servlet-api</artifactId>
+    <version>5.0.0</version>
+    <scope>provided</scope>
+</dependency>			
+```
+
+SampleControllerでjakartaをimportする形に変更
+```
+import jakarta.servlet.http.HttpSession;
+```
+
+次なるエラーが発生
+
+#### トラブルシュート⑥：クラスが存在しない？
+
+
+```
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+An attempt was made to call a method that does not exist. The attempt was made from the following location:
+
+    org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.configureContext(TomcatServletWebServerFactory.java:378)
+
+The following method did not exist:
+
+    'void org.apache.catalina.Context.addServletContainerInitializer(jakarta.servlet.ServletContainerInitializer, java.util.Set)'
+
+The calling method's class, org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory, was loaded from the following location:
+
+    jar:file:/Users/misakifujishiro/.m2/repository/org/springframework/boot/spring-boot/3.0.2/spring-boot-3.0.2.jar!/org/springframework/boot/web/embedded/tomcat/TomcatServletWebServerFactory.class
+
+The called method's class, org.apache.catalina.Context, is available from the following locations:
+
+    jar:file:/Users/misakifujishiro/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.71/tomcat-embed-core-9.0.71.jar!/org/apache/catalina/Context.class
+
+The called method's class hierarchy was loaded from the following locations:
+
+    org.apache.catalina.Context: file:/Users/misakifujishiro/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.71/tomcat-embed-core-9.0.71.jar
+
+
+Action:
+
+Correct the classpath of your application so that it contains compatible versions of the classes org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory and org.apache.catalina.Context
+
+
+```
+
+[このサイト](https://stackoverflow.com/questions/66336509/im-having-a-problem-of-dependency-with-springboot-web-embed-tomcat-it-gives-me-t)的には、tomcat9を利用しているのが原因？？
+だが、tomcat10に戻すとjavax.servlet.Filterをcastできないエラーに逆戻り・・・
 
 
 
