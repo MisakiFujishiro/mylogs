@@ -472,7 +472,13 @@ tomcatのバージョンを変えてみた。pomでインストール済みのto
 </properties>
 ```
 
-結果、違うエラーが発生したが、改善傾向？
+結果、違うエラーが発生した。
+トラブルシュート⑤⑥を試しても結局改善せず、、、
+
+[stack overflow](https://stackoverflow.com/questions/74769168/org-springframework-beans-beaninstantiationexception-failed-to-instantiate-jav)
+に同じエラーの質問があり、spring Boot3はspring security6とjakartaを使えとのこと・・・
+
+
 
 #### トラブルシュート⑤：jakartaがない
 `jakarta/servlet/ServletException`とあるので、jakakrtaが利用できていない？
