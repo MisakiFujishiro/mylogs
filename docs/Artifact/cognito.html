@@ -49,11 +49,10 @@
 <h1><span class="section-number">3. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン<a class="headerlink" href="#amazon-cognitospring-securityoauth2" title="この見出しへのパーマリンク">¶</a></h1>
 <p>塾長の記事<a class="reference external" href="https://news.mynavi.jp/techplus/series/aws_2/">AWSで作るマイクロサービス</a>を参考に認証認可の仕組みを実装する。
 図は<a class="reference external" href="https://debugroom.github.io/mynavi-doc-draft/index.html">ドラフト版</a>の方が見やすい</p>
+<p>Lambdaで自動化している部分は、効率重視で手動で設定することにする。</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp5319/">Cognitoの設定①</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp5368/">Cognitoの設定②</a></p></li>
-<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp5466/">Lambda関数の設定①</a></p></li>
-<li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/techp5496/">Lambda関数の設定②</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/aws_2-19/">Spring Securityの設定①</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/aws_2-20/">Spring Securityの設定②</a></p></li>
 <li><p><a class="reference external" href="https://news.mynavi.jp/techplus/article/aws_2-21/">Spring Securityの設定③</a></p></li>
@@ -87,7 +86,6 @@
 <li><p>アプリクライアント<br />アプリクライアントの設定を行い、クライアント名ややりとりするトークンの設定、クライアントシークレットに関する設定を行う。</p></li>
 <li><p>トリガー<br />ユーザープールにおけるイベントを契機として実行するLambdaの設定を行う</p></li>
 </ul>
-<p><img alt="../_images/cognito_userpool_settings.png" src="../_images/cognito_userpool_settings.png" /></p>
 <section id="id2">
 <h4><span class="section-number">3.1.1.1. </span>名前の設定<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h4>
 <p>userpoolの名前を設定する</p>
@@ -176,23 +174,36 @@
 <p><img alt="../_images/cognito_trigger.png" src="../_images/cognito_trigger.png" /></p>
 </section>
 </section>
-<section id="cognitoid">
-<h3><span class="section-number">3.1.2. </span>CognitoのIDプールの作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h3>
-<p>OAuth2Loginに向けて、アプリクライアントの設定とユーザープールで発行したトークンを検証するIDプールを作成する。</p>
 <section id="id10">
-<h4><span class="section-number">3.1.2.1. </span>アプリクライアントの設定<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">3.1.2. </span>アプリクライアントとドメインの設定<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>OAuth2Loginに向けて、アプリクライアントの設定とドメインの設定を行う</p>
+<section id="id11">
+<h4><span class="section-number">3.1.2.1. </span>アプリクライアントの設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Cognitoのユーザープールの画面のナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">アプリクライアントの設定</span></code>を選択</p>
 <p>以下の項目を選択していく</p>
-<ul class="simple">
+<ul>
 <li><p>有効なIDプロバイダ<br />プロバイダとして利用するユーザーディレクトリ</p></li>
 <li><p>サインインとサインアウトのURL</p>
 <ul>
-<li><p>コールバックURL<br />アプリクライアントからリダイレクトされたCognitoで認証が完了した後、アプリクライアントへ再度リダイレクトするURL<br />Spring Securityでリダイレクトを受け入れるURLは<code class="docutils literal notranslate"><span class="pre">https://domain_name/context_path/login/oauth2/code/provice_name</span></code><br />今回はローカルで実行されるアプリケーション向けに<code class="docutils literal notranslate"><span class="pre">http://localhost:8080/frontend/login/oauth2/code/cognito</span></code>とする。<br />この設定が、正しく一致しないと動作しないので注意</p></li>
-<li><p>サインアウトURL<br />サインアウト後にリダイレクトするアプリケーションのクライアントURL<br />今回は<code class="docutils literal notranslate"><span class="pre">http://localhost:8080/frontend</span></code></p></li>
+<li><p>コールバックURL<br />アプリクライアントからリダイレクトされたCognitoで認証が完了した後、アプリクライアントへ再度リダイレクトするURL<br />Spring Securityでリダイレクトを受け入れるURLは</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">domain_name</span><span class="o">/</span><span class="n">context_path</span><span class="o">/</span><span class="n">login</span><span class="o">/</span><span class="n">oauth2</span><span class="o">/</span><span class="n">code</span><span class="o">/</span><span class="n">provice_name</span>
+</pre></div>
+</div>
+<p>今回はローカルで実行されるアプリケーション向けに</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8081</span><span class="o">/</span><span class="n">backend</span><span class="o">-</span><span class="k">for</span><span class="o">-</span><span class="n">front</span><span class="o">/</span><span class="n">login</span><span class="o">/</span><span class="n">oauth2</span><span class="o">/</span><span class="n">code</span><span class="o">/</span><span class="n">cognito</span>
+</pre></div>
+</div>
+<p>この設定が、正しく一致しないと動作しないので注意</p>
+</li>
+<li><p>サインアウトURL<br />サインアウト後にリダイレクトするアプリケーションのクライアントURL<br />今回は</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">frontend</span>
+</pre></div>
+</div>
+</li>
 </ul>
 </li>
 <li><p>OAuth2.0のフローとスコープ</p>
-<ul>
+<ul class="simple">
 <li><p>OAuthの認可フロー<br />セキュリティ的な安全性が担保されている<code class="docutils literal notranslate"><span class="pre">Authorization</span> <span class="pre">code</span> <span class="pre">grant</span></code>が推奨</p></li>
 <li><p>スコープ<br />OAuth2.0では、保護されたリソースに対するアクセス制御する方法としてスコープという概念を使用している。<br />Cognitoが保護されたリソースへのアクセス権を指定する。（認可の指定)<br />今回は以下を許可する</p>
 <ul>
@@ -206,13 +217,17 @@
 </ul>
 <p><img alt="../_images/cognito_app_client_setting.png" src="../_images/cognito_app_client_setting.png" /></p>
 </section>
-<section id="id11">
-<h4><span class="section-number">3.1.2.2. </span>ドメインの設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id12">
+<h4><span class="section-number">3.1.2.2. </span>ドメインの設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Cognitoのユーザープールの画面のナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">ドメイン名</span></code>を選択して、ドメイン名を設定</p>
 <p><img alt="../_images/cognito_domain.png" src="../_images/cognito_domain.png" /></p>
 </section>
+</section>
+<section id="cognitoid">
+<h3><span class="section-number">3.1.3. </span>CognitoのIDプールの作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザープールで発行したトークンを検証するIDプールを作成する。</p>
 <section id="id">
-<h4><span class="section-number">3.1.2.3. </span>IDプールの設定<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.1.3.1. </span>IDプールの設定<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Cognitoのコンソール画面から、IDプールの管理&gt;IDプールを作成を選択</p>
 <ul class="simple">
 <li><p>IDプール名<br />MA-fujishiroms-idpool</p></li>
@@ -222,19 +237,127 @@
 </section>
 </section>
 </section>
-<section id="auth0">
-<h2><span class="section-number">3.2. </span>Auth0の設定<a class="headerlink" href="#auth0" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id12">
-<h3><span class="section-number">3.2.1. </span>Auth0にサインアップ<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
-<p><a class="reference external" href="https://auth0.com/signup">Auth0</a></p>
-</section>
+<section id="cognito-system-manager">
+<h2><span class="section-number">3.2. </span>Cognitoの初期設定(ユーザー追加とSystem Managerへの登録)<a class="headerlink" href="#cognito-system-manager" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Cognitoの初期化処理を自動化するLambda関数を構築するが、今回は手動で行うこととする。</p>
+<ul class="simple">
+<li><p>アプリクライアントのクライアントシークレットをSystems Managerに登録する</p></li>
+<li><p>CognitoのユーザープールにOAuth2Login用のユーザーを作成</p></li>
+<li><p>OAuth2 Loginユーザーのサインアップステータスを変更する</p></li>
+</ul>
+<section id="systems-manager">
+<h3><span class="section-number">3.2.1. </span>アプリクライアントのクライアントシークレットをSystems Managerに登録する<a class="headerlink" href="#systems-manager" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaでは、以下の実装をしている</p>
+<ol class="simple">
+<li><p>CFNで生成されたCognitoから、ユーザープールIDとアプリクライアントIDを取得する。</p></li>
+<li><p>ユーザープールIDとアプリクライアントIDを利用して、Cognitoから、クライアントシークレットを取得する</p></li>
+<li><p>取得したクライアントシークレットをSystemManagerのパラメータストアに格納する。</p></li>
+</ol>
+<p>今回は、手動でCognitoからクライアントシークレットを取得してパラメータストアに格納する。</p>
 <section id="id13">
-<h3><span class="section-number">3.2.2. </span>テナントの作成<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">3.2.1.1. </span>Cognitoからクライアントシークレットを取得<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoのナビゲーションペインの「全般設定」から、「アプリクライアント」を選択して、詳細を表示を押下すると確認可能</p>
+</section>
+<section id="system-manager">
+<h4><span class="section-number">3.2.1.2. </span>System Managerの設定<a class="headerlink" href="#system-manager" title="この見出しへのパーマリンク">¶</a></h4>
+<p>System Managerは複数のパラメータをまとめて登録はできない。（SecretsManagerのシークレットのような概念はない)するのではなくて、一つ一つのパラメータを登録するイメージ</p>
+<p>System Managerの画面のナビゲーションペインから、<code class="docutils literal notranslate"><span class="pre">パラメータストア</span></code>を選択
+パラメータの作成から、以下を設定</p>
+<ul class="simple">
+<li><p>名前<br />パラメータストアの名前(パラメータの名前)</p></li>
+<li><p>利用枠<br />標準</p></li>
+<li><p>タイプ<br />安全な文字列(SecretString)にして、デフォルトでOK</p></li>
+<li><p>値<br />登録したい値</p></li>
+</ul>
+</section>
+</section>
+<section id="cognitooauth2login">
+<h3><span class="section-number">3.2.2. </span>CognitoのユーザープールにOAuth2Login用のユーザーを作成とサインアップステータスの更新<a class="headerlink" href="#cognitooauth2login" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Cognitoにユーザーを追加する方法はいくつか存在する。</p>
+<ul class="simple">
+<li><p>Lambdaから追加コマンドを実行（JAVA SDK)</p></li>
+<li><p>AWS CLIを利用</p></li>
+<li><p>CognitoのGUIから作成</p></li>
+</ul>
+<p>今回は、Cognitoにyamada.taroというユーザーを登録する。</p>
+<ul class="simple">
+<li><p>Username → cognito.user.yamada</p></li>
+<li><p>email → 自分の確認の取れるメール</p></li>
+<li><p>family_name → yamada</p></li>
+<li><p>given_name → tarou</p></li>
+<li><p>Password → Dummy456</p></li>
+<li><p>customer:isAdmin → 1</p></li>
+<li><p>customer:loginId → login.id.yamada</p></li>
+</ul>
+<section id="aws-cli">
+<h4><span class="section-number">3.2.2.1. </span>AWS CLIからの実行<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h4>
+<p>今回のユーザーで利用する変数を設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POOL_ID</span><span class="o">=</span><span class="n">YOUR_COGNITO_POOL_ID</span>
+<span class="n">USER_EMAIL</span><span class="o">=</span><span class="s2">&quot;YOUR_MAIL_ADDRESS@gmail.com&quot;</span>
+<span class="n">USER_NAME</span><span class="o">=</span><span class="s2">&quot;cognito.user.yamada&quot;</span>
+<span class="n">FAMILY_NAME</span><span class="o">=</span><span class="s2">&quot;yamada&quot;</span>
+<span class="n">GIVEN_NAME</span><span class="o">=</span><span class="s2">&quot;taro&quot;</span>
+<span class="n">PASSWORD</span><span class="o">=</span><span class="s2">&quot;Dummy456&quot;</span>
+<span class="n">LOGIN_ID</span><span class="o">=</span><span class="s2">&quot;login.id.yamada&quot;</span>
+<span class="n">isAdmin</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>まずは、ユーザーを作成</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>aws cognito-idp admin-create-user \
+--user-pool-id ${POOL_ID} \
+--username ${USER_NAME} \
+--message-action SUPPRESS
+</pre></div>
+</div>
+<p><img alt="../_images/cognito_create_user.png" src="../_images/cognito_create_user.png" /></p>
+<p>アカウントのステータスをFORCE＿CHANGE＿PASSWORDは、パスワードが初期設定から変更がないため、利用できない状態</p>
+<p>これをAWS CLIからCONFIRMEDへ変更する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>aws cognito-idp admin-set-user-password \
+--user-pool-id ${POOL_ID} \
+--username ${USER_NAME} \
+--password ${PASSWORD}  \
+--permanent
+</pre></div>
+</div>
+<p><img alt="../_images/cognito_create_user_change_status.png" src="../_images/cognito_create_user_change_status.png" /></p>
+<p>検証状況の更新と属性情報の追加
+custom属性については、Nameに<code class="docutils literal notranslate"><span class="pre">cusotm:</span></code>を追加して付与する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>aws cognito-idp admin-update-user-attributes \
+--user-pool-id ${POOL_ID}  \
+--username ${USER_NAME} \
+--user-attributes Name=email,Value=${USER_EMAIL} \
+    Name=email_verified,Value=true \
+    Name=given_name,Value=${GIVEN_NAME} \
+    Name=family_name,Value=${FAMILY_NAME} \
+    Name=custom:isAdmin,Value=${isAdmin} \
+    Name=custom:loginId,Value=${LOGIN_ID} 
+</pre></div>
+</div>
+<p><img alt="../_images/cognito_create_user_verify.png" src="../_images/cognito_create_user_verify.png" /></p>
+<p><img alt="../_images/cognito_create_user_add_attribute.png" src="../_images/cognito_create_user_add_attribute.png" /></p>
+</section>
+</section>
+</section>
+<section id="idp">
+<h2><span class="section-number">3.3. </span>外部IDPの準備<a class="headerlink" href="#idp" title="この見出しへのパーマリンク">¶</a></h2>
+<p>CognitoのユーザープールはAuth0やGoogleなど、他のOIDCやSAML IdPのサードパーティフェデレーションを介して、サインインの設定が可能。</p>
+<p><img alt="../_images/cognito_saml.png" src="../_images/cognito_saml.png" /></p>
+<p>今回は、Auth0を利用してOIDCとSAMLとのユーザープールの連携を実装する。
+また、Googleアカウントを利用した連携も行う。</p>
+<p>Auth0およびGoogle Cloud Platform側の設定を行う。</p>
+<section id="auth0">
+<h3><span class="section-number">3.3.1. </span>Auth0のセットアップ<a class="headerlink" href="#auth0" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id14">
+<h4><span class="section-number">3.3.1.1. </span>Auth0にサインアップ<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<p><a class="reference external" href="https://manage.auth0.com/dashboard/jp/mafujishiromsauth/">Auth0</a>でアカウントを作成するか、ログインする。</p>
+</section>
+<section id="id15">
+<h4><span class="section-number">3.3.1.2. </span>テナントの作成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
 <p>リージョンとテナント名を指定して、テナントを作成</p>
 <p><img alt="../_images/auth0_tenant.png" src="../_images/auth0_tenant.png" /></p>
 </section>
-<section id="id14">
-<h3><span class="section-number">3.2.3. </span>アプリケーションの作成<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id16">
+<h4><span class="section-number">3.3.1.3. </span>アプリケーションの作成<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>作成したテナントからアプリケーションを選択して、アプリケーションの作成</p>
 <p><img alt="../_images/auth0-app-create.png" src="../_images/auth0-app-create.png" /></p>
 <p>アプリケーションの名前を設定して、<code class="docutils literal notranslate"><span class="pre">SIngle</span> <span class="pre">Page</span> <span class="pre">Web</span> <span class="pre">Application</span></code>を選択してCreate</p>
@@ -247,31 +370,144 @@
 <li><p>Client Secret</p></li>
 </ul>
 <p><img alt="../_images/auth0-info.png" src="../_images/auth0-info.png" /></p>
-<p>許可されたコールバックURLで以下のドメインを設定しておく（以下の形式に従う必要がある）</p>
-<blockquote>
-<div><p>https://<cognito-domain>.auth. <region>.amazoncognito.com/oauth2/idpresponse</p>
-</div></blockquote>
-<blockquote>
-<div><p>https://ma-fujishiroms-domain.auth. ap-northeast-1.amazoncognito.com/oauth2/idpresponse</p>
-</div></blockquote>
+</section>
+<section id="user">
+<h4><span class="section-number">3.3.1.4. </span>Userの作成<a class="headerlink" href="#user" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ナビゲーションペインから、<code class="docutils literal notranslate"><span class="pre">User</span> <span class="pre">Management</span></code>を選択して<code class="docutils literal notranslate"><span class="pre">User</span></code>から、<code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">User</span></code>を選択する。
+Emailとパスワードを設定する。</p>
+<p><img alt="../_images/auth0_create_user.png" src="../_images/auth0_create_user.png" /></p>
 </section>
 </section>
-<section id="lambda">
-<h2><span class="section-number">3.3. </span>Lambdaの構築<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h2>
-<p>Cognitoの初期化処理を自動化するLambda関数を構築</p>
-<ul class="simple">
-<li><p>アプリクライアントのクライアントシークレットをSystems Managerに登録する</p></li>
-<li><p>CognitoのユーザープールにOAuth2Login用のユーザーを作成</p></li>
-<li><p>OAuth2 Loginユーザーのサインアップステータスを変更する</p></li>
-</ul>
+<section id="gcp">
+<h3><span class="section-number">3.3.2. </span>GCP のセットアップ<a class="headerlink" href="#gcp" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/amazon-cognito-google-social-signin/">Amazon CognitoユーザープールでGoogle認証を連携する</a>を参考にセットアップする。</p>
+<section id="google-platform">
+<h4><span class="section-number">3.3.2.1. </span>Google Platformにログイン<a class="headerlink" href="#google-platform" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Googleの開発者アカウントを作成の上、<a class="reference external" href="https://console.cloud.google.com/home/dashboard?project=bamboo-media-378904">Google Cloud Platform</a>のコンソールにサインイン</p>
+</section>
+<section id="oauth">
+<h4><span class="section-number">3.3.2.2. </span>OAuth同意タブ設定<a class="headerlink" href="#oauth" title="この見出しへのパーマリンク">¶</a></h4>
+<p>GCPのナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">APIとサービス</span></code>を選択する。
+新たに現れたナビゲーションペインから、OAuth同意画面を選択してExternalでCreateする。</p>
+<p><img alt="../_images/gcp_outh_external.png" src="../_images/gcp_outh_external.png" /></p>
+<p>アプリ名とサポートメールアドレスを追加</p>
+<p><img alt="../_images/gcp_app_name.png" src="../_images/gcp_app_name.png" /></p>
+<p>画面下のAuthorized domainsには、<code class="docutils literal notranslate"><span class="pre">amazoncognito.com</span></code>を入力し、Developer contact informationは任意のメールアドレスを追加</p>
+<p><img alt="../_images/gcp_cognito_domains.png" src="../_images/gcp_cognito_domains.png" /></p>
+<p>他はデフォルト値で保存</p>
+</section>
+<section id="credentials">
+<h4><span class="section-number">3.3.2.3. </span>Credentialsタブ設定<a class="headerlink" href="#credentials" title="この見出しへのパーマリンク">¶</a></h4>
+<p>左のタブから、Credentialsを選択して、OAuth ClientIDを選択。
+次画面で、Web applicationを選択すると、各種設定項目が表示される。
+Authorized JavaScript originsでCognitoユーザープールのドメインを追加。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ma</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">domain</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazoncognito</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<p>承認済みのリダイレクトURIも以下を追加</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ma</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">domain</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazoncognito</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">oauth2</span><span class="o">/</span><span class="n">idpresponse</span>
+</pre></div>
+</div>
+<p>クライアントのID及びシークレット情報をJSONとして保存しておく</p>
+</section>
+</section>
+</section>
+<section id="auth0cognito-saml">
+<h2><span class="section-number">3.4. </span>Auth0とCognitoの連携（SAML)<a class="headerlink" href="#auth0cognito-saml" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Auth0とCognitoを連携させる場合、OIDCのIdPとして連携するかSAMLのIdPとして連携させるか選択することができる。今回は<a class="reference external" href="https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-saml-cognito-user-pool/">Amazon Cognito ユーザープールを使用して、SAML ID プロバイダーとして Auth0 を設定するにはどうすればよいですか?</a>を参考にして、SAMLのIdPとして連携させる。</p>
+<section id="auth0saml">
+<h3><span class="section-number">3.4.1. </span>Auth0でアプリケーションのSAML設定を行う<a class="headerlink" href="#auth0saml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">Application</span></code>を選択して、作成したアプリケーションを選択する。
+Addonのタブから、SAML2 WEB APPをオンにして、Settingを行う</p>
+<p>Application Callback URLには、</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">yourDomainPrefix</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">amazoncognito</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">saml2</span><span class="o">/</span><span class="n">idpresponse</span>
+</pre></div>
+</div>
+<p>を設定する。<code class="docutils literal notranslate"><span class="pre">yourDomainPrefix</span></code>にはcognitoで設定したdomainを、<code class="docutils literal notranslate"><span class="pre">region</span></code>にはAWSのリージョンを選択する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ma</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">domain</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazoncognito</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">saml2</span><span class="o">/</span><span class="n">idpresponse</span>
+</pre></div>
+</div>
+<p>Settingsには、以下を設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;audience&quot;</span><span class="p">:</span> <span class="s2">&quot;urn:amazon:cognito:sp:ap-northeast-1_lojw6klNd&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;given_name&quot;</span><span class="p">:</span> <span class="s2">&quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;family_name&quot;</span><span class="p">:</span> <span class="s2">&quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;nameIdentifierFormat&quot;</span><span class="p">:</span> <span class="s2">&quot;urn:oasis:names:tc:SAML:2.0:nameid-format:persistent&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">audience</span></code>には、CognitoのユーザープールIDを設定し、nameIdentifierFormatは上記に書き換える。
+加えて、Cognitoに渡す属性情報のコメントアウトを削除しておく。</p>
+<p>上記を設定してDebugを押下して、作成したユーザーとしてログインすると、SAMLで得られるResponseを確認できる。
+Saveを押下して設定完了。</p>
+</section>
+<section id="cognitosaml">
+<h3><span class="section-number">3.4.2. </span>CognitoとSAMLの連携<a class="headerlink" href="#cognitosaml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Auth0のAddonのタブから、SAML2 WEB APPのUsageから<code class="docutils literal notranslate"><span class="pre">Identity</span> <span class="pre">Provider</span> <span class="pre">Metadata</span></code>をDLする。</p>
+<p>Cognito側で、ユーザープール&gt;IDプロバイダーから、SAMLを選択して、先ほどのXMLを選択。
+プロバイダ名は記号を用いるとエラーが発生するので注意して登録</p>
+<p><img alt="../_images/cognito_saml_setting.png" src="../_images/cognito_saml_setting.png" /></p>
+</section>
+<section id="id17">
+<h3><span class="section-number">3.4.3. </span>クライアントアプリの設定<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザープール&gt;クライアントアプリの設定から、SAMLが選択可能となっている。</p>
+<p><img alt="../_images/cognito_saml_added.png" src="../_images/cognito_saml_added.png" /></p>
+<p>auth0を選択せずに、<code class="docutils literal notranslate"><span class="pre">ホストされたUI</span></code>を押下すると、Cognitoによる認証のみが表示される。</p>
+<p><img alt="../_images/cognito_login_single.png" src="../_images/cognito_login_single.png" /></p>
+<p>しかし、auth0を選択して<code class="docutils literal notranslate"><span class="pre">ホストされたUI</span></code>を押下すると、Auth0での認証も可能となっている。</p>
+<p><img alt="../_images/cognito_login_sso.png" src="../_images/cognito_login_sso.png" /></p>
+<p>ボタンを押下するとAuth0の画面に遷移する。
+<img alt="../_images/cognito_login_auth0.png" src="../_images/cognito_login_auth0.png" /></p>
+</section>
+<section id="id18">
+<h3><span class="section-number">3.4.4. </span>属性情報のマッピング<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<p>cognitoのナビゲーションペインからフェデレーションの属性マッピングを選択</p>
+<p>Authユーザーの属性とCognitoのユーザープールでどのような照らし合わせをするかを決定
+この際、SAML属性には、Auth0のSettingsでmappingで設定したものを選ぶ</p>
+<p><img alt="../_images/cognito_mapping.png" src="../_images/cognito_mapping.png" /></p>
+<section id="id19">
+<h4><span class="section-number">3.4.4.1. </span>トラブルシューティング<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<p>given_nameとfamily_nameはユーザーで設定できていないので渡せてない。
+必須属性が正しく渡せていない場合、Cognito側でユーザーが追加されない。</p>
+<p>取り急ぎは全てをEmailにすることで対応しているが対応が必要</p>
+</section>
+</section>
+</section>
+<section id="googlecognito">
+<h2><span class="section-number">3.5. </span>GoogleとCognitoの連携<a class="headerlink" href="#googlecognito" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/amazon-cognito-google-social-signin/">Amazon CognitoユーザープールでGoogle認証を連携する</a>を参考にセットアップする。</p>
+<section id="id20">
+<h3><span class="section-number">3.5.1. </span>Cognitoで外部プロバイダを設定<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザープールのナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">IDプロバイダー</span></code>を選択して、Googleを選択。</p>
+<p>GCPの設定でDLしたJSONファイルからclient_idやclient_secretをコピペして設定</p>
+<p><img alt="../_images/cognito_setting_gcp.png" src="../_images/cognito_setting_gcp.png" /></p>
+</section>
+<section id="id21">
+<h3><span class="section-number">3.5.2. </span>属性のマッピングを行う<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザープールのナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">属性マッピング</span></code>を選択して、Googleを選択。</p>
+<p>Google側の属性と、Cognitoのユーザープール側の属性を紐づける
+<code class="docutils literal notranslate"><span class="pre">sub</span></code>はGoogle側のUsernameで強制的に、ユーザプールのUsernameと紐づけられる</p>
+<p><img alt="../_images/cognito_setting_attribute_gcp.png" src="../_images/cognito_setting_attribute_gcp.png" /></p>
+</section>
+<section id="google">
+<h3><span class="section-number">3.5.3. </span>アプリクライアントでGoogleを有効化<a class="headerlink" href="#google" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ユーザープールのナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">アプリクライアントの設定</span></code>を選択して、有効なIDプロバイダとして、追加されているGoogleを選択。</p>
+<p><img alt="../_images/cognito_appclient_google.png" src="../_images/cognito_appclient_google.png" /></p>
+<p>ホストされたUIを起動すると、Googleの認証が追加されてい流。</p>
+<p><img alt="../_images/cognito_with_google_login.png" src="../_images/cognito_with_google_login.png" /></p>
+<p>ログインすると、Cognitoのユーザープールにユーザーが追加されている。</p>
+<p><img alt="../_images/cognito_user_added_google.png" src="../_images/cognito_user_added_google.png" /></p>
+</section>
 </section>
 <section id="spring">
-<h2><span class="section-number">3.4. </span>Springの設定<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">3.6. </span>Springの設定<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
 <p>あんまり難しく考えないで、SpringSecurityを利用して、ログイン画面を作成する</p>
 <section id="spring-security">
-<h3><span class="section-number">3.4.1. </span>Spring Securityの実装（フロントエンド）<a class="headerlink" href="#spring-security" title="この見出しへのパーマリンク">¶</a></h3>
-<section id="id15">
-<h4><span class="section-number">3.4.1.1. </span>Spring Securityとは？<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">3.6.1. </span>Spring Securityの実装（フロントエンド）<a class="headerlink" href="#spring-security" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id22">
+<h4><span class="section-number">3.6.1.1. </span>Spring Securityとは？<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Spring Frameworkを用いいてWebAppを作成する場合に認証にか処理を簡単に実装できるフレームワーク</p>
 <p>セキュリティ対策は難解であるものの、SpringSecurityを利用することで少量のコーディングで多様なセキュリティ対策処理を実装可能</p>
 <ul class="simple">
@@ -281,8 +517,8 @@
 <li><p>OAuth2を使ったトークン検証など</p></li>
 </ul>
 </section>
-<section id="id16">
-<h4><span class="section-number">3.4.1.2. </span>作成するアプリケーション<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id23">
+<h4><span class="section-number">3.6.1.2. </span>作成するアプリケーション<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>WebApp<br />SpringBootAppを実行する起動クラス</p></li>
 <li><p>MvcConfig<br />SpringMVCの設定クラス</p></li>
@@ -320,12 +556,12 @@
 </pre></div>
 </div>
 </section>
-<section id="id17">
-<h4><span class="section-number">3.4.1.3. </span>静的ファイルのコピー<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id24">
+<h4><span class="section-number">3.6.1.3. </span>静的ファイルのコピー<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h4>
 <p>staticやresources配下のhtmlファイルなどはgithubからコピーしておく</p>
 </section>
 <section id="securityconfig">
-<h4><span class="section-number">3.4.1.4. </span>SecurityConfig<a class="headerlink" href="#securityconfig" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.6.1.4. </span>SecurityConfig<a class="headerlink" href="#securityconfig" title="この見出しへのパーマリンク">¶</a></h4>
 <p>以下の内容など、Secruty関連の内容を指定していく</p>
 <ul class="simple">
 <li><p>SpringSecurityの対象外のパス</p></li>
@@ -333,19 +569,19 @@
 </ul>
 </section>
 <section id="customuserdetails">
-<h4><span class="section-number">3.4.1.5. </span>CustomUserDetails<a class="headerlink" href="#customuserdetails" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.6.1.5. </span>CustomUserDetails<a class="headerlink" href="#customuserdetails" title="この見出しへのパーマリンク">¶</a></h4>
 <p>送信されたID/Passwordを検証するロジック</p>
 <p>SpringSecurityによる、ログイン処理では、リクエストパラメータとして送信されたIDとパスワードを検証するロジックが必要。</p>
 <p>このロジックは既に実装されており、org.springframework.security.core.userdetails.UserDetailsを使って実装する。</p>
 </section>
 <section id="customuserdetailsservice">
-<h4><span class="section-number">3.4.1.6. </span>CustomUserDetailsService<a class="headerlink" href="#customuserdetailsservice" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.6.1.6. </span>CustomUserDetailsService<a class="headerlink" href="#customuserdetailsservice" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CustomUserDetailsを実装するためには、org.springframework.security.core.userdetails.UserDetailsServiceのインターフェースを実装しておく必要があるので、実装する。</p>
 <p>UserDetailsServiceでは、loadUserByUserNameメソッドを実装し、 UserDetailsインターフェースが実装したクラスを返却する。
 このオブジェクトを利用して、SpringSecurtyが検証を行う。</p>
 </section>
 <section id="springsecurity">
-<h4><span class="section-number">3.4.1.7. </span>トラブルシュート①: SpringSecurityのモジュールインポートエラー<a class="headerlink" href="#springsecurity" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.6.1.7. </span>トラブルシュート①: SpringSecurityのモジュールインポートエラー<a class="headerlink" href="#springsecurity" title="この見出しへのパーマリンク">¶</a></h4>
 <p>pomでSpringbootを指定したところ、以下のモジュールが見つからないエラーが発生した</p>
 <blockquote>
 <div><p>import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;</p>
@@ -359,7 +595,7 @@
 </div>
 </section>
 <section id="javaximport">
-<h4><span class="section-number">3.4.1.8. </span>トラブルシュート②：　javaxのimportエラー<a class="headerlink" href="#javaximport" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.6.1.8. </span>トラブルシュート②：　javaxのimportエラー<a class="headerlink" href="#javaximport" title="この見出しへのパーマリンク">¶</a></h4>
 <p>SampleControllerでjavaxのimportがエラー</p>
 <blockquote>
 <div><p>import javax.servlet.http.HttpSession;</p>
@@ -374,8 +610,8 @@
 </pre></div>
 </div>
 </section>
-<section id="id18">
-<h4><span class="section-number">3.4.1.9. </span>トラブルシュート③：循環？<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id25">
+<h4><span class="section-number">3.6.1.9. </span>トラブルシュート③：循環？<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
 ***************************
 APPLICATION FAILED TO START
@@ -421,7 +657,7 @@ Relying upon circular references is discouraged and they are prohibited by defau
 </div>
 </section>
 <section id="javax-servlet-filtercast">
-<h4><span class="section-number">3.4.1.10. </span>トラブルシュート④：javax.servlet.Filterをcastできない<a class="headerlink" href="#javax-servlet-filtercast" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.6.1.10. </span>トラブルシュート④：javax.servlet.Filterをcastできない<a class="headerlink" href="#javax-servlet-filtercast" title="この見出しへのパーマリンク">¶</a></h4>
 <p>実行すると以下のエラーが発生。</p>
 <p>SpringSecurityのフィルターチェーンの構成が正しくできていない原因っぽい。
 WebSecurityConfigurationがjavax.servlet.Filterインターフェースをcastできていないっぽい</p>
@@ -466,7 +702,7 @@ WebSecurityConfigurationがjavax.servlet.Filterインターフェースをcast�
 に同じエラーの質問があり、spring Boot3はspring security6とjakartaを使えとのこと・・・</p>
 </section>
 <section id="jakarta">
-<h4><span class="section-number">3.4.1.11. </span>トラブルシュート⑤：jakartaがない<a class="headerlink" href="#jakarta" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.6.1.11. </span>トラブルシュート⑤：jakartaがない<a class="headerlink" href="#jakarta" title="この見出しへのパーマリンク">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">jakarta/servlet/ServletException</span></code>とあるので、jakakrtaが利用できていない？</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;securityConfig&#39; defined in file [/Users/misakifujishiro/java_workspaces/mynavi-sample-aws-ecs-backend-for-front/target/classes/org/debugroom/mynavi/sample/ecs/backendforfront/config/SecurityConfig.class]: Failed to instantiate [org.debugroom.mynavi.sample.ecs.backendforfront.config.SecurityConfig$$SpringCGLIB$$0]: Constructor threw exception
 
@@ -495,8 +731,8 @@ Caused by: java.lang.NoClassDefFoundError: jakarta/servlet/ServletException
 </div>
 <p>次なるエラーが発生</p>
 </section>
-<section id="id19">
-<h4><span class="section-number">3.4.1.12. </span>トラブルシュート⑥：クラスが存在しない？<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id26">
+<h4><span class="section-number">3.6.1.12. </span>トラブルシュート⑥：クラスが存在しない？<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>***************************
 APPLICATION FAILED TO START
 ***************************
@@ -536,40 +772,12 @@ Correct the classpath of your application so that it contains compatible version
 </section>
 </section>
 <section id="springsecuritycognito">
-<h2><span class="section-number">3.5. </span>SpringSecurityとCognitoの連携<a class="headerlink" href="#springsecuritycognito" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id20">
-<h3><span class="section-number">3.5.1. </span>ユーザープールを利用した認証<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">3.7. </span>SpringSecurityとCognitoの連携<a class="headerlink" href="#springsecuritycognito" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id27">
+<h3><span class="section-number">3.7.1. </span>ユーザープールを利用した認証<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
-<section id="id21">
-<h3><span class="section-number">3.5.2. </span>アクセストークンを利用した認可の設定<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-</section>
-<section id="cognitoauth0">
-<h2><span class="section-number">3.6. </span>CognitoとAuth0の連携<a class="headerlink" href="#cognitoauth0" title="この見出しへのパーマリンク">¶</a></h2>
-<p>以下を参考に設定</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/">Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定するにはどうすればよいですか?</a>を参考にする。</p></li>
-<li><p><a class="reference external" href="https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/">Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定するにはどうすればよいですか?</a></p></li>
-<li><p><a class="reference external" href="https://tech-blog.s-yoshiki.com/entry/284">Cognito の OIDC プロバイダに Auth0 を設定</a></p></li>
-</ul>
-<section id="cognitoauth0saml-idp">
-<h3><span class="section-number">3.6.1. </span>CognitoでAuth0をSAML IdPとして設定<a class="headerlink" href="#cognitoauth0saml-idp" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ユーザープール&gt;IDプロバイダーから、OpenID Connectを選択して以下を設定</p>
-<ul class="simple">
-<li><p>プロバイダー名：任意</p></li>
-<li><p>クライアントID：Auth0で控えたClientID</p></li>
-<li><p>クライアントシークレット：Auth0で控えたClient Secret</p></li>
-<li><p>属性のリクエストメソッド:GET</p></li>
-<li><p>認証のスコープ:openid</p></li>
-<li><p>発行者URL: Auth0で作成したアプリのドメイン（https://xxxxxxx.auth0.com)</p></li>
-<li><p>属性マッピング: email=email</p></li>
-</ul>
-<p><img alt="../_images/cognito_auth0_setting.png" src="../_images/cognito_auth0_setting.png" /></p>
-</section>
-<section id="id22">
-<h3><span class="section-number">3.6.2. </span>クライアントアプリの設定<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ユーザープール&gt;クライアントアプリの設定から、OpenIDが選択可能となっている。</p>
-<p>##　ユーザーの統合？</p>
+<section id="id28">
+<h3><span class="section-number">3.7.2. </span>アクセストークンを利用した認可の設定<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
 </section>
 </section>
@@ -598,47 +806,82 @@ Correct the classpath of your application so that it contains compatible version
 <li><a class="reference internal" href="#id9">3.1.1.9. トリガー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cognitoid">3.1.2. CognitoのIDプールの作成</a><ul>
-<li><a class="reference internal" href="#id10">3.1.2.1. アプリクライアントの設定</a></li>
-<li><a class="reference internal" href="#id11">3.1.2.2. ドメインの設定</a></li>
-<li><a class="reference internal" href="#id">3.1.2.3. IDプールの設定</a></li>
+<li><a class="reference internal" href="#id10">3.1.2. アプリクライアントとドメインの設定</a><ul>
+<li><a class="reference internal" href="#id11">3.1.2.1. アプリクライアントの設定</a></li>
+<li><a class="reference internal" href="#id12">3.1.2.2. ドメインの設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognitoid">3.1.3. CognitoのIDプールの作成</a><ul>
+<li><a class="reference internal" href="#id">3.1.3.1. IDプールの設定</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#auth0">3.2. Auth0の設定</a><ul>
-<li><a class="reference internal" href="#id12">3.2.1. Auth0にサインアップ</a></li>
-<li><a class="reference internal" href="#id13">3.2.2. テナントの作成</a></li>
-<li><a class="reference internal" href="#id14">3.2.3. アプリケーションの作成</a></li>
+<li><a class="reference internal" href="#cognito-system-manager">3.2. Cognitoの初期設定(ユーザー追加とSystem Managerへの登録)</a><ul>
+<li><a class="reference internal" href="#systems-manager">3.2.1. アプリクライアントのクライアントシークレットをSystems Managerに登録する</a><ul>
+<li><a class="reference internal" href="#id13">3.2.1.1. Cognitoからクライアントシークレットを取得</a></li>
+<li><a class="reference internal" href="#system-manager">3.2.1.2. System Managerの設定</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#lambda">3.3. Lambdaの構築</a></li>
-<li><a class="reference internal" href="#spring">3.4. Springの設定</a><ul>
-<li><a class="reference internal" href="#spring-security">3.4.1. Spring Securityの実装（フロントエンド）</a><ul>
-<li><a class="reference internal" href="#id15">3.4.1.1. Spring Securityとは？</a></li>
-<li><a class="reference internal" href="#id16">3.4.1.2. 作成するアプリケーション</a></li>
-<li><a class="reference internal" href="#id17">3.4.1.3. 静的ファイルのコピー</a></li>
-<li><a class="reference internal" href="#securityconfig">3.4.1.4. SecurityConfig</a></li>
-<li><a class="reference internal" href="#customuserdetails">3.4.1.5. CustomUserDetails</a></li>
-<li><a class="reference internal" href="#customuserdetailsservice">3.4.1.6. CustomUserDetailsService</a></li>
-<li><a class="reference internal" href="#springsecurity">3.4.1.7. トラブルシュート①: SpringSecurityのモジュールインポートエラー</a></li>
-<li><a class="reference internal" href="#javaximport">3.4.1.8. トラブルシュート②：　javaxのimportエラー</a></li>
-<li><a class="reference internal" href="#id18">3.4.1.9. トラブルシュート③：循環？</a></li>
-<li><a class="reference internal" href="#javax-servlet-filtercast">3.4.1.10. トラブルシュート④：javax.servlet.Filterをcastできない</a></li>
-<li><a class="reference internal" href="#jakarta">3.4.1.11. トラブルシュート⑤：jakartaがない</a></li>
-<li><a class="reference internal" href="#id19">3.4.1.12. トラブルシュート⑥：クラスが存在しない？</a></li>
+<li><a class="reference internal" href="#cognitooauth2login">3.2.2. CognitoのユーザープールにOAuth2Login用のユーザーを作成とサインアップステータスの更新</a><ul>
+<li><a class="reference internal" href="#aws-cli">3.2.2.1. AWS CLIからの実行</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#springsecuritycognito">3.5. SpringSecurityとCognitoの連携</a><ul>
-<li><a class="reference internal" href="#id20">3.5.1. ユーザープールを利用した認証</a></li>
-<li><a class="reference internal" href="#id21">3.5.2. アクセストークンを利用した認可の設定</a></li>
+<li><a class="reference internal" href="#idp">3.3. 外部IDPの準備</a><ul>
+<li><a class="reference internal" href="#auth0">3.3.1. Auth0のセットアップ</a><ul>
+<li><a class="reference internal" href="#id14">3.3.1.1. Auth0にサインアップ</a></li>
+<li><a class="reference internal" href="#id15">3.3.1.2. テナントの作成</a></li>
+<li><a class="reference internal" href="#id16">3.3.1.3. アプリケーションの作成</a></li>
+<li><a class="reference internal" href="#user">3.3.1.4. Userの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cognitoauth0">3.6. CognitoとAuth0の連携</a><ul>
-<li><a class="reference internal" href="#cognitoauth0saml-idp">3.6.1. CognitoでAuth0をSAML IdPとして設定</a></li>
-<li><a class="reference internal" href="#id22">3.6.2. クライアントアプリの設定</a></li>
+<li><a class="reference internal" href="#gcp">3.3.2. GCP のセットアップ</a><ul>
+<li><a class="reference internal" href="#google-platform">3.3.2.1. Google Platformにログイン</a></li>
+<li><a class="reference internal" href="#oauth">3.3.2.2. OAuth同意タブ設定</a></li>
+<li><a class="reference internal" href="#credentials">3.3.2.3. Credentialsタブ設定</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auth0cognito-saml">3.4. Auth0とCognitoの連携（SAML)</a><ul>
+<li><a class="reference internal" href="#auth0saml">3.4.1. Auth0でアプリケーションのSAML設定を行う</a></li>
+<li><a class="reference internal" href="#cognitosaml">3.4.2. CognitoとSAMLの連携</a></li>
+<li><a class="reference internal" href="#id17">3.4.3. クライアントアプリの設定</a></li>
+<li><a class="reference internal" href="#id18">3.4.4. 属性情報のマッピング</a><ul>
+<li><a class="reference internal" href="#id19">3.4.4.1. トラブルシューティング</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#googlecognito">3.5. GoogleとCognitoの連携</a><ul>
+<li><a class="reference internal" href="#id20">3.5.1. Cognitoで外部プロバイダを設定</a></li>
+<li><a class="reference internal" href="#id21">3.5.2. 属性のマッピングを行う</a></li>
+<li><a class="reference internal" href="#google">3.5.3. アプリクライアントでGoogleを有効化</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spring">3.6. Springの設定</a><ul>
+<li><a class="reference internal" href="#spring-security">3.6.1. Spring Securityの実装（フロントエンド）</a><ul>
+<li><a class="reference internal" href="#id22">3.6.1.1. Spring Securityとは？</a></li>
+<li><a class="reference internal" href="#id23">3.6.1.2. 作成するアプリケーション</a></li>
+<li><a class="reference internal" href="#id24">3.6.1.3. 静的ファイルのコピー</a></li>
+<li><a class="reference internal" href="#securityconfig">3.6.1.4. SecurityConfig</a></li>
+<li><a class="reference internal" href="#customuserdetails">3.6.1.5. CustomUserDetails</a></li>
+<li><a class="reference internal" href="#customuserdetailsservice">3.6.1.6. CustomUserDetailsService</a></li>
+<li><a class="reference internal" href="#springsecurity">3.6.1.7. トラブルシュート①: SpringSecurityのモジュールインポートエラー</a></li>
+<li><a class="reference internal" href="#javaximport">3.6.1.8. トラブルシュート②：　javaxのimportエラー</a></li>
+<li><a class="reference internal" href="#id25">3.6.1.9. トラブルシュート③：循環？</a></li>
+<li><a class="reference internal" href="#javax-servlet-filtercast">3.6.1.10. トラブルシュート④：javax.servlet.Filterをcastできない</a></li>
+<li><a class="reference internal" href="#jakarta">3.6.1.11. トラブルシュート⑤：jakartaがない</a></li>
+<li><a class="reference internal" href="#id26">3.6.1.12. トラブルシュート⑥：クラスが存在しない？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#springsecuritycognito">3.7. SpringSecurityとCognitoの連携</a><ul>
+<li><a class="reference internal" href="#id27">3.7.1. ユーザープールを利用した認証</a></li>
+<li><a class="reference internal" href="#id28">3.7.2. アクセストークンを利用した認可の設定</a></li>
 </ul>
 </li>
 </ul>

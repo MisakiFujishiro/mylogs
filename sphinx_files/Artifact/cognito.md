@@ -1,10 +1,11 @@
 # Amazon CognitoとSpring Securityを利用したOAuth2ログイン
 塾長の記事[AWSで作るマイクロサービス](https://news.mynavi.jp/techplus/series/aws_2/)を参考に認証認可の仕組みを実装する。
 図は[ドラフト版](https://debugroom.github.io/mynavi-doc-draft/index.html)の方が見やすい
+
+Lambdaで自動化している部分は、効率重視で手動で設定することにする。
+
 - [Cognitoの設定①](https://news.mynavi.jp/techplus/article/techp5319/)
 - [Cognitoの設定②](https://news.mynavi.jp/techplus/article/techp5368/)
-- [Lambda関数の設定①](https://news.mynavi.jp/techplus/article/techp5466/)
-- [Lambda関数の設定②](https://news.mynavi.jp/techplus/article/techp5496/)
 - [Spring Securityの設定①](https://news.mynavi.jp/techplus/article/aws_2-19/)
 - [Spring Securityの設定②](https://news.mynavi.jp/techplus/article/aws_2-20/)
 - [Spring Securityの設定③](https://news.mynavi.jp/techplus/article/aws_2-21/)
@@ -22,10 +23,6 @@ CognitoはAWSの認証/認可のサービス
     - MFAの設定が可能   
 - IDプール（認可情報機能を提供する）  
     認証されたユーザーに対して、Tokenを検証して、一時的な認可情報を付与する
-
-
-
-
 
 ### Cognitoのユーザープールの作成
 以下の項目を設定していく
@@ -47,9 +44,6 @@ CognitoはAWSの認証/認可のサービス
     アプリクライアントの設定を行い、クライアント名ややりとりするトークンの設定、クライアントシークレットに関する設定を行う。
 - トリガー  
     ユーザープールにおけるイベントを契機として実行するLambdaの設定を行う
-
-
-![](img/cognito_userpool_settings.png)
 
 #### 名前の設定
 userpoolの名前を設定する
@@ -167,9 +161,8 @@ Cognitoリソースに対するタグ設定を必要に応じて実施
 
 
 
-
-### CognitoのIDプールの作成
-OAuth2Loginに向けて、アプリクライアントの設定とユーザープールで発行したトークンを検証するIDプールを作成する。
+### アプリクライアントとドメインの設定
+OAuth2Loginに向けて、アプリクライアントの設定とドメインの設定を行う
 
 #### アプリクライアントの設定
 Cognitoのユーザープールの画面のナビゲーションペインから`アプリクライアントの設定`を選択
@@ -181,12 +174,21 @@ Cognitoのユーザープールの画面のナビゲーションペインから`
 - サインインとサインアウトのURL  
     - コールバックURL  
         アプリクライアントからリダイレクトされたCognitoで認証が完了した後、アプリクライアントへ再度リダイレクトするURL  
-        Spring Securityでリダイレクトを受け入れるURLは`https://domain_name/context_path/login/oauth2/code/provice_name`  
-        今回はローカルで実行されるアプリケーション向けに`http://localhost:8080/frontend/login/oauth2/code/cognito`とする。  
+        Spring Securityでリダイレクトを受け入れるURLは
+        ```
+        https://domain_name/context_path/login/oauth2/code/provice_name
+        ```
+        今回はローカルで実行されるアプリケーション向けに
+        ```
+        http://localhost:8081/backend-for-front/login/oauth2/code/cognito
+        ```
         この設定が、正しく一致しないと動作しないので注意
     - サインアウトURL   
         サインアウト後にリダイレクトするアプリケーションのクライアントURL  
-        今回は`http://localhost:8080/frontend`
+        今回は
+        ```
+        http://localhost:8080/frontend
+        ```
 - OAuth2.0のフローとスコープ  
     - OAuthの認可フロー  
         セキュリティ的な安全性が担保されている`Authorization code grant`が推奨
@@ -208,6 +210,9 @@ Cognitoのユーザープールの画面のナビゲーションペインから`
 
 
 
+### CognitoのIDプールの作成
+ユーザープールで発行したトークンを検証するIDプールを作成する。
+
 #### IDプールの設定
 Cognitoのコンソール画面から、IDプールの管理>IDプールを作成を選択
 
@@ -221,16 +226,171 @@ Cognitoのコンソール画面から、IDプールの管理>IDプールを作�
 
 
 
-## Auth0の設定
-### Auth0にサインアップ
-[Auth0](https://auth0.com/signup)
 
-### テナントの作成
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Cognitoの初期設定(ユーザー追加とSystem Managerへの登録)
+Cognitoの初期化処理を自動化するLambda関数を構築するが、今回は手動で行うこととする。
+- アプリクライアントのクライアントシークレットをSystems Managerに登録する
+- CognitoのユーザープールにOAuth2Login用のユーザーを作成
+- OAuth2 Loginユーザーのサインアップステータスを変更する
+
+### アプリクライアントのクライアントシークレットをSystems Managerに登録する
+Lambdaでは、以下の実装をしている
+1. CFNで生成されたCognitoから、ユーザープールIDとアプリクライアントIDを取得する。
+2. ユーザープールIDとアプリクライアントIDを利用して、Cognitoから、クライアントシークレットを取得する
+3. 取得したクライアントシークレットをSystemManagerのパラメータストアに格納する。
+
+今回は、手動でCognitoからクライアントシークレットを取得してパラメータストアに格納する。
+#### Cognitoからクライアントシークレットを取得
+Cognitoのナビゲーションペインの「全般設定」から、「アプリクライアント」を選択して、詳細を表示を押下すると確認可能
+#### System Managerの設定
+System Managerは複数のパラメータをまとめて登録はできない。（SecretsManagerのシークレットのような概念はない)するのではなくて、一つ一つのパラメータを登録するイメージ
+
+System Managerの画面のナビゲーションペインから、`パラメータストア`を選択
+パラメータの作成から、以下を設定
+- 名前  
+    パラメータストアの名前(パラメータの名前)
+- 利用枠  
+    標準
+- タイプ  
+    安全な文字列(SecretString)にして、デフォルトでOK
+- 値  
+    登録したい値
+
+
+
+### CognitoのユーザープールにOAuth2Login用のユーザーを作成とサインアップステータスの更新
+Cognitoにユーザーを追加する方法はいくつか存在する。
+- Lambdaから追加コマンドを実行（JAVA SDK)
+- AWS CLIを利用
+- CognitoのGUIから作成
+
+
+今回は、Cognitoにyamada.taroというユーザーを登録する。
+- Username → cognito.user.yamada
+- email → 自分の確認の取れるメール
+- family_name → yamada
+- given_name → tarou
+- Password → Dummy456
+- customer:isAdmin → 1
+- customer:loginId → login.id.yamada
+
+
+#### AWS CLIからの実行
+今回のユーザーで利用する変数を設定
+```
+POOL_ID=YOUR_COGNITO_POOL_ID
+USER_EMAIL="YOUR_MAIL_ADDRESS@gmail.com"
+USER_NAME="cognito.user.yamada"
+FAMILY_NAME="yamada"
+GIVEN_NAME="taro"
+PASSWORD="Dummy456"
+LOGIN_ID="login.id.yamada"
+isAdmin=1
+```
+
+
+まずは、ユーザーを作成
+```
+aws cognito-idp admin-create-user \
+--user-pool-id ${POOL_ID} \
+--username ${USER_NAME} \
+--message-action SUPPRESS
+```
+![](img/cognito_create_user.png)
+
+
+
+
+アカウントのステータスをFORCE＿CHANGE＿PASSWORDは、パスワードが初期設定から変更がないため、利用できない状態
+
+これをAWS CLIからCONFIRMEDへ変更する
+```
+aws cognito-idp admin-set-user-password \
+--user-pool-id ${POOL_ID} \
+--username ${USER_NAME} \
+--password ${PASSWORD}  \
+--permanent
+```
+![](img/cognito_create_user_change_status.png)
+
+検証状況の更新と属性情報の追加
+custom属性については、Nameに`cusotm:`を追加して付与する
+
+```
+aws cognito-idp admin-update-user-attributes \
+--user-pool-id ${POOL_ID}  \
+--username ${USER_NAME} \
+--user-attributes Name=email,Value=${USER_EMAIL} \
+    Name=email_verified,Value=true \
+    Name=given_name,Value=${GIVEN_NAME} \
+    Name=family_name,Value=${FAMILY_NAME} \
+    Name=custom:isAdmin,Value=${isAdmin} \
+    Name=custom:loginId,Value=${LOGIN_ID} 
+```
+![](img/cognito_create_user_verify.png)
+
+![](img/cognito_create_user_add_attribute.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 外部IDPの準備
+CognitoのユーザープールはAuth0やGoogleなど、他のOIDCやSAML IdPのサードパーティフェデレーションを介して、サインインの設定が可能。
+
+![](img/cognito_saml.png)
+
+
+今回は、Auth0を利用してOIDCとSAMLとのユーザープールの連携を実装する。
+また、Googleアカウントを利用した連携も行う。
+
+Auth0およびGoogle Cloud Platform側の設定を行う。
+
+### Auth0のセットアップ
+#### Auth0にサインアップ
+[Auth0](https://manage.auth0.com/dashboard/jp/mafujishiromsauth/)でアカウントを作成するか、ログインする。
+
+#### テナントの作成
 リージョンとテナント名を指定して、テナントを作成
 
 ![](img/auth0_tenant.png)
 
-### アプリケーションの作成
+#### アプリケーションの作成
 作成したテナントからアプリケーションを選択して、アプリケーションの作成
 
 ![](img/auth0-app-create.png)
@@ -247,19 +407,233 @@ Cognitoのコンソール画面から、IDプールの管理>IDプールを作�
 
 ![](img/auth0-info.png)
 
-許可されたコールバックURLで以下のドメインを設定しておく（以下の形式に従う必要がある）
-> https://<cognito-domain>.auth. <region>.amazoncognito.com/oauth2/idpresponse
-
-> https://ma-fujishiroms-domain.auth. ap-northeast-1.amazoncognito.com/oauth2/idpresponse
 
 
 
+#### Userの作成
+ナビゲーションペインから、`User Management`を選択して`User`から、`Create User`を選択する。
+Emailとパスワードを設定する。
 
-## Lambdaの構築
-Cognitoの初期化処理を自動化するLambda関数を構築
-- アプリクライアントのクライアントシークレットをSystems Managerに登録する
-- CognitoのユーザープールにOAuth2Login用のユーザーを作成
-- OAuth2 Loginユーザーのサインアップステータスを変更する
+![](img/auth0_create_user.png)
+
+
+### GCP のセットアップ
+[Amazon CognitoユーザープールでGoogle認証を連携する](https://dev.classmethod.jp/articles/amazon-cognito-google-social-signin/)を参考にセットアップする。
+
+#### Google Platformにログイン
+Googleの開発者アカウントを作成の上、[Google Cloud Platform](https://console.cloud.google.com/home/dashboard?project=bamboo-media-378904)のコンソールにサインイン
+
+
+#### OAuth同意タブ設定
+GCPのナビゲーションペインから`APIとサービス`を選択する。
+新たに現れたナビゲーションペインから、OAuth同意画面を選択してExternalでCreateする。
+
+![](img/gcp_outh_external.png)
+
+アプリ名とサポートメールアドレスを追加
+
+![](img/gcp_app_name.png)
+
+画面下のAuthorized domainsには、`amazoncognito.com`を入力し、Developer contact informationは任意のメールアドレスを追加
+
+![](img/gcp_cognito_domains.png)
+
+他はデフォルト値で保存
+
+#### Credentialsタブ設定
+左のタブから、Credentialsを選択して、OAuth ClientIDを選択。
+次画面で、Web applicationを選択すると、各種設定項目が表示される。
+Authorized JavaScript originsでCognitoユーザープールのドメインを追加。
+```
+https://ma-fujishiroms-domain.auth.ap-northeast-1.amazoncognito.com
+```
+承認済みのリダイレクトURIも以下を追加
+```
+https://ma-fujishiroms-domain.auth.ap-northeast-1.amazoncognito.com/oauth2/idpresponse
+```
+
+クライアントのID及びシークレット情報をJSONとして保存しておく
+
+
+
+
+
+
+
+
+
+
+## Auth0とCognitoの連携（SAML)
+Auth0とCognitoを連携させる場合、OIDCのIdPとして連携するかSAMLのIdPとして連携させるか選択することができる。今回は[Amazon Cognito ユーザープールを使用して、SAML ID プロバイダーとして Auth0 を設定するにはどうすればよいですか?](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-saml-cognito-user-pool/)を参考にして、SAMLのIdPとして連携させる。
+
+
+### Auth0でアプリケーションのSAML設定を行う
+ナビゲーションペインから`Application`を選択して、作成したアプリケーションを選択する。
+Addonのタブから、SAML2 WEB APPをオンにして、Settingを行う
+
+Application Callback URLには、
+```
+https://yourDomainPrefix.auth.region.amazoncognito.com/saml2/idpresponse
+```
+を設定する。`yourDomainPrefix`にはcognitoで設定したdomainを、`region`にはAWSのリージョンを選択する。
+```
+https://ma-fujishiroms-domain.auth.ap-northeast-1.amazoncognito.com/saml2/idpresponse
+```
+
+Settingsには、以下を設定
+```
+{
+  "audience": "urn:amazon:cognito:sp:ap-northeast-1_lojw6klNd",
+  "user_id": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+  "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+  "given_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
+  "family_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname",
+  "nameIdentifierFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+}
+```
+`audience`には、CognitoのユーザープールIDを設定し、nameIdentifierFormatは上記に書き換える。
+加えて、Cognitoに渡す属性情報のコメントアウトを削除しておく。
+
+上記を設定してDebugを押下して、作成したユーザーとしてログインすると、SAMLで得られるResponseを確認できる。
+Saveを押下して設定完了。
+
+
+### CognitoとSAMLの連携
+Auth0のAddonのタブから、SAML2 WEB APPのUsageから`Identity Provider Metadata`をDLする。
+
+Cognito側で、ユーザープール>IDプロバイダーから、SAMLを選択して、先ほどのXMLを選択。
+プロバイダ名は記号を用いるとエラーが発生するので注意して登録
+
+![](img/cognito_saml_setting.png)
+
+
+
+
+
+### クライアントアプリの設定
+ユーザープール>クライアントアプリの設定から、SAMLが選択可能となっている。
+
+![](img/cognito_saml_added.png)
+
+auth0を選択せずに、`ホストされたUI`を押下すると、Cognitoによる認証のみが表示される。
+
+![](img/cognito_login_single.png)
+
+しかし、auth0を選択して`ホストされたUI`を押下すると、Auth0での認証も可能となっている。
+
+![](img/cognito_login_sso.png)
+
+ボタンを押下するとAuth0の画面に遷移する。
+![](img/cognito_login_auth0.png)
+
+
+
+### 属性情報のマッピング
+cognitoのナビゲーションペインからフェデレーションの属性マッピングを選択
+
+Authユーザーの属性とCognitoのユーザープールでどのような照らし合わせをするかを決定
+この際、SAML属性には、Auth0のSettingsでmappingで設定したものを選ぶ
+
+![](img/cognito_mapping.png)
+
+
+
+#### トラブルシューティング
+given_nameとfamily_nameはユーザーで設定できていないので渡せてない。
+必須属性が正しく渡せていない場合、Cognito側でユーザーが追加されない。
+
+取り急ぎは全てをEmailにすることで対応しているが対応が必要
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## GoogleとCognitoの連携
+[Amazon CognitoユーザープールでGoogle認証を連携する](https://dev.classmethod.jp/articles/amazon-cognito-google-social-signin/)を参考にセットアップする。
+
+### Cognitoで外部プロバイダを設定
+ユーザープールのナビゲーションペインから`IDプロバイダー`を選択して、Googleを選択。
+
+ GCPの設定でDLしたJSONファイルからclient_idやclient_secretをコピペして設定
+
+![](img/cognito_setting_gcp.png)
+
+### 属性のマッピングを行う
+ユーザープールのナビゲーションペインから`属性マッピング`を選択して、Googleを選択。
+
+Google側の属性と、Cognitoのユーザープール側の属性を紐づける
+`sub`はGoogle側のUsernameで強制的に、ユーザプールのUsernameと紐づけられる
+
+![](img/cognito_setting_attribute_gcp.png)
+
+### アプリクライアントでGoogleを有効化
+ユーザープールのナビゲーションペインから`アプリクライアントの設定`を選択して、有効なIDプロバイダとして、追加されているGoogleを選択。
+
+![](img/cognito_appclient_google.png)
+
+ホストされたUIを起動すると、Googleの認証が追加されてい流。
+
+![](img/cognito_with_google_login.png)
+
+ログインすると、Cognitoのユーザープールにユーザーが追加されている。
+
+
+![](img/cognito_user_added_google.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Springの設定
@@ -572,28 +946,3 @@ Correct the classpath of your application so that it contains compatible version
 
 
 
-
-
-## CognitoとAuth0の連携
-以下を参考に設定
-- [Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定するにはどうすればよいですか?](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/)を参考にする。
-- [Auth0 を Amazon Cognito ユーザープールの OIDC プロバイダーとして設定するにはどうすればよいですか?](https://aws.amazon.com/jp/premiumsupport/knowledge-center/auth0-oidc-cognito/)
-- [Cognito の OIDC プロバイダに Auth0 を設定](https://tech-blog.s-yoshiki.com/entry/284)
-
-
-### CognitoでAuth0をSAML IdPとして設定
-ユーザープール>IDプロバイダーから、OpenID Connectを選択して以下を設定
-- プロバイダー名：任意
-- クライアントID：Auth0で控えたClientID
-- クライアントシークレット：Auth0で控えたClient Secret
-- 属性のリクエストメソッド:GET
-- 認証のスコープ:openid
-- 発行者URL: Auth0で作成したアプリのドメイン（https://xxxxxxx.auth0.com)
-- 属性マッピング: email=email
-
-![](img/cognito_auth0_setting.png)
-
-### クライアントアプリの設定
-ユーザープール>クライアントアプリの設定から、OpenIDが選択可能となっている。
-
-##　ユーザーの統合？
