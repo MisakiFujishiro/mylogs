@@ -508,9 +508,76 @@ Cognito側で、ユーザープール>IDプロバイダーから、SAMLを選択
 
 
 
+### 属性情報のマッピング
+[Auth0を使ってZendeskのユーザー属性を追加してみました](https://dev.classmethod.jp/articles/auth0-zendesk-add-user-attr/)
+こちらを参考に実装した。
+
+#### Auth0で追加の属性情報をmetadataに記述
+Auth0側で追加したい属性情報に関しては、UserのMetadataにjson形式で追加する。
+
+![](img/auth0_metadata.png)
 
 
-### クライアントアプリの設定
+#### metadataを返却値に追加
+Auth0のナビゲーションペインから、Auth PipelineのRulesを選択して新しいRuleを作成する。メタデータをsamlのログイン時に返却する際の値に追加して、NameとValueの設定を行う。
+```
+function (user, context, callback) {
+  
+  user.user_metadata = user.user_metadata || {};
+
+  const tags = user.user_metadata.tags.join(',');
+
+  user.tags = tags;
+
+  context.samlConfiguration.mappings = {
+    "givenname": "user_metadata.givenname", 
+    "familyname": "user_metadata.surname", 
+    "isAdmin":"user_metadata.isAdmin",
+    "loginId":"user_metadata.loginId",
+    "tags": "tags"
+  };
+
+  return callback(null, user, context);
+}
+```
+
+#### SettingsにNameとエンドポイントの紐付けを行う
+ナビゲーションペインから`Application`を選択して、作成したアプリケーションを選択する。
+Addonのタブから、SAML2 WEB APPをオンにして、Settingを行う。
+
+追加した属性に関しては、名前を変更するとcognito側で取得できないっぽいので、一旦は、Ruleで付与したNameと同じエンドポイントに設定しておく。
+変更しても、Debugで表示される`<saml:Attribute Name>`が変わらないので、この設定自体不要？
+
+```
+{
+  "audience": "urn:amazon:cognito:sp:ap-northeast-1_lojw6klNd",
+  "mappings": {
+    "user_id": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+    "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+    "givenname": "givenname",
+    "familyname": "familyname",
+    "isAdmin": "isAdmin",
+    "loginId": "loginId"
+  },
+  "nameIdentifierFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+}
+```
+
+
+
+
+#### Cognitoで属性情報のマッピングを行う
+cognitoのナビゲーションペインからフェデレーションの属性マッピングを選択
+
+Authユーザーの属性とCognitoのユーザープールでどのような照らし合わせをするかを決定
+この際、SAML属性には、Auth0のSettingsのDebugで表示される`<saml:Attribute Name>`の名前を利用する。
+
+![](img/cognito_mapping_custom.png)
+
+
+
+
+### クライアントアプリの設定と動作確認
 ユーザープール>クライアントアプリの設定から、SAMLが選択可能となっている。
 
 ![](img/cognito_saml_added.png)
@@ -526,37 +593,10 @@ auth0を選択せずに、`ホストされたUI`を押下すると、Cognitoに�
 ボタンを押下するとAuth0の画面に遷移する。
 ![](img/cognito_login_auth0.png)
 
+実際にログインすると、Cognitoのユーザーが追加されており、属性情報も連携されている。
+※属性情報がうまく連携できてないと、ユーザも追加されないので注意
 
-
-### 属性情報のマッピング
-cognitoのナビゲーションペインからフェデレーションの属性マッピングを選択
-
-Authユーザーの属性とCognitoのユーザープールでどのような照らし合わせをするかを決定
-この際、SAML属性には、Auth0のSettingsでmappingで設定したものを選ぶ
-
-![](img/cognito_mapping.png)
-
-
-
-#### トラブルシューティング
-given_nameとfamily_nameはユーザーで設定できていないので渡せてない。
-必須属性が正しく渡せていない場合、Cognito側でユーザーが追加されない。
-
-取り急ぎは全てをEmailにすることで対応しているが対応が必要
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](img/cognito_added_user_with_attribute.png)
 
 
 

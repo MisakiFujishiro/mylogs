@@ -451,7 +451,69 @@ Saveを押下して設定完了。</p>
 <p><img alt="../_images/cognito_saml_setting.png" src="../_images/cognito_saml_setting.png" /></p>
 </section>
 <section id="id17">
-<h3><span class="section-number">3.4.3. </span>クライアントアプリの設定<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.4.3. </span>属性情報のマッピング<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://dev.classmethod.jp/articles/auth0-zendesk-add-user-attr/">Auth0を使ってZendeskのユーザー属性を追加してみました</a>
+こちらを参考に実装した。</p>
+<section id="auth0metadata">
+<h4><span class="section-number">3.4.3.1. </span>Auth0で追加の属性情報をmetadataに記述<a class="headerlink" href="#auth0metadata" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Auth0側で追加したい属性情報に関しては、UserのMetadataにjson形式で追加する。</p>
+<p><img alt="../_images/auth0_metadata.png" src="../_images/auth0_metadata.png" /></p>
+</section>
+<section id="metadata">
+<h4><span class="section-number">3.4.3.2. </span>metadataを返却値に追加<a class="headerlink" href="#metadata" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Auth0のナビゲーションペインから、Auth PipelineのRulesを選択して新しいRuleを作成する。メタデータをsamlのログイン時に返却する際の値に追加して、NameとValueの設定を行う。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span> <span class="p">{</span>
+  
+  <span class="n">user</span><span class="o">.</span><span class="n">user_metadata</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">user_metadata</span> <span class="o">||</span> <span class="p">{};</span>
+
+  <span class="n">const</span> <span class="n">tags</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">user_metadata</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
+
+  <span class="n">user</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="n">tags</span><span class="p">;</span>
+
+  <span class="n">context</span><span class="o">.</span><span class="n">samlConfiguration</span><span class="o">.</span><span class="n">mappings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;givenname&quot;</span><span class="p">:</span> <span class="s2">&quot;user_metadata.givenname&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;familyname&quot;</span><span class="p">:</span> <span class="s2">&quot;user_metadata.surname&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;isAdmin&quot;</span><span class="p">:</span><span class="s2">&quot;user_metadata.isAdmin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;loginId&quot;</span><span class="p">:</span><span class="s2">&quot;user_metadata.loginId&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="s2">&quot;tags&quot;</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">context</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="settingsname">
+<h4><span class="section-number">3.4.3.3. </span>SettingsにNameとエンドポイントの紐付けを行う<a class="headerlink" href="#settingsname" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">Application</span></code>を選択して、作成したアプリケーションを選択する。
+Addonのタブから、SAML2 WEB APPをオンにして、Settingを行う。</p>
+<p>追加した属性に関しては、名前を変更するとcognito側で取得できないっぽいので、一旦は、Ruleで付与したNameと同じエンドポイントに設定しておく。
+変更しても、Debugで表示される<code class="docutils literal notranslate"><span class="pre">&lt;saml:Attribute</span> <span class="pre">Name&gt;</span></code>が変わらないので、この設定自体不要？</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;audience&quot;</span><span class="p">:</span> <span class="s2">&quot;urn:amazon:cognito:sp:ap-northeast-1_lojw6klNd&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;mappings&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;givenname&quot;</span><span class="p">:</span> <span class="s2">&quot;givenname&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;familyname&quot;</span><span class="p">:</span> <span class="s2">&quot;familyname&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isAdmin&quot;</span><span class="p">:</span> <span class="s2">&quot;isAdmin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;loginId&quot;</span><span class="p">:</span> <span class="s2">&quot;loginId&quot;</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;nameIdentifierFormat&quot;</span><span class="p">:</span> <span class="s2">&quot;urn:oasis:names:tc:SAML:2.0:nameid-format:persistent&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h4><span class="section-number">3.4.3.4. </span>Cognitoで属性情報のマッピングを行う<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<p>cognitoのナビゲーションペインからフェデレーションの属性マッピングを選択</p>
+<p>Authユーザーの属性とCognitoのユーザープールでどのような照らし合わせをするかを決定
+この際、SAML属性には、Auth0のSettingsのDebugで表示される<code class="docutils literal notranslate"><span class="pre">&lt;saml:Attribute</span> <span class="pre">Name&gt;</span></code>の名前を利用する。</p>
+<p><img alt="../_images/cognito_mapping_custom.png" src="../_images/cognito_mapping_custom.png" /></p>
+</section>
+</section>
+<section id="id19">
+<h3><span class="section-number">3.4.4. </span>クライアントアプリの設定と動作確認<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ユーザープール&gt;クライアントアプリの設定から、SAMLが選択可能となっている。</p>
 <p><img alt="../_images/cognito_saml_added.png" src="../_images/cognito_saml_added.png" /></p>
 <p>auth0を選択せずに、<code class="docutils literal notranslate"><span class="pre">ホストされたUI</span></code>を押下すると、Cognitoによる認証のみが表示される。</p>
@@ -460,19 +522,9 @@ Saveを押下して設定完了。</p>
 <p><img alt="../_images/cognito_login_sso.png" src="../_images/cognito_login_sso.png" /></p>
 <p>ボタンを押下するとAuth0の画面に遷移する。
 <img alt="../_images/cognito_login_auth0.png" src="../_images/cognito_login_auth0.png" /></p>
-</section>
-<section id="id18">
-<h3><span class="section-number">3.4.4. </span>属性情報のマッピング<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
-<p>cognitoのナビゲーションペインからフェデレーションの属性マッピングを選択</p>
-<p>Authユーザーの属性とCognitoのユーザープールでどのような照らし合わせをするかを決定
-この際、SAML属性には、Auth0のSettingsでmappingで設定したものを選ぶ</p>
-<p><img alt="../_images/cognito_mapping.png" src="../_images/cognito_mapping.png" /></p>
-<section id="id19">
-<h4><span class="section-number">3.4.4.1. </span>トラブルシューティング<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
-<p>given_nameとfamily_nameはユーザーで設定できていないので渡せてない。
-必須属性が正しく渡せていない場合、Cognito側でユーザーが追加されない。</p>
-<p>取り急ぎは全てをEmailにすることで対応しているが対応が必要</p>
-</section>
+<p>実際にログインすると、Cognitoのユーザーが追加されており、属性情報も連携されている。
+※属性情報がうまく連携できてないと、ユーザも追加されないので注意</p>
+<p><img alt="../_images/cognito_added_user_with_attribute.png" src="../_images/cognito_added_user_with_attribute.png" /></p>
 </section>
 </section>
 <section id="googlecognito">
@@ -848,11 +900,14 @@ Correct the classpath of your application so that it contains compatible version
 <li><a class="reference internal" href="#auth0cognito-saml">3.4. Auth0とCognitoの連携（SAML)</a><ul>
 <li><a class="reference internal" href="#auth0saml">3.4.1. Auth0でアプリケーションのSAML設定を行う</a></li>
 <li><a class="reference internal" href="#cognitosaml">3.4.2. CognitoとSAMLの連携</a></li>
-<li><a class="reference internal" href="#id17">3.4.3. クライアントアプリの設定</a></li>
-<li><a class="reference internal" href="#id18">3.4.4. 属性情報のマッピング</a><ul>
-<li><a class="reference internal" href="#id19">3.4.4.1. トラブルシューティング</a></li>
+<li><a class="reference internal" href="#id17">3.4.3. 属性情報のマッピング</a><ul>
+<li><a class="reference internal" href="#auth0metadata">3.4.3.1. Auth0で追加の属性情報をmetadataに記述</a></li>
+<li><a class="reference internal" href="#metadata">3.4.3.2. metadataを返却値に追加</a></li>
+<li><a class="reference internal" href="#settingsname">3.4.3.3. SettingsにNameとエンドポイントの紐付けを行う</a></li>
+<li><a class="reference internal" href="#id18">3.4.3.4. Cognitoで属性情報のマッピングを行う</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id19">3.4.4. クライアントアプリの設定と動作確認</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#googlecognito">3.5. GoogleとCognitoの連携</a><ul>
