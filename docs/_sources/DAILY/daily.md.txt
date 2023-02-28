@@ -70,12 +70,14 @@
 - 最終報告資料へ認証認可の情報追加（全体90%)
 - 認証認可の仕組み構築→30%
   - cognitoの設定【完】
-  - Cognitoの初期設定【】
+  - Cognitoの初期設定【完】
   - Auth0の設定【完】
+  - Googleの設定【完】
+  - CognitoとAuth0の連携【完】
+  - CognitoとGoogleの連携【完】
   - Spring SecurityをECSのハンズオンに追加【中】
     - 大苦戦
   - Spring SecurityとCognitoの連携【未】
-  - CognitoとAuth0の連携【未】
 ---
 
 
@@ -147,14 +149,46 @@
 
 ## 2/21-2/27
 ### 深掘り部分具体化＋資料組み込み
-Lambdaの自動化部分は手動で実施してみた。
-Parameter Storeを始めて利用してみたが、SecretesManagerとはまた違った構成で管理しているなどの気づきはあった。
-
-Cognitoユーザーの作成方法についてはCLIから実施する方法をまとめた。
-
+パワポはざっくり材料は揃えたが、ストーリーをうまく準備できていない・・・
+本日のコメントを受けて修正必須＋課題までは解決したい！
 
 ### 実装
 Spring Securityの実装で大苦戦
+  →一旦は列後して、CognitoからホストされたUIで認証の可否が確認できるので、そちらを優先
+
+
+Lambdaの自動化部分は手動で実施してみた。
+- Parameter Storeを始めて利用してみたが、SecretesManagerとはまた違った構成で管理しているなどの気づきはあった。
+- Cognitoユーザーの作成方法についてはCLIから実施する方法をまとめた。
+
+
+先にGoogleによる認証やAuth0を利用したSAMLの認証を実施。
+GoogleやAuth0による認証によって、Cognitoでユーザーを追加されるところまでは確認。
+
+### 課題
+Cognitoで必須属性として登録している、given_nameとfamily_nameについては、Auth0とのAttributeの追加部分ができていない。。。
+
+- Cognito側の属性マッピングはしている
+![](img/cognito_mapping.png)
+
+
+- Auth0側で、マッピングの定義もしている
+```
+{
+  "audience": "urn:amazon:cognito:sp:ap-northeast-1_lojw6klNd",
+  "mappings": {
+    "user_id": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+    "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+    "given_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
+    "family_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"
+  },
+  "nameIdentifierFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+}
+```
+
+そもそもAuth0側でgiven_nameとfamily_nameが設定されていない。
+Auth0側にどうやって、値を設定して、Cognito側に渡すのかは追加調査
+
 
 
 
