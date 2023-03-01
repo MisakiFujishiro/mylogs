@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Cognitoで認証をして、AWSのリソースにアクセスする &#8212; my_sphinx  ドキュメント</title>
+    <title>4. Cognitoで認証をして、AWSのリソースにアクセスする &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -19,7 +19,9 @@
     <script src="../_static/translations.js"></script>
     
     <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="検索" href="../search.html" /> 
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. マイクロサービアーキテクチャとは" href="../microservice/microservice_archi.html" />
+    <link rel="prev" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン" href="cognito.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -27,8 +29,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+             accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
       </ul>
     </div>  
 
@@ -38,23 +46,23 @@
           <div class="body" role="main">
             
   <section id="cognitoaws">
-<h1>Cognitoで認証をして、AWSのリソースにアクセスする<a class="headerlink" href="#cognitoaws" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">4. </span>Cognitoで認証をして、AWSのリソースにアクセスする<a class="headerlink" href="#cognitoaws" title="この見出しへのパーマリンク">¶</a></h1>
 <p><a class="reference external" href="https://www.aws-room.com/entry/cognito-s3">Cognito を使ったユーザ認証で S3 にアクセスしてみる</a>を参考に実装してみる
 <a class="reference external" href="https://dev.classmethod.jp/articles/aws-cli-credentials-using-amazon-cognito/">AWS CLIをAmazon Cognito(UnAuth)で認証して使用する</a></p>
 <section id="cognito">
-<h2>Cognitoでユーザープールを作成<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.1. </span>Cognitoでユーザープールを作成<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="cognitoid">
-<h2>CognitoでIDプールを作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.2. </span>CognitoでIDプールを作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="iam">
-<h2>紐づくIAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.3. </span>紐づくIAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="aws-cli">
-<h2>AWS CLIからのアクセス<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.4. </span>AWS CLIからのアクセス<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="boto3">
-<h2>boto3からのアクセス<a class="headerlink" href="#boto3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.5. </span>boto3からのアクセス<a class="headerlink" href="#boto3" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 </section>
 
@@ -68,16 +76,26 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Cognitoで認証をして、AWSのリソースにアクセスする</a><ul>
-<li><a class="reference internal" href="#cognito">Cognitoでユーザープールを作成</a></li>
-<li><a class="reference internal" href="#cognitoid">CognitoでIDプールを作成</a></li>
-<li><a class="reference internal" href="#iam">紐づくIAMの作成</a></li>
-<li><a class="reference internal" href="#aws-cli">AWS CLIからのアクセス</a></li>
-<li><a class="reference internal" href="#boto3">boto3からのアクセス</a></li>
+<li><a class="reference internal" href="#">4. Cognitoで認証をして、AWSのリソースにアクセスする</a><ul>
+<li><a class="reference internal" href="#cognito">4.1. Cognitoでユーザープールを作成</a></li>
+<li><a class="reference internal" href="#cognitoid">4.2. CognitoでIDプールを作成</a></li>
+<li><a class="reference internal" href="#iam">4.3. 紐づくIAMの作成</a></li>
+<li><a class="reference internal" href="#aws-cli">4.4. AWS CLIからのアクセス</a></li>
+<li><a class="reference internal" href="#boto3">4.5. boto3からのアクセス</a></li>
 </ul>
 </li>
 </ul>
 
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="cognito.html"
+                          title="前の章へ"><span class="section-number">3. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../microservice/microservice_archi.html"
+                          title="次の章へ"><span class="section-number">1. </span>マイクロサービアーキテクチャとは</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -106,8 +124,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
+        <li class="right" >
+          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+             >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

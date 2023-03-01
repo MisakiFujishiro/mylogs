@@ -23,7 +23,7 @@ DAILY
    Artifact/ecs
    Artifact/cicd
    Artifact/cognito
-
+   Artifact/cognito_authentication
 
 Microservice
 ==================
