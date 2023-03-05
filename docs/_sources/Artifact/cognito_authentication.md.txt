@@ -11,19 +11,23 @@
 
 
 ### 参考文献
-- [クレデンシャルの取得方法](https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/)
+- [クレデンシャルの取得方法](https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/)  
 ：一番参考になるAWS CLIでCognitoのクレデンシャルを取得する方法から、ルールベースで付与するIAMを変更する手順が整理されている
-- [Cognito を使ったユーザ認証で S3 にアクセスしてみる](https://www.aws-room.com/entry/cognito-s3)
+- [Cognito を使ったユーザ認証で S3 にアクセスしてみる](https://www.aws-room.com/entry/cognito-s3)  
 ：pythonを利用して、cognitoから認証情報を受けてS3へのアクセス制御を検証している
-- [PythonからCognitoのUSER_PASSWORD_AUTHとUSER_SRP_AUTHでのトークン取得](https://yomon.hatenablog.com/entry/2022/8/cognito_python)s
+- [PythonからCognitoのUSER_PASSWORD_AUTHとUSER_SRP_AUTHでのトークン取得](https://yomon.hatenablog.com/entry/2022/8/cognito_python)  
 ：pythonを利用してクレデンシャルを取得するところまで、クライアントシークレットを有効化している時に対応しているところまで整理してくれている
+- [S3 の読み書きを Cognito で認証する方法](https://dev.classmethod.jp/articles/cognito-trigger-allow-access-per-identity-id/)  
+：ディレクトリにユーザーIDを付与することで、認証したユーザーのIDを冠したディレクトリしかアクセスすることができなくなる。
+- [外部ユーザが安全かつ直接的に Amazon S3 へファイルをアップロードできるようにする方法](https://aws.amazon.com/jp/blogs/news/allowing-external-users-to-securely-and-directly-upload-files-to-amazon-s3/)  
+：amplifyを利用して、アップロードページをアップロードする方法
 
 
 ### Cognitoでユーザープールを作成
 詳細は[別ページ](https://misakifujishiro.github.io/mylogs/Artifact/cognito.html#cognito)参照
 
 この時に、アプリクライアントの設定で、`クライアントシークレットの作成`については無効化しておき、`ALLOW_ADMIN_USER_PASSWORD_AUTH`を有効化する  
-また、test userも作成しておく
+また、test userも作成しておく（有効化してもなんとかなるけど、Cognitoへのログイン設定が面倒）
 
 ![](img/cognito_awscli_auth_point.png)
 
@@ -50,31 +54,30 @@
 
 ![](img/cognito_idpool-iam.png)
 
-今回は特定のS3バケットのオブジェクトに対する一覧表示と全アクション権限をAuthユーザーだけに付与する。
-新規で作成したIAMポリシーは以下
+ポリシーには、Cognitoで認証したユーザーごとのバケットの中でも`フェデレーティッドユーザーの ID${cognito-identity.:sub}`のディレクトリに紐づいたオブジェクトにのみアクセスできるポリシーを付与数r。
 ```
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "ListObjectsInBucket",
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListBucket"
-            ],
-            "Resource": [
-                "arn:aws:s3:::ma-fujishiroms-bucket"
-            ]
-        },
-        {
-            "Sid": "AllObjectActions",
-            "Effect": "Allow",
-            "Action": "s3:*Object",
-            "Resource": [
-                "arn:aws:s3:::ma-fujishiroms-bucket/*"
-            ]
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": ["arn:aws:s3:::ma-fujishiroms-bucke"],
+      "Condition": {"StringLike": {"s3:prefix": ["cognito/"]}}
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::ma-fujishiroms-bucket/cognito/${cognito-identity.amazonaws.com:sub}",
+        "arn:aws:s3:::20180419-testhanse/cognito/${cognito-identity.amazonaws.com:sub}/*"
+      ]
+    }
+  ]
 }
 ```
 
@@ -85,23 +88,23 @@ UnAuthユーザーには情報を付与しない。
 
 ### AWS CLIからのアクセス
 #### ログイン
-AWS CLIの場合は以下のコマンドでログインする（Cognitoのユーザープールでアカウントを作成しておく）
+AWS CLIの場合は以下のコマンドでログインする  
+Cognitoのユーザープールで動作確認用に2つのアカウントを作成しておく
 
 初期設定
 - USER_POOL_IDはCognitoのユーザープールの全般設定から取得
 - CLIENT_IDはCognitoのユーザープールのアプリクライアントから取得
 - IDENTITY_POOL_IDはCognitoのIDプールのサンプルコードから取得（前節でメモした）
 ```
-REGION=ap-northeast-1
 USER_POOL_ID=ap-northeast-1_xxxxxxx
 CLIENT_ID=xxxxxxxxxxxx
-USER_EMAIL=YOUR_MAIL_ADDRESS@gmail.com
-USER_NAME=YOUR_USER_NAME
-PASSWORD="Dummy456"
 IDENTITY_POOL_ID=ap-northeast-1:xxxxxxxxxx
+USER_NAME=YOUR_USER_NAME
+USER_EMAIL=YOUR_MAIL_ADDRESS@gmail.com
+REGION=ap-northeast-1
+PASSWORD="Dummy456"
 COGNITO_USER_POOL=cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}
 ```
-
 
 ログインして、ID Tokenの取得
 (`USERNAME`はUSER＿NAMEでもUSER_EMAILでも認証が通った)
@@ -116,8 +119,10 @@ ID_TOKEN=$(aws cognito-idp admin-initiate-auth \
 ```
 
 
-#### クレデンシャルの取得
 
+
+#### クレデンシャルの取得
+IDENTITY_IDを取得
 ```
 IDENTITY_ID=$(aws cognito-identity get-id \
   --identity-pool-id ${IDENTITY_POOL_ID} \
@@ -132,7 +137,7 @@ OUTPUT=$(aws cognito-identity get-credentials-for-identity \
   --logins "${COGNITO_USER_POOL}=${ID_TOKEN}") && echo ${OUTPUT}
 ```
 
-返却されたクレデンシャルの`AccessKeyID`、`SecretKey`、`SessionToken`を環境変数に設定して、AWS CLIでコマンドを実行する
+返却されたクレデンシャルの`AccessKeyID`、`SecretKey`、`SessionToken`を環境変数に設定
 ```
 AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r '.Credentials.AccessKeyId'`
 export AWS_ACCESS_KEY_ID
@@ -142,11 +147,36 @@ AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r '.Credentials.SessionToken'`
 export AWS_SECURITY_TOKEN
 ```
 
-動作確認でバケット内のオブジェクトを確認する（S3にディレクトリを作成しておく）
+### S3バケットの作成
+作成したIAMの権限に合わせて、S3バケットを作成する。
+バケット内に作成するフォルダについても、`cognito/CognitoUserID`とする。
+UserIDは先ほどの手順でログインすることでCognitoのID poolに追加されている値を利用する
+
+![](img/cognito_idpool_added.png)
+
+以下のようなディレクトリ構成となる
 ```
-aws s3 ls s3://ma-fujishiroms-bucket/
+bucket
+|
+|--cognito
+    |
+    |--ap-northeast-1:xxxxxxxxx
+    |
+    |--ap-northeast-1:yyyyyyyyy
 ```
-結果として、作成したディレクトリが表示される。
+
+### 動作確認
+xxxxxxxのクレデンシャルを環境変数に設定しているときとyyyyyyyyyのクレデンシャルを環境ヘンスに設定している時で、アクセスできるS3が異なることを確認する
+```
+aws s3 cp --region ap-northeast-1 s3://ma-fujishiroms-bucket/cognito/ap-northeast-1:xxxxxxxxx/alb_setting_basic.png ./
+
+
+aws s3 cp --region ap-northeast-1 s3://ma-fujishiroms-bucket/cognito/ap-northeast-1:yyyyyyyyy/auth0_tenant.png ./
+```
+
+
+
+
 
 
 ### ユーザーごとに紐づけるロールを変更する場合
