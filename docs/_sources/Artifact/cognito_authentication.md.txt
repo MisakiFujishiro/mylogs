@@ -74,7 +74,7 @@
       ],
       "Resource": [
         "arn:aws:s3:::ma-fujishiroms-bucket/cognito/${cognito-identity.amazonaws.com:sub}",
-        "arn:aws:s3:::20180419-testhanse/cognito/${cognito-identity.amazonaws.com:sub}/*"
+        "arn:aws:s3:::ma-fujishiroms-bucket/cognito/${cognito-identity.amazonaws.com:sub}/*"
       ]
     }
   ]
