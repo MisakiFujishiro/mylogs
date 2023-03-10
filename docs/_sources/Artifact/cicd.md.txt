@@ -45,6 +45,7 @@ CodeCommmitのページから、レポジトリを作成する。
 
 ### githubのミラーリング
 githubの変更を検知して、CodeCommitに反映されていることを確認する。
+#### SSHキーの場合
 
 実施項目は以下
 1. SSHキーをローカルPCで作成
@@ -52,8 +53,17 @@ githubの変更を検知して、CodeCommitに反映されていることを確�
 1. githubに秘密鍵を登録
 1. githubにミラーリングの設定
 
-詳細は、別ページ
+詳細は、[別ページ](https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit)
 
+#### HTTPS認証の場合
+
+実施項目は以下
+1. codecommitへのpull pushの権限を持つIAMユーザーを作成
+1. IAMのページ>セキュリティ認証情報>AWS CodeCommitのHTTPS Git認証情報を払い出す(USERNAMEとPASSWORDを記録する)
+1. CodeCommitのリポジトリでHTTPSのURLをコピー
+1. gitlab>Setting>リポジトリ>Mirroring repositoriesから、設定
+1. CodeCommitのリポジトリでコピーしたURLの`https://`の後ろにIAMで払い出した`ユーザー名@`を挿入
+1. Authentication methodでPasswordを選択して、IAMで払い出したパスワードを挿入
 
 
 
@@ -65,10 +75,12 @@ githubの変更を検知して、CodeCommitに反映されていることを確�
 - ソース
     - CodeCommitとの紐付け
     - 対象のブランチ指定
+
 ![](img/codebuild_source.png)
 
 - CodeBuildの環境設定
     - Dockerを利用する場合特権付与を忘れない
+
 ![](img/codebuild_env.png)
 
 ### IAMポリシーの変更
@@ -120,12 +132,15 @@ artifacts:
 
 ### codepipelineの作成
 - sourceステージの作成
+
 ![](img/codepipeline_source.png)
 
 - buildステージの作成
+
 ![](img/codepipeline_build.png)
 
 - deployステージの作成
+
 ![](img/codepipeline_deploy.png)
 
 ### 動作確認

@@ -101,6 +101,8 @@ git commit -m &quot;first commit&quot;</p>
 <section id="github">
 <h3><span class="section-number">2.2.2. </span>githubのミラーリング<a class="headerlink" href="#github" title="この見出しへのパーマリンク">¶</a></h3>
 <p>githubの変更を検知して、CodeCommitに反映されていることを確認する。</p>
+<section id="ssh">
+<h4><span class="section-number">2.2.2.1. </span>SSHキーの場合<a class="headerlink" href="#ssh" title="この見出しへのパーマリンク">¶</a></h4>
 <p>実施項目は以下</p>
 <ol class="simple">
 <li><p>SSHキーをローカルPCで作成</p></li>
@@ -108,7 +110,20 @@ git commit -m &quot;first commit&quot;</p>
 <li><p>githubに秘密鍵を登録</p></li>
 <li><p>githubにミラーリングの設定</p></li>
 </ol>
-<p>詳細は、別ページ</p>
+<p>詳細は、<a class="reference external" href="https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit">別ページ</a></p>
+</section>
+<section id="https">
+<h4><span class="section-number">2.2.2.2. </span>HTTPS認証の場合<a class="headerlink" href="#https" title="この見出しへのパーマリンク">¶</a></h4>
+<p>実施項目は以下</p>
+<ol class="simple">
+<li><p>codecommitへのpull pushの権限を持つIAMユーザーを作成</p></li>
+<li><p>IAMのページ&gt;セキュリティ認証情報&gt;AWS CodeCommitのHTTPS Git認証情報を払い出す(USERNAMEとPASSWORDを記録する)</p></li>
+<li><p>CodeCommitのリポジトリでHTTPSのURLをコピー</p></li>
+<li><p>gitlab&gt;Setting&gt;リポジトリ&gt;Mirroring repositoriesから、設定</p></li>
+<li><p>CodeCommitのリポジトリでコピーしたURLの<code class="docutils literal notranslate"><span class="pre">https://</span></code>の後ろにIAMで払い出した<code class="docutils literal notranslate"><span class="pre">ユーザー名&#64;</span></code>を挿入</p></li>
+<li><p>Authentication methodでPasswordを選択して、IAMで払い出したパスワードを挿入</p></li>
+</ol>
+</section>
 </section>
 </section>
 <section id="codebuildbuild">
@@ -120,17 +135,19 @@ git commit -m &quot;first commit&quot;</p>
 <li><p>ソース</p>
 <ul>
 <li><p>CodeCommitとの紐付け</p></li>
-<li><p>対象のブランチ指定
-<img alt="../_images/codebuild_source.png" src="../_images/codebuild_source.png" /></p></li>
+<li><p>対象のブランチ指定</p></li>
 </ul>
 </li>
+</ul>
+<p><img alt="../_images/codebuild_source.png" src="../_images/codebuild_source.png" /></p>
+<ul class="simple">
 <li><p>CodeBuildの環境設定</p>
 <ul>
-<li><p>Dockerを利用する場合特権付与を忘れない
-<img alt="../_images/codebuild_env.png" src="../_images/codebuild_env.png" /></p></li>
+<li><p>Dockerを利用する場合特権付与を忘れない</p></li>
 </ul>
 </li>
 </ul>
+<p><img alt="../_images/codebuild_env.png" src="../_images/codebuild_env.png" /></p>
 </section>
 <section id="iam">
 <h3><span class="section-number">2.3.2. </span>IAMポリシーの変更<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h3>
@@ -179,13 +196,17 @@ artifacts:
 <section id="id2">
 <h3><span class="section-number">2.4.2. </span>codepipelineの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
-<li><p>sourceステージの作成
-<img alt="../_images/codepipeline_source.png" src="../_images/codepipeline_source.png" /></p></li>
-<li><p>buildステージの作成
-<img alt="../_images/codepipeline_build.png" src="../_images/codepipeline_build.png" /></p></li>
-<li><p>deployステージの作成
-<img alt="../_images/codepipeline_deploy.png" src="../_images/codepipeline_deploy.png" /></p></li>
+<li><p>sourceステージの作成</p></li>
 </ul>
+<p><img alt="../_images/codepipeline_source.png" src="../_images/codepipeline_source.png" /></p>
+<ul class="simple">
+<li><p>buildステージの作成</p></li>
+</ul>
+<p><img alt="../_images/codepipeline_build.png" src="../_images/codepipeline_build.png" /></p>
+<ul class="simple">
+<li><p>deployステージの作成</p></li>
+</ul>
+<p><img alt="../_images/codepipeline_deploy.png" src="../_images/codepipeline_deploy.png" /></p>
 </section>
 <section id="id3">
 <h3><span class="section-number">2.4.3. </span>動作確認<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
@@ -214,7 +235,11 @@ artifacts:
 </li>
 <li><a class="reference internal" href="#codecommitgithub">2.2. codeCommitとGitHubのミラーリング</a><ul>
 <li><a class="reference internal" href="#codecommit">2.2.1. CodeCommitの作成</a></li>
-<li><a class="reference internal" href="#github">2.2.2. githubのミラーリング</a></li>
+<li><a class="reference internal" href="#github">2.2.2. githubのミラーリング</a><ul>
+<li><a class="reference internal" href="#ssh">2.2.2.1. SSHキーの場合</a></li>
+<li><a class="reference internal" href="#https">2.2.2.2. HTTPS認証の場合</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#codebuildbuild">2.3. CodeBuildによるBuild設定</a><ul>

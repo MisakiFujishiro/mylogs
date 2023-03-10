@@ -21,7 +21,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="2. AWS Code Seriesを利用したCICD環境" href="cicd.html" />
-    <link rel="prev" title="1. 塾の活動" href="../DAILY/daily.html" /> 
+    <link rel="prev" title="2. 塾の活動(FY23 上期)" href="../DAILY/FY23_MSA.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -33,7 +33,7 @@
           <a href="cicd.html" title="2. AWS Code Seriesを利用したCICD環境"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../DAILY/daily.html" title="1. 塾の活動"
+          <a href="../DAILY/FY23_MSA.html" title="2. 塾の活動(FY23 上期)"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></li> 
@@ -130,19 +130,17 @@ Public-Subnetに配置するECS用のインターネットからの接続可能�
 <li><p>セキュリティグループの作成<br />今後、ECSのセキュリティグループで、接続元を制限する際に本セキュリティグループと紐づけるので新規でSGを作成<br />VPCの設定変更や Nameタグの付与を忘れない<br />Publicの場合は、0.0.0.0/0をインバウンドに設定、Privateの場合はVPC内部だけをインバウンドに設定</p></li>
 </ul>
 <p><img alt="../_images/alb_setting_sg_public.png" src="../_images/alb_setting_sg_public.png" /></p>
-<ul>
-<li><p>ターゲットグループの作成<br />ターゲットの種類には、ECSのクラスターのインスタンスが対象となるのでインスタンスを指定を指定する。<br />ヘルスチェック先やターゲットの登録を行う。
-Protocol Portは80でOK</p>
-<p>ターゲットは、動的マッピングの場合、ECSでサービス作成時にTGを紐付けると自動で設定されるので、設定しなくて良い。</p>
-</li>
+<ul class="simple">
+<li><p>ターゲットグループの作成<br />ターゲットの種類には、ECSのクラスターのインスタンスが対象となるのでインスタンスを指定を指定する。<br />ヘルスチェック先やターゲットの登録を行う。<br />TGにおけるポートはTG向きへの通信が来た時に、そのポート番号を上書きする際の番号（最終的にECSのサービスに上書きされるので任意でOK）<br />ターゲットのポート設定では、TG内部のターゲットごとにポートを上書きすることができるが、これも動的マッピングの場合、ECSのサービスで自動で設定されるので、設定しなくて良い</p></li>
 </ul>
 <p><img alt="../_images/alb_setting_tg.png" src="../_images/alb_setting_tg.png" /></p>
 <ul class="simple">
-<li><p>リスナーの設定（ロードバランサのプロトコル・ポート）<br />HTTPの80を指定して、作成したTGを設定。<br />ポート設定などは、アプリ側や動的マッピングのことは考えなくてOK。
-基本的に外部からは80や443で受け付けて、パスルーティングでTGに流して、動的マッピングしていくイメージ。
-<img alt="../_images/alb_setting_listener.png" src="../_images/alb_setting_listener.png" /></p></li>
-<li><p>ルールの設定<br />ALBのListenersからRulesを選択して、パスルーティングの設定をする。
-パスを指定するときは、アプリケーションが利用するパスがxxxであれば、<code class="docutils literal notranslate"><span class="pre">/xxx/*</span></code>という形で設定する。</p></li>
+<li><p>リスナーの設定（ロードバランサのプロトコル・ポート）<br />ALBがリッスンするポートになるのでHTTPの場合は80で、HTTPSの場合は443にしておけばOK</p></li>
+</ul>
+<p><img alt="../_images/alb_setting_listener.png" src="../_images/alb_setting_listener.png" /></p>
+<ul class="simple">
+<li><p>ルールの設定
+TGとの紐付けはポートごとのルール設定で行う<br />基本的に外部からは80や443で受け付けて、パスルーティングでTGに流して、動的マッピングしていくイメージ。<br />パスを指定するときは、アプリケーションが利用するパスがxxxであれば、<code class="docutils literal notranslate"><span class="pre">/xxx/*</span></code>という形で設定する。</p></li>
 </ul>
 </section>
 </section>
@@ -442,7 +440,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 <ul class="simple">
 <li><p>タスク実行ロール：ECRとの接続やCloudWatchへのログを送るための実行ロール</p></li>
 <li><p>タスクロール: 各タスクが行う処理内容に応じたロール</p></li>
-<li><p>port：コンテナとECSホストのポートマッピングの設定をする</p></li>
+<li><p>port：コンテナとECSホストのポートマッピングの設定をする<br />動的ポートマッピングの場合はhost側を0、コンテナ側をアプリの受け付けるポートに設定する。</p></li>
 </ul>
 </section>
 <section id="iam">
@@ -467,22 +465,16 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </section>
 <section id="id20">
 <h2><span class="section-number">1.7. </span>ECSサービスの実行<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id21">
-<h3><span class="section-number">1.7.1. </span>基本方針<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-<section id="id22">
-<h3><span class="section-number">1.7.2. </span>成果物<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ECSのサービスとタスク。</p></li>
 <li><p>実際に動く画面</p></li>
 </ul>
-</section>
-<section id="id23">
-<h3><span class="section-number">1.7.3. </span>サービスの作成<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id21">
+<h3><span class="section-number">1.7.1. </span>サービスの作成<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <p>サービスを作成していく中で、ALBやTGを設定する。</p>
-<p>これは初回しか設定できないので、設定するときにALBとTGの設定を再確認しておく。</p>
+<p>これは初回しか設定できないので、設定するときにALBとTGの設定を再確認しておく。<br />これによって、ALB→TG→サービス→タスクの通信が疎通する。</p>
 <section id="exec-format-error">
-<h4><span class="section-number">1.7.3.1. </span>[トラブルシュート]タスクが起動しない：exec format error<a class="headerlink" href="#exec-format-error" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">1.7.1.1. </span>[トラブルシュート]タスクが起動しない：exec format error<a class="headerlink" href="#exec-format-error" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CloudWatchを確認すると以下のエラー</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">exec</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">exec</span> <span class="nb">format</span> <span class="n">error</span>
 </pre></div>
@@ -574,10 +566,8 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
 </ul>
 </li>
 <li><a class="reference internal" href="#id20">1.7. ECSサービスの実行</a><ul>
-<li><a class="reference internal" href="#id21">1.7.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id22">1.7.2. 成果物</a></li>
-<li><a class="reference internal" href="#id23">1.7.3. サービスの作成</a><ul>
-<li><a class="reference internal" href="#exec-format-error">1.7.3.1. [トラブルシュート]タスクが起動しない：exec format error</a></li>
+<li><a class="reference internal" href="#id21">1.7.1. サービスの作成</a><ul>
+<li><a class="reference internal" href="#exec-format-error">1.7.1.1. [トラブルシュート]タスクが起動しない：exec format error</a></li>
 </ul>
 </li>
 </ul>
@@ -589,8 +579,8 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../DAILY/daily.html"
-                          title="前の章へ"><span class="section-number">1. </span>塾の活動</a></p>
+    <p class="topless"><a href="../DAILY/FY23_MSA.html"
+                          title="前の章へ"><span class="section-number">2. </span>塾の活動(FY23 上期)</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
@@ -628,7 +618,7 @@ CMD java -jar -Dspring.profiles.active=production ecs_backend/target/mynavi-samp
           <a href="cicd.html" title="2. AWS Code Seriesを利用したCICD環境"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../DAILY/daily.html" title="1. 塾の活動"
+          <a href="../DAILY/FY23_MSA.html" title="2. 塾の活動(FY23 上期)"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></li> 
