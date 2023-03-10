@@ -11,9 +11,10 @@ DAILY
    :maxdepth: 2
    :numbered:
 
-   DAILY/daily
+   DAILY/FY22_MSA
+   DAILY/FY23_MSA
 
-成果物
+実装HandsOn
 ==================
 
 .. toctree::

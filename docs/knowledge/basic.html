@@ -47,16 +47,31 @@
             
   <section id="id1">
 <h1><span class="section-number">1. </span>開発<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
-<section id="web">
-<h2><span class="section-number">1.1. </span>Webサイト<a class="headerlink" href="#web" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id2">
-<h3><span class="section-number">1.1.1. </span>静的Webサイト<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">1.1. </span>要件とか設計について<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id3">
+<h3><span class="section-number">1.1.1. </span>要件<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>色々「要件」というワードの頭にくっついている「非機能要件」とか「API要件」とか。</p>
+<p>「システム要件」がメイン</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">1.1.2. </span>要件と設計と仕様について<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>要件は利用者が欲しいと思っていること</p>
+<p>仕様は、外部と関わる部分の「こうなるはず」という完成図</p>
+<p>設計や、どうやって作るのかを定義するもの</p>
+<p>なので、仕様を満たすために設計をするという形になる。</p>
+</section>
+</section>
+<section id="web">
+<h2><span class="section-number">1.2. </span>Webサイト<a class="headerlink" href="#web" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id5">
+<h3><span class="section-number">1.2.1. </span>静的Webサイト<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>クライアントのリクエストの内容に関わらず、同じ内容を表示するコンテンツ</p>
 <p>HTMLや画像ファイルが静的コンテンツに該当し、静的コンテンツをクライアントに返却するサーバーを<code class="docutils literal notranslate"><span class="pre">Webサーバー</span></code>と呼ぶ。</p>
 <p>WebサーバーはOSSのApacheやNginxなどのWebサーバー用のSWをインストールすることで構築することができる。</p>
 </section>
-<section id="id3">
-<h3><span class="section-number">1.1.2. </span>動的Webサイト<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id6">
+<h3><span class="section-number">1.2.2. </span>動的Webサイト<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>クライアントのリクエストの内容や状況に応じて表示する内容を変更できるコンテンツ</p>
 <p>このようなジョン点つを提供するサーバーを<code class="docutils literal notranslate"><span class="pre">アプリケーションサーバー</span></code>と呼ぶ。</p>
 <p>動的な処理はJavaやPythonなどのプログラミング言語を利用することで実装され、デプロイされたAppを動作させるためには、
@@ -64,19 +79,19 @@
 </section>
 </section>
 <section id="docker">
-<h2><span class="section-number">1.2. </span>Docker<a class="headerlink" href="#docker" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.3. </span>Docker<a class="headerlink" href="#docker" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="docker-file">
-<h3><span class="section-number">1.2.1. </span>Docker File<a class="headerlink" href="#docker-file" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.1. </span>Docker File<a class="headerlink" href="#docker-file" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Dockerで作成するコンテナイメージを管理するためのファイル。
 あらかじめ準備されているコンテナイメージにファイルコピーしたり、直接的な編集を行なって、イメージを作成することができる。</p>
 </section>
 <section id="docker-compose">
-<h3><span class="section-number">1.2.2. </span>Docker Compose<a class="headerlink" href="#docker-compose" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.3.2. </span>Docker Compose<a class="headerlink" href="#docker-compose" title="この見出しへのパーマリンク">¶</a></h3>
 <p>複数のコンテナで構成されるAppについて、Dockerイメージのビルドやコンテナの起動停止を簡単に行うためのツール</p>
 </section>
 </section>
 <section id="rest-api">
-<h2><span class="section-number">1.3. </span>REST API<a class="headerlink" href="#rest-api" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.4. </span>REST API<a class="headerlink" href="#rest-api" title="この見出しへのパーマリンク">¶</a></h2>
 <p>本当にざっくり重要ポイント解説すると、以下のルールに従って実装されたAPI</p>
 <ol class="simple">
 <li><p>ステートレス<br />以前の通信状態に関係なく、毎回条件なら同じ結果を返す</p></li>
@@ -84,24 +99,24 @@
 </ol>
 </section>
 </section>
-<section id="id4">
-<h1><span class="section-number">2. </span>コーディング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h1>
-<section id="id5">
-<h2><span class="section-number">2.1. </span>シングルトン<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id7">
+<h1><span class="section-number">2. </span>コーディング<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id8">
+<h2><span class="section-number">2.1. </span>シングルトン<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
 <p>クラスに対するインスタンスが、たくさんできると管理が面倒なので、そのクラスのインスタンスが必ず一つであることを保証するデザインパターン</p>
 <p>JavaにおけるSingletonの定義方法
 <img alt="../_images/singleton.png" src="../_images/singleton.png" /></p>
 </section>
 </section>
-<section id="id6">
-<h1><span class="section-number">3. </span>通信<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id9">
+<h1><span class="section-number">3. </span>通信<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="ssl-tls">
 <h2><span class="section-number">3.1. </span>SSL/TLS<a class="headerlink" href="#ssl-tls" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://www.jipdec.or.jp/library/report/ssl_cert.html">SSL/TLSサーバ証明書とは</a></p>
 <p>SSL/TLSは通信の暗号化のプロトコル</p>
 </section>
-<section id="id7">
-<h2><span class="section-number">3.2. </span>SSL/TLS証明書<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id10">
+<h2><span class="section-number">3.2. </span>SSL/TLS証明書<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://www.jipdec.or.jp/library/report/ssl_cert.html">SSL/TLSサーバ証明書とは</a></p>
 <p>これは実在証明</p>
 </section>
@@ -121,8 +136,8 @@
 </section>
 <section id="db">
 <h1><span class="section-number">4. </span>DB<a class="headerlink" href="#db" title="この見出しへのパーマリンク">¶</a></h1>
-<section id="id8">
-<h2><span class="section-number">4.1. </span>スロークエリ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id11">
+<h2><span class="section-number">4.1. </span>スロークエリ<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h2>
 <p>スロークエリログ (Slow query log) は、MySQL で出力できるログの種類の1つです。 SQL の実行時間が指定した時間よりもかかってしまった SQL を全て出力することができます。 これにより、アプリケーション構築時や本番運用時にパフォーマンスのボトルネックとなっている SQL を発見するのに大いに役に立ちます。</p>
 </section>
 </section>
@@ -138,32 +153,37 @@
     <h3><a href="../index.html">目次</a></h3>
     <ul>
 <li><a class="reference internal" href="#">1. 開発</a><ul>
-<li><a class="reference internal" href="#web">1.1. Webサイト</a><ul>
-<li><a class="reference internal" href="#id2">1.1.1. 静的Webサイト</a></li>
-<li><a class="reference internal" href="#id3">1.1.2. 動的Webサイト</a></li>
+<li><a class="reference internal" href="#id2">1.1. 要件とか設計について</a><ul>
+<li><a class="reference internal" href="#id3">1.1.1. 要件</a></li>
+<li><a class="reference internal" href="#id4">1.1.2. 要件と設計と仕様について</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#docker">1.2. Docker</a><ul>
-<li><a class="reference internal" href="#docker-file">1.2.1. Docker File</a></li>
-<li><a class="reference internal" href="#docker-compose">1.2.2. Docker Compose</a></li>
+<li><a class="reference internal" href="#web">1.2. Webサイト</a><ul>
+<li><a class="reference internal" href="#id5">1.2.1. 静的Webサイト</a></li>
+<li><a class="reference internal" href="#id6">1.2.2. 動的Webサイト</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#rest-api">1.3. REST API</a></li>
+<li><a class="reference internal" href="#docker">1.3. Docker</a><ul>
+<li><a class="reference internal" href="#docker-file">1.3.1. Docker File</a></li>
+<li><a class="reference internal" href="#docker-compose">1.3.2. Docker Compose</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">2. コーディング</a><ul>
-<li><a class="reference internal" href="#id5">2.1. シングルトン</a></li>
+<li><a class="reference internal" href="#rest-api">1.4. REST API</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">3. 通信</a><ul>
+<li><a class="reference internal" href="#id7">2. コーディング</a><ul>
+<li><a class="reference internal" href="#id8">2.1. シングルトン</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id9">3. 通信</a><ul>
 <li><a class="reference internal" href="#ssl-tls">3.1. SSL/TLS</a></li>
-<li><a class="reference internal" href="#id7">3.2. SSL/TLS証明書</a></li>
+<li><a class="reference internal" href="#id10">3.2. SSL/TLS証明書</a></li>
 <li><a class="reference internal" href="#web-socket">3.3. Web Socket</a></li>
 <li><a class="reference internal" href="#udp-tcp">3.4. UDP/TCP</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#db">4. DB</a><ul>
-<li><a class="reference internal" href="#id8">4.1. スロークエリ</a></li>
+<li><a class="reference internal" href="#id11">4.1. スロークエリ</a></li>
 </ul>
 </li>
 </ul>
