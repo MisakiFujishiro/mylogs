@@ -25,7 +25,7 @@ DAILY
    Artifact/cicd
    Artifact/cognito
    Artifact/cognito_authentication
-
+   Artifact/s3_process.md
 Microservice
 ==================
 

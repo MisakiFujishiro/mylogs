@@ -9,6 +9,22 @@
 1. 【＋α】ルールベースでIAMロールを割り当てる
 
 
+### 認証フローの違い
+認証している場合
+  - User poolに対して、initiate-authでID _TOKENを取得(認証)
+  - ID PoolからIDENTITY_TOKENを取得(認可)
+  - STSからクレデンシャルの発行
+
+![](img/cognito_auth_flow.png)
+
+
+認証していない場合
+- ID PoolからIDENTITY_TOKENを取得(認可)
+- STSからクレデンシャルの発行
+
+
+![](img/cognito_unauth_flow.png)
+
 
 ### 参考文献
 - [クレデンシャルの取得方法](https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/)  
@@ -22,6 +38,9 @@
 - [外部ユーザが安全かつ直接的に Amazon S3 へファイルをアップロードできるようにする方法](https://aws.amazon.com/jp/blogs/news/allowing-external-users-to-securely-and-directly-upload-files-to-amazon-s3/)  
 ：amplifyを利用して、アップロードページをアップロードする方法
 - [Cognito を使ったユーザ認証で S3 にアクセスしてみる](https://www.aws-room.com/entry/cognito-s3)
+- [S3 Syncを利用してみる](https://book.st-hakky.com/docs/aws-s3-sync/)
+
+
 
 
 ### S3バケット作成
@@ -136,7 +155,7 @@ auth_flow = "USER_PASSWORD_AUTH"
 
 
 ###
-# CognitoIdentityProviderクライアントを初期化
+# User Poolにログインする
 ###
 idp_client = boto3.client('cognito-idp')
 
@@ -161,7 +180,7 @@ refresh_token = response['AuthenticationResult']['RefreshToken']
 
 
 ###
-# CognitoIdentityクライアントを初期化
+# ID Poolにログインする
 ###
 identity_client = boto3.client('cognito-identity')
 
@@ -185,7 +204,7 @@ credentials_response = identity_client.get_credentials_for_identity(
 
 
 ###
-# S3にアクセスするクレデンシャルを取得
+# ID Pool経由でSTSへのクレデンシャル発行を依頼する
 ###
 Credentials = credentials_response['Credentials']
 access_key_id = Credentials['AccessKeyId']
@@ -241,13 +260,24 @@ from botocore.exceptions import NoCredentialsError
 session = boto3.Session()
 cognito_identity_pool_id = 'ap-northeast-1:1f392b6a-751d-4760-8849-5924149f8e67'
 
-# 一時的な認証情報を取得するためにCognito Identityを使用する
+
+###
+# ID Poolにログインする
+###
 client = session.client('cognito-identity')
 response = client.get_id(IdentityPoolId=cognito_identity_pool_id)
 identity_id = response['IdentityId']
+
+
+###
+# ID Pool経由でSTSへのクレデンシャル発行を依頼する
+###
 credentials = client.get_credentials_for_identity(IdentityId=identity_id)
 
-# 一時的な認証情報を使用して、AWSサービスに接続する
+
+###
+# S3にアクセス
+###
 s3_client = session.client('s3',
     aws_access_key_id=credentials['Credentials']['AccessKeyId'],
     aws_secret_access_key=credentials['Credentials']['SecretKey'],
@@ -260,20 +290,14 @@ bucket_name = 'ma-fujishiroms-bucket'
 object_list = s3_client.list_objects_v2(Bucket=bucket_name)
 for obj in object_list['Contents']:
     print(obj['Key'])
-
-
 ```
 
 
 
 
 
-### 【参考】AWS CLIからのアクセス
-#### ログイン
-AWS CLIの場合は以下のコマンドでログインする  
-Cognitoのユーザープールで動作確認用に2つのアカウントを作成しておく
-
-初期設定
+### AWS CLIからのアクセス
+#### 初期設定
 - USER_POOL_IDはCognitoのユーザープールの全般設定から取得
 - CLIENT_IDはCognitoのユーザープールのアプリクライアントから取得
 - IDENTITY_POOL_IDはCognitoのIDプールのサンプルコードから取得（前節でメモした）
@@ -283,28 +307,29 @@ CLIENT_ID=xxxxxxxxxxxx
 IDENTITY_POOL_ID=ap-northeast-1:xxxxxxxxxx
 USER_NAME=YOUR_USER_NAME
 USER_EMAIL=YOUR_MAIL_ADDRESS@gmail.com
+PASSWORD="YOUR_PASSWORD"
 REGION=ap-northeast-1
-PASSWORD="Dummy456"
 COGNITO_USER_POOL=cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}
-```
-
-ログインして、ID Tokenの取得
-(`USERNAME`はUSER＿NAMEでもUSER_EMAILでも認証が通った)
-```
-ID_TOKEN=$(aws cognito-idp admin-initiate-auth \
-  --user-pool-id ${USER_POOL_ID} \
-  --client-id ${CLIENT_ID} \
-  --auth-flow ADMIN_NO_SRP_AUTH \
-  --auth-parameters "USERNAME=${USER_NAME},PASSWORD=${PASSWORD}" \
-  --query "AuthenticationResult.IdToken" \
-  --output text) && echo ${ID_TOKEN}
+AUTH_FLOW=USER_PASSWORD_AUTH
 ```
 
 
 
+#### USER POOLへ認証
+Cognitoのユーザープールへの認証処理
+```
+ID_TOKEN=$(aws cognito-idp initiate-auth \
+--auth-flow ${AUTH_FLOW} \
+--client-id ${CLIENT_ID} \
+--auth-parameters USERNAME=${USER_NAME},PASSWORD=${PASSWORD}  \
+--query "AuthenticationResult.IdToken" \
+--output text) && echo ${ID_TOKEN}
+```
+initiate-authにすることに注意。`admin-initiate-auth `の場合、AWSのアクセスキーとクレデンシャルを要求されるので注意
 
-#### クレデンシャルの取得
-IDENTITY_IDを取得
+
+#### ID POOLへの認証
+取得した認証情報を渡して、紐づく認可情報を取得する
 ```
 IDENTITY_ID=$(aws cognito-identity get-id \
   --identity-pool-id ${IDENTITY_POOL_ID} \
@@ -312,13 +337,21 @@ IDENTITY_ID=$(aws cognito-identity get-id \
   --query "IdentityId" \
   --output text) && echo ${IDENTITY_ID}
 ```
-Identify IDを利用して、`クレデンシャル`を取得
+
+#### クレデンシャルの取得
+STSから一時認証情報を払い出してもらって、取得する
 ```
 OUTPUT=$(aws cognito-identity get-credentials-for-identity \
   --identity-id ${IDENTITY_ID} \
   --logins "${COGNITO_USER_POOL}=${ID_TOKEN}") && echo ${OUTPUT}
 ```
 
+
+#### クレデンシャルの整形
+jpを利用するので事前にインストールしておく
+```
+brew install jq
+```
 返却されたクレデンシャルの`AccessKeyID`、`SecretKey`、`SessionToken`を環境変数に設定
 ```
 AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r '.Credentials.AccessKeyId'`
@@ -329,12 +362,39 @@ AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r '.Credentials.SessionToken'`
 export AWS_SECURITY_TOKEN
 ```
 
+自分の認証情報の確認をすると、Arnの部分に自分のCognitoで認証された時に付与されるIAMロールが割当たっていることを確認できる
+```
+aws sts get-caller-identity
+```
 
 
 
+#### 認証されていないユーザー
+USER POOLへの認証を行わず、idpoolへのget-idから始める
+```
+IDENTITY_ID=$(aws cognito-identity get-id \
+  --identity-pool-id ${IDENTITY_POOL_ID} \
+  --query "IdentityId" \
+  --output text) && echo ${IDENTITY_ID}
+```
 
-
-
+```
+OUTPUT=$(aws cognito-identity get-credentials-for-identity \
+  --identity-id ${IDENTITY_ID}) && echo ${OUTPUT}
+```
+返却されたクレデンシャルの`AccessKeyID`、`SecretKey`、`SessionToken`を環境変数に設定
+```
+AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r '.Credentials.AccessKeyId'`
+export AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r '.Credentials.SecretKey'`
+export AWS_SECRET_ACCESS_KEY
+AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r '.Credentials.SessionToken'`
+export AWS_SECURITY_TOKEN
+```
+自分の認証情報の確認をすると、Arnの部分に自分のCognitoで認証されていない時に付与されるIAMロールが割当たっていることを確認できる
+```
+aws sts get-caller-identity
+```
 
 
 ### 【参考】ユーザーごとに紐づけるロールを変更する場合
@@ -408,4 +468,6 @@ aws s3 cp --region ap-northeast-1 s3://ma-fujishiroms-bucket/cognito/ap-northeas
 aws s3 cp --region ap-northeast-1 s3://ma-fujishiroms-bucket/cognito/ap-northeast-1:yyyyyyyyy/auth0_tenant.png ./
 ```
 
+### 【参考】S3とLocalのフォルダを同期する（AWS CLI)
+S3のページで解説しているので、そちらを参照する
 
