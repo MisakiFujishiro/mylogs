@@ -1,5 +1,4 @@
 ## S3の処理
-
 ### S3とローカルディレクトリを同期する
 AWS CLIを利用して、ローカルのディレクトリとS3のディレクトリを同期する
 
@@ -12,8 +11,6 @@ aws s3 sync [FROM_DIR] [TARGET_DIR] --exact-timestamps
 
 
 #### S3にあるファイルをローカルに同期
-
-
 ```
 aws s3 sync s3://[BUCKET_NAME] [LOCAL_DIR] --exact-timestamps
 ```
@@ -23,3 +20,8 @@ aws s3 sync s3://[BUCKET_NAME] [LOCAL_DIR] --exact-timestamps
 ```
 aws s3 sync  [LOCAL_DIR] s3://[BUCKET_NAME]　--exact-timestamps　--delete
 ```
+
+
+### 参考文献
+- [AWS CLIでS3操作(ls,mb,rb,cp,mv,rm,sync)](https://www.wakuwakubank.com/posts/642-aws-cli-s3/#index_id15)
+- [syncのオプション])(https://book.st-hakky.com/docs/aws-s3-sync/)

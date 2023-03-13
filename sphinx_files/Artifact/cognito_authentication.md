@@ -10,7 +10,7 @@
 
 
 ### 認証フローの違い
-認証している場合
+#### 認証している場合
   - User poolに対して、initiate-authでID _TOKENを取得(認証)
   - ID PoolからIDENTITY_TOKENを取得(認可)
   - STSからクレデンシャルの発行
@@ -18,28 +18,12 @@
 ![](img/cognito_auth_flow.png)
 
 
-認証していない場合
+#### 認証していない場合
 - ID PoolからIDENTITY_TOKENを取得(認可)
 - STSからクレデンシャルの発行
 
 
 ![](img/cognito_unauth_flow.png)
-
-
-### 参考文献
-- [クレデンシャルの取得方法](https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/)  
-：一番参考になるAWS CLIでCognitoのクレデンシャルを取得する方法から、ルールベースで付与するIAMを変更する手順が整理されている
-- [Cognito を使ったユーザ認証で S3 にアクセスしてみる](https://www.aws-room.com/entry/cognito-s3)  
-：pythonを利用して、cognitoから認証情報を受けてS3へのアクセス制御を検証している
-- [PythonからCognitoのUSER_PASSWORD_AUTHとUSER_SRP_AUTHでのトークン取得](https://yomon.hatenablog.com/entry/2022/8/cognito_python)  
-：pythonを利用してクレデンシャルを取得するところまで、クライアントシークレットを有効化している時に対応しているところまで整理してくれている
-- [S3 の読み書きを Cognito で認証する方法](https://dev.classmethod.jp/articles/cognito-trigger-allow-access-per-identity-id/)  
-：ディレクトリにユーザーIDを付与することで、認証したユーザーのIDを冠したディレクトリしかアクセスすることができなくなる。
-- [外部ユーザが安全かつ直接的に Amazon S3 へファイルをアップロードできるようにする方法](https://aws.amazon.com/jp/blogs/news/allowing-external-users-to-securely-and-directly-upload-files-to-amazon-s3/)  
-：amplifyを利用して、アップロードページをアップロードする方法
-- [Cognito を使ったユーザ認証で S3 にアクセスしてみる](https://www.aws-room.com/entry/cognito-s3)
-- [S3 Syncを利用してみる](https://book.st-hakky.com/docs/aws-s3-sync/)
-
 
 
 
@@ -471,3 +455,13 @@ aws s3 cp --region ap-northeast-1 s3://ma-fujishiroms-bucket/cognito/ap-northeas
 ### 【参考】S3とLocalのフォルダを同期する（AWS CLI)
 S3のページで解説しているので、そちらを参照する
 
+
+### 参考文献
+1. [クレデンシャルの取得方法](https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/)  
+：一番参考になるAWS CLIでCognitoのクレデンシャルを取得する方法から、ルールベースで付与するIAMを変更する手順が整理されている
+2. [Cognito を使ったユーザ認証で S3 にアクセスしてみる](https://www.aws-room.com/entry/cognito-s3)  
+：IAMの設定まで詳しく説明してくれている。pythonを利用して、cognitoから認証情報を受けてS3へのアクセス制御を検証している
+3. [PythonからCognitoのUSER_PASSWORD_AUTHとUSER_SRP_AUTHでのトークン取得](https://yomon.hatenablog.com/entry/2022/8/cognito_python)  
+：pythonを利用してクレデンシャルを取得するところまで、クライアントシークレットを有効化している時に対応しているところまで整理してくれている
+4. [S3 の読み書きを Cognito で認証する方法](https://dev.classmethod.jp/articles/cognito-trigger-allow-access-per-identity-id/)  
+：ディレクトリにユーザーIDを付与することで、認証したユーザーのIDを冠したディレクトリしかアクセスすることができなくなる。
