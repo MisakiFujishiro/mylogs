@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. マイクロサービアーキテクチャとは" href="../microservice/microservice_archi.html" />
+    <link rel="next" title="4. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" />
     <link rel="prev" title="2. AWS Code Seriesを利用したCICD環境" href="cicd.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
+          <a href="cognito_authentication.html" title="4. Cognitoで認証をして、AWSのリソースにアクセスする"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="cicd.html" title="2. AWS Code Seriesを利用したCICD環境"
@@ -205,11 +205,11 @@
 <li><p>OAuth2.0のフローとスコープ</p>
 <ul class="simple">
 <li><p>OAuthの認可フロー<br />セキュリティ的な安全性が担保されている<code class="docutils literal notranslate"><span class="pre">Authorization</span> <span class="pre">code</span> <span class="pre">grant</span></code>が推奨</p></li>
-<li><p>スコープ<br />OAuth2.0では、保護されたリソースに対するアクセス制御する方法としてスコープという概念を使用している。<br />Cognitoが保護されたリソースへのアクセス権を指定する。（認可の指定)<br />今回は以下を許可する</p>
+<li><p>スコープ<br />アプリケーションがアクセストークンを要求して、そのアクセストークンでアプリケーションが使用できるAPIリソースの範囲を定義するための設定<br />OAuth2.0では、保護されたリソースに対するアクセス制御する方法としてスコープという概念を使用している。<br />Cognitoが保護されたリソースへのアクセス権を指定する。（認可の指定)<br />今回は以下を許可する</p>
 <ul>
-<li><p>openid: IDトークン</p></li>
-<li><p>aws.cognito.signin.user.admin: ユーザープールのAPIオペレーション</p></li>
-<li><p>profile: ユーザー情報へのプロファイルアクセス</p></li>
+<li><p>openid: IDトークンを作成するための権限が付与される</p></li>
+<li><p>aws.cognito.signin.user.admin: 管理者権限を持つアプリケーションが他のユーザーのアカウントにアクセスするために使用されます。このスコープを持つアプリケーションは、他のユーザーのパスワードをリセットしたり、他のユーザーのアカウントを管理することができます。</p></li>
+<li><p>profile: ユーザーの基本プロフィール情報にアクセスするために使用されます。</p></li>
 </ul>
 </li>
 </ul>
@@ -951,8 +951,8 @@ Correct the classpath of your application so that it contains compatible version
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../microservice/microservice_archi.html"
-                          title="次の章へ"><span class="section-number">1. </span>マイクロサービアーキテクチャとは</a></p>
+    <p class="topless"><a href="cognito_authentication.html"
+                          title="次の章へ"><span class="section-number">4. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -982,7 +982,7 @@ Correct the classpath of your application so that it contains compatible version
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
+          <a href="cognito_authentication.html" title="4. Cognitoで認証をして、AWSのリソースにアクセスする"
              >次へ</a> |</li>
         <li class="right" >
           <a href="cicd.html" title="2. AWS Code Seriesを利用したCICD環境"

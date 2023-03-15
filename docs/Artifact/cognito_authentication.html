@@ -365,20 +365,27 @@ AUTH_FLOW=USER_PASSWORD_AUTH
   --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot;) &amp;&amp; echo ${OUTPUT}
 </pre></div>
 </div>
-</section>
-<section id="id6">
-<h3><span class="section-number">4.7.5. </span>クレデンシャルの整形<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
-<p>jpを利用するので事前にインストールしておく</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">jq</span>
+<p>jpを利用できる場合はOUTPUTをjqで整形して<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r &#39;.Credentials.AccessKeyId&#39;`
+AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r &#39;.Credentials.SecretKey&#39;`
+AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
 </pre></div>
 </div>
-<p>返却されたクレデンシャルの<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を環境変数に設定</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r &#39;.Credentials.AccessKeyId&#39;`
-export AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r &#39;.Credentials.SecretKey&#39;`
-export AWS_SECRET_ACCESS_KEY
-AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
-export AWS_SECURITY_TOKEN
+<p>jqコマンド利用できない場合はこちらを実行すれば、<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得できる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SECURITY_TOKEN &lt;&lt;&lt; $(aws cognito-identity get-credentials-for-identity \
+  --identity-id &quot;${IDENTITY_ID}&quot; \
+  --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot; \
+  --query &quot;Credentials.[AccessKeyId,SecretKey,SessionToken]&quot; \
+  --output text)
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3><span class="section-number">4.7.5. </span>クレデンシャルの環境変数への格納<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>環境変数に設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">AWS_ACCESS_KEY_ID</span>
+<span class="n">export</span> <span class="n">AWS_SECRET_ACCESS_KEY</span>
+<span class="n">export</span> <span class="n">AWS_SECURITY_TOKEN</span>
 </pre></div>
 </div>
 <p>自分の認証情報の確認をすると、Arnの部分に自分のCognitoで認証された時に付与されるIAMロールが割当たっていることを確認できる</p>
@@ -527,7 +534,7 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
 <li><a class="reference internal" href="#user-pool">4.7.2. USER POOLへ認証</a></li>
 <li><a class="reference internal" href="#id-pool">4.7.3. ID POOLへの認証</a></li>
 <li><a class="reference internal" href="#id5">4.7.4. クレデンシャルの取得</a></li>
-<li><a class="reference internal" href="#id6">4.7.5. クレデンシャルの整形</a></li>
+<li><a class="reference internal" href="#id6">4.7.5. クレデンシャルの環境変数への格納</a></li>
 <li><a class="reference internal" href="#id7">4.7.6. 認証されていないユーザー</a></li>
 </ul>
 </li>

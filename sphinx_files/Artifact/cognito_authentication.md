@@ -279,7 +279,6 @@ for obj in object_list['Contents']:
 
 
 
-
 ### AWS CLIからのアクセス
 #### 初期設定
 - USER_POOL_IDはCognitoのユーザープールの全般設定から取得
@@ -330,19 +329,29 @@ OUTPUT=$(aws cognito-identity get-credentials-for-identity \
   --logins "${COGNITO_USER_POOL}=${ID_TOKEN}") && echo ${OUTPUT}
 ```
 
-
-#### クレデンシャルの整形
-jpを利用するので事前にインストールしておく
-```
-brew install jq
-```
-返却されたクレデンシャルの`AccessKeyID`、`SecretKey`、`SessionToken`を環境変数に設定
+jpを利用できる場合はOUTPUTをjqで整形して`AccessKeyID`、`SecretKey`、`SessionToken`を取得
 ```
 AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r '.Credentials.AccessKeyId'`
-export AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r '.Credentials.SecretKey'`
-export AWS_SECRET_ACCESS_KEY
 AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r '.Credentials.SessionToken'`
+```
+
+
+jqコマンド利用できない場合はこちらを実行すれば、`AccessKeyID`、`SecretKey`、`SessionToken`を取得できる
+```
+read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SECURITY_TOKEN <<< $(aws cognito-identity get-credentials-for-identity \
+  --identity-id "${IDENTITY_ID}" \
+  --logins "${COGNITO_USER_POOL}=${ID_TOKEN}" \
+  --query "Credentials.[AccessKeyId,SecretKey,SessionToken]" \
+  --output text)
+```
+
+
+#### クレデンシャルの環境変数への格納
+環境変数に設定
+```
+export AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY
 export AWS_SECURITY_TOKEN
 ```
 
