@@ -67,6 +67,7 @@
 <li><p>STSからクレデンシャルの発行</p></li>
 </ul>
 <p><img alt="../_images/cognito_auth_flow.png" src="../_images/cognito_auth_flow.png" /></p>
+<p>aws s3 mv s3://ma-fujishiroms-bucket/cognito/test_img_copy.png ./test_img_comy.png</p>
 </section>
 <section id="id3">
 <h3><span class="section-number">4.1.2. </span>認証していない場合<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
@@ -360,23 +361,22 @@ AUTH_FLOW=USER_PASSWORD_AUTH
 <section id="id5">
 <h3><span class="section-number">4.7.4. </span>クレデンシャルの取得<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>STSから一時認証情報を払い出してもらって、取得する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>OUTPUT=$(aws cognito-identity get-credentials-for-identity \
-  --identity-id ${IDENTITY_ID} \
-  --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot;) &amp;&amp; echo ${OUTPUT}
-</pre></div>
-</div>
-<p>jpを利用できる場合はOUTPUTをjqで整形して<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r &#39;.Credentials.AccessKeyId&#39;`
-AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r &#39;.Credentials.SecretKey&#39;`
-AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
-</pre></div>
-</div>
-<p>jqコマンド利用できない場合はこちらを実行すれば、<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得できる</p>
+<p>以下を実行すれば、<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得できる</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SECURITY_TOKEN &lt;&lt;&lt; $(aws cognito-identity get-credentials-for-identity \
   --identity-id &quot;${IDENTITY_ID}&quot; \
   --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot; \
   --query &quot;Credentials.[AccessKeyId,SecretKey,SessionToken]&quot; \
   --output text)
+</pre></div>
+</div>
+<p>jpを利用できる場合はOUTPUTをjqで整形して<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得でもOK</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>OUTPUT=$(aws cognito-identity get-credentials-for-identity \
+  --identity-id ${IDENTITY_ID} \
+  --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot;) &amp;&amp; echo ${OUTPUT}
+
+AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r &#39;.Credentials.AccessKeyId&#39;`
+AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r &#39;.Credentials.SecretKey&#39;`
+AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
 </pre></div>
 </div>
 </section>

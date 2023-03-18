@@ -17,6 +17,7 @@
 
 ![](img/cognito_auth_flow.png)
 
+aws s3 mv s3://ma-fujishiroms-bucket/cognito/test_img_copy.png ./test_img_comy.png 
 
 #### 認証していない場合
 - ID PoolからIDENTITY_TOKENを取得(認可)
@@ -323,21 +324,10 @@ IDENTITY_ID=$(aws cognito-identity get-id \
 
 #### クレデンシャルの取得
 STSから一時認証情報を払い出してもらって、取得する
-```
-OUTPUT=$(aws cognito-identity get-credentials-for-identity \
-  --identity-id ${IDENTITY_ID} \
-  --logins "${COGNITO_USER_POOL}=${ID_TOKEN}") && echo ${OUTPUT}
-```
-
-jpを利用できる場合はOUTPUTをjqで整形して`AccessKeyID`、`SecretKey`、`SessionToken`を取得
-```
-AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r '.Credentials.AccessKeyId'`
-AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r '.Credentials.SecretKey'`
-AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r '.Credentials.SessionToken'`
-```
 
 
-jqコマンド利用できない場合はこちらを実行すれば、`AccessKeyID`、`SecretKey`、`SessionToken`を取得できる
+
+以下を実行すれば、`AccessKeyID`、`SecretKey`、`SessionToken`を取得できる
 ```
 read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SECURITY_TOKEN <<< $(aws cognito-identity get-credentials-for-identity \
   --identity-id "${IDENTITY_ID}" \
@@ -345,6 +335,19 @@ read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SECURITY_TOKEN <<< $(aws cog
   --query "Credentials.[AccessKeyId,SecretKey,SessionToken]" \
   --output text)
 ```
+
+jpを利用できる場合はOUTPUTをjqで整形して`AccessKeyID`、`SecretKey`、`SessionToken`を取得でもOK
+
+```
+OUTPUT=$(aws cognito-identity get-credentials-for-identity \
+  --identity-id ${IDENTITY_ID} \
+  --logins "${COGNITO_USER_POOL}=${ID_TOKEN}") && echo ${OUTPUT}
+
+AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r '.Credentials.AccessKeyId'`
+AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r '.Credentials.SecretKey'`
+AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r '.Credentials.SessionToken'`
+```
+
 
 
 #### クレデンシャルの環境変数への格納
