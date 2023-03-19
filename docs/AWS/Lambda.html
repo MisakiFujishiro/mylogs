@@ -55,39 +55,78 @@
 <section id="id2">
 <h2><span class="section-number">8.2. </span>Lambdaの詳細<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id3">
-<h3><span class="section-number">8.2.1. </span>Lambda関数<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Lambdaで実行するソースコードとそのソースコードを実行するランタイムを合わせてLambda関数と呼ぶ</p>
+<h3><span class="section-number">8.2.1. </span>費用<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaの料金は、リクエストベースで利用した分の従量課金。
+サーバーレスの特徴の通り、利用した分だけ（価値の分）だけ金額がかかる</p>
+<p>実行回数×実行時間（単価は確保したメモリに依存）</p>
 </section>
 <section id="id4">
-<h3><span class="section-number">8.2.2. </span>依存関係の解決<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Lambda標準で同梱していないモジュールを利用したい場合は、依存関係を解決した資材一式をZipFileとしてまとめて、コンソールからDLする。<br />※この設定から、CFNでLambdaのResourceにZipFileセクションでソースコードを直接書く？</p>
+<h3><span class="section-number">8.2.2. </span>Lambda関数<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambdaで実行するソースコードとそのソースコードを実行するランタイムを合わせてLambda関数と呼ぶ</p>
+<section id="id5">
+<h4><span class="section-number">8.2.2.1. </span>ランタイム<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<p>対応している言語としては以下が挙げられるが、サポートされていない言語についてもカスタムランタイムから利用可能</p>
+<ul class="simple">
+<li><p>Java</p></li>
+<li><p>Go</p></li>
+<li><p>PowerShell</p></li>
+<li><p>Node.js</p></li>
+<li><p>C#</p></li>
+<li><p>Python</p></li>
+<li><p>RUby</p></li>
+</ul>
+</section>
+<section id="id6">
+<h4><span class="section-number">8.2.2.2. </span>ハンドラ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ハンドラで、Lambdaが実行されることで呼び出す関数を指定する、
+デフォルトではlabmda_function.lambda_handlerが呼び出される</p>
+</section>
+<section id="id7">
+<h4><span class="section-number">8.2.2.3. </span>コンテナの利用<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ECRにPushされているDocker Imageを利用して、処理をさせることも可能。
+Lambdaで準備されていない依存関係やランタイムを設定しないで済むため、ローカルで動作確認さえしておけばLambdaでも処理できることが担保されている。</p>
+</section>
+</section>
+<section id="id8">
+<h3><span class="section-number">8.2.3. </span>依存関係の解決<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Lambda標準で同梱していないモジュールを利用したい場合は、依存関係を解決した資材一式をZipFileとしてまとめて、コンソールからDLする。<br />※この設定から、CFNでLambdaのResourceに<code class="docutils literal notranslate"><span class="pre">ZipFileセクション</span></code>でソースコードを書く</p>
 <p><img alt="../_images/lambda_zipfile.png" src="../_images/lambda_zipfile.png" /></p>
 </section>
-<section id="id5">
-<h3><span class="section-number">8.2.3. </span>環境設定<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">8.2.4. </span>環境設定<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーションの実行に必要なライブラリやパッケージをランタイムとして設定する。</p>
-<section id="id6">
-<h4><span class="section-number">8.2.3.1. </span>メモリ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id10">
+<h4><span class="section-number">8.2.4.1. </span>メモリ<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CPUは設定することができないが、メモリスペックを設定することができる。</p>
 <blockquote>
 <div><p>Lambdaでは関数の実行時に使用できるメモリ量は128 MB～10,240 MB の値を 1 MB 単位で設定することができます。</p>
 </div></blockquote>
+<p>CPI能力は確保するメモリの量に比例することとなる</p>
 </section>
-<section id="id7">
-<h4><span class="section-number">8.2.3.2. </span>ストレージ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id11">
+<h4><span class="section-number">8.2.4.2. </span>タイムアウト値<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<p>最大で900sec(15min)となるので、Lambdaで15分以上の処理を実行することはできない</p>
+</section>
+<section id="iam">
+<h4><span class="section-number">8.2.4.3. </span>IAMロール<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Lambdaが実行する処理の内容に応じて、認可情報を付与する必要があるので、IAM Roleを作成して、実行ロールとして設定する</p>
+<p><img alt="../_images/lambda_iam.png" src="../_images/lambda_iam.png" /></p>
+</section>
+<section id="id12">
+<h4><span class="section-number">8.2.4.4. </span>ストレージ<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
 <p>展開パッケージのサイズは250MBに制限されており、そのサイズを超えた場合は、/tmpにアップロードする。/tmpの容量は512MB</p>
 </section>
 </section>
-<section id="id8">
-<h3><span class="section-number">8.2.4. </span>Lambdaのネットワーク<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h3><span class="section-number">8.2.5. </span>Lambdaのネットワーク<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaは基本的に、VPC外に作成される。
 VPCを明示的に指定することで、LambdaをVPC内から呼び出すことができる。</p>
 <p>注意点として、VPC内でLambdaを利用する場合は、プライベートIPは割り振られるが、パブリックIPは割り振られない。
 外部へのアクセスをする場合は、NAT GWの設定と、セキュリティグループの確認が必要となる。</p>
 <p><img alt="../_images/lambda_in_vpc.png" src="../_images/lambda_in_vpc.png" /></p>
 </section>
-<section id="id9">
-<h3><span class="section-number">8.2.5. </span>同時実行数<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id14">
+<h3><span class="section-number">8.2.6. </span>同時実行数<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaのある時点における実行している関数の数を<code class="docutils literal notranslate"><span class="pre">同時実行数</span></code>と呼ぶ。
 同時実行数は以下の式で算出する。</p>
 <blockquote>
@@ -97,11 +136,11 @@ VPCを明示的に指定することで、LambdaをVPC内から呼び出すこ�
 東京の最大同時実行数は1000であり、Lambdaではリクエストとコンテナ数が1対1となるので、1000以上のリクエストを同時に捌きたい場合は申請が必要となる。</p>
 <p>注意点として、Lambdaの最大実行数はLambda関数全体で共有している。すなわち、Lambda-AとLambda-Bが存在するときに合計で1000の実行数となる。</p>
 </section>
-<section id="id10">
-<h3><span class="section-number">8.2.6. </span>環境変数<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">8.2.7. </span>環境変数<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaには環境変数を設定することができる。</p>
-<section id="id11">
-<h4><span class="section-number">8.2.6.1. </span>環境変数の暗号化<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id16">
+<h4><span class="section-number">8.2.7.1. </span>環境変数の暗号化<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>例えば、githubにLambda関数をアップロードした際に環境変数は平文で置かれてしまうので、パスワードなどを公開するのは危険。</p>
 <p>対策として環境変数はオプションとして、KMSによる暗号化が準備されている。以下の暗号化が行われる</p>
 <ul class="simple">
@@ -121,8 +160,8 @@ VPCを明示的に指定することで、LambdaをVPC内から呼び出すこ�
 </ol>
 </section>
 </section>
-<section id="id12">
-<h3><span class="section-number">8.2.7. </span>Lambda関数のライフサイクル<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id17">
+<h3><span class="section-number">8.2.8. </span>Lambda関数のライフサイクル<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaの実態は、EC2(Amazon Linux)かDockerコンテナであり、以下の順序を踏んで実行される</p>
 <ol class="simple">
 <li><p>コンテナ作成</p></li>
@@ -132,52 +171,50 @@ VPCを明示的に指定することで、LambdaをVPC内から呼び出すこ�
 <li><p>関数の実行</p></li>
 <li><p>コンテナの破棄</p></li>
 </ol>
-<section id="id13">
-<h4><span class="section-number">8.2.7.1. </span>ウォームスタート<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
-<p>Lambdaに継続的なリクエストが飛んできている場合、1-4のプロセスはスキップされて、5から処理される。</p>
-</section>
-<section id="id14">
-<h4><span class="section-number">8.2.7.2. </span>コールドスタート<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
-<p>コンテナが不要と判断されると破棄されてしまうので、1番からやり直しとなる。</p>
-</section>
+<p>Lambdaのコンテナを再利用するか否かで、処理の速度が変わり、ウォームスタートとコールドスタートと呼ぶ。</p>
+<ul class="simple">
+<li><p>ウォームスタート：Lambdaに継続的なリクエストが飛んできている場合、1-4のプロセスはスキップされて、5から処理される。</p></li>
+<li><p>コールドスタート：コンテナが不要と判断されると破棄されてしまうので、1番からやり直しとなる。</p></li>
+</ul>
+<p><img alt="../_images/lambda_warm_cold.png" src="../_images/lambda_warm_cold.png" /></p>
 <section id="provisioned-concurrency">
-<h4><span class="section-number">8.2.7.3. </span>Provisioned Concurrency<a class="headerlink" href="#provisioned-concurrency" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">8.2.8.1. </span>Provisioned Concurrency<a class="headerlink" href="#provisioned-concurrency" title="この見出しへのパーマリンク">¶</a></h4>
 <p>性能要件が厳しい場合は、事前にプロビジョニングしておくことが可能</p>
 </section>
 </section>
-<section id="id15">
-<h3><span class="section-number">8.2.8. </span>バージョン<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id18">
+<h3><span class="section-number">8.2.9. </span>バージョン<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambda関数はバージョニング機能があるが、バージョンとして公開されると編集することができない点に注意</p>
 </section>
-<section id="id16">
-<h3><span class="section-number">8.2.9. </span>エイリアス<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id19">
+<h3><span class="section-number">8.2.10. </span>エイリアス<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>エイリアスとはLambda関数の別名であり、prd,stg,devなどを設定できる。
 エイリアスは同名で２つまで付与することができるので、エイリアスでルーティングをするとカナリアリリースを実現することができる。</p>
 </section>
 <section id="layers">
-<h3><span class="section-number">8.2.10. </span>Layers<a class="headerlink" href="#layers" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.11. </span>Layers<a class="headerlink" href="#layers" title="この見出しへのパーマリンク">¶</a></h3>
 <p>複数のLambda関数が共通で利用するライブラリをZIPファイルで切り出して共有する機能
 1つのLambda関数から最大5つのLayerを利用することができる。</p>
 </section>
-<section id="id17">
-<h3><span class="section-number">8.2.11. </span>一時ファイル<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id20">
+<h3><span class="section-number">8.2.12. </span>一時ファイル<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaは512MBの一時ファイルを<code class="docutils literal notranslate"><span class="pre">/tmp</span></code>として持つ。
 注意が必要なのは、Lambdaが連続で起動している時に、tmpが共有されてしまうこと。</p>
 <p><a class="reference external" href="https://cloud5.jp/lambda_tmp_directory/">Lambdaで/tmpディレクトリの利用</a></p>
 </section>
 <section id="url">
-<h3><span class="section-number">8.2.12. </span>署名付きURL<a class="headerlink" href="#url" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">8.2.13. </span>署名付きURL<a class="headerlink" href="#url" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWS SDKやCLIを利用することでSTSの機能によって一時的にS3へアクセス可能なURLを発行させることができる。</p>
 </section>
-<section id="id18">
-<h3><span class="section-number">8.2.13. </span>デッドレターキュー<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id21">
+<h3><span class="section-number">8.2.14. </span>デッドレターキュー<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <p>非同期呼び出しの場合、2回まで再実行を設定することができる（合計3回実行される）</p>
 <p>再実行の設定は、Lambda関数のDeadLetterConfigパラメーターによって行う。
 DeadLetterConfigに、Amazon SQSのARNを指定することでDLQを送信できる。</p>
 </section>
 </section>
-<section id="id19">
-<h2><span class="section-number">8.3. </span>Lambdaの呼び出しかた分類<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id22">
+<h2><span class="section-number">8.3. </span>Lambdaの呼び出しかた分類<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Lambdaは呼び出し元のサービスによって、呼び出され方が異なる。
 Lambdaを実行(Invoke)するときに<code class="docutils literal notranslate"><span class="pre">InvokeType</span></code>を選択することができる。</p>
 <p><img alt="../_images/lambda_call.png" src="../_images/lambda_call.png" /></p>
@@ -197,16 +234,16 @@ Lambdaを実行(Invoke)するときに<code class="docutils literal notranslate"
 <p>エラー時の挙動はリトライ設定がある(最大2回の再実行で合計3回実行)<br />呼び出し元に通知はいかないので、デッドレターキューなどを利用する。</p>
 <p><img alt="../_images/lambda_call_ansync.png" src="../_images/lambda_call_ansync.png" /></p>
 </section>
-<section id="id20">
-<h3><span class="section-number">8.3.3. </span>③Lambdaがイベントを読み取る(イベントソースマッピング)<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h3><span class="section-number">8.3.3. </span>③Lambdaがイベントを読み取る(イベントソースマッピング)<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaが新しいイベントがないがないかポーリングする。</p>
 </section>
 <section id="dryrun">
 <h3><span class="section-number">8.3.4. </span>DryRun<a class="headerlink" href="#dryrun" title="この見出しへのパーマリンク">¶</a></h3>
 <p>InvocationTypeにDryRunを指定すると、実際に実行をせずにパラメータの値を検証してIAM権限があることを確認することができる。</p>
 </section>
-<section id="id21">
-<h3><span class="section-number">8.3.5. </span>呼び出し方に応じたエラーハンドリング<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id24">
+<h3><span class="section-number">8.3.5. </span>呼び出し方に応じたエラーハンドリング<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>同期処理の場合（1-a）<br />結果をそのままレスポンスに埋め込んで返却するので、CloudWatchに流れていく。
 そのため、エラーに応じた通知などはLambdaをもう一つ作成して処理を作り込む必要がある。</p></li>
@@ -216,137 +253,6 @@ Lambdaを実行(Invoke)するときに<code class="docutils literal notranslate"
 <p>注意点として、SQSとLambdaを組み合わせた場合は、同期呼び出しとなるため、LambdaのDLQや送信先機能を利用できない。
 SQS側でRedrivePolicyを設定してあげて、最大受信数やDLQのARNを指定する。</p>
 <p><img alt="../_images/lambda_errorhandling.png" src="../_images/lambda_errorhandling.png" /></p>
-</section>
-</section>
-<section id="lambdas3aiaws">
-<h2><span class="section-number">8.4. </span>LambdaとS3・AIなどのAWSサービスの連携<a class="headerlink" href="#lambdas3aiaws" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="h4b">
-<h3><span class="section-number">8.4.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
-<p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">H4B：AWS LambdaとAWS AI Servicesを組み合わせて作る音声文字起こし&amp;感情分析パイプライン</a>
-の内容を踏まえてLambadaの手順などを整理する。</p>
-<section id="id22">
-<h4><span class="section-number">8.4.1.1. </span>全体構成<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
-<p>S3に音声データをアップロードするとS3のイベントが発出され、Lambdaがそれを受け取る。<br />LambdaがTranscribeを呼び出して、テキストデータに変換し、そのデータをS3にアップロードする。<br />テキストのアップロードを契機として、再度Lambdaを呼び出して、ポジネガ判定を行う。</p>
-<ul class="simple">
-<li><p>Polly:テキストから音声を生成するAIサービス</p></li>
-<li><p>Transcribe:音声からテキストを生成するAIサービス</p></li>
-<li><p>comprehend:文章のポジネガ判定を行うAIサービス</p></li>
-</ul>
-<p><img alt="../_images/lambda_archie.png" src="../_images/lambda_archie.png" /></p>
-</section>
-<section id="s3lambda">
-<h4><span class="section-number">8.4.1.2. </span>S3とLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h4>
-<p><a class="reference internal" href="S3.html"><span class="doc">S3の手順書</span></a>に記載
-S3バケットの作成をして、Lambdaからpython-get-s3-objectからコードを作成する。</p>
-</section>
-<section id="lambdatranscribe">
-<h4><span class="section-number">8.4.1.3. </span>LambdaとTranscribeの連携<a class="headerlink" href="#lambdatranscribe" title="この見出しへのパーマリンク">¶</a></h4>
-<p>Transcribeの基本的使い方は<a class="reference internal" href="AI.html"><span class="doc">AIのメモ</span></a>を確認。
-S3内部の音声データのObjectを指定すると、文字起こしをして指定したs3のディレクトリにjsonファイルを吐き出す。</p>
-<p>LambdaのIAM Roleについて、TranscribeやS3への権限を付与する</p>
-<ul class="simple">
-<li><p>transcribeFullAccess</p></li>
-<li><p>S3FullAccess</p></li>
-</ul>
-<p>Lambdaの関数の中身を変更する。LambdaからAWSを呼び出すときは<a class="reference external" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/transcribe.html">リファレンス</a>を参考にする<br />処理の中身はs3からデータを受け取って、Transcribeに連携、Transcribeの保存先にS3を指定</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">urllib.parse</span>
-<span class="kn">import</span> <span class="nn">boto3</span>
-<span class="kn">import</span> <span class="nn">datetime</span> <span class="c1"># jobuをユニークにするため</span>
-
-<span class="c1"># s3のclient作成</span>
-<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
-<span class="c1"># transcribeのclient作成</span>
-<span class="n">transcribe</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;transcribe&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-    <span class="c1"># bucket名取得</span>
-    <span class="n">bucket</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;bucket&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-    <span class="c1"># object名取得</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-         <span class="n">transcribe</span><span class="o">.</span><span class="n">start_transcription_job</span><span class="p">(</span>
-            <span class="c1"># job名をユニークに設定</span>
-            <span class="n">TranscriptionJobName</span><span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_Transcription&#39;</span><span class="p">,</span>
-            <span class="c1"># 日本語を対象に設定</span>
-            <span class="n">LanguageCode</span><span class="o">=</span><span class="s1">&#39;ja-JP&#39;</span><span class="p">,</span>
-            <span class="n">Media</span><span class="o">=</span><span class="p">{</span>
-                <span class="c1"># 入力メディアのパス</span>
-                <span class="s1">&#39;MediaFileUri&#39;</span><span class="p">:</span> <span class="s1">&#39;https://s3.ap-northeast-1.amazon.com/&#39;</span> <span class="o">+</span> <span class="n">bucket</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span>
-             <span class="p">},</span>
-            <span class="c1"># 出力するs3バケットの情報[s3::]は不要</span>
-            <span class="n">OutputBucketName</span><span class="o">=</span><span class="s1">&#39;bucket-h4b-serverless-output&#39;</span><span class="p">,</span>
-            <span class="c1"># 出力するs3バケット内のディレクトリ</span>
-            <span class="n">OutputKey</span> <span class="o">=</span> <span class="s1">&#39;transcribe-output/&#39;</span>
-        <span class="p">)</span>    
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error getting object </span><span class="si">{}</span><span class="s1"> from bucket </span><span class="si">{}</span><span class="s1">. Make sure they exist and your bucket is in the same region as this function.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bucket</span><span class="p">))</span>
-        <span class="k">raise</span> <span class="n">e</span>
-</pre></div>
-</div>
-<p>Lambdaファンクションを修正したら、Deployを忘れずに！</p>
-</section>
-<section id="s3">
-<h4><span class="section-number">8.4.1.4. </span>S3への連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h4>
-<p>TranscribeがS3に格納したイベントを契機にして、Comprehendにデータを渡す。<br />Transcribeの基本的使い方は<a class="reference internal" href="AI.html"><span class="doc">AIのメモ</span></a>を確認。</p>
-<ol class="simple">
-<li><p>Lambdaの作成<br />前回同様に、S3へのファイルアップロードを契機とする。<br />アップロードされたjsonファイル飲みを対象とするので、Suffixで指定</p></li>
-</ol>
-<p><img alt="../_images/lambda_comprehend.png" src="../_images/lambda_comprehend.png" /></p>
-<ol class="simple">
-<li><p>IAMロールの修正</p>
-<ul class="simple">
-<li><p>S3FullAccess</p></li>
-<li><p>ComprehendFullAccess</p></li>
-</ul>
-</li>
-<li><p>Lambdaの修正<br />今回は感情分析の<code class="docutils literal notranslate"><span class="pre">detect_sentiment</span></code>関数を利用する。
-関数の設定方法は<a class="reference external" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/comprehend.html#Comprehend.Client.detect_sentiment">リファレンス</a>参照</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">urllib.parse</span>
-<span class="kn">import</span> <span class="nn">boto3</span>
-
-<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
-<span class="c1"># comprehendのクライアントを設定</span>
-<span class="n">comprehend</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;comprehend&#39;</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-    <span class="c1"># bucket名を取得</span>
-    <span class="n">bucket</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;bucket&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-    <span class="c1"># object名を取得</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># objectの中身を取得</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-        
-        <span class="c1"># jsonに変換</span>
-        <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;Body&#39;</span><span class="p">])</span>
-        <span class="c1"># 中身からテキストを抽出</span>
-        <span class="n">comprehend_text</span> <span class="o">=</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;transcripts&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;transcript&#39;</span><span class="p">]</span>
-        
-        <span class="c1"># 感情分析のAPI呼び出し</span>
-        <span class="n">sentiment_response</span> <span class="o">=</span> <span class="n">comprehend</span><span class="o">.</span><span class="n">detect_sentiment</span><span class="p">(</span>
-            <span class="n">Text</span><span class="o">=</span><span class="n">comprehend_text</span><span class="p">,</span>
-            <span class="n">LanguageCode</span><span class="o">=</span><span class="s1">&#39;ja&#39;</span>
-        <span class="p">)</span>
-        
-        <span class="c1"># 感情分析の結果からスコアを取得</span>
-        <span class="n">sentiment_score</span> <span class="o">=</span> <span class="n">sentiment_response</span><span class="p">[</span><span class="s1">&#39;SentimentScore&#39;</span><span class="p">]</span>
-        <span class="c1"># CloudWatchで確認できるようにprint</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">sentiment_score</span><span class="p">)</span>
-        
-        
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error getting object </span><span class="si">{}</span><span class="s1"> from bucket </span><span class="si">{}</span><span class="s1">. Make sure they exist and your bucket is in the same region as this function.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bucket</span><span class="p">))</span>
-        <span class="k">raise</span> <span class="n">e</span>
-</pre></div>
-</div>
-</section>
 </section>
 </section>
 </section>
@@ -364,49 +270,45 @@ S3内部の音声データのObjectを指定すると、文字起こしをして
 <li><a class="reference internal" href="#">8. Lambda</a><ul>
 <li><a class="reference internal" href="#id1">8.1. Lambdaのメリット</a></li>
 <li><a class="reference internal" href="#id2">8.2. Lambdaの詳細</a><ul>
-<li><a class="reference internal" href="#id3">8.2.1. Lambda関数</a></li>
-<li><a class="reference internal" href="#id4">8.2.2. 依存関係の解決</a></li>
-<li><a class="reference internal" href="#id5">8.2.3. 環境設定</a><ul>
-<li><a class="reference internal" href="#id6">8.2.3.1. メモリ</a></li>
-<li><a class="reference internal" href="#id7">8.2.3.2. ストレージ</a></li>
+<li><a class="reference internal" href="#id3">8.2.1. 費用</a></li>
+<li><a class="reference internal" href="#id4">8.2.2. Lambda関数</a><ul>
+<li><a class="reference internal" href="#id5">8.2.2.1. ランタイム</a></li>
+<li><a class="reference internal" href="#id6">8.2.2.2. ハンドラ</a></li>
+<li><a class="reference internal" href="#id7">8.2.2.3. コンテナの利用</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">8.2.4. Lambdaのネットワーク</a></li>
-<li><a class="reference internal" href="#id9">8.2.5. 同時実行数</a></li>
-<li><a class="reference internal" href="#id10">8.2.6. 環境変数</a><ul>
-<li><a class="reference internal" href="#id11">8.2.6.1. 環境変数の暗号化</a></li>
+<li><a class="reference internal" href="#id8">8.2.3. 依存関係の解決</a></li>
+<li><a class="reference internal" href="#id9">8.2.4. 環境設定</a><ul>
+<li><a class="reference internal" href="#id10">8.2.4.1. メモリ</a></li>
+<li><a class="reference internal" href="#id11">8.2.4.2. タイムアウト値</a></li>
+<li><a class="reference internal" href="#iam">8.2.4.3. IAMロール</a></li>
+<li><a class="reference internal" href="#id12">8.2.4.4. ストレージ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">8.2.7. Lambda関数のライフサイクル</a><ul>
-<li><a class="reference internal" href="#id13">8.2.7.1. ウォームスタート</a></li>
-<li><a class="reference internal" href="#id14">8.2.7.2. コールドスタート</a></li>
-<li><a class="reference internal" href="#provisioned-concurrency">8.2.7.3. Provisioned Concurrency</a></li>
+<li><a class="reference internal" href="#id13">8.2.5. Lambdaのネットワーク</a></li>
+<li><a class="reference internal" href="#id14">8.2.6. 同時実行数</a></li>
+<li><a class="reference internal" href="#id15">8.2.7. 環境変数</a><ul>
+<li><a class="reference internal" href="#id16">8.2.7.1. 環境変数の暗号化</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id15">8.2.8. バージョン</a></li>
-<li><a class="reference internal" href="#id16">8.2.9. エイリアス</a></li>
-<li><a class="reference internal" href="#layers">8.2.10. Layers</a></li>
-<li><a class="reference internal" href="#id17">8.2.11. 一時ファイル</a></li>
-<li><a class="reference internal" href="#url">8.2.12. 署名付きURL</a></li>
-<li><a class="reference internal" href="#id18">8.2.13. デッドレターキュー</a></li>
+<li><a class="reference internal" href="#id17">8.2.8. Lambda関数のライフサイクル</a><ul>
+<li><a class="reference internal" href="#provisioned-concurrency">8.2.8.1. Provisioned Concurrency</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id19">8.3. Lambdaの呼び出しかた分類</a><ul>
+<li><a class="reference internal" href="#id18">8.2.9. バージョン</a></li>
+<li><a class="reference internal" href="#id19">8.2.10. エイリアス</a></li>
+<li><a class="reference internal" href="#layers">8.2.11. Layers</a></li>
+<li><a class="reference internal" href="#id20">8.2.12. 一時ファイル</a></li>
+<li><a class="reference internal" href="#url">8.2.13. 署名付きURL</a></li>
+<li><a class="reference internal" href="#id21">8.2.14. デッドレターキュー</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id22">8.3. Lambdaの呼び出しかた分類</a><ul>
 <li><a class="reference internal" href="#lambda-invoketype-requestresponse">8.3.1. ①Lambda関数を同期的に呼び出す(InvokeType:RequestResponse)</a></li>
 <li><a class="reference internal" href="#lambda-invoketype-event">8.3.2. ②Lambda関数を非同期的に呼び出す(InvokeType:Event)</a></li>
-<li><a class="reference internal" href="#id20">8.3.3. ③Lambdaがイベントを読み取る(イベントソースマッピング)</a></li>
+<li><a class="reference internal" href="#id23">8.3.3. ③Lambdaがイベントを読み取る(イベントソースマッピング)</a></li>
 <li><a class="reference internal" href="#dryrun">8.3.4. DryRun</a></li>
-<li><a class="reference internal" href="#id21">8.3.5. 呼び出し方に応じたエラーハンドリング</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#lambdas3aiaws">8.4. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
-<li><a class="reference internal" href="#h4b">8.4.1. H4b</a><ul>
-<li><a class="reference internal" href="#id22">8.4.1.1. 全体構成</a></li>
-<li><a class="reference internal" href="#s3lambda">8.4.1.2. S3とLambdaの連携</a></li>
-<li><a class="reference internal" href="#lambdatranscribe">8.4.1.3. LambdaとTranscribeの連携</a></li>
-<li><a class="reference internal" href="#s3">8.4.1.4. S3への連携</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#id24">8.3.5. 呼び出し方に応じたエラーハンドリング</a></li>
 </ul>
 </li>
 </ul>

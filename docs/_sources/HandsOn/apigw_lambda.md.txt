@@ -1,0 +1,9 @@
+# APIGWとLambdaを利用したサーバーレスアプリケーション
+- [Handson](https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-1-2022-confirmation_422.html)のまとめ
+
+以下の構成を構築するが、今回はAPIGWとLambdaの部分を中心にまとめる
+
+![](img/apigw_arche.png)
+
+
+## Lambdaの利用方法

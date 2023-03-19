@@ -14,45 +14,14 @@ DAILY
    DAILY/FY22_MSA
    DAILY/FY23_MSA
 
-実装HandsOn
-==================
-
-.. toctree::
-   :maxdepth: 2
-   :numbered:
-
-   Artifact/ecs
-   Artifact/cicd
-   Artifact/cognito
-   Artifact/cognito_authentication
-   Artifact/s3_process.md
-Microservice
-==================
-
-.. toctree::
-   :maxdepth: 2
-   :numbered:
-
-   microservice/microservice_archi
-   microservice/certification_authentication
 
 
 
-ITの基本
-==================
-
-.. toctree::
-   :maxdepth: 2
-   :numbered:
-
-   knowledge/basic
-   knowledge/environment
-   
 
 
 
-AWS Services
-==================
+AWS Services(AWSサービスの概要)
+====================================
 
 .. toctree::
    :maxdepth: 2
@@ -73,6 +42,56 @@ AWS Services
    AWS/SNS_SQS
    AWS/Streaming
    AWS/AI
+
+
+Hands On（実装方法の整理）
+====================================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   HandsOn/cognito_authentication
+   HandsOn/lambda
+   HandsOn/apigw
+   HandsOn/s3_process
+   HandsOn/s3_event
+
+成果物(作成したアプリケーション)
+====================================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   Artifact/ecs
+   Artifact/cicd
+   Artifact/cognito
+
+
+Microservice
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   microservice/microservice_archi
+   microservice/certification_authentication
+   microservice/serverless.md
+
+
+ITの基本
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   knowledge/basic
+   knowledge/environment
+   
+
 
 
 Java Spring

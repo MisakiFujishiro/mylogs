@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>5. LambdaとS3・AIなどのAWSサービスの連携 &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. AWS ECS上に構築するSpringアプリケーション" href="../Artifact/ecs.html" />
+    <link rel="prev" title="4. S3の処理" href="s3_process.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="s3_process.html" title="4. S3の処理"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>LambdaとS3・AIなどのAWSサービスの連携</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="lambdas3aiaws">
+<h1><span class="section-number">5. </span>LambdaとS3・AIなどのAWSサービスの連携<a class="headerlink" href="#lambdas3aiaws" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="h4b">
+<h2><span class="section-number">5.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">H4B：AWS LambdaとAWS AI Servicesを組み合わせて作る音声文字起こし&amp;感情分析パイプライン</a>
+の内容を踏まえてLambadaの手順などを整理する。</p>
+<section id="id1">
+<h3><span class="section-number">5.1.1. </span>全体構成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<p>S3に音声データをアップロードするとS3のイベントが発出され、Lambdaがそれを受け取る。<br />LambdaがTranscribeを呼び出して、テキストデータに変換し、そのデータをS3にアップロードする。<br />テキストのアップロードを契機として、再度Lambdaを呼び出して、ポジネガ判定を行う。</p>
+<ul class="simple">
+<li><p>Polly:テキストから音声を生成するAIサービス</p></li>
+<li><p>Transcribe:音声からテキストを生成するAIサービス</p></li>
+<li><p>comprehend:文章のポジネガ判定を行うAIサービス</p></li>
+</ul>
+<p><img alt="../_images/lambda_archie.png" src="../_images/lambda_archie.png" /></p>
+</section>
+<section id="s3lambda">
+<h3><span class="section-number">5.1.2. </span>S3とLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h3>
+<p>S3バケットの作成をして、Lambdaからpython-get-s3-objectからコードを作成する。</p>
+</section>
+<section id="lambdatranscribe">
+<h3><span class="section-number">5.1.3. </span>LambdaとTranscribeの連携<a class="headerlink" href="#lambdatranscribe" title="この見出しへのパーマリンク">¶</a></h3>
+<p>S3内部の音声データのObjectを指定すると、文字起こしをして指定したs3のディレクトリにjsonファイルを吐き出す。</p>
+<p>LambdaのIAM Roleについて、TranscribeやS3への権限を付与する</p>
+<ul class="simple">
+<li><p>transcribeFullAccess</p></li>
+<li><p>S3FullAccess</p></li>
+</ul>
+<p>Lambdaの関数の中身を変更する。LambdaからAWSを呼び出すときは<a class="reference external" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/transcribe.html">リファレンス</a>を参考にする<br />処理の中身はs3からデータを受け取って、Transcribeに連携、Transcribeの保存先にS3を指定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">urllib.parse</span>
+<span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="c1"># jobuをユニークにするため</span>
+
+<span class="c1"># s3のclient作成</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
+<span class="c1"># transcribeのclient作成</span>
+<span class="n">transcribe</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;transcribe&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1"># bucket名取得</span>
+    <span class="n">bucket</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;bucket&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    <span class="c1"># object名取得</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+         <span class="n">transcribe</span><span class="o">.</span><span class="n">start_transcription_job</span><span class="p">(</span>
+            <span class="c1"># job名をユニークに設定</span>
+            <span class="n">TranscriptionJobName</span><span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_Transcription&#39;</span><span class="p">,</span>
+            <span class="c1"># 日本語を対象に設定</span>
+            <span class="n">LanguageCode</span><span class="o">=</span><span class="s1">&#39;ja-JP&#39;</span><span class="p">,</span>
+            <span class="n">Media</span><span class="o">=</span><span class="p">{</span>
+                <span class="c1"># 入力メディアのパス</span>
+                <span class="s1">&#39;MediaFileUri&#39;</span><span class="p">:</span> <span class="s1">&#39;https://s3.ap-northeast-1.amazon.com/&#39;</span> <span class="o">+</span> <span class="n">bucket</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span>
+             <span class="p">},</span>
+            <span class="c1"># 出力するs3バケットの情報[s3::]は不要</span>
+            <span class="n">OutputBucketName</span><span class="o">=</span><span class="s1">&#39;bucket-h4b-serverless-output&#39;</span><span class="p">,</span>
+            <span class="c1"># 出力するs3バケット内のディレクトリ</span>
+            <span class="n">OutputKey</span> <span class="o">=</span> <span class="s1">&#39;transcribe-output/&#39;</span>
+        <span class="p">)</span>    
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error getting object </span><span class="si">{}</span><span class="s1"> from bucket </span><span class="si">{}</span><span class="s1">. Make sure they exist and your bucket is in the same region as this function.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bucket</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">e</span>
+</pre></div>
+</div>
+<p>Lambdaファンクションを修正したら、Deployを忘れずに！</p>
+</section>
+<section id="s3">
+<h3><span class="section-number">5.1.4. </span>S3への連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>TranscribeがS3に格納したイベントを契機にして、Comprehendにデータを渡す。</p>
+<ol class="simple">
+<li><p>Lambdaの作成<br />前回同様に、S3へのファイルアップロードを契機とする。<br />アップロードされたjsonファイル飲みを対象とするので、Suffixで指定</p></li>
+</ol>
+<p><img alt="../_images/lambda_comprehend.png" src="../_images/lambda_comprehend.png" /></p>
+<ol class="simple">
+<li><p>IAMロールの修正</p>
+<ul class="simple">
+<li><p>S3FullAccess</p></li>
+<li><p>ComprehendFullAccess</p></li>
+</ul>
+</li>
+<li><p>Lambdaの修正<br />今回は感情分析の<code class="docutils literal notranslate"><span class="pre">detect_sentiment</span></code>関数を利用する。
+関数の設定方法は<a class="reference external" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/comprehend.html#Comprehend.Client.detect_sentiment">リファレンス</a>参照</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">urllib.parse</span>
+<span class="kn">import</span> <span class="nn">boto3</span>
+
+<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
+<span class="c1"># comprehendのクライアントを設定</span>
+<span class="n">comprehend</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;comprehend&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1"># bucket名を取得</span>
+    <span class="n">bucket</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;bucket&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    <span class="c1"># object名を取得</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;Records&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;s3&#39;</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># objectの中身を取得</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+        
+        <span class="c1"># jsonに変換</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;Body&#39;</span><span class="p">])</span>
+        <span class="c1"># 中身からテキストを抽出</span>
+        <span class="n">comprehend_text</span> <span class="o">=</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;transcripts&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;transcript&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># 感情分析のAPI呼び出し</span>
+        <span class="n">sentiment_response</span> <span class="o">=</span> <span class="n">comprehend</span><span class="o">.</span><span class="n">detect_sentiment</span><span class="p">(</span>
+            <span class="n">Text</span><span class="o">=</span><span class="n">comprehend_text</span><span class="p">,</span>
+            <span class="n">LanguageCode</span><span class="o">=</span><span class="s1">&#39;ja&#39;</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 感情分析の結果からスコアを取得</span>
+        <span class="n">sentiment_score</span> <span class="o">=</span> <span class="n">sentiment_response</span><span class="p">[</span><span class="s1">&#39;SentimentScore&#39;</span><span class="p">]</span>
+        <span class="c1"># CloudWatchで確認できるようにprint</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sentiment_score</span><span class="p">)</span>
+        
+        
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error getting object </span><span class="si">{}</span><span class="s1"> from bucket </span><span class="si">{}</span><span class="s1">. Make sure they exist and your bucket is in the same region as this function.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bucket</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">e</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">5. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
+<li><a class="reference internal" href="#h4b">5.1. H4b</a><ul>
+<li><a class="reference internal" href="#id1">5.1.1. 全体構成</a></li>
+<li><a class="reference internal" href="#s3lambda">5.1.2. S3とLambdaの連携</a></li>
+<li><a class="reference internal" href="#lambdatranscribe">5.1.3. LambdaとTranscribeの連携</a></li>
+<li><a class="reference internal" href="#s3">5.1.4. S3への連携</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="s3_process.html"
+                          title="前の章へ"><span class="section-number">4. </span>S3の処理</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../Artifact/ecs.html"
+                          title="次の章へ"><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/HandsOn/s3_event.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="s3_process.html" title="4. S3の処理"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>LambdaとS3・AIなどのAWSサービスの連携</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

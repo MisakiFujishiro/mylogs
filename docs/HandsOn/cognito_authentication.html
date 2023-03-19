@@ -1,0 +1,610 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>1. Cognitoで認証をして、AWSのリソースにアクセスする &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="2. S3の処理" href="s3_process.html" />
+    <link rel="prev" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン" href="../Artifact/cognito.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="s3_process.html" title="2. S3の処理"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="../Artifact/cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="cognitoaws">
+<h1><span class="section-number">1. </span>Cognitoで認証をして、AWSのリソースにアクセスする<a class="headerlink" href="#cognitoaws" title="この見出しへのパーマリンク">¶</a></h1>
+<p>実施手順とポイント</p>
+<ol class="simple">
+<li><p>S3バケット作成</p></li>
+<li><p>ConitoでUser Poolとユーザーを作成する</p></li>
+<li><p>CognitoでIDPoolを作成する</p></li>
+<li><p>Cognitoの認証されたユーザーに対するIAM権限を設定する。</p></li>
+<li><p>Cognitoへ問い合わせしてクレデンシャルを取得する</p></li>
+<li><p>クレデンシャルを利用して、AWS CLIからS3にアクセス</p></li>
+<li><p>【＋α】ルールベースでIAMロールを割り当てる</p></li>
+</ol>
+<section id="id1">
+<h2><span class="section-number">1.1. </span>認証フローの違い<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id2">
+<h3><span class="section-number">1.1.1. </span>認証している場合<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>User poolに対して、initiate-authでID _TOKENを取得(認証)</p></li>
+<li><p>ID PoolからIDENTITY_TOKENを取得(認可)</p></li>
+<li><p>STSからクレデンシャルの発行</p></li>
+</ul>
+<p><img alt="../_images/cognito_auth_flow.png" src="../_images/cognito_auth_flow.png" /></p>
+<p>aws s3 mv s3://ma-fujishiroms-bucket/cognito/test_img_copy.png ./test_img_comy.png</p>
+</section>
+<section id="id3">
+<h3><span class="section-number">1.1.2. </span>認証していない場合<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>ID PoolからIDENTITY_TOKENを取得(認可)</p></li>
+<li><p>STSからクレデンシャルの発行</p></li>
+</ul>
+<p><img alt="../_images/cognito_unauth_flow.png" src="../_images/cognito_unauth_flow.png" /></p>
+</section>
+</section>
+<section id="s3">
+<h2><span class="section-number">1.2. </span>S3バケット作成<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>S3バケットを作成する。アクセス制御はブロックしておく</p>
+<p><img alt="../_images/cognito_s3.png" src="../_images/cognito_s3.png" /></p>
+</section>
+<section id="cognito">
+<h2><span class="section-number">1.3. </span>Cognitoでユーザープールを作成<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<p>詳細は<a class="reference external" href="https://misakifujishiro.github.io/mylogs/Artifact/cognito.html#cognito">別ページ</a>参照</p>
+<p>この時に、アプリクライアントの設定で、<code class="docutils literal notranslate"><span class="pre">クライアントシークレットの作成</span></code>については無効化しておき、<code class="docutils literal notranslate"><span class="pre">ALLOW_ADMIN_USER_PASSWORD_AUTH</span></code>を有効化する<br />また、test userも作成しておく（有効化してもなんとかなるけど、Cognitoへのログイン設定が面倒）</p>
+<p><img alt="../_images/cognito_awscli_auth_point.png" src="../_images/cognito_awscli_auth_point.png" /></p>
+</section>
+<section id="cognitoid">
+<h2><span class="section-number">1.4. </span>CognitoでIDプールを作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p>idPool名<br />同じユーザー内で一意にする</p></li>
+<li><p>認証していないID<br />有効化すると、認証していないユーザーへの権限が設定可能</p></li>
+<li><p>認証プロバイダ<br />前節で作成したCognitoのユーザープールの情報を設定</p></li>
+</ul>
+<p><img alt="../_images/cognito_idpool_setting.png" src="../_images/cognito_idpool_setting.png" /></p>
+<p>作成したIDプールのナビゲーションペインのサンプルコードからIDプールのIDを確認できる。
+後から利用するので記録しておく。</p>
+<p><img alt="../_images/cognito_idpool_id.png" src="../_images/cognito_idpool_id.png" /></p>
+</section>
+<section id="iam">
+<h2><span class="section-number">1.5. </span>紐づくIAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
+<p>作成したIDpool名を冠したIAMロールが存在するはずなので、そのロールのポリシーを編集していく。</p>
+<p><img alt="HandsOn/img/cognito_idpool-iam.png" src="HandsOn/img/cognito_idpool-iam.png" /></p>
+<p>今回は、以下の権限を付与する</p>
+<ul class="simple">
+<li><p>認証ユーザー:S3バケット内のオブジェクト一覧表示とput/get</p></li>
+<li><p>非認証ユーザー:S3バケット内のオブジェクト一覧表示</p></li>
+</ul>
+<p>認証ユーザー(Auth_Role)に付与するIAMポリシーは以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;cognito-sync:*&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cognito-identity:*&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ListBucket&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:GetObject&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:PutObject&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:s3:::[YOUR_BUCKET_NAME]&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;arn:aws:s3:::[YOUR_BUCKET_NAME]/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>非認証ユーザー(UnAuth_Role)に付与するIAMポリシーは以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;mobileanalytics:PutEvents&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cognito-sync:*&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ListBucket&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:s3:::[YOUR_BUCKET_NAME]&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;arn:aws:s3:::[YOUR_BUCKET_NAME]/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="python-sdk">
+<h2><span class="section-number">1.6. </span>Python SDKからのアクセス<a class="headerlink" href="#python-sdk" title="この見出しへのパーマリンク">¶</a></h2>
+<p>認証ユーザーとして処理を実行する場合は以下のコマンドを実行</p>
+<p>対象bucketのオブジェクト一覧表示、ダウンロード、アップロードが成功する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
+
+<span class="c1">###</span>
+<span class="c1"># 設定情報</span>
+<span class="c1">###</span>
+<span class="n">account_id</span> <span class="o">=</span> <span class="s1">&#39;YOUR_AWS_ID&#39;</span>
+<span class="n">user_pool_id</span> <span class="o">=</span> <span class="s1">&#39;COGNITO_USER_POOL_ID&#39;</span>
+<span class="n">client_id</span> <span class="o">=</span> <span class="s1">&#39;COGNITO_APP_CLIENT_ID&#39;</span>
+<span class="n">identity_pool_id</span> <span class="o">=</span> <span class="s1">&#39;ap-northeast-1:COGNITO_ID_POOL_ID&#39;</span>
+<span class="n">user_name</span> <span class="o">=</span> <span class="s1">&#39;COGNITO_USER_NAME&#39;</span>
+<span class="n">email</span> <span class="o">=</span> <span class="s1">&#39;COGNITO_USER_EMAIL&#39;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;COGNITO_USER_PASSWORD&#39;</span>
+<span class="n">bucket_name</span> <span class="o">=</span> <span class="s1">&#39;YOUR_S3_BUCKET_NAME&#39;</span>
+
+<span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;ap-northeast-1&#39;</span>
+<span class="n">logins_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;cognito-idp.</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s2">.amazonaws.com/</span><span class="si">{</span><span class="n">user_pool_id</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">auth_flow</span> <span class="o">=</span> <span class="s2">&quot;USER_PASSWORD_AUTH&quot;</span>
+
+
+
+
+<span class="c1">###</span>
+<span class="c1"># User Poolにログインする</span>
+<span class="c1">###</span>
+<span class="n">idp_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;cognito-idp&#39;</span><span class="p">)</span>
+
+<span class="c1"># ログインしてセッションを開始</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">idp_client</span><span class="o">.</span><span class="n">initiate_auth</span><span class="p">(</span>
+    <span class="n">ClientId</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+    <span class="n">AuthFlow</span><span class="o">=</span><span class="n">auth_flow</span><span class="p">,</span>
+    <span class="n">AuthParameters</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;USERNAME&#39;</span><span class="p">:</span> <span class="n">user_name</span><span class="p">,</span>
+        <span class="s1">&#39;PASSWORD&#39;</span><span class="p">:</span> <span class="n">password</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># IDトークン、アクセストークン、リフレッシュトークンを取得</span>
+<span class="n">id_token</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;AuthenticationResult&#39;</span><span class="p">][</span><span class="s1">&#39;IdToken&#39;</span><span class="p">]</span>
+<span class="n">access_token</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;AuthenticationResult&#39;</span><span class="p">][</span><span class="s1">&#39;AccessToken&#39;</span><span class="p">]</span>
+<span class="n">refresh_token</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;AuthenticationResult&#39;</span><span class="p">][</span><span class="s1">&#39;RefreshToken&#39;</span><span class="p">]</span>
+
+
+
+
+
+
+<span class="c1">###</span>
+<span class="c1"># ID Poolにログインする</span>
+<span class="c1">###</span>
+<span class="n">identity_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;cognito-identity&#39;</span><span class="p">)</span>
+
+<span class="c1"># アイデンティティIDを取得</span>
+<span class="n">identity_id</span> <span class="o">=</span> <span class="n">identity_client</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span>
+    <span class="n">AccountId</span><span class="o">=</span><span class="n">account_id</span><span class="p">,</span>
+    <span class="n">IdentityPoolId</span><span class="o">=</span><span class="n">identity_pool_id</span><span class="p">,</span>
+    <span class="n">Logins</span><span class="o">=</span><span class="p">{</span>
+        <span class="n">logins_key</span><span class="p">:</span> <span class="n">id_token</span>
+    <span class="p">}</span>
+<span class="p">)[</span><span class="s1">&#39;IdentityId&#39;</span><span class="p">]</span>
+
+<span class="n">credentials_response</span> <span class="o">=</span> <span class="n">identity_client</span><span class="o">.</span><span class="n">get_credentials_for_identity</span><span class="p">(</span>
+    <span class="n">IdentityId</span><span class="o">=</span><span class="n">identity_id</span><span class="p">,</span>
+    <span class="n">Logins</span><span class="o">=</span><span class="p">{</span>
+        <span class="n">logins_key</span><span class="p">:</span> <span class="n">id_token</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+
+
+
+<span class="c1">###</span>
+<span class="c1"># ID Pool経由でSTSへのクレデンシャル発行を依頼する</span>
+<span class="c1">###</span>
+<span class="n">Credentials</span> <span class="o">=</span> <span class="n">credentials_response</span><span class="p">[</span><span class="s1">&#39;Credentials&#39;</span><span class="p">]</span>
+<span class="n">access_key_id</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">[</span><span class="s1">&#39;AccessKeyId&#39;</span><span class="p">]</span>
+<span class="n">secret_access_key</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">[</span><span class="s1">&#39;SecretKey&#39;</span><span class="p">]</span>
+<span class="n">session_token</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">[</span><span class="s1">&#39;SessionToken&#39;</span><span class="p">]</span>
+
+
+<span class="c1">###</span>
+<span class="c1"># S3にアクセス</span>
+<span class="c1">###</span>
+<span class="n">s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">,</span>
+            <span class="n">region_name</span><span class="o">=</span><span class="s2">&quot;ap-northeast-1&quot;</span><span class="p">,</span>
+            <span class="n">aws_access_key_id</span><span class="o">=</span><span class="n">access_key_id</span><span class="p">,</span>
+            <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="n">secret_access_key</span><span class="p">,</span>
+            <span class="n">aws_session_token</span><span class="o">=</span><span class="n">session_token</span>
+        <span class="p">)</span>
+
+
+<span class="c1">###</span>
+<span class="c1"># オブジェクト一覧表示</span>
+<span class="c1">###</span>
+<span class="n">object_list</span> <span class="o">=</span> <span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket_name</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">object_list</span><span class="p">[</span><span class="s1">&#39;Contents&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">])</span>
+
+<span class="c1">###</span>
+<span class="c1"># ファイルアップロード</span>
+<span class="c1">###</span>
+<span class="n">Filename</span> <span class="o">=</span> <span class="s1">&#39;PATH_TO_UPLOAD_FILE_AT_LOCAL&#39;</span>
+<span class="n">UL_Key</span> <span class="o">=</span> <span class="s1">&#39;PATH_TO_S3_FILE&#39;</span>
+
+<span class="n">s3_client</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">,</span> <span class="n">Filename</span><span class="p">,</span> <span class="n">UL_Key</span><span class="p">)</span>
+
+<span class="c1">###</span>
+<span class="c1"># ファイルダウンロード</span>
+<span class="c1">###</span>
+<span class="n">Filename</span> <span class="o">=</span> <span class="s1">&#39;DL_FILE_NAME&#39;</span>
+<span class="n">DL_Key</span> <span class="o">=</span> <span class="s2">&quot;PATH_TO_DOWNLOAD_FILE_AT_S3&quot;</span>
+
+
+<span class="n">s3_client</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">,</span><span class="n">DL_KEY</span><span class="p">,</span> <span class="n">Filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>非認証ユーザーとして処理を実行する場合は以下のコマンドで実行</p>
+<p>対象バケットの一覧表示のみが成功し、アップロードやダウンロードは権限的に失敗する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">botocore.exceptions</span> <span class="kn">import</span> <span class="n">NoCredentialsError</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<span class="n">cognito_identity_pool_id</span> <span class="o">=</span> <span class="s1">&#39;ap-northeast-1:1f392b6a-751d-4760-8849-5924149f8e67&#39;</span>
+
+
+<span class="c1">###</span>
+<span class="c1"># ID Poolにログインする</span>
+<span class="c1">###</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;cognito-identity&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">IdentityPoolId</span><span class="o">=</span><span class="n">cognito_identity_pool_id</span><span class="p">)</span>
+<span class="n">identity_id</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;IdentityId&#39;</span><span class="p">]</span>
+
+
+<span class="c1">###</span>
+<span class="c1"># ID Pool経由でSTSへのクレデンシャル発行を依頼する</span>
+<span class="c1">###</span>
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_credentials_for_identity</span><span class="p">(</span><span class="n">IdentityId</span><span class="o">=</span><span class="n">identity_id</span><span class="p">)</span>
+
+
+<span class="c1">###</span>
+<span class="c1"># S3にアクセス</span>
+<span class="c1">###</span>
+<span class="n">s3_client</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">,</span>
+    <span class="n">aws_access_key_id</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;Credentials&#39;</span><span class="p">][</span><span class="s1">&#39;AccessKeyId&#39;</span><span class="p">],</span>
+    <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;Credentials&#39;</span><span class="p">][</span><span class="s1">&#39;SecretKey&#39;</span><span class="p">],</span>
+    <span class="n">aws_session_token</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;Credentials&#39;</span><span class="p">][</span><span class="s1">&#39;SessionToken&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">bucket_name</span> <span class="o">=</span> <span class="s1">&#39;ma-fujishiroms-bucket&#39;</span>
+
+<span class="c1"># バケットにあるアイテムを検索</span>
+<span class="n">object_list</span> <span class="o">=</span> <span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket_name</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">object_list</span><span class="p">[</span><span class="s1">&#39;Contents&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="aws-cli">
+<h2><span class="section-number">1.7. </span>AWS CLIからのアクセス<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id4">
+<h3><span class="section-number">1.7.1. </span>初期設定<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>USER_POOL_IDはCognitoのユーザープールの全般設定から取得</p></li>
+<li><p>CLIENT_IDはCognitoのユーザープールのアプリクライアントから取得</p></li>
+<li><p>IDENTITY_POOL_IDはCognitoのIDプールのサンプルコードから取得（前節でメモした）</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>USER_POOL_ID=ap-northeast-1_xxxxxxx
+CLIENT_ID=xxxxxxxxxxxx
+IDENTITY_POOL_ID=ap-northeast-1:xxxxxxxxxx
+USER_NAME=YOUR_USER_NAME
+USER_EMAIL=YOUR_MAIL_ADDRESS@gmail.com
+PASSWORD=&quot;YOUR_PASSWORD&quot;
+REGION=ap-northeast-1
+COGNITO_USER_POOL=cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}
+AUTH_FLOW=USER_PASSWORD_AUTH
+</pre></div>
+</div>
+</section>
+<section id="user-pool">
+<h3><span class="section-number">1.7.2. </span>USER POOLへ認証<a class="headerlink" href="#user-pool" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Cognitoのユーザープールへの認証処理</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ID_TOKEN=$(aws cognito-idp initiate-auth \
+--auth-flow ${AUTH_FLOW} \
+--client-id ${CLIENT_ID} \
+--auth-parameters USERNAME=${USER_NAME},PASSWORD=${PASSWORD}  \
+--query &quot;AuthenticationResult.IdToken&quot; \
+--output text) &amp;&amp; echo ${ID_TOKEN}
+</pre></div>
+</div>
+<p>initiate-authにすることに注意。<code class="docutils literal notranslate"><span class="pre">admin-initiate-auth</span> </code>の場合、AWSのアクセスキーとクレデンシャルを要求されるので注意</p>
+</section>
+<section id="id-pool">
+<h3><span class="section-number">1.7.3. </span>ID POOLへの認証<a class="headerlink" href="#id-pool" title="この見出しへのパーマリンク">¶</a></h3>
+<p>取得した認証情報を渡して、紐づく認可情報を取得する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>IDENTITY_ID=$(aws cognito-identity get-id \
+  --identity-pool-id ${IDENTITY_POOL_ID} \
+  --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot; \
+  --query &quot;IdentityId&quot; \
+  --output text) &amp;&amp; echo ${IDENTITY_ID}
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.7.4. </span>クレデンシャルの取得<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>STSから一時認証情報を払い出してもらって、取得する</p>
+<p>以下を実行すれば、<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得できる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SECURITY_TOKEN &lt;&lt;&lt; $(aws cognito-identity get-credentials-for-identity \
+  --identity-id &quot;${IDENTITY_ID}&quot; \
+  --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot; \
+  --query &quot;Credentials.[AccessKeyId,SecretKey,SessionToken]&quot; \
+  --output text)
+</pre></div>
+</div>
+<p>jpを利用できる場合はOUTPUTをjqで整形して<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得でもOK</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>OUTPUT=$(aws cognito-identity get-credentials-for-identity \
+  --identity-id ${IDENTITY_ID} \
+  --logins &quot;${COGNITO_USER_POOL}=${ID_TOKEN}&quot;) &amp;&amp; echo ${OUTPUT}
+
+AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r &#39;.Credentials.AccessKeyId&#39;`
+AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r &#39;.Credentials.SecretKey&#39;`
+AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3><span class="section-number">1.7.5. </span>クレデンシャルの環境変数への格納<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>環境変数に設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">AWS_ACCESS_KEY_ID</span>
+<span class="n">export</span> <span class="n">AWS_SECRET_ACCESS_KEY</span>
+<span class="n">export</span> <span class="n">AWS_SECURITY_TOKEN</span>
+</pre></div>
+</div>
+<p>自分の認証情報の確認をすると、Arnの部分に自分のCognitoで認証された時に付与されるIAMロールが割当たっていることを確認できる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">sts</span> <span class="n">get</span><span class="o">-</span><span class="n">caller</span><span class="o">-</span><span class="n">identity</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3><span class="section-number">1.7.6. </span>認証されていないユーザー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>USER POOLへの認証を行わず、idpoolへのget-idから始める</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>IDENTITY_ID=$(aws cognito-identity get-id \
+  --identity-pool-id ${IDENTITY_POOL_ID} \
+  --query &quot;IdentityId&quot; \
+  --output text) &amp;&amp; echo ${IDENTITY_ID}
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>OUTPUT=$(aws cognito-identity get-credentials-for-identity \
+  --identity-id ${IDENTITY_ID}) &amp;&amp; echo ${OUTPUT}
+</pre></div>
+</div>
+<p>返却されたクレデンシャルの<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を環境変数に設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWS_ACCESS_KEY_ID=`echo $OUTPUT | jq -r &#39;.Credentials.AccessKeyId&#39;`
+export AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=`echo $OUTPUT | jq -r &#39;.Credentials.SecretKey&#39;`
+export AWS_SECRET_ACCESS_KEY
+AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
+export AWS_SECURITY_TOKEN
+</pre></div>
+</div>
+<p>自分の認証情報の確認をすると、Arnの部分に自分のCognitoで認証されていない時に付与されるIAMロールが割当たっていることを確認できる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">sts</span> <span class="n">get</span><span class="o">-</span><span class="n">caller</span><span class="o">-</span><span class="n">identity</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2><span class="section-number">1.8. </span>【参考】ユーザーごとに紐づけるロールを変更する場合<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id9">
+<h3><span class="section-number">1.8.1. </span>IAMロールの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>IAMのコンソール画面から、新しいロールを作成し、エンティティタイプをウェブアイデンティティにする。
+プロバイダーとしてCognitoを選択して、IDプールのIDを書き込み、ポリシーを付与してロールを作成する</p>
+<p><img alt="../_images/cognito_iam_setting.png" src="../_images/cognito_iam_setting.png" /></p>
+</section>
+<section id="id">
+<h3><span class="section-number">1.8.2. </span>IDプールでルールを設定<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">IDプールの編集</span></code>から、認証プロバイダを選択して、<code class="docutils literal notranslate"><span class="pre">ルールを使用してロールを選択</span></code>するから、ルール設定
+例えば、「emailにxxxxを含む」などの条件で付与するIAMを変更できる</p>
+<p><img alt="../_images/cognito_iam_condition.png" src="../_images/cognito_iam_condition.png" /></p>
+</section>
+</section>
+<section id="id10">
+<h2><span class="section-number">1.9. </span>【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ポリシーには、Cognitoで認証したユーザーごとのバケットの中でも<code class="docutils literal notranslate"><span class="pre">フェデレーティッドユーザーの</span> <span class="pre">ID${cognito-identity.:sub}</span></code>のディレクトリに紐づいたオブジェクトにのみアクセスできるポリシーを付与。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;s3:ListBucket&quot;</span><span class="p">],</span>
+      <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;arn:aws:s3:::ma-fujishiroms-bucke&quot;</span><span class="p">],</span>
+      <span class="s2">&quot;Condition&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;StringLike&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s3:prefix&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;cognito/&quot;</span><span class="p">]}}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;s3:GetObject&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;s3:PutObject&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;s3:DeleteObject&quot;</span>
+      <span class="p">],</span>
+      <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;arn:aws:s3:::ma-fujishiroms-bucket/cognito/${cognito-identity.amazonaws.com:sub}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arn:aws:s3:::ma-fujishiroms-bucket/cognito/${cognito-identity.amazonaws.com:sub}/*&quot;</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>UnAuthユーザーには情報を付与しない。</p>
+<section id="id11">
+<h3><span class="section-number">1.9.1. </span>S3バケットの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<p>作成したIAMの権限に合わせて、S3バケットを作成する。
+バケット内に作成するフォルダについても、<code class="docutils literal notranslate"><span class="pre">cognito/CognitoUserID</span></code>とする。
+UserIDは先ほどの手順でログインすることでCognitoのID poolに追加されている値を利用する</p>
+<p><img alt="../_images/cognito_idpool_added.png" src="../_images/cognito_idpool_added.png" /></p>
+<p>以下のようなディレクトリ構成となる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bucket</span>
+<span class="o">|</span>
+<span class="o">|--</span><span class="n">cognito</span>
+    <span class="o">|</span>
+    <span class="o">|--</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">xxxxxxxxx</span>
+    <span class="o">|</span>
+    <span class="o">|--</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">yyyyyyyyy</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h3><span class="section-number">1.9.2. </span>動作確認<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<p>xxxxxxxのクレデンシャルを環境変数に設定しているときとyyyyyyyyyのクレデンシャルを環境ヘンスに設定している時で、アクセスできるS3が異なることを確認する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">cp</span> <span class="o">--</span><span class="n">region</span> <span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="n">ma</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">bucket</span><span class="o">/</span><span class="n">cognito</span><span class="o">/</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">xxxxxxxxx</span><span class="o">/</span><span class="n">alb_setting_basic</span><span class="o">.</span><span class="n">png</span> <span class="o">./</span>
+
+
+<span class="n">aws</span> <span class="n">s3</span> <span class="n">cp</span> <span class="o">--</span><span class="n">region</span> <span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="n">ma</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">bucket</span><span class="o">/</span><span class="n">cognito</span><span class="o">/</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">yyyyyyyyy</span><span class="o">/</span><span class="n">auth0_tenant</span><span class="o">.</span><span class="n">png</span> <span class="o">./</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="s3local-aws-cli">
+<h2><span class="section-number">1.10. </span>【参考】S3とLocalのフォルダを同期する（AWS CLI)<a class="headerlink" href="#s3local-aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
+<p>S3のページで解説しているので、そちらを参照する</p>
+</section>
+<section id="id13">
+<h2><span class="section-number">1.11. </span>参考文献<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<ol class="simple">
+<li><p><a class="reference external" href="https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/">クレデンシャルの取得方法</a><br />：一番参考になるAWS CLIでCognitoのクレデンシャルを取得する方法から、ルールベースで付与するIAMを変更する手順が整理されている</p></li>
+<li><p><a class="reference external" href="https://www.aws-room.com/entry/cognito-s3">Cognito を使ったユーザ認証で S3 にアクセスしてみる</a><br />：IAMの設定まで詳しく説明してくれている。pythonを利用して、cognitoから認証情報を受けてS3へのアクセス制御を検証している</p></li>
+<li><p><a class="reference external" href="https://yomon.hatenablog.com/entry/2022/8/cognito_python">PythonからCognitoのUSER_PASSWORD_AUTHとUSER_SRP_AUTHでのトークン取得</a><br />：pythonを利用してクレデンシャルを取得するところまで、クライアントシークレットを有効化している時に対応しているところまで整理してくれている</p></li>
+<li><p><a class="reference external" href="https://dev.classmethod.jp/articles/cognito-trigger-allow-access-per-identity-id/">S3 の読み書きを Cognito で認証する方法</a><br />：ディレクトリにユーザーIDを付与することで、認証したユーザーのIDを冠したディレクトリしかアクセスすることができなくなる。</p></li>
+</ol>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">1. Cognitoで認証をして、AWSのリソースにアクセスする</a><ul>
+<li><a class="reference internal" href="#id1">1.1. 認証フローの違い</a><ul>
+<li><a class="reference internal" href="#id2">1.1.1. 認証している場合</a></li>
+<li><a class="reference internal" href="#id3">1.1.2. 認証していない場合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#s3">1.2. S3バケット作成</a></li>
+<li><a class="reference internal" href="#cognito">1.3. Cognitoでユーザープールを作成</a></li>
+<li><a class="reference internal" href="#cognitoid">1.4. CognitoでIDプールを作成</a></li>
+<li><a class="reference internal" href="#iam">1.5. 紐づくIAMの作成</a></li>
+<li><a class="reference internal" href="#python-sdk">1.6. Python SDKからのアクセス</a></li>
+<li><a class="reference internal" href="#aws-cli">1.7. AWS CLIからのアクセス</a><ul>
+<li><a class="reference internal" href="#id4">1.7.1. 初期設定</a></li>
+<li><a class="reference internal" href="#user-pool">1.7.2. USER POOLへ認証</a></li>
+<li><a class="reference internal" href="#id-pool">1.7.3. ID POOLへの認証</a></li>
+<li><a class="reference internal" href="#id5">1.7.4. クレデンシャルの取得</a></li>
+<li><a class="reference internal" href="#id6">1.7.5. クレデンシャルの環境変数への格納</a></li>
+<li><a class="reference internal" href="#id7">1.7.6. 認証されていないユーザー</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">1.8. 【参考】ユーザーごとに紐づけるロールを変更する場合</a><ul>
+<li><a class="reference internal" href="#id9">1.8.1. IAMロールの作成</a></li>
+<li><a class="reference internal" href="#id">1.8.2. IDプールでルールを設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id10">1.9. 【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM</a><ul>
+<li><a class="reference internal" href="#id11">1.9.1. S3バケットの作成</a></li>
+<li><a class="reference internal" href="#id12">1.9.2. 動作確認</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#s3local-aws-cli">1.10. 【参考】S3とLocalのフォルダを同期する（AWS CLI)</a></li>
+<li><a class="reference internal" href="#id13">1.11. 参考文献</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="../Artifact/cognito.html"
+                          title="前の章へ"><span class="section-number">3. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="s3_process.html"
+                          title="次の章へ"><span class="section-number">2. </span>S3の処理</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/HandsOn/cognito_authentication.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="s3_process.html" title="2. S3の処理"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="../Artifact/cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

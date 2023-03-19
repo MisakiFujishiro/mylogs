@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>2. Lambdaの利用方法 &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="3. API Gateway" href="apigw.html" />
+    <link rel="prev" title="1. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="apigw.html" title="3. API Gateway"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="cognito_authentication.html" title="1. Cognitoで認証をして、AWSのリソースにアクセスする"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>Lambdaの利用方法</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="lambda">
+<h1><span class="section-number">2. </span>Lambdaの利用方法<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id1">
+<h2><span class="section-number">2.1. </span>Lambdaの作成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>コンソールからLambdaを選択して、Lambdaの作成を選択。</p>
+<p><code class="docutils literal notranslate"><span class="pre">一から作成</span></code>と<code class="docutils literal notranslate"><span class="pre">設計図の利用</span></code>と<code class="docutils literal notranslate"><span class="pre">コンテナイメージ</span></code>が選択できる。</p>
+<ul class="simple">
+<li><p>一から作成: ユーザーが全て設定をすることができる</p></li>
+<li><p>設計図の利用: AWS側でよく利用するパターンのコードやIAMの設定をしておいてくれるテンプレート</p></li>
+<li><p>コンテナイメージ: ECRにPushしてあるDocker Imageを利用して、処理を行うことができる</p></li>
+</ul>
+<p><img alt="../_images/lambda_make.png" src="../_images/lambda_make.png" /></p>
+</section>
+<section id="id2">
+<h2><span class="section-number">2.2. </span>各種設定の変更<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Lambdaの設定タブの一般設定から、メモリやタイムアウト時間を変更することができる</p>
+<p><img alt="../_images/lambda_memory_setting.png" src="../_images/lambda_memory_setting.png" /></p>
+</section>
+<section id="id3">
+<h2><span class="section-number">2.3. </span>テスト実行について<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Lambdaのテストタブから、テストを作成することができる。</p>
+<p>テストではLambdaハンドラーに渡すeventの値を設定することができる。</p>
+<p><img alt="../_images/lambda_test.png" src="../_images/lambda_test.png" /></p>
+<p>Lambdaが呼び出された時に引き渡される<code class="docutils literal notranslate"><span class="pre">event</span></code>の中身を変えながら、テスト実行を行うことでLambdaが想定通りの動きをするかを確認することができる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1"># TODO implement</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;statusCode&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+        <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="s1">&#39;Hello from Lambda!&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">2. Lambdaの利用方法</a><ul>
+<li><a class="reference internal" href="#id1">2.1. Lambdaの作成</a></li>
+<li><a class="reference internal" href="#id2">2.2. 各種設定の変更</a></li>
+<li><a class="reference internal" href="#id3">2.3. テスト実行について</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="cognito_authentication.html"
+                          title="前の章へ"><span class="section-number">1. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="apigw.html"
+                          title="次の章へ"><span class="section-number">3. </span>API Gateway</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/HandsOn/lambda.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="apigw.html" title="3. API Gateway"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="cognito_authentication.html" title="1. Cognitoで認証をして、AWSのリソースにアクセスする"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>Lambdaの利用方法</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

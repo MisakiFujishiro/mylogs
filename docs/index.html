@@ -62,117 +62,8 @@
 </ul>
 </div>
 </section>
-<section id="handson">
-<h1>実装HandsOn<a class="headerlink" href="#handson" title="この見出しへのパーマリンク">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Artifact/ecs.html">1. AWS ECS上に構築するSpringアプリケーション</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#vpc">1.1. VPC環境構築</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#alb">1.2. ALBの作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#spring">1.3. Springを使用したコンテナアプリ実装</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#docker">1.4. Dockerコンテナの作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#ecs">1.5. ECSクラスターの作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#id16">1.6. ECSタスクの定義</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#id20">1.7. ECSサービスの実行</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Artifact/cicd.html">2. AWS Code Seriesを利用したCICD環境</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#githubspringpj">2.1. GitHubとSpringPJの連携</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#codecommitgithub">2.2. codeCommitとGitHubのミラーリング</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#codebuildbuild">2.3. CodeBuildによるBuild設定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#codepipeline">2.4. CodePipelineによるデプロイ自動化</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Artifact/cognito.html">3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#cognito">3.1. Cognitoの設定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#cognito-system-manager">3.2. Cognitoの初期設定(ユーザー追加とSystem Managerへの登録)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#idp">3.3. 外部IDPの準備</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#auth0cognito-saml">3.4. Auth0とCognitoの連携（SAML)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#googlecognito">3.5. GoogleとCognitoの連携</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#spring">3.6. Springの設定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#springsecuritycognito">3.7. SpringSecurityとCognitoの連携</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Artifact/cognito_authentication.html">4. Cognitoで認証をして、AWSのリソースにアクセスする</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#id1">4.1. 認証フローの違い</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#s3">4.2. S3バケット作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#cognito">4.3. Cognitoでユーザープールを作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#cognitoid">4.4. CognitoでIDプールを作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#iam">4.5. 紐づくIAMの作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#python-sdk">4.6. Python SDKからのアクセス</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#aws-cli">4.7. AWS CLIからのアクセス</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#id8">4.8. 【参考】ユーザーごとに紐づけるロールを変更する場合</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#id10">4.9. 【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#s3local-aws-cli">4.10. 【参考】S3とLocalのフォルダを同期する（AWS CLI)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito_authentication.html#id13">4.11. 参考文献</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Artifact/s3_process.html">5. S3の処理</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/s3_process.html#id1">5.1. S3とローカルディレクトリを同期する</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Artifact/s3_process.html#id5">5.2. ライフサイクルの設定</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="microservice">
-<h1>Microservice<a class="headerlink" href="#microservice" title="この見出しへのパーマリンク">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="microservice/microservice_archi.html">1. マイクロサービアーキテクチャとは</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id2">1.1. マイクロサービスの定義</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id10">1.2. モノリスの定義</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id13">1.3. どうしてマイクロサービスアーキテクチャを採用するのか</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id21">1.4. マイクロサービスアーキテクチャを採用した際の課題と対応</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="microservice/certification_authentication.html">2. マイクロサービスにおける認証認可</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id2">2.1. 認証認可</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id5">2.2. マイクロサービスにおける認証認可</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#oauthoidc">2.3. OAuthとOIDCの関係性</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#oauth">2.4. OAuth</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#oidc">2.5. OIDC</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id-token">2.6. ID Token</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#saml">2.7. SAML</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#sso">2.8. SSO</a></li>
-<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id12">2.9. 参考</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="it">
-<h1>ITの基本<a class="headerlink" href="#it" title="この見出しへのパーマリンク">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html">1. 開発</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id2">1.1. 要件とか設計について</a></li>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#web">1.2. Webサイト</a></li>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#docker">1.3. Docker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#rest-api">1.4. REST API</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html#id7">2. コーディング</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id8">2.1. シングルトン</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html#id9">3. 通信</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#ssl-tls">3.1. SSL/TLS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id10">3.2. SSL/TLS証明書</a></li>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#web-socket">3.3. Web Socket</a></li>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#udp-tcp">3.4. UDP/TCP</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html#db">4. DB</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id11">4.1. スロークエリ</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="knowledge/environment.html">5. 環境構築系の基礎知識</a></li>
-</ul>
-</div>
-</section>
-<section id="aws-services">
-<h1>AWS Services<a class="headerlink" href="#aws-services" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="aws-services-aws">
+<h1>AWS Services(AWSサービスの概要)<a class="headerlink" href="#aws-services-aws" title="この見出しへのパーマリンク">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="AWS/Network.html">1. AWSのネットワーク</a><ul>
@@ -234,24 +125,24 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="AWS/apigw.html">7. API GateWay</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id1">7.1. API Gatewayとは</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#api-gatewayapi">7.2. API GatewayのAPIの種類</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#api-gw">7.3. API GWのデプロイとステージ</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id3">7.4. API GWの処理フロー</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id4">7.5. API GWのキャッシュ</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#api-gwapi">7.6. API GWのAPIキーと使用量プラン</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id7">7.7. API GWと認証認可</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id8">7.8. API GWの統合タイプ</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#apigw">7.9. APIGWの監視</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id10">7.10. 新規APIの作成</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id11">7.11. APIGWのエラーメッセージ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#api">7.1. APIとは</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id1">7.2. API Gatewayとは</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#api-gatewayapi">7.3. API GatewayのAPIの種類</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id3">7.4. API Gatewayの設定項目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#api-gw">7.5. API GWの統合タイプ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id9">7.6. API GWのデプロイとステージ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id11">7.7. API GWのキャッシュ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#api-gwapi">7.8. API GWのAPIキーと使用量プラン</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id14">7.9. API GWと認証認可</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#apigw">7.10. APIGWの監視</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id15">7.11. 新規APIの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/apigw.html#id16">7.12. APIGWのエラーメッセージ</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="AWS/Lambda.html">8. Lambda</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="AWS/Lambda.html#id1">8.1. Lambdaのメリット</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AWS/Lambda.html#id2">8.2. Lambdaの詳細</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/Lambda.html#id19">8.3. Lambdaの呼び出しかた分類</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AWS/Lambda.html#lambdas3aiaws">8.4. LambdaとS3・AIなどのAWSサービスの連携</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AWS/Lambda.html#id22">8.3. Lambdaの呼び出しかた分類</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="AWS/S3.html">9. S3</a><ul>
@@ -316,6 +207,142 @@
 </ul>
 </div>
 </section>
+<section id="hands-on">
+<h1>Hands On（実装方法の整理）<a class="headerlink" href="#hands-on" title="この見出しへのパーマリンク">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HandsOn/cognito_authentication.html">1. Cognitoで認証をして、AWSのリソースにアクセスする</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#id1">1.1. 認証フローの違い</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#s3">1.2. S3バケット作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#cognito">1.3. Cognitoでユーザープールを作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#cognitoid">1.4. CognitoでIDプールを作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#iam">1.5. 紐づくIAMの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#python-sdk">1.6. Python SDKからのアクセス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#aws-cli">1.7. AWS CLIからのアクセス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#id8">1.8. 【参考】ユーザーごとに紐づけるロールを変更する場合</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#id10">1.9. 【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#s3local-aws-cli">1.10. 【参考】S3とLocalのフォルダを同期する（AWS CLI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/cognito_authentication.html#id13">1.11. 参考文献</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HandsOn/lambda.html">2. Lambdaの利用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/lambda.html#id1">2.1. Lambdaの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/lambda.html#id2">2.2. 各種設定の変更</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/lambda.html#id3">2.3. テスト実行について</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HandsOn/apigw.html">3. API Gateway</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/apigw.html#apigw">3.1. APIGW の設定項目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/apigw.html#apigw-mock">3.2. APIGWの作成(Mockの利用)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/apigw.html#apigw-lambda">3.3. APIGWの作成（Lambdaとの連携）</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HandsOn/s3_process.html">4. S3の処理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/s3_process.html#id1">4.1. S3とローカルディレクトリを同期する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/s3_process.html#id5">4.2. ライフサイクルの設定</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HandsOn/s3_event.html">5. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HandsOn/s3_event.html#h4b">5.1. H4b</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="id1">
+<h1>成果物(作成したアプリケーション)<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Artifact/ecs.html">1. AWS ECS上に構築するSpringアプリケーション</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#vpc">1.1. VPC環境構築</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#alb">1.2. ALBの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#spring">1.3. Springを使用したコンテナアプリ実装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#docker">1.4. Dockerコンテナの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#ecs">1.5. ECSクラスターの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#id16">1.6. ECSタスクの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/ecs.html#id20">1.7. ECSサービスの実行</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Artifact/cicd.html">2. AWS Code Seriesを利用したCICD環境</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#githubspringpj">2.1. GitHubとSpringPJの連携</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#codecommitgithub">2.2. codeCommitとGitHubのミラーリング</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#codebuildbuild">2.3. CodeBuildによるBuild設定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cicd.html#codepipeline">2.4. CodePipelineによるデプロイ自動化</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Artifact/cognito.html">3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#cognito">3.1. Cognitoの設定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#cognito-system-manager">3.2. Cognitoの初期設定(ユーザー追加とSystem Managerへの登録)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#idp">3.3. 外部IDPの準備</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#auth0cognito-saml">3.4. Auth0とCognitoの連携（SAML)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#googlecognito">3.5. GoogleとCognitoの連携</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#spring">3.6. Springの設定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Artifact/cognito.html#springsecuritycognito">3.7. SpringSecurityとCognitoの連携</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="microservice">
+<h1>Microservice<a class="headerlink" href="#microservice" title="この見出しへのパーマリンク">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="microservice/microservice_archi.html">1. マイクロサービアーキテクチャとは</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id2">1.1. マイクロサービスの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id10">1.2. モノリスの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id13">1.3. どうしてマイクロサービスアーキテクチャを採用するのか</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/microservice_archi.html#id21">1.4. マイクロサービスアーキテクチャを採用した際の課題と対応</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="microservice/certification_authentication.html">2. マイクロサービスにおける認証認可</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id2">2.1. 認証認可</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id5">2.2. マイクロサービスにおける認証認可</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#oauthoidc">2.3. OAuthとOIDCの関係性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#oauth">2.4. OAuth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#oidc">2.5. OIDC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id-token">2.6. ID Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#saml">2.7. SAML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#sso">2.8. SSO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microservice/certification_authentication.html#id12">2.9. 参考</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="microservice/serverless.html">3. サーバーレスとは</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="microservice/serverless.html#id2">3.1. サーバーレスのメリット</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="it">
+<h1>ITの基本<a class="headerlink" href="#it" title="この見出しへのパーマリンク">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html">1. 開発</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id2">1.1. 要件とか設計について</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#web">1.2. Webサイト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#docker">1.3. Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#rest-api">1.4. REST API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html#id7">2. コーディング</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id8">2.1. シングルトン</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html#id9">3. 通信</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#ssl-tls">3.1. SSL/TLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id10">3.2. SSL/TLS証明書</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#web-socket">3.3. Web Socket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#udp-tcp">3.4. UDP/TCP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="knowledge/basic.html#db">4. DB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="knowledge/basic.html#id11">4.1. スロークエリ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="knowledge/environment.html">5. 環境構築系の基礎知識</a></li>
+</ul>
+</div>
+</section>
 <section id="java-spring">
 <h1>Java Spring<a class="headerlink" href="#java-spring" title="この見出しへのパーマリンク">¶</a></h1>
 <div class="toctree-wrapper compound">
@@ -363,8 +390,8 @@
 </ul>
 </div>
 </section>
-<section id="id1">
-<h1>資格<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id2">
+<h1>資格<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="certification/DVA.html">1. DVA</a></li>
@@ -383,14 +410,15 @@
     <h3><a href="#">目次</a></h3>
     <ul>
 <li><a class="reference internal" href="#">DAILY</a></li>
-<li><a class="reference internal" href="#handson">実装HandsOn</a></li>
+<li><a class="reference internal" href="#aws-services-aws">AWS Services(AWSサービスの概要)</a></li>
+<li><a class="reference internal" href="#hands-on">Hands On（実装方法の整理）</a></li>
+<li><a class="reference internal" href="#id1">成果物(作成したアプリケーション)</a></li>
 <li><a class="reference internal" href="#microservice">Microservice</a></li>
 <li><a class="reference internal" href="#it">ITの基本</a></li>
-<li><a class="reference internal" href="#aws-services">AWS Services</a></li>
 <li><a class="reference internal" href="#java-spring">Java Spring</a></li>
 <li><a class="reference internal" href="#docker">Docker</a></li>
 <li><a class="reference internal" href="#sphinx">Sphinx</a></li>
-<li><a class="reference internal" href="#id1">資格</a></li>
+<li><a class="reference internal" href="#id2">資格</a></li>
 </ul>
 
   </div>
