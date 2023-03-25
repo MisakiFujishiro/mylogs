@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>7. WAFの設定 &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. AWS ECS上に構築するSpringアプリケーション" href="../Artifact/ecs.html" />
+    <link rel="prev" title="6. CloudFront" href="cloudfront.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="cloudfront.html" title="6. CloudFront"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>WAFの設定</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="waf">
+<h1><span class="section-number">7. </span>WAFの設定<a class="headerlink" href="#waf" title="この見出しへのパーマリンク">¶</a></h1>
+<p>WAFはWebアプリケーションファイアウォール（Web Application Firewall)機能である。</p>
+<p>AWSのサービスに通信が届く前にAWS WAFがルールに従ってフィルタリングをする。</p>
+<section id="cloud-front">
+<h2><span class="section-number">7.1. </span>Cloud Frontに対して設定する<a class="headerlink" href="#cloud-front" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="acl">
+<h3><span class="section-number">7.1.1. </span>ACLの作成<a class="headerlink" href="#acl" title="この見出しへのパーマリンク">¶</a></h3>
+<p>WAF &amp; Shieldの画面から<code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">web</span> <span class="pre">ACL</span></code>を選択</p>
+<p>Resource TypeからAmazon CloudFront distributionsを選択し、Nameを入力して、Associated AWS resourceに対象のCloudFrontを選択</p>
+<p><img alt="../_images/waf_make_acl_1.png" src="../_images/waf_make_acl_1.png" /></p>
+</section>
+<section id="rule">
+<h3><span class="section-number">7.1.2. </span>Ruleの作成<a class="headerlink" href="#rule" title="この見出しへのパーマリンク">¶</a></h3>
+<p>動作確認として、接続元が日本である場合に、接続を拒否するルールを設定する。</p>
+<p>Add rulesからAdd my own rules and rule groupsを選択</p>
+<p><img alt="../_images/waf_make_rule_1.png" src="../_images/waf_make_rule_1.png" /></p>
+<p>Rule builderで、Rule名を設定し、ルールの中身であるStatementで、Originates form acountry in Japanを設定してBlockする。</p>
+<p><img alt="../_images/waf_make_rule_2.png" src="../_images/waf_make_rule_2.png" /></p>
+<p><img alt="../_images/waf_make_rule_3.png" src="../_images/waf_make_rule_3.png" /></p>
+<p>その後はデフォルトのまま、Create web ACLを選択</p>
+<p>cloud Frontに接続してみると、403Errorとなる。</p>
+<p><img alt="../_images/waf_block.png" src="../_images/waf_block.png" /></p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">7. WAFの設定</a><ul>
+<li><a class="reference internal" href="#cloud-front">7.1. Cloud Frontに対して設定する</a><ul>
+<li><a class="reference internal" href="#acl">7.1.1. ACLの作成</a></li>
+<li><a class="reference internal" href="#rule">7.1.2. Ruleの作成</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="cloudfront.html"
+                          title="前の章へ"><span class="section-number">6. </span>CloudFront</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../Artifact/ecs.html"
+                          title="次の章へ"><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/HandsOn/waf.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="cloudfront.html" title="6. CloudFront"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>WAFの設定</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. S3の処理" href="s3_process.html" />
-    <link rel="prev" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン" href="../Artifact/cognito.html" /> 
+    <link rel="next" title="2. Lambdaの利用方法" href="lambda.html" />
+    <link rel="prev" title="16. AIサービス" href="../AWS/AI.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,10 +30,10 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="s3_process.html" title="2. S3の処理"
+          <a href="lambda.html" title="2. Lambdaの利用方法"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../Artifact/cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+          <a href="../AWS/AI.html" title="16. AIサービス"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
@@ -104,7 +104,7 @@
 <section id="iam">
 <h2><span class="section-number">1.5. </span>紐づくIAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
 <p>作成したIDpool名を冠したIAMロールが存在するはずなので、そのロールのポリシーを編集していく。</p>
-<p><img alt="HandsOn/img/cognito_idpool-iam.png" src="HandsOn/img/cognito_idpool-iam.png" /></p>
+<p><img alt="../_images/cognito_idpool-iam.png" src="../_images/cognito_idpool-iam.png" /></p>
 <p>今回は、以下の権限を付与する</p>
 <ul class="simple">
 <li><p>認証ユーザー:S3バケット内のオブジェクト一覧表示とput/get</p></li>
@@ -557,13 +557,13 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../Artifact/cognito.html"
-                          title="前の章へ"><span class="section-number">3. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a></p>
+    <p class="topless"><a href="../AWS/AI.html"
+                          title="前の章へ"><span class="section-number">16. </span>AIサービス</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="s3_process.html"
-                          title="次の章へ"><span class="section-number">2. </span>S3の処理</a></p>
+    <p class="topless"><a href="lambda.html"
+                          title="次の章へ"><span class="section-number">2. </span>Lambdaの利用方法</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -593,10 +593,10 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="s3_process.html" title="2. S3の処理"
+          <a href="lambda.html" title="2. Lambdaの利用方法"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../Artifact/cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+          <a href="../AWS/AI.html" title="16. AIサービス"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 

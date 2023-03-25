@@ -56,6 +56,9 @@ Hands On（実装方法の整理）
    HandsOn/apigw
    HandsOn/s3_process
    HandsOn/s3_event
+   HandsOn/cloudfront
+   HandsOn/waf
+
 
 成果物(作成したアプリケーション)
 ====================================

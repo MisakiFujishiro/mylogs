@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="3. ECS" href="ECS.html" />
+    <link rel="next" title="3. EC2" href="EC2.html" />
     <link rel="prev" title="1. AWSのネットワーク" href="Network.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="ECS.html" title="3. ECS"
+          <a href="EC2.html" title="3. EC2"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="Network.html" title="1. AWSのネットワーク"
@@ -378,8 +378,25 @@ SSLが有効化されていることでHTTPSの通信が可能となる。</p>
 <section id="waf">
 <h2><span class="section-number">2.7. </span>WAF<a class="headerlink" href="#waf" title="この見出しへのパーマリンク">¶</a></h2>
 <p>WAFはWebアプリケーションファイアウォール（Web Application Firewall)機能である。</p>
-<p>ルールを設定して、特定のIPからのアクセスを拒否したりすることができる。</p>
+<p>AWSのサービスに通信が届く前にAWS WAFがルールに従ってフィルタリングをする。</p>
+<p><img alt="../_images/waf_image.png" src="../_images/waf_image.png" /></p>
+<p>CloufFrontやALB、APIGWに対してルールを設定して、特定のIPからのアクセスを拒否したりすることができる。</p>
 <p><img alt="../_images/waf.png" src="../_images/waf.png" /></p>
+<section id="id24">
+<h3><span class="section-number">2.7.1. </span>WAFのルール設定<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<p>WAFで定義するルールはACL（Access Control List）として設定を行う</p>
+<ul class="simple">
+<li><p>Rule<br />通信内容を確認して、不正なアクセスを防ぐためのルールセット<br />以下のようにカスタムすることも、AWSが準備しているマネージドのものもある</p>
+<ul>
+<li><p>statement: 検査対象とルール複数を and or で組み合わせが可能</p></li>
+<li><p>Action: statementの条件に対する許可と拒否を設定可能</p></li>
+</ul>
+</li>
+<li><p>Web ACL<br />1個以上のRuleの集合体で、このWeb ACLの単位で保護するAWS リソースに紐付けを行う。
+複数のルールがある場合は優先順位が適用され、どれにも当てはまらない場合は、デフォルトのルールが適用される。</p></li>
+</ul>
+<p><img alt="../_images/waf_acl.png" src="../_images/waf_acl.png" /></p>
+</section>
 </section>
 <section id="shield">
 <h2><span class="section-number">2.8. </span>Shield<a class="headerlink" href="#shield" title="この見出しへのパーマリンク">¶</a></h2>
@@ -499,7 +516,10 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 <li><a class="reference internal" href="#id23">2.6.3. ACMが利用できないリージョン</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#waf">2.7. WAF</a></li>
+<li><a class="reference internal" href="#waf">2.7. WAF</a><ul>
+<li><a class="reference internal" href="#id24">2.7.1. WAFのルール設定</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#shield">2.8. Shield</a></li>
 <li><a class="reference internal" href="#guard-duty">2.9. Guard Duty</a></li>
 <li><a class="reference internal" href="#amazon-macie">2.10. Amazon Macie</a></li>
@@ -518,8 +538,8 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="ECS.html"
-                          title="次の章へ"><span class="section-number">3. </span>ECS</a></p>
+    <p class="topless"><a href="EC2.html"
+                          title="次の章へ"><span class="section-number">3. </span>EC2</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -549,7 +569,7 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="ECS.html" title="3. ECS"
+          <a href="EC2.html" title="3. EC2"
              >次へ</a> |</li>
         <li class="right" >
           <a href="Network.html" title="1. AWSのネットワーク"
