@@ -282,6 +282,7 @@ for obj in object_list['Contents']:
 
 ### AWS CLIからのアクセス
 #### 初期設定
+以下の情報について、`conf.txt`に保存
 - USER_POOL_IDはCognitoのユーザープールの全般設定から取得
 - CLIENT_IDはCognitoのユーザープールのアプリクライアントから取得
 - IDENTITY_POOL_IDはCognitoのIDプールのサンプルコードから取得（前節でメモした）
@@ -300,6 +301,11 @@ AUTH_FLOW=USER_PASSWORD_AUTH
 
 
 #### USER POOLへ認証
+設定ファイルを読み込む
+```
+source [PATH_TO_CONF]/conf.txt
+```
+
 Cognitoのユーザープールへの認証処理
 ```
 ID_TOKEN=$(aws cognito-idp initiate-auth \

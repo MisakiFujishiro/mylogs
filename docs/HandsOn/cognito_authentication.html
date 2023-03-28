@@ -317,6 +317,7 @@
 <h2><span class="section-number">1.7. </span>AWS CLIからのアクセス<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id4">
 <h3><span class="section-number">1.7.1. </span>初期設定<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下の情報について、<code class="docutils literal notranslate"><span class="pre">conf.txt</span></code>に保存</p>
 <ul class="simple">
 <li><p>USER_POOL_IDはCognitoのユーザープールの全般設定から取得</p></li>
 <li><p>CLIENT_IDはCognitoのユーザープールのアプリクライアントから取得</p></li>
@@ -336,6 +337,10 @@ AUTH_FLOW=USER_PASSWORD_AUTH
 </section>
 <section id="user-pool">
 <h3><span class="section-number">1.7.2. </span>USER POOLへ認証<a class="headerlink" href="#user-pool" title="この見出しへのパーマリンク">¶</a></h3>
+<p>設定ファイルを読み込む</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="p">[</span><span class="n">PATH_TO_CONF</span><span class="p">]</span><span class="o">/</span><span class="n">conf</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
 <p>Cognitoのユーザープールへの認証処理</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ID_TOKEN=$(aws cognito-idp initiate-auth \
 --auth-flow ${AUTH_FLOW} \
