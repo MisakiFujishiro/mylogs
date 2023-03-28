@@ -5,4 +5,4 @@ USER_NAME=cognito.user.tanaka
 PASSWORD=""
 REGION=ap-northeast-1
 COGNITO_USER_POOL=cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}
-AUTH_FLOW=USER_PASSWORD_AUTH
+AUTH_FLOW=USER_PASSWORD_AUTHa
