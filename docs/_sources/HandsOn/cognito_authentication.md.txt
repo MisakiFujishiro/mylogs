@@ -369,6 +369,14 @@ export AWS_SECURITY_TOKEN
 aws sts get-caller-identity
 ```
 
+```
+{
+    "UserId": "XXXXXXXXXXXXXX:CognitoIdentityCredentials",
+    "Account": "[AWS_ACCOUNT_ID]",
+    "Arn": "arn:aws:sts::[AWS_ACCOUNT_ID]:assumed-role/[YOUR_IAM_ROLE]/CognitoIdentityCredentials"
+}
+
+```
 
 
 #### 認証されていないユーザー

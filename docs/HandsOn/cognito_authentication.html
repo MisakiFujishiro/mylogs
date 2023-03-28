@@ -397,6 +397,13 @@ AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">sts</span> <span class="n">get</span><span class="o">-</span><span class="n">caller</span><span class="o">-</span><span class="n">identity</span>
 </pre></div>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;UserId&quot;</span><span class="p">:</span> <span class="s2">&quot;XXXXXXXXXXXXXX:CognitoIdentityCredentials&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Account&quot;</span><span class="p">:</span> <span class="s2">&quot;[AWS_ACCOUNT_ID]&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Arn&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:sts::[AWS_ACCOUNT_ID]:assumed-role/[YOUR_IAM_ROLE]/CognitoIdentityCredentials&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="id7">
 <h3><span class="section-number">1.7.6. </span>認証されていないユーザー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
