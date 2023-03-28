@@ -132,6 +132,201 @@
 </ul>
 </section>
 </section>
+<section id="id12">
+<h2><span class="section-number">4.3. </span>S3レプリケーション<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<p>S3のレプリケーションを利用することで、以下のようなメリットを享受できる</p>
+<ul class="simple">
+<li><p>バックアップのバケット複製</p></li>
+<li><p>ログの単一バケット集約</p></li>
+<li><p>異なるアカウント間のオブジェクト連携</p></li>
+</ul>
+<section id="id13">
+<h3><span class="section-number">4.3.1. </span>クロスリージョン・同一リージョンのレプリケーション<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<p>S3のレプリケーションにはリージョン間でレプリケーションを行うCRR(Cross-Region Replication)と同一のリージョンでレプリケーションを行うSRR（Single-Region Replication)がある。</p>
+</section>
+<section id="id14">
+<h3><span class="section-number">4.3.2. </span>注意点<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>レプリケーション設定前に存在しているオブジェクトはレプリケーションされない</p></li>
+<li><p>双方のバケットでバージョニングの有効化が必要</p></li>
+<li><p>ライフサイクルのアクションなどはレプリケーションされない</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3><span class="section-number">4.3.3. </span>通信経路について<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<p>明示的に記述はないが、SRRではAWS内部のトラフィックを利用しているので、料金に通信量などが書かれていない。</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/userguide/replication.html#replication-configurations-rules-considerations">オブジェクトのレプリケーション</a></p></li>
+</ul>
+</section>
+<section id="id16">
+<h3><span class="section-number">4.3.4. </span>同一リージョンで異なるアカウント間のS3でレプリケーション<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p>手順は以下</p>
+<ul class="simple">
+<li><p>事前準備</p>
+<ul>
+<li><p>S3バケットの作成</p></li>
+<li><p>バージョニングの有効化</p></li>
+<li><p>リソースの格納</p></li>
+</ul>
+</li>
+<li><p>レプリケーションルールの設定</p></li>
+<li><p>IAMポリシーの設定</p></li>
+<li><p>バケットポリシーの設定</p></li>
+</ul>
+</section>
+<section id="id17">
+<h3><span class="section-number">4.3.5. </span>事前準備<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id18">
+<h4><span class="section-number">4.3.5.1. </span>S3バケットの作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Account-AとAccount-BでS3バケットを作成する。</p>
+<ul class="simple">
+<li><p>両方を同一リージョン（ap-northeast-1)</p></li>
+<li><p>バージョングを有効化</p></li>
+<li><p>パブリックアクセスブロックを有効化</p></li>
+</ul>
+<p><img alt="../_images/s3_replication_bucket_setting.png" src="../_images/s3_replication_bucket_setting.png" /></p>
+</section>
+<section id="id19">
+<h4><span class="section-number">4.3.5.2. </span>送信元バケットのレプリケーション設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<p>S3バケットの設定タブからレプリケーションルールを作成する</p>
+<p><img alt="../_images/s3_replication_make_rule.png" src="../_images/s3_replication_make_rule.png" /></p>
+<p>具体的には以下の内容を設定</p>
+<ul class="simple">
+<li><p>基本設定</p>
+<ul>
+<li><p>ルール名：<code class="docutils literal notranslate"><span class="pre">myaccount_to_ma_replication_rule</span></code></p></li>
+<li><p>ステータス：有効</p></li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/s3_replication_rule_setting_1.png" src="../_images/s3_replication_rule_setting_1.png" /></p>
+<ul class="simple">
+<li><p>ソースバケット</p>
+<ul>
+<li><p>スコープ：レプリケーション対象を限定可能だが、今回は全てを対象とする</p></li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/s3_replication_rule_setting_2.png" src="../_images/s3_replication_rule_setting_2.png" /></p>
+<ul class="simple">
+<li><p>送信先</p>
+<ul>
+<li><p>別アカウントの場合、IDとバケット名を指定</p></li>
+<li><p>送信先のオブジェクトの所有者をバケットの所有者とする</p></li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/s3_replication_rule_setting_3.png" src="../_images/s3_replication_rule_setting_3.png" /></p>
+<ul class="simple">
+<li><p>IAMロール</p>
+<ul>
+<li><p>新しいIAMロールを作成する</p></li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/s3_replication_rule_setting_4.png" src="../_images/s3_replication_rule_setting_4.png" /></p>
+<ul class="simple">
+<li><p>暗号化：今回はデフォルトのまま</p></li>
+<li><p>送信先ストレージクラス：今回はデフォルトのまま</p></li>
+<li><p>追加のレプリケーションオプション</p>
+<ul>
+<li><p>レプリケーション時間のコントロール (RTC)を選択することで15分以内にコピーがされる</p></li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/s3_replication_rule_setting_5.png" src="../_images/s3_replication_rule_setting_5.png" /></p>
+</section>
+<section id="iam">
+<h4><span class="section-number">4.3.5.3. </span>新規で作成されたIAMの確認<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
+<p>以下のポリシーが付与されている。
+次の送信先の設定で利用するため、IAMロールのARNをメモしておく。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;s3:ListBucket&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:GetReplicationConfiguration&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:GetObjectVersionForReplication&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:GetObjectVersionAcl&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:GetObjectVersionTagging&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:GetObjectRetention&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:GetObjectLegalHold&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:s3:::＜送信元バケット＞&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;arn:aws:s3:::＜送信元バケット＞/*&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;arn:aws:s3:::＜送信先バケット＞&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;arn:aws:s3:::＜送信先バケット＞/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;s3:ReplicateObject&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ReplicateDelete&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ReplicateTags&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ObjectOwnerOverrideToBucketOwner&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:s3:::＜送信元バケット＞/*&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;arn:aws:s3:::＜送信先バケット＞/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id20">
+<h4><span class="section-number">4.3.5.4. </span>送信先バケットのポリシー設定<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<p>送信先バケットにて、バケットポリシーを編集する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Sid&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Principal&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;AWS&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:iam::＜送信元アカウントID＞:role/service-role/＜送信元IAMロール＞&quot;</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;s3:ReplicateDelete&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ReplicateObject&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ReplicateTags&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s3:ObjectOwnerOverrideToBucketOwner&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:s3:::＜送信先バケット＞/*&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id21">
+<h4><span class="section-number">4.3.5.5. </span>動作確認<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<p>送信元のバケットにオブジェクトを格納する。
+アップロードしたオブジェクトのプロパティからレプリケーションステータスを確認するとレプリケーションの状況を確認することができる。</p>
+<p><img alt="../_images/s3_replication_status_pending.png" src="../_images/s3_replication_status_pending.png" /></p>
+<p>15分すると、送信先にオブジェクトがアップロードされる</p>
+<p><img alt="../_images/s3_replication_status_complite.png" src="../_images/s3_replication_status_complite.png" /></p>
+</section>
+<section id="id22">
+<h4><span class="section-number">4.3.5.6. </span>S3レプリケーションをイベント契機にする場合<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
+<p>S3のレプリケーションによって、ファイルがアップロードされた場合のイベントは<code class="docutils literal notranslate"><span class="pre">S3:ObjectCreated:Put</span></code>であるので、注意。</p>
+<p>ちなみに、S3 syncコマンドによるファイルアップロードは<code class="docutils literal notranslate"><span class="pre">S3:ObjectCreated:Copy</span></code>となる。</p>
+</section>
+<section id="id23">
+<h4><span class="section-number">4.3.5.7. </span>参考文献<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dev.classmethod.jp/articles/try-s3-cross-account-replication/">クラスメソッド</a></p></li>
+<li><p><a class="reference external" href="https://dev.classmethod.jp/articles/s3event-difference-between-s3sync-and-s3replication/">S3 replictionにおけるイベント連携</a></p></li>
+</ul>
+</section>
+</section>
+</section>
 </section>
 
 
@@ -158,6 +353,23 @@
 <li><a class="reference internal" href="#id9">4.2.4. 削除タイミングについて</a></li>
 <li><a class="reference internal" href="#id10">4.2.5. 注意事項</a></li>
 <li><a class="reference internal" href="#id11">4.2.6. 参考文献</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">4.3. S3レプリケーション</a><ul>
+<li><a class="reference internal" href="#id13">4.3.1. クロスリージョン・同一リージョンのレプリケーション</a></li>
+<li><a class="reference internal" href="#id14">4.3.2. 注意点</a></li>
+<li><a class="reference internal" href="#id15">4.3.3. 通信経路について</a></li>
+<li><a class="reference internal" href="#id16">4.3.4. 同一リージョンで異なるアカウント間のS3でレプリケーション</a></li>
+<li><a class="reference internal" href="#id17">4.3.5. 事前準備</a><ul>
+<li><a class="reference internal" href="#id18">4.3.5.1. S3バケットの作成</a></li>
+<li><a class="reference internal" href="#id19">4.3.5.2. 送信元バケットのレプリケーション設定</a></li>
+<li><a class="reference internal" href="#iam">4.3.5.3. 新規で作成されたIAMの確認</a></li>
+<li><a class="reference internal" href="#id20">4.3.5.4. 送信先バケットのポリシー設定</a></li>
+<li><a class="reference internal" href="#id21">4.3.5.5. 動作確認</a></li>
+<li><a class="reference internal" href="#id22">4.3.5.6. S3レプリケーションをイベント契機にする場合</a></li>
+<li><a class="reference internal" href="#id23">4.3.5.7. 参考文献</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

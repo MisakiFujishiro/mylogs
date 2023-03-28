@@ -1,10 +1,10 @@
 
-## LambdaとS3・AIなどのAWSサービスの連携
-### H4b
+# LambdaとS3・AIなどのAWSサービスの連携
+## H4b
 [H4B：AWS LambdaとAWS AI Servicesを組み合わせて作る音声文字起こし&感情分析パイプライン](https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html)
 の内容を踏まえてLambadaの手順などを整理する。
 
-#### 全体構成
+## 全体構成
 S3に音声データをアップロードするとS3のイベントが発出され、Lambdaがそれを受け取る。  
 LambdaがTranscribeを呼び出して、テキストデータに変換し、そのデータをS3にアップロードする。  
 テキストのアップロードを契機として、再度Lambdaを呼び出して、ポジネガ判定を行う。
@@ -16,11 +16,11 @@ LambdaがTranscribeを呼び出して、テキストデータに変換し、そ�
 
 ![](img/lambda_archie.png)
 
-#### S3とLambdaの連携
+## S3とLambdaの連携
 S3バケットの作成をして、Lambdaからpython-get-s3-objectからコードを作成する。
 
 
-#### LambdaとTranscribeの連携
+## LambdaとTranscribeの連携
 S3内部の音声データのObjectを指定すると、文字起こしをして指定したs3のディレクトリにjsonファイルを吐き出す。
 
 LambdaのIAM Roleについて、TranscribeやS3への権限を付与する
@@ -71,7 +71,7 @@ def lambda_handler(event, context):
 Lambdaファンクションを修正したら、Deployを忘れずに！
 
 
-#### S3への連携
+## S3への連携
 TranscribeがS3に格納したイベントを契機にして、Comprehendにデータを渡す。  
 
 
