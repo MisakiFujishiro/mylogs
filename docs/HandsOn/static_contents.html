@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>8. 静的コンテンツの公開 S3/CloudFront/ACM/Route53 &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. AWS ECS上に構築するSpringアプリケーション" href="../Artifact/ecs.html" />
+    <link rel="prev" title="7. WAFの設定" href="waf.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="waf.html" title="7. WAFの設定"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>静的コンテンツの公開 S3/CloudFront/ACM/Route53</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="s3-cloudfront-acm-route53">
+<h1><span class="section-number">8. </span>静的コンテンツの公開 S3/CloudFront/ACM/Route53<a class="headerlink" href="#s3-cloudfront-acm-route53" title="この見出しへのパーマリンク">¶</a></h1>
+<p>今回のHandsOnを通じて作成する全体像は以下</p>
+<p>S3の静的ウェブサイトホスティングを利用してウェブサイトを公開し、CloudFrontを設定する。
+加えて、Route53とACMを利用して独自ドメインを取得する（お金がかかる）</p>
+<p><img alt="../_images/static_overview.png" src="../_images/static_overview.png" /></p>
+<section id="id1">
+<h2><span class="section-number">8.1. </span>実案件における手順<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>1. S3バケットを利用して静的ウェブサイトホスティングを行う
+2. Cloud Frontを利用してS3へのアクセスを設定(S3を直接指定)
+---S3へのネットワーク開通（CloudFront→S3)---
+3. Route53を利用してドメインを取得する
+4. 取得ドメインに対してレコード設定を行う(レコードの指定でS3を直接指定)
+---S3へのネットワーク開通（Route53ドメイン→S3）---
+5. ACMを利用して証明書を取得(Route53で検証)
+6. ACMとCloudFrontを紐付け
+7. CloudFrontとRoute53を紐付け
+---HTTPS接続の開通（Route53→CloudFront→HTTPS→S3)---
+
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2><span class="section-number">8.2. </span>静的ウェブサイトホスティング<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>S3にWebサーバーの役割を付与することで、アップロードしたHTMLサイトなどの静的なウェブサイトを一般公開する</p>
+<p>バケットの設定でこの機能を設定すると、以下の形式でWebサイト用のURLが発行される</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">bucket</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">-&lt;</span><span class="n">region</span><span class="o">&gt;.</span><span class="n">amazon</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<section id="web">
+<h3><span class="section-number">8.2.1. </span>Webドメインとの連携に向けて<a class="headerlink" href="#web" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Route53を利用してWebドメインをS3の静的ウェブサイトホスティングと連携する場合、ドメインネームとバケット名が一致している必要性があることに注意</p>
+</section>
+<section id="id3">
+<h3><span class="section-number">8.2.2. </span>手順<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<ol class="simple">
+<li><p>バケットのブロックパブリックアクセス設定で、ブロックをオフにする</p></li>
+</ol>
+<p><img alt="静的ホスティング" src="../_images/s3_static_hosting.png" /></p>
+<ol class="simple">
+<li><p>静的ウェブサイトホスティングを許可する<br />バケット&gt;プロパティ&gt;静的ウェブサイトホスティング<br />「有効にする」を選択くして、最初に表示するindex.htmlなどを設定</p></li>
+</ol>
+<p><img alt="静的ホスティング設定" src="../_images/s3_static_setting.png" /></p>
+<p>デフォルトで表示するファイルを指定して、S3にアップロードしておく。
+設定が完了すると、静的ウェブサイトホスティングのURLが生成される。</p>
+<ol class="simple">
+<li><p>アクセスポリシー<br />バケット作成時にパブリックアクセス設定を許可したからといってパブリックになる訳ではなく、バケットポリシーにもパブリックな設定を入れる必要がある。</p></li>
+</ol>
+<p>バケット&gt;アクセス許可&gt;バケットポリシーの設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+          <span class="s2">&quot;Sid&quot;</span><span class="p">:</span> <span class="s2">&quot;PublicReadGetObject&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;Principal&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;s3:GetObject&quot;</span>
+          <span class="p">],</span>
+          <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;arn:aws:s3:::[YOUR BUCKET NAME]/*&quot;</span>
+          <span class="p">]</span>
+      <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>結果として、バケットのアクセス欄が<code class="docutils literal notranslate"><span class="pre">公開</span></code>となる</p>
+<p><img alt="../_images/static_bucket_public.png" src="../_images/static_bucket_public.png" /></p>
+<p>この状態で、静的ウェブサイトホスティングのURLにアクセスすると、初期設定したindex.htmlが表示される</p>
+</section>
+<section id="cloudfront">
+<h3><span class="section-number">8.2.3. </span>CloudFrontの設定<a class="headerlink" href="#cloudfront" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/HandsOn/cloudfront.html">別ページ</a>を参照</p>
+</section>
+</section>
+<section id="route53">
+<h2><span class="section-number">8.3. </span>Route53で独自ドメインを取得する<a class="headerlink" href="#route53" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id4">
+<h3><span class="section-number">8.3.1. </span>ドメインの取得<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Route53&gt;登録済みドメイン&gt;ドメインの登録</p>
+<ol class="simple">
+<li><p>取得したいドメイン名でチェックする</p></li>
+</ol>
+<p><img alt="../_images/route53_domain_check.png" src="../_images/route53_domain_check.png" /></p>
+<ol class="simple">
+<li><p>カートに入れて、取得</p></li>
+<li><p>個人情報を入力して、注文を完了</p></li>
+</ol>
+</section>
+<section id="id5">
+<h3><span class="section-number">8.3.2. </span>レコードの作成<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ドメイン取得後にレコードを設定する<br />今回は、CloudFrontではなく、S3のURLと紐付けを行う。（ドメイン名を指定すると直接S3に転送する）</p>
+<ol class="simple">
+<li><p>Route53&gt;ホストゾーン&gt;取得したドメイン</p></li>
+<li><p>レコードセットの作成</p></li>
+<li><p>エイリアスの宛先に同じドメイン名のS3が選択可能になる</p></li>
+</ol>
+<p><img alt="../_images/route53_record_setting.png" src="../_images/route53_record_setting.png" /></p>
+<ol class="simple">
+<li><p>ドメイン名をURLとしてアクセスすると静的ウェブサイトホスティングしたS3のページが表示される</p></li>
+</ol>
+<p><img alt="../_images/route53_domain_access.png" src="../_images/route53_domain_access.png" /></p>
+</section>
+</section>
+<section id="acmhttps">
+<h2><span class="section-number">8.4. </span>ACMで証明書を作成の上、HTTPSアクセスする<a class="headerlink" href="#acmhttps" title="この見出しへのパーマリンク">¶</a></h2>
+<p>今回のHandsOnでは以下の設定を行う</p>
+<ol class="simple">
+<li><p>ACMの設定</p></li>
+<li><p>ACMとCloudFrontの紐付け</p></li>
+<li><p>CloudFrontとRoute53の紐付け</p></li>
+<li><p>CloudFrontとS3の紐付け（直接アクセスの拒否）</p></li>
+</ol>
+<section id="acm">
+<h3><span class="section-number">8.4.1. </span>ACMでドメインの証明書を取得<a class="headerlink" href="#acm" title="この見出しへのパーマリンク">¶</a></h3>
+<p>注意:CloudFrontにACMを付与する場合、リージョンを<code class="docutils literal notranslate"><span class="pre">バージニア北部(us-east-1)</span></code>に変更しておくこと</p>
+<p>ACM&gt;証明書のリクエスト</p>
+<ol class="simple">
+<li><p>ドメイン名を入力</p></li>
+<li><p>検証方法:DNSの検証<br />DNSの設定を変更することができるということで検証する</p></li>
+</ol>
+<p><img alt="../_images/acm_validation.png" src="../_images/acm_validation.png" /></p>
+<p>これによって、証明書が発行される</p>
+</section>
+<section id="acmcloudfront">
+<h3><span class="section-number">8.4.2. </span>ACMとCloudFrontの紐付け<a class="headerlink" href="#acmcloudfront" title="この見出しへのパーマリンク">¶</a></h3>
+<ol class="simple">
+<li><p>HTTP を HTTPSにリダイレクトする設定をビヘイビアで設定</p></li>
+<li><p>ディストリビューションの設定でCNAMEにドメインを設定して、SSLの設定で先ほど作成した証明書を選択する</p></li>
+</ol>
+<p><img alt="../_images/acm_cloudfront.png" src="../_images/acm_cloudfront.png" /></p>
+</section>
+<section id="cloudfrontroute53">
+<h3><span class="section-number">8.4.3. </span>CloudFrontとRoute53の紐付け<a class="headerlink" href="#cloudfrontroute53" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Route53のレコードを選択すると、CloudFrontの部分が選択できるようになっている。</p>
+<p><img alt="../_images/route53_record_setting_2.png" src="../_images/route53_record_setting_2.png" /></p>
+<p>これによって、ドメインにアクセスすると、HTTPSでアクセスされるようになる（HTTPでアクセスしても自動でHTTPSにリダイレクトされる）</p>
+</section>
+<section id="cloudfronts3">
+<h3><span class="section-number">8.4.4. </span>CloudFrontとS3の紐付け修正（直接アクセスの拒否）<a class="headerlink" href="#cloudfronts3" title="この見出しへのパーマリンク">¶</a></h3>
+<ol class="simple">
+<li><p>バケットポリシーを削除する</p></li>
+<li><p>ウェブサイトの静的ホスティングも無効にする</p></li>
+<li><p>CloudFrontのオリジンを静的ホスティングから変更する</p></li>
+</ol>
+<p>ディストリビューションからオリジンの変更を押下</p>
+<p><img alt="../_images/static_origin_edit.png" src="../_images/static_origin_edit.png" /></p>
+<p>静的ホスティングのURLを削除してS3バケットを改めて指定。
+以下のように設定することで、自動的にバケットポリシーを修正して、CloudFrontからしかアクセスできないよう修正してくれる。</p>
+<p><img alt="../_images/static_origin_edit_2.png" src="../_images/static_origin_edit_2.png" /></p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">8. 静的コンテンツの公開 S3/CloudFront/ACM/Route53</a><ul>
+<li><a class="reference internal" href="#id1">8.1. 実案件における手順</a></li>
+<li><a class="reference internal" href="#id2">8.2. 静的ウェブサイトホスティング</a><ul>
+<li><a class="reference internal" href="#web">8.2.1. Webドメインとの連携に向けて</a></li>
+<li><a class="reference internal" href="#id3">8.2.2. 手順</a></li>
+<li><a class="reference internal" href="#cloudfront">8.2.3. CloudFrontの設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#route53">8.3. Route53で独自ドメインを取得する</a><ul>
+<li><a class="reference internal" href="#id4">8.3.1. ドメインの取得</a></li>
+<li><a class="reference internal" href="#id5">8.3.2. レコードの作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#acmhttps">8.4. ACMで証明書を作成の上、HTTPSアクセスする</a><ul>
+<li><a class="reference internal" href="#acm">8.4.1. ACMでドメインの証明書を取得</a></li>
+<li><a class="reference internal" href="#acmcloudfront">8.4.2. ACMとCloudFrontの紐付け</a></li>
+<li><a class="reference internal" href="#cloudfrontroute53">8.4.3. CloudFrontとRoute53の紐付け</a></li>
+<li><a class="reference internal" href="#cloudfronts3">8.4.4. CloudFrontとS3の紐付け修正（直接アクセスの拒否）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="waf.html"
+                          title="前の章へ"><span class="section-number">7. </span>WAFの設定</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../Artifact/ecs.html"
+                          title="次の章へ"><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/HandsOn/static_contents.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="waf.html" title="7. WAFの設定"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>静的コンテンツの公開 S3/CloudFront/ACM/Route53</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

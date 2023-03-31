@@ -1,11 +1,11 @@
-# WAFの設定
+## WAFの設定
 WAFはWebアプリケーションファイアウォール（Web Application Firewall)機能である。
 
 AWSのサービスに通信が届く前にAWS WAFがルールに従ってフィルタリングをする。
 
-## Cloud Frontに対して設定する
+### Cloud Frontに対して設定する
 
-### ACLの作成
+#### ACLの作成
 WAF & Shieldの画面から`Create web ACL`を選択
 
 Resource TypeからAmazon CloudFront distributionsを選択し、Nameを入力して、Associated AWS resourceに対象のCloudFrontを選択
@@ -13,7 +13,7 @@ Resource TypeからAmazon CloudFront distributionsを選択し、Nameを入力�
 ![](img/waf_make_acl_1.png)
 
 
-### Ruleの作成
+#### Ruleの作成
 動作確認として、接続元が日本である場合に、接続を拒否するルールを設定する。
 
 Add rulesからAdd my own rules and rule groupsを選択

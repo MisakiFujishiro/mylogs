@@ -355,23 +355,33 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 <section id="acm-aws-certificate-manager">
 <h2><span class="section-number">2.6. </span>ACM(AWS Certificate Manager)<a class="headerlink" href="#acm-aws-certificate-manager" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ACMはSSL/TLSサーバー証明書を管理するサービス</p>
-<p>SSLを有効化するためには、通信を行うサーバーに対してSSL/TLSサーバー証明書を発行準備する必要がある。
+<p>前提として、SSLを有効化するためには、通信を行うサーバーに対してSSL/TLSサーバー証明書を発行準備する必要がある。
 SSLが有効化されていることでHTTPSの通信が可能となる。</p>
+<p>ACMを利用することで、証明書の更新やデプロイを自動化することができる。</p>
 <section id="id22">
-<h3><span class="section-number">2.6.1. </span>証明書の発行元<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.6.1. </span>対象サービス<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<p>配置となるAWSのサービスは以下</p>
+<ul class="simple">
+<li><p>ELB</p></li>
+<li><p>CloudFront</p></li>
+<li><p>API Gateway</p></li>
+</ul>
+</section>
+<section id="id23">
+<h3><span class="section-number">2.6.2. </span>証明書の発行元<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>公的機関が発行するパブリック証明書と、自前の認証局で発行するプライベート証明書がある。</p>
 <p>パブリック証明書は、接続の安全性を保証するために利用され、不特定多数の人がアクセスするWebサイトなどで利用する。</p>
 </section>
 <section id="acm">
-<h3><span class="section-number">2.6.2. </span>ACMの役割<a class="headerlink" href="#acm" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.6.3. </span>ACMの役割<a class="headerlink" href="#acm" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>証明書の発行：パブリック・プライベートの証明書を発行</p></li>
 <li><p>証明書のインポート：既存の証明書をインポートする</p></li>
 <li><p>証明書のデプロイ：AWSサービスに証明書を配備する</p></li>
 </ul>
 </section>
-<section id="id23">
-<h3><span class="section-number">2.6.3. </span>ACMが利用できないリージョン<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id24">
+<h3><span class="section-number">2.6.4. </span>ACMが利用できないリージョン<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ACMが利用できないリージョンで、証明書をインポートしたい場合には、ACMの代わりにIAMを利用する。</p>
 </section>
 </section>
@@ -382,8 +392,8 @@ SSLが有効化されていることでHTTPSの通信が可能となる。</p>
 <p><img alt="../_images/waf_image.png" src="../_images/waf_image.png" /></p>
 <p>CloufFrontやALB、APIGWに対してルールを設定して、特定のIPからのアクセスを拒否したりすることができる。</p>
 <p><img alt="../_images/waf.png" src="../_images/waf.png" /></p>
-<section id="id24">
-<h3><span class="section-number">2.7.1. </span>WAFのルール設定<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id25">
+<h3><span class="section-number">2.7.1. </span>WAFのルール設定<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
 <p>WAFで定義するルールはACL（Access Control List）として設定を行う</p>
 <ul class="simple">
 <li><p>Rule<br />通信内容を確認して、不正なアクセスを防ぐためのルールセット<br />以下のようにカスタムすることも、AWSが準備しているマネージドのものもある</p>
@@ -511,13 +521,14 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 </li>
 <li><a class="reference internal" href="#aws-sso">2.5. AWS SSO</a></li>
 <li><a class="reference internal" href="#acm-aws-certificate-manager">2.6. ACM(AWS Certificate Manager)</a><ul>
-<li><a class="reference internal" href="#id22">2.6.1. 証明書の発行元</a></li>
-<li><a class="reference internal" href="#acm">2.6.2. ACMの役割</a></li>
-<li><a class="reference internal" href="#id23">2.6.3. ACMが利用できないリージョン</a></li>
+<li><a class="reference internal" href="#id22">2.6.1. 対象サービス</a></li>
+<li><a class="reference internal" href="#id23">2.6.2. 証明書の発行元</a></li>
+<li><a class="reference internal" href="#acm">2.6.3. ACMの役割</a></li>
+<li><a class="reference internal" href="#id24">2.6.4. ACMが利用できないリージョン</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#waf">2.7. WAF</a><ul>
-<li><a class="reference internal" href="#id24">2.7.1. WAFのルール設定</a></li>
+<li><a class="reference internal" href="#id25">2.7.1. WAFのルール設定</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#shield">2.8. Shield</a></li>
