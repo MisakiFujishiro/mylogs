@@ -146,6 +146,9 @@ ACM>証明書のリクエスト
 
 ![](img/acm_cloudfront.png)
 
+ここの設定については、[CloudFrontで独自ドメイン利用の際にディストリビューション側にもCNAME設定が必要な点をその動作とともに検証してみた](https://dev.classmethod.jp/articles/amazon-cloudfront-cname-and-host-header-test/)
+が参考になる。
+
 #### CloudFrontとRoute53の紐付け
 Route53のレコードを選択すると、CloudFrontの部分が選択できるようになっている。
 
