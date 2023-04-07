@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>16. AIサービス &#8212; my_sphinx  ドキュメント</title>
+    <title>17. AIサービス &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. Javaとは" href="../Java/java_env.html" />
-    <link rel="prev" title="15. Kinesis" href="Streaming.html" /> 
+    <link rel="next" title="1. Cognitoで認証をして、AWSのリソースにアクセスする" href="../HandsOn/cognito_authentication.html" />
+    <link rel="prev" title="16. Kinesis" href="Streaming.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. Javaとは"
+          <a href="../HandsOn/cognito_authentication.html" title="1. Cognitoで認証をして、AWSのリソースにアクセスする"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="Streaming.html" title="15. Kinesis"
+          <a href="Streaming.html" title="16. Kinesis"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>AIサービス</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">17. </span>AIサービス</a></li> 
       </ul>
     </div>  
 
@@ -46,13 +46,13 @@
           <div class="body" role="main">
             
   <section id="ai">
-<h1><span class="section-number">16. </span>AIサービス<a class="headerlink" href="#ai" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">17. </span>AIサービス<a class="headerlink" href="#ai" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="amazon-transcribe">
-<h2><span class="section-number">16.1. </span>Amazon Transcribe<a class="headerlink" href="#amazon-transcribe" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.1. </span>Amazon Transcribe<a class="headerlink" href="#amazon-transcribe" title="この見出しへのパーマリンク">¶</a></h2>
 <p>音声をテキストに変換する文字起こしサービス
 日本語に対応しているが、リアルタイム変換は日本語未対応</p>
 <section id="id1">
-<h3><span class="section-number">16.1.1. </span>使い方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.1.1. </span>使い方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>amazon transcribeのページからjobを作成</p>
 <ul class="simple">
 <li><p>Name:ジョブの名前(ユニークにする必要がある)</p></li>
@@ -214,7 +214,7 @@
 </section>
 </section>
 <section id="amazon-polly">
-<h2><span class="section-number">16.2. </span>Amazon Polly<a class="headerlink" href="#amazon-polly" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.2. </span>Amazon Polly<a class="headerlink" href="#amazon-polly" title="この見出しへのパーマリンク">¶</a></h2>
 <p>テキストを音声に変換するサービス<br />SSMLというマークアップ言語で指定すると、音声に変換してくれる。<br />アクセントの変更はLexiconで設定できる。</p>
 <p>SSMLの例文、タグで囲むことで囁きや声量を変更できる。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;speak&gt;
@@ -227,7 +227,7 @@
 <p>作成した音声ファイルは、画面の「S3に保存」からS3に格納できる</p>
 </section>
 <section id="amazon-comprehend">
-<h2><span class="section-number">16.3. </span>Amazon Comprehend<a class="headerlink" href="#amazon-comprehend" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.3. </span>Amazon Comprehend<a class="headerlink" href="#amazon-comprehend" title="この見出しへのパーマリンク">¶</a></h2>
 <p>キーフレーズの取得やエンティティ取得、感情分析(Sentiment)を行う。</p>
 <p><img alt="../_images/ai_comprehend.png" src="../_images/ai_comprehend.png" /></p>
 <p>Lambdaから呼び出す時の関数の設定方法は<a class="reference external" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/comprehend.html#Comprehend.Client.detect_sentiment">リファレンス</a>参照<br />今回は感情を分析する<code class="docutils literal notranslate"><span class="pre">detect_sentiment</span></code>の例</p>
@@ -263,13 +263,13 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">16. AIサービス</a><ul>
-<li><a class="reference internal" href="#amazon-transcribe">16.1. Amazon Transcribe</a><ul>
-<li><a class="reference internal" href="#id1">16.1.1. 使い方</a></li>
+<li><a class="reference internal" href="#">17. AIサービス</a><ul>
+<li><a class="reference internal" href="#amazon-transcribe">17.1. Amazon Transcribe</a><ul>
+<li><a class="reference internal" href="#id1">17.1.1. 使い方</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#amazon-polly">16.2. Amazon Polly</a></li>
-<li><a class="reference internal" href="#amazon-comprehend">16.3. Amazon Comprehend</a></li>
+<li><a class="reference internal" href="#amazon-polly">17.2. Amazon Polly</a></li>
+<li><a class="reference internal" href="#amazon-comprehend">17.3. Amazon Comprehend</a></li>
 </ul>
 </li>
 </ul>
@@ -278,12 +278,12 @@
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="Streaming.html"
-                          title="前の章へ"><span class="section-number">15. </span>Kinesis</a></p>
+                          title="前の章へ"><span class="section-number">16. </span>Kinesis</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../Java/java_env.html"
-                          title="次の章へ"><span class="section-number">1. </span>Javaとは</a></p>
+    <p class="topless"><a href="../HandsOn/cognito_authentication.html"
+                          title="次の章へ"><span class="section-number">1. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -313,13 +313,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../Java/java_env.html" title="1. Javaとは"
+          <a href="../HandsOn/cognito_authentication.html" title="1. Cognitoで認証をして、AWSのリソースにアクセスする"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="Streaming.html" title="15. Kinesis"
+          <a href="Streaming.html" title="16. Kinesis"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>AIサービス</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">17. </span>AIサービス</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -40,6 +40,7 @@ AWS Services(AWSサービスの概要)
    AWS/Monitoring
    AWS/EnvAutomation
    AWS/SNS_SQS
+   AWS/MSK
    AWS/Streaming
    AWS/AI
 
@@ -83,6 +84,16 @@ Microservice
    microservice/microservice_archi
    microservice/certification_authentication
    microservice/serverless.md
+
+
+Agile
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   Agile/agile
 
 
 ITの基本

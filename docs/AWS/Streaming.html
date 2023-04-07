@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>15. Kinesis &#8212; my_sphinx  ドキュメント</title>
+    <title>16. Kinesis &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="16. AIサービス" href="AI.html" />
-    <link rel="prev" title="13. SNS" href="SNS_SQS.html" /> 
+    <link rel="next" title="17. AIサービス" href="AI.html" />
+    <link rel="prev" title="15. MSK:Managed Streaming for Kafka" href="MSK.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="AI.html" title="16. AIサービス"
+          <a href="AI.html" title="17. AIサービス"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="SNS_SQS.html" title="13. SNS"
+          <a href="MSK.html" title="15. MSK:Managed Streaming for Kafka"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">15. </span>Kinesis</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>Kinesis</a></li> 
       </ul>
     </div>  
 
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <section id="kinesis">
-<h1><span class="section-number">15. </span>Kinesis<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">16. </span>Kinesis<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">ストリーミングデータの配信機能</span></code>を提供するマネージドサービス</p>
 <p>サーバーがAWS管理のため、ユーザーはストリームデータの処理に集中することができる。</p>
 <p>そもそもストリーミングデータとは、データの連続的な変化によって意味を持つデータのことであり、
@@ -59,12 +59,12 @@
 <li><p>Kinesis Video Streams:動画をストリームデータとしてAWSに取り込み、各種サービスに配信</p></li>
 </ul>
 <section id="kinesis-data-streams">
-<h2><span class="section-number">15.1. </span>Kinesis Data Streams<a class="headerlink" href="#kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.1. </span>Kinesis Data Streams<a class="headerlink" href="#kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h2>
 <p>異なるシステムやサーバー、デバイスから送信されるストリームデータを受信して、各種AWSサービスにリアルタイムに配信するサービス。</p>
 <p>AWSのリソースに配信されるが、Consumer側で作り込みが必要になる点に注意。</p>
 <p><img alt="../_images/kinesis_data_sterams.png" src="../_images/kinesis_data_sterams.png" /></p>
 <section id="data-streams">
-<h3><span class="section-number">15.1.1. </span>Data Streamsの登場人物<a class="headerlink" href="#data-streams" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.1.1. </span>Data Streamsの登場人物<a class="headerlink" href="#data-streams" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Producer</p></li>
 <li><p>Consumer</p></li>
@@ -73,18 +73,18 @@
 </ul>
 </section>
 <section id="data-stream">
-<h3><span class="section-number">15.1.2. </span>Data Streamの暗号化<a class="headerlink" href="#data-stream" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.1.2. </span>Data Streamの暗号化<a class="headerlink" href="#data-stream" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>通信の暗号化(HTTPS)<br />HTTPSエンドポイントが準備されており、　HTTPSによるデータ通信でデータを暗号化することができる</p></li>
 <li><p>保存中の暗号化（KMS)<br />KMSを利用することでサーバーサイド暗号化を行うことが可能</p></li>
 </ul>
 </section>
 <section id="id1">
-<h3><span class="section-number">15.1.3. </span>保存期間<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.1.3. </span>保存期間<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>デフォルトでは24時間の保存期間が設定されており、最大で168時間まで設定可能。</p>
 </section>
 <section id="id2">
-<h3><span class="section-number">15.1.4. </span>シャードのパフォーマンス調整<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.1.4. </span>シャードのパフォーマンス調整<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>パフォーマンスの調整はシャーディングの分割や結合を通じて行うことができる。
 Kinesisでは、シャードに対して課金されるため、分割すると性能は上がるが、コストは増加する点に注意。</p>
 <p>リシャーディングを行う際には、メトリクスを使用して<code class="docutils literal notranslate"><span class="pre">ホット</span></code>シャードと<code class="docutils literal notranslate"><span class="pre">コールド</span></code>シャードを分析する</p>
@@ -94,9 +94,9 @@ Kinesisでは、シャードに対して課金されるため、分割すると�
 </ul>
 </section>
 <section id="id3">
-<h3><span class="section-number">15.1.5. </span>トラブルシューティング<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.1.5. </span>トラブルシューティング<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="provisionedthroughputexceededexception">
-<h4><span class="section-number">15.1.5.1. </span>ProvisionedThroughputExceededException<a class="headerlink" href="#provisionedthroughputexceededexception" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">16.1.5.1. </span>ProvisionedThroughputExceededException<a class="headerlink" href="#provisionedthroughputexceededexception" title="この見出しへのパーマリンク">¶</a></h4>
 <p>現在のパフォーマンスでは要求された量のデータが処理できていないことが原因のエラー</p>
 <p>kinesisシャードの読み取り性能は</p>
 <ul class="simple">
@@ -118,7 +118,7 @@ Kinesisでは、シャードに対して課金されるため、分割すると�
 </section>
 </section>
 <section id="kinesis-data-firehose">
-<h2><span class="section-number">15.2. </span>Kinesis Data Firehose<a class="headerlink" href="#kinesis-data-firehose" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.2. </span>Kinesis Data Firehose<a class="headerlink" href="#kinesis-data-firehose" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3、Redshift、OenSeearchなどのストレージサービスやDBにストリームデータをロードさせるサービス。
 Redshiftに保存するためには一度S3に格納する必要がある点に注意</p>
 <p>Kinesis Data FirehoseはLambdaと統合されており、受信したデータに変換をしてから、配信することが可能。</p>
@@ -126,7 +126,7 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
 <p><img alt="../_images/kinesis_data_firehose.png" src="../_images/kinesis_data_firehose.png" /></p>
 </section>
 <section id="kinesis-data-analytics">
-<h2><span class="section-number">15.3. </span>Kinesis Data Analytics<a class="headerlink" href="#kinesis-data-analytics" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.3. </span>Kinesis Data Analytics<a class="headerlink" href="#kinesis-data-analytics" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Kinesis Data streamsとKinesis Data Firehoseに格納されたストリームデータに対して分析が可能なサービス</p>
 <p>SQLなどを利用して、データ分析を行い、Lambdaと統合されているためデータ形式の変換を行なうことも可能。</p>
 <p>Kinesis Data Analyticsで分析した後は、Firehoseで分析結果を蓄積したり、Streamsへ流してよりリッチな分析を行うことが可能。
@@ -134,7 +134,7 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
 <p><img alt="../_images/kinesis_data_analytics.png" src="../_images/kinesis_data_analytics.png" /></p>
 </section>
 <section id="kinesis-video-streams">
-<h2><span class="section-number">15.4. </span>kinesis Video Streams<a class="headerlink" href="#kinesis-video-streams" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.4. </span>kinesis Video Streams<a class="headerlink" href="#kinesis-video-streams" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ビデオカメラなどのデバイスから送られてくる動画データをストリームデータとしてAWSに取り込み、ストリーミング（データ転送）するサービス。</p>
 <p>データ分析を行う際には、Kinesis Video Streams Parser Streams　Libraryを利用した動画解析や機械学習サービスであるAmazon Rekognition VideoやSage Makerとの連携が可能。</p>
 <p>データ分析を行うほか、WebRTCを使用して、レイテンシーを短くすることで、オンライン会議のような双方向での配信も可能である。</p>
@@ -152,21 +152,21 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">15. Kinesis</a><ul>
-<li><a class="reference internal" href="#kinesis-data-streams">15.1. Kinesis Data Streams</a><ul>
-<li><a class="reference internal" href="#data-streams">15.1.1. Data Streamsの登場人物</a></li>
-<li><a class="reference internal" href="#data-stream">15.1.2. Data Streamの暗号化</a></li>
-<li><a class="reference internal" href="#id1">15.1.3. 保存期間</a></li>
-<li><a class="reference internal" href="#id2">15.1.4. シャードのパフォーマンス調整</a></li>
-<li><a class="reference internal" href="#id3">15.1.5. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#provisionedthroughputexceededexception">15.1.5.1. ProvisionedThroughputExceededException</a></li>
+<li><a class="reference internal" href="#">16. Kinesis</a><ul>
+<li><a class="reference internal" href="#kinesis-data-streams">16.1. Kinesis Data Streams</a><ul>
+<li><a class="reference internal" href="#data-streams">16.1.1. Data Streamsの登場人物</a></li>
+<li><a class="reference internal" href="#data-stream">16.1.2. Data Streamの暗号化</a></li>
+<li><a class="reference internal" href="#id1">16.1.3. 保存期間</a></li>
+<li><a class="reference internal" href="#id2">16.1.4. シャードのパフォーマンス調整</a></li>
+<li><a class="reference internal" href="#id3">16.1.5. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#provisionedthroughputexceededexception">16.1.5.1. ProvisionedThroughputExceededException</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#kinesis-data-firehose">15.2. Kinesis Data Firehose</a></li>
-<li><a class="reference internal" href="#kinesis-data-analytics">15.3. Kinesis Data Analytics</a></li>
-<li><a class="reference internal" href="#kinesis-video-streams">15.4. kinesis Video Streams</a></li>
+<li><a class="reference internal" href="#kinesis-data-firehose">16.2. Kinesis Data Firehose</a></li>
+<li><a class="reference internal" href="#kinesis-data-analytics">16.3. Kinesis Data Analytics</a></li>
+<li><a class="reference internal" href="#kinesis-video-streams">16.4. kinesis Video Streams</a></li>
 </ul>
 </li>
 </ul>
@@ -174,13 +174,13 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="SNS_SQS.html"
-                          title="前の章へ"><span class="section-number">13. </span>SNS</a></p>
+    <p class="topless"><a href="MSK.html"
+                          title="前の章へ"><span class="section-number">15. </span>MSK:Managed Streaming for Kafka</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="AI.html"
-                          title="次の章へ"><span class="section-number">16. </span>AIサービス</a></p>
+                          title="次の章へ"><span class="section-number">17. </span>AIサービス</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -210,13 +210,13 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="AI.html" title="16. AIサービス"
+          <a href="AI.html" title="17. AIサービス"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="SNS_SQS.html" title="13. SNS"
+          <a href="MSK.html" title="15. MSK:Managed Streaming for Kafka"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">15. </span>Kinesis</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>Kinesis</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
