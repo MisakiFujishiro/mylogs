@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="15. MSK:Managed Streaming for Kafka" href="MSK.html" />
+    <link rel="next" title="16. MSK:Managed Streaming for Kafka" href="MSK.html" />
     <link rel="prev" title="12. 環境構築自動化" href="EnvAutomation.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="15. MSK:Managed Streaming for Kafka"
+          <a href="MSK.html" title="16. MSK:Managed Streaming for Kafka"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="EnvAutomation.html" title="12. 環境構築自動化"
@@ -163,7 +163,28 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
 この設定は、<code class="docutils literal notranslate"><span class="pre">MessageRetentionPeriod</span></code>で設定する</p>
 </section>
 <section id="id10">
-<h3><span class="section-number">14.3.2. </span>キューからのメッセージ取得<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.3.2. </span>SQSの容量<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SQSでやり取りすることができる容量は最大256kB</p>
+<p>しかし、S3とJava拡張ライブラリを利用することで、SQSのメッセージサイズを超過して2GBまで対応することができる。</p>
+</section>
+<section id="id11">
+<h3><span class="section-number">14.3.3. </span>SQSのキューの削除<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Purge</span> <span class="pre">Queue</span></code>を利用すると、指定したキューないのメッセージを削除することができる。</p>
+</section>
+<section id="id12">
+<h3><span class="section-number">14.3.4. </span>デットレターキュー<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<p>正常に処理できないメッセージがキューに滞留することを避ける機能。</p>
+<p>Redriveポリシーで、移動させるルール（最大受信数）とメッセージ格納先（デットレターキュー）を指定する
+デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
+</section>
+<section id="id13">
+<h3><span class="section-number">14.3.5. </span>重複削除<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<p>FIFOキューでは重複を排除するための機能が備わっている。
+あるメッセージが送付されてから<code class="docutils literal notranslate"><span class="pre">5分間</span></code>の間に同一のメッセージが送られてきた時に重複を削除することができる。</p>
+</section>
+</section>
+<section id="id14">
+<h2><span class="section-number">14.4. </span>キューからのメッセージ取得<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
 <p>次の3ステップを踏む</p>
 <ol class="simple">
 <li><p>Consumerがキューをポーリング（キューの監視）</p></li>
@@ -172,9 +193,8 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
 </ol>
 <p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。
 メッセージ削除の際は取得したMessageのIDである「ReceiptHandle」を指定するが、他のConsumerがメッセージに触れると「ReceiptHandle」が書き換えられてエラーになるの可能性があるので、可視化タイムアウトなどの設定を使うようにする。</p>
-</section>
-<section id="id11">
-<h3><span class="section-number">14.3.3. </span>ポーリング<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">14.4.1. </span>ポーリング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。
 ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間(ReciveMessageWaitTimeSeconds)</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
 <ul class="simple">
@@ -184,50 +204,63 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
 分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける<br />待機時間を設定することで、Producerが生産してからConsumerが消費するまでの待機時間を設定できる</p></li>
 </ul>
 </section>
-<section id="id12">
-<h3><span class="section-number">14.3.4. </span>キューの待機時間設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id16">
+<h3><span class="section-number">14.4.2. </span>キューの待機時間設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerがキューに格納してからConsumerが取得するまでの時間を遅延させたり、
 Consumerがキューを取得してから他のConsumerがメッセージを取得するまでの時間を遅延させたりすることができる。</p>
 <p>以下の図は、後述する遅延キュー（メッセージタイマーと可視性タイムアウトの関係）</p>
 <p><img alt="../_images/sns_delay.png" src="../_images/sns_delay.png" /></p>
-</section>
-<section id="id13">
-<h3><span class="section-number">14.3.5. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Producerからキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。<br />遅延キューでは、<code class="docutils literal notranslate"><span class="pre">配信遅延時間(DelaySecondsパラメータ)</span></code>を設定することでキュー全体に設定が反映され、メッセージタイマーでは特定メッセージに対して設定が反映される</p>
+<section id="id17">
+<h4><span class="section-number">14.4.2.1. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">Producer</span></code>からキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。</p>
+<ul class="simple">
+<li><p>遅延キューはキュー全体に設定が反映される<br /><code class="docutils literal notranslate"><span class="pre">配信遅延時間(DelaySecondsパラメータ)</span></code>を設定する</p></li>
+<li><p>メッセージタイマーは特定メッセージに対して設定が反映される</p></li>
+</ul>
 <p><img alt="../_images/sqs_delay.png" src="../_images/sqs_delay.png" /></p>
 </section>
-<section id="id14">
-<h3><span class="section-number">14.3.6. </span>可視性タイムアウト<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Consumerがメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を防止することができるが、重複性を完全排除はできない点に注意。</p>
+<section id="id18">
+<h4><span class="section-number">14.4.2.2. </span>可視性タイムアウト<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">Consumer</span></code>がメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を<code class="docutils literal notranslate"><span class="pre">極力</span></code>防止することができる。
+極力というのは、スタンダートキューの場合は重複性を完全排除はできない点に注意。</p>
 <p><img alt="../_images/sqs_visibility.png" src="../_images/sqs_visibility.png" /></p>
 </section>
-<section id="id15">
-<h3><span class="section-number">14.3.7. </span>デットレターキュー<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
-<p>正常に処理できないメッセージがキューに滞留することを避ける機能。</p>
-<p>Redriveポリシーで、移動させるルール（最大受信数）とメッセージ格納先（デットレターキュー）を指定する
-デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
 </section>
-<section id="id16">
-<h3><span class="section-number">14.3.8. </span>重複削除<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
-<p>FIFOキューでは重複を排除するための機能が備わっている。
-あるメッセージが送付されてから<code class="docutils literal notranslate"><span class="pre">5分間</span></code>の間に同一のメッセージが送られてきた時に重複を削除することができる。</p>
 </section>
-<section id="id17">
-<h3><span class="section-number">14.3.9. </span>セキュリティ<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id19">
+<h2><span class="section-number">14.5. </span>セキュリティ<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id20">
+<h3><span class="section-number">14.5.1. </span>暗号化<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SQSはKMSと統合されており、KMSによってメッセージを暗号化できる。
 ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
 <p>SQSはIAMによるアクセス制御に加えて、キューに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
+<p><img alt="../_images/sqs_secret.png" src="../_images/sqs_secret.png" /></p>
 </section>
-<section id="id18">
-<h3><span class="section-number">14.3.10. </span>SQSの容量<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
-<p>SQSでやり取りすることができる容量は最大256kB</p>
-<p>しかし、S3とJava拡張ライブラリを利用することで、SQSのメッセージサイズを超過して2GBまで対応することができる。</p>
+<section id="id21">
+<h3><span class="section-number">14.5.2. </span>アクセス制御<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下で制御が可能</p>
+<ul class="simple">
+<li><p>IAMポリシー: 特定のユーザーやロールに対してキューへのアクセス制御が可能</p></li>
+<li><p>SQSポリシー: 特定のキューに対するアクセス制御が可能</p></li>
+</ul>
+<p><img alt="../_images/sqs_policy.png" src="../_images/sqs_policy.png" /></p>
 </section>
-<section id="id19">
-<h3><span class="section-number">14.3.11. </span>SQSのキューの削除<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">Purge</span> <span class="pre">Queue</span></code>を利用すると、指定したキューないのメッセージを削除することができる。</p>
+</section>
+<section id="id22">
+<h2><span class="section-number">14.6. </span>監視<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Amazon CloudWatchと連携して、以下の内容をモニタリングすることができ、例えばオートスケールの指標にすることができる</p>
+<p><img alt="../_images/sqs_monitoring.png" src="../_images/sqs_monitoring.png" /></p>
 </section>
 </section>
+<section id="kinesis">
+<h1><span class="section-number">15. </span>kinesisとの比較<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h1>
+<p>ストリーミングデータであればkinesis一択。それ以外の場合は以下のデータの特性によって判断</p>
+<ul class="simple">
+<li><p>データの処理方法</p></li>
+<li><p>データサイズ</p></li>
+<li><p>保持期間</p></li>
+</ul>
+<p><img alt="../_images/sqs_vs_kinesis.png" src="../_images/sqs_vs_kinesis.png" /></p>
 </section>
 
 
@@ -261,20 +294,30 @@ ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。<
 </li>
 <li><a class="reference internal" href="#id8">14.3. SQSのキュー詳細</a><ul>
 <li><a class="reference internal" href="#id9">14.3.1. キューの保存期間</a></li>
-<li><a class="reference internal" href="#id10">14.3.2. キューからのメッセージ取得</a></li>
-<li><a class="reference internal" href="#id11">14.3.3. ポーリング</a></li>
-<li><a class="reference internal" href="#id12">14.3.4. キューの待機時間設定</a></li>
-<li><a class="reference internal" href="#id13">14.3.5. 遅延キューとメッセージタイマー</a></li>
-<li><a class="reference internal" href="#id14">14.3.6. 可視性タイムアウト</a></li>
-<li><a class="reference internal" href="#id15">14.3.7. デットレターキュー</a></li>
-<li><a class="reference internal" href="#id16">14.3.8. 重複削除</a></li>
-<li><a class="reference internal" href="#id17">14.3.9. セキュリティ</a></li>
-<li><a class="reference internal" href="#id18">14.3.10. SQSの容量</a></li>
-<li><a class="reference internal" href="#id19">14.3.11. SQSのキューの削除</a></li>
+<li><a class="reference internal" href="#id10">14.3.2. SQSの容量</a></li>
+<li><a class="reference internal" href="#id11">14.3.3. SQSのキューの削除</a></li>
+<li><a class="reference internal" href="#id12">14.3.4. デットレターキュー</a></li>
+<li><a class="reference internal" href="#id13">14.3.5. 重複削除</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">14.4. キューからのメッセージ取得</a><ul>
+<li><a class="reference internal" href="#id15">14.4.1. ポーリング</a></li>
+<li><a class="reference internal" href="#id16">14.4.2. キューの待機時間設定</a><ul>
+<li><a class="reference internal" href="#id17">14.4.2.1. 遅延キューとメッセージタイマー</a></li>
+<li><a class="reference internal" href="#id18">14.4.2.2. 可視性タイムアウト</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id19">14.5. セキュリティ</a><ul>
+<li><a class="reference internal" href="#id20">14.5.1. 暗号化</a></li>
+<li><a class="reference internal" href="#id21">14.5.2. アクセス制御</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id22">14.6. 監視</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kinesis">15. kinesisとの比較</a></li>
 </ul>
 
   </div>
@@ -286,7 +329,7 @@ ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。<
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="次の章へ"><span class="section-number">15. </span>MSK:Managed Streaming for Kafka</a></p>
+                          title="次の章へ"><span class="section-number">16. </span>MSK:Managed Streaming for Kafka</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -316,7 +359,7 @@ ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。<
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="15. MSK:Managed Streaming for Kafka"
+          <a href="MSK.html" title="16. MSK:Managed Streaming for Kafka"
              >次へ</a> |</li>
         <li class="right" >
           <a href="EnvAutomation.html" title="12. 環境構築自動化"
