@@ -18,7 +18,8 @@ MSKはフルマネージドで可用性が高くセキュアなApache Kafka サ�
 
 
 ## kafkaの概要
-そもそもApache kafkaは、多くの導入実績があり、スケーラビリティに優れた、パブリッシュ・サブスクライブモデルの分散メッセージング基盤を提供する
+そもそもApache kafkaは、パブリッシュ・サブスクライブモデルの分散メッセージング基盤である。
+LinkedInによって開発され、多くの導入実績があり、高スループット、リアルタイム性を有し、スケーラビリティに優れている。
 
 ### kafkaの役割
 データソースから生成されるストリームデータを取り込んで永続化して、他のサービスへ連携することがkafkaの役割   
@@ -33,9 +34,13 @@ MSKはフルマネージドで可用性が高くセキュアなApache Kafka サ�
 
 
 ### kafkaの仕組み
-Push型のキューシステムであり、pub-subモデルを採用している。
+Push型のキューシステムであり、pub-subモデルを採用している。  
+ConsumerはPush型であり、ConsumerはPull型として動作する。
+
 > Push型では、TopicからSubscriberへの配信は即時に行われる。
 > Pull型では、キューからConsumerがメッセージを取り出す必要がある。
+
+すなわち、Consumer側のタイミングでMessageを取得することができる。
 
 ![](img/msk_pubsub.png)
 
@@ -47,12 +52,16 @@ kafkaのクラスターは以下の構成要素から成り立っている。
     クラスターとして動作してデータの受配信を担う
     クラスター構成のため、スケールアウトが可能
 - パーティション  
-    ブローカー上に分散配置されて、トピックのメッセージが実際に格納される分散キューにあたる
+    ブローカー上に分散配置されて、トピックのメッセージが実際に格納される分散キューにあたる  
+    Topicは複数のPartitionから成り立っており、それぞれのPartitionはBrokerに分散して配置される。
+    ※Partition-Aは１つのPartitionに見えていても、実態は複数のブローカーに分散されており、レプリケーションされている
 - トピック  
-    メッセージを種別で管理する概念的な存在で、実態はpartitionをまとめたもの。
-    Producer/Consumerはトピックを指定することができる
+    メッセージを種別で管理する概念的なストレージで、実態はpartitionをまとめたもの。
+    Producer/Consumerはトピックを指定して、Meaageの送受信を行う
 - ZooKeeper  
     トピックやパーティションのメタ情報を管理している
+- Message  
+    kafka内で扱うデータの最小単位で、メッセージにはkey-valueを持たせることができる。
 
 ![](img/msk_cluster.png)
 
@@ -79,12 +88,24 @@ kafkaのクラスターは以下の構成要素から成り立っている。
 ![](img/msk_sub.png)
 
 
+
 #### オフセット
 メッセージがパーティションに書き込まれた際に付与されるシーケンシャルな番号を`offset`と呼ぶ
 
 ![](img/msk_offset.png)
 
 パーティション単位で最後に取得したメッセージをzooKeeperもしくはkafka自体が保存して、Consumerにも連携しているこのオフセットにより、Consumerは継続的にメッセージのどこまでを読み出したかを管理している。
+
+オフセットには以下の種類が存在し、Consumerが取得するメッセージの範囲やリトライ制御を行う
+- Log-End-Offset  
+    Partitionのデータの末尾（格納されたデータの数
+- Current-Offset  
+    Consumerが`どこまで読み込んだか`を示す
+- Commit-Offset  
+    Consumerが`どこまでコミットしたか`を示す
+
+
+
 
 #### ハイウォーターマーク
 レプリカによる複製が完了済みのオフセットのことを`ハイウォーターマーク`と呼び、Consumerはハイウォーターマークのデータのみを取得できる。
@@ -93,6 +114,38 @@ kafkaのクラスターは以下の構成要素から成り立っている。
 ![](img/msk_highwatermark.png)
 
 
+
+
+#### Producer→Brokerの送信プロセス
+At Least Oonceのために、Blockerは正しく受信できたことを示すためのAck（肯定応答）を行う。
+
+また、どのパーティションに送信するかのパーティショニング機能が備わっている。
+
+##### パーティショニング
+Topicに対してメッセージを送付する際、Partitionに分散して、配置する。
+ProducerからMessageを受け取る際に、Partitionerによって、どのようにMessageを配置するかを決定する
+- ハッシュ：メッセージのkeyのハッシュを利用して配置する
+- ラウンドロビン：順番にパーティションを配置する
+
+
+
+
+#### Broker→Consumerの受信プロセス
+成功した場合は以下のようにoffsetが更新される
+1. ConsumerからBrokerにトランザクション開始のリクエスト
+2. Consumerは取得対象のTopicに対してCurrent-Offsetを確認して、最新Messageを受信リクエストし、Current-Offsetを更新
+3. 受信が無事成功
+4. Commit-Offsetが更新され、Commit-OffsetとCurrent-Offsetが一致する
+
+![](img/msk_consume_success.png)
+
+失敗した場合は以下のようにoffsetが更新される
+1. ConsumerからBrokerにトランザクション開始のリクエスト
+2. Consumerは取得対象のTopicに対してCurrent-Offsetを確認して、最新Messageを受信リクエストし、Current-Offsetを更新
+3. 受信が失敗
+4. Current-Offsetがロールバックされ、Commit-OffsetとCurrent-Offsetが一致する
+
+![](img/msk_consume_fail.png)
 
 
 
@@ -276,7 +329,7 @@ MSKは、クラスターをプロビジョニングするため、シームレ�
 ■柔軟性  
 MSKはkafkaのオープンソースを利用しているので、kafkaのエコシステムと互換性があるのがメリットになる。
 
-MSKのメッセージ中執について、以下のようにSchema Registryを利用して、スキーマに応じた自動的なシリアライゼーションが可能となる
+MSKのメッセージ抽出について、以下のようにSchema Registryを利用して、スキーマに応じた自動的なシリアライゼーションが可能となる
 
 ![](img/msk_schemaRegistry.png)
 
@@ -289,7 +342,6 @@ MSKのメッセージ中執について、以下のようにSchema Registryを�
 
 
 ## MSKの実装
-
 ### MSKの採用
 MSKを採用するか否かは以下のポイントから判断する
 1. オンプレのApache Kafkaを移行したい
@@ -313,5 +365,22 @@ MSKを利用する場合は、[ベストプラクティス](https://docs.aws.ama
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 参考サイト
+- [black belt](https://aws.amazon.com/jp/events/aws-event-resource/archive/?cards.sort-by=item.additionalFields.SortDate&cards.sort-order=desc&awsf.tech-category=*all&cards.q=msk&cards.q_operator=AND)
+- [qiita Apache Kafkaについてまとめる](https://qiita.com/hirooka0527/items/d15e479fa2ded428834d)
+- [Apache Kafka の基本](https://tutuz-tech.hatenablog.com/entry/2019/03/16/155501)
 
 

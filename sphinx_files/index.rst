@@ -53,6 +53,7 @@ Hands On（実装方法の整理）
    :numbered:
 
    HandsOn/cognito_authentication
+   HandsOn/msk_priority
    HandsOn/lambda
    HandsOn/apigw
    HandsOn/s3_process
@@ -60,6 +61,7 @@ Hands On（実装方法の整理）
    HandsOn/cloudfront
    HandsOn/waf
    HandsOn/static_contents
+   
 
 
 成果物(作成したアプリケーション)
@@ -83,8 +85,8 @@ Microservice
 
    microservice/microservice_archi
    microservice/certification_authentication
-   microservice/serverless.md
-
+   microservice/serverless
+   microservice/queuing
 
 Agile
 ==================

@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="15. Kinesis" href="Streaming.html" />
+    <link rel="next" title="15. MSK:Managed Streaming for Kafka" href="MSK.html" />
     <link rel="prev" title="12. 環境構築自動化" href="EnvAutomation.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="Streaming.html" title="15. Kinesis"
+          <a href="MSK.html" title="15. MSK:Managed Streaming for Kafka"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="EnvAutomation.html" title="12. 環境構築自動化"
@@ -111,9 +111,11 @@ SNSではコンテンツベースの重複削除が機能として提供され�
 <section id="sqs">
 <h1><span class="section-number">14. </span>SQS<a class="headerlink" href="#sqs" title="この見出しへのパーマリンク">¶</a></h1>
 <p>SQS(Simple Queue Service)は無制限のスケーラビリティを備えたフルマネージド型の<code class="docutils literal notranslate"><span class="pre">分散メッセージキューサービス</span></code>で疎結合なシステムを実現できる。</p>
-<p>キューとは、データをFIFOに従ったデータ構造で、非同期にデータを受け渡す手法としてよく利用される。
-SQSは、複数のAZにキューを構成することで可用性や耐久性を担保し、アクセス制御やKMSによる暗号化などを利用できるため、簡単に優れたキューイング構成を構築できる。</p>
+<p>キューイングの種類としては、非同期、Pull型、P2P型となる。
+すなわち、ProducerはConsumerの完了を待たず、Consumerがメッセージを拾いに行き、一対一のメッセージングとなる。</p>
 <p><img alt="../_images/sqs_image.png" src="../_images/sqs_image.png" /></p>
+<p>SQSは、ほぼ無制限のスケーラビリティを備えたフルマネージドな分散メッセージキューであり、代表的なメリットとしては以下が挙げられる</p>
+<p><img alt="../_images/sqs_merit.png" src="../_images/sqs_merit.png" /></p>
 <section id="id6">
 <h2><span class="section-number">14.1. </span>SQSの登場人物<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
@@ -122,23 +124,46 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 <li><p>キュー：ProducerとConsumer両者を疎結合にする</p></li>
 </ul>
 <p>SNSは<code class="docutils literal notranslate"><span class="pre">Push型</span></code>の仕組みであり、SQSは<code class="docutils literal notranslate"><span class="pre">Pull型</span></code>である点。<br />Push型では、TopicからSubscriberへの配信は即時に行われるが、Pull型ではキューからConsumerがメッセージを取り出す必要がある。</p>
+<p><img alt="../_images/sqs_howtouse.png" src="../_images/sqs_howtouse.png" /></p>
 </section>
 <section id="id7">
-<h2><span class="section-number">14.2. </span>SQSのキュー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">14.2. </span>SQSの利用ケース<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SQSの利用ケースの代表として以下が挙げられる</p>
+<ol class="simple">
+<li><p>大量のリクエストの均一化</p></li>
+</ol>
+<p><img alt="../_images/sqs_merit1.png" src="../_images/sqs_merit1.png" /></p>
+<ol class="simple">
+<li><p>依存関係の低減</p></li>
+</ol>
+<p><img alt="../_images/sqs_merit2.png" src="../_images/sqs_merit2.png" /></p>
+<ol class="simple">
+<li><p>処理の並列化（ファンアウト）→詳細は次節</p></li>
+</ol>
+<section id="snssqs">
+<h3><span class="section-number">14.2.1. </span>SNSとSQSの連携（ファンアウト）<a class="headerlink" href="#snssqs" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producerが複数のキューにトピックを配信する際に、SQSだけではProducer側で並列側の制御が必要であった。
+SNSとSQSを組み合わせたファンアウトでは、SNSを経由することで、１つのメッセージ送信で、全てのキューに並列配信される。</p>
+<p><img alt="../_images/sqs_fanout.png" src="../_images/sqs_fanout.png" /></p>
+<p><a class="reference external" href="https://zenn.dev/mn87/articles/57fd79e985ca19">ファンアウトのハンズオン</a></p>
+</section>
+</section>
+<section id="id8">
+<h2><span class="section-number">14.3. </span>SQSのキュー詳細<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
 <p>SNS同様にスタンダードとFIFOが準備されており、順序性、重複性、スループットの面でメリデメがある。</p>
 <ul class="simple">
 <li><p>スタンダート<br />順序性と重複性が保証がされない代わりにほぼ無制限のスループットが実現できる</p></li>
 <li><p>FIFO<br />順序性についてはベストエフォートで、配信方法については少なくとも1回配信されるが2回配信される可能性がある。
 そのため、Consumer側で冪等性の仕組みなどを取り入れる必要がある。
-スループットは300件/secとなる</p></li>
+スループットは300件/secとなる<br />リリースが2018年11月と比較的最近</p></li>
 </ul>
-<section id="id8">
-<h3><span class="section-number">14.2.1. </span>キューの保存期間<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">14.3.1. </span>キューの保存期間<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>デフォルトでは４日間が設定されており、最大で14日間まで変更可能
 この設定は、<code class="docutils literal notranslate"><span class="pre">MessageRetentionPeriod</span></code>で設定する</p>
 </section>
-<section id="id9">
-<h3><span class="section-number">14.2.2. </span>キューからのメッセージ取得<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">14.3.2. </span>キューからのメッセージ取得<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>次の3ステップを踏む</p>
 <ol class="simple">
 <li><p>Consumerがキューをポーリング（キューの監視）</p></li>
@@ -148,8 +173,8 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 <p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。
 メッセージ削除の際は取得したMessageのIDである「ReceiptHandle」を指定するが、他のConsumerがメッセージに触れると「ReceiptHandle」が書き換えられてエラーになるの可能性があるので、可視化タイムアウトなどの設定を使うようにする。</p>
 </section>
-<section id="id10">
-<h3><span class="section-number">14.2.3. </span>ポーリング<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">14.3.3. </span>ポーリング<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。
 ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間(ReciveMessageWaitTimeSeconds)</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
 <ul class="simple">
@@ -159,56 +184,49 @@ SQSは、複数のAZにキューを構成することで可用性や耐久性を
 分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける<br />待機時間を設定することで、Producerが生産してからConsumerが消費するまでの待機時間を設定できる</p></li>
 </ul>
 </section>
-<section id="id11">
-<h3><span class="section-number">14.2.4. </span>キューの待機時間設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">14.3.4. </span>キューの待機時間設定<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerがキューに格納してからConsumerが取得するまでの時間を遅延させたり、
 Consumerがキューを取得してから他のConsumerがメッセージを取得するまでの時間を遅延させたりすることができる。</p>
 <p>以下の図は、後述する遅延キュー（メッセージタイマーと可視性タイムアウトの関係）</p>
 <p><img alt="../_images/sns_delay.png" src="../_images/sns_delay.png" /></p>
 </section>
-<section id="id12">
-<h3><span class="section-number">14.2.5. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h3><span class="section-number">14.3.5. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerからキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。<br />遅延キューでは、<code class="docutils literal notranslate"><span class="pre">配信遅延時間(DelaySecondsパラメータ)</span></code>を設定することでキュー全体に設定が反映され、メッセージタイマーでは特定メッセージに対して設定が反映される</p>
 <p><img alt="../_images/sqs_delay.png" src="../_images/sqs_delay.png" /></p>
 </section>
-<section id="id13">
-<h3><span class="section-number">14.2.6. </span>可視性タイムアウト<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id14">
+<h3><span class="section-number">14.3.6. </span>可視性タイムアウト<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerがメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を防止することができるが、重複性を完全排除はできない点に注意。</p>
 <p><img alt="../_images/sqs_visibility.png" src="../_images/sqs_visibility.png" /></p>
 </section>
-<section id="id14">
-<h3><span class="section-number">14.2.7. </span>デットレターキュー<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">14.3.7. </span>デットレターキュー<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>正常に処理できないメッセージがキューに滞留することを避ける機能。</p>
 <p>Redriveポリシーで、移動させるルール（最大受信数）とメッセージ格納先（デットレターキュー）を指定する
 デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
 </section>
-<section id="id15">
-<h3><span class="section-number">14.2.8. </span>重複削除<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id16">
+<h3><span class="section-number">14.3.8. </span>重複削除<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>FIFOキューでは重複を排除するための機能が備わっている。
 あるメッセージが送付されてから<code class="docutils literal notranslate"><span class="pre">5分間</span></code>の間に同一のメッセージが送られてきた時に重複を削除することができる。</p>
 </section>
-<section id="id16">
-<h3><span class="section-number">14.2.9. </span>セキュリティ<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id17">
+<h3><span class="section-number">14.3.9. </span>セキュリティ<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SQSはKMSと統合されており、KMSによってメッセージを暗号化できる。
 ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
 <p>SQSはIAMによるアクセス制御に加えて、キューに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
 </section>
-</section>
-<section id="id17">
-<h2><span class="section-number">14.3. </span>SQSの容量<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id18">
+<h3><span class="section-number">14.3.10. </span>SQSの容量<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SQSでやり取りすることができる容量は最大256kB</p>
 <p>しかし、S3とJava拡張ライブラリを利用することで、SQSのメッセージサイズを超過して2GBまで対応することができる。</p>
 </section>
-<section id="id18">
-<h2><span class="section-number">14.4. </span>SQSのキューの削除<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id19">
+<h3><span class="section-number">14.3.11. </span>SQSのキューの削除<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">Purge</span> <span class="pre">Queue</span></code>を利用すると、指定したキューないのメッセージを削除することができる。</p>
 </section>
-<section id="snssqs">
-<h2><span class="section-number">14.5. </span>SNSとSQSの連携（ファンアウト）<a class="headerlink" href="#snssqs" title="この見出しへのパーマリンク">¶</a></h2>
-<p>Producerが複数のキューにトピックを配信する際に、SQSだけではProducer側で並列側の制御が必要であった。
-SNSとSQSを組み合わせたファンアウトでは、SNSを経由することで、１つのメッセージ送信で、全てのキューに並列配信される。</p>
-<p><img alt="../_images/sqs_fanout.png" src="../_images/sqs_fanout.png" /></p>
-<p><a class="reference external" href="https://zenn.dev/mn87/articles/57fd79e985ca19">ハンズオン</a></p>
 </section>
 </section>
 
@@ -237,21 +255,24 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
 </li>
 <li><a class="reference internal" href="#sqs">14. SQS</a><ul>
 <li><a class="reference internal" href="#id6">14.1. SQSの登場人物</a></li>
-<li><a class="reference internal" href="#id7">14.2. SQSのキュー</a><ul>
-<li><a class="reference internal" href="#id8">14.2.1. キューの保存期間</a></li>
-<li><a class="reference internal" href="#id9">14.2.2. キューからのメッセージ取得</a></li>
-<li><a class="reference internal" href="#id10">14.2.3. ポーリング</a></li>
-<li><a class="reference internal" href="#id11">14.2.4. キューの待機時間設定</a></li>
-<li><a class="reference internal" href="#id12">14.2.5. 遅延キューとメッセージタイマー</a></li>
-<li><a class="reference internal" href="#id13">14.2.6. 可視性タイムアウト</a></li>
-<li><a class="reference internal" href="#id14">14.2.7. デットレターキュー</a></li>
-<li><a class="reference internal" href="#id15">14.2.8. 重複削除</a></li>
-<li><a class="reference internal" href="#id16">14.2.9. セキュリティ</a></li>
+<li><a class="reference internal" href="#id7">14.2. SQSの利用ケース</a><ul>
+<li><a class="reference internal" href="#snssqs">14.2.1. SNSとSQSの連携（ファンアウト）</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">14.3. SQSの容量</a></li>
-<li><a class="reference internal" href="#id18">14.4. SQSのキューの削除</a></li>
-<li><a class="reference internal" href="#snssqs">14.5. SNSとSQSの連携（ファンアウト）</a></li>
+<li><a class="reference internal" href="#id8">14.3. SQSのキュー詳細</a><ul>
+<li><a class="reference internal" href="#id9">14.3.1. キューの保存期間</a></li>
+<li><a class="reference internal" href="#id10">14.3.2. キューからのメッセージ取得</a></li>
+<li><a class="reference internal" href="#id11">14.3.3. ポーリング</a></li>
+<li><a class="reference internal" href="#id12">14.3.4. キューの待機時間設定</a></li>
+<li><a class="reference internal" href="#id13">14.3.5. 遅延キューとメッセージタイマー</a></li>
+<li><a class="reference internal" href="#id14">14.3.6. 可視性タイムアウト</a></li>
+<li><a class="reference internal" href="#id15">14.3.7. デットレターキュー</a></li>
+<li><a class="reference internal" href="#id16">14.3.8. 重複削除</a></li>
+<li><a class="reference internal" href="#id17">14.3.9. セキュリティ</a></li>
+<li><a class="reference internal" href="#id18">14.3.10. SQSの容量</a></li>
+<li><a class="reference internal" href="#id19">14.3.11. SQSのキューの削除</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -264,8 +285,8 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="Streaming.html"
-                          title="次の章へ"><span class="section-number">15. </span>Kinesis</a></p>
+    <p class="topless"><a href="MSK.html"
+                          title="次の章へ"><span class="section-number">15. </span>MSK:Managed Streaming for Kafka</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -295,7 +316,7 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="Streaming.html" title="15. Kinesis"
+          <a href="MSK.html" title="15. MSK:Managed Streaming for Kafka"
              >次へ</a> |</li>
         <li class="right" >
           <a href="EnvAutomation.html" title="12. 環境構築自動化"

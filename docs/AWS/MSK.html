@@ -60,7 +60,8 @@
 </ul>
 <section id="kafka">
 <h2><span class="section-number">15.1. </span>kafkaの概要<a class="headerlink" href="#kafka" title="この見出しへのパーマリンク">¶</a></h2>
-<p>そもそもApache kafkaは、多くの導入実績があり、スケーラビリティに優れた、パブリッシュ・サブスクライブモデルの分散メッセージング基盤を提供する</p>
+<p>そもそもApache kafkaは、パブリッシュ・サブスクライブモデルの分散メッセージング基盤である。
+LinkedInによって開発され、多くの導入実績があり、高スループット、リアルタイム性を有し、スケーラビリティに優れている。</p>
 <section id="id1">
 <h3><span class="section-number">15.1.1. </span>kafkaの役割<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>データソースから生成されるストリームデータを取り込んで永続化して、他のサービスへ連携することがkafkaの役割</p>
@@ -75,11 +76,12 @@
 </section>
 <section id="id2">
 <h3><span class="section-number">15.1.2. </span>kafkaの仕組み<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Push型のキューシステムであり、pub-subモデルを採用している。</p>
+<p>Push型のキューシステムであり、pub-subモデルを採用している。<br />ConsumerはPush型であり、ConsumerはPull型として動作する。</p>
 <blockquote>
 <div><p>Push型では、TopicからSubscriberへの配信は即時に行われる。
 Pull型では、キューからConsumerがメッセージを取り出す必要がある。</p>
 </div></blockquote>
+<p>すなわち、Consumer側のタイミングでMessageを取得することができる。</p>
 <p><img alt="../_images/msk_pubsub.png" src="../_images/msk_pubsub.png" /></p>
 <p>kafkaでは、複数のサーバーでクラスタ構成をしており、スケーラビリティと可用性を確保している</p>
 <section id="kafka-cluster">
@@ -88,10 +90,12 @@ Pull型では、キューからConsumerがメッセージを取り出す必要�
 <ul class="simple">
 <li><p>ブローカー<br />クラスターとして動作してデータの受配信を担う
 クラスター構成のため、スケールアウトが可能</p></li>
-<li><p>パーティション<br />ブローカー上に分散配置されて、トピックのメッセージが実際に格納される分散キューにあたる</p></li>
-<li><p>トピック<br />メッセージを種別で管理する概念的な存在で、実態はpartitionをまとめたもの。
-Producer/Consumerはトピックを指定することができる</p></li>
+<li><p>パーティション<br />ブローカー上に分散配置されて、トピックのメッセージが実際に格納される分散キューにあたる<br />Topicは複数のPartitionから成り立っており、それぞれのPartitionはBrokerに分散して配置される。
+※Partition-Aは１つのPartitionに見えていても、実態は複数のブローカーに分散されており、レプリケーションされている</p></li>
+<li><p>トピック<br />メッセージを種別で管理する概念的なストレージで、実態はpartitionをまとめたもの。
+Producer/Consumerはトピックを指定して、Meaageの送受信を行う</p></li>
 <li><p>ZooKeeper<br />トピックやパーティションのメタ情報を管理している</p></li>
+<li><p>Message<br />kafka内で扱うデータの最小単位で、メッセージにはkey-valueを持たせることができる。</p></li>
 </ul>
 <p><img alt="../_images/msk_cluster.png" src="../_images/msk_cluster.png" /></p>
 </section>
@@ -120,12 +124,51 @@ Producer/Consumerはトピックを指定することができる</p></li>
 <p>メッセージがパーティションに書き込まれた際に付与されるシーケンシャルな番号を<code class="docutils literal notranslate"><span class="pre">offset</span></code>と呼ぶ</p>
 <p><img alt="../_images/msk_offset.png" src="../_images/msk_offset.png" /></p>
 <p>パーティション単位で最後に取得したメッセージをzooKeeperもしくはkafka自体が保存して、Consumerにも連携しているこのオフセットにより、Consumerは継続的にメッセージのどこまでを読み出したかを管理している。</p>
+<p>オフセットには以下の種類が存在し、Consumerが取得するメッセージの範囲やリトライ制御を行う</p>
+<ul class="simple">
+<li><p>Log-End-Offset<br />Partitionのデータの末尾（格納されたデータの数</p></li>
+<li><p>Current-Offset<br />Consumerが<code class="docutils literal notranslate"><span class="pre">どこまで読み込んだか</span></code>を示す</p></li>
+<li><p>Commit-Offset<br />Consumerが<code class="docutils literal notranslate"><span class="pre">どこまでコミットしたか</span></code>を示す</p></li>
+</ul>
 </section>
 <section id="id5">
 <h4><span class="section-number">15.1.2.4. </span>ハイウォーターマーク<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
 <p>レプリカによる複製が完了済みのオフセットのことを<code class="docutils literal notranslate"><span class="pre">ハイウォーターマーク</span></code>と呼び、Consumerはハイウォーターマークのデータのみを取得できる。
 以下の図では、offset3までがConsumerが取得できるoffsetとなる。</p>
 <p><img alt="../_images/msk_highwatermark.png" src="../_images/msk_highwatermark.png" /></p>
+</section>
+<section id="producerbroker">
+<h4><span class="section-number">15.1.2.5. </span>Producer→Brokerの送信プロセス<a class="headerlink" href="#producerbroker" title="この見出しへのパーマリンク">¶</a></h4>
+<p>At Least Oonceのために、Blockerは正しく受信できたことを示すためのAck（肯定応答）を行う。</p>
+<p>また、どのパーティションに送信するかのパーティショニング機能が備わっている。</p>
+<section id="id6">
+<h5><span class="section-number">15.1.2.5.1. </span>パーティショニング<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h5>
+<p>Topicに対してメッセージを送付する際、Partitionに分散して、配置する。
+ProducerからMessageを受け取る際に、Partitionerによって、どのようにMessageを配置するかを決定する</p>
+<ul class="simple">
+<li><p>ハッシュ：メッセージのkeyのハッシュを利用して配置する</p></li>
+<li><p>ラウンドロビン：順番にパーティションを配置する</p></li>
+</ul>
+</section>
+</section>
+<section id="brokerconsumer">
+<h4><span class="section-number">15.1.2.6. </span>Broker→Consumerの受信プロセス<a class="headerlink" href="#brokerconsumer" title="この見出しへのパーマリンク">¶</a></h4>
+<p>成功した場合は以下のようにoffsetが更新される</p>
+<ol class="simple">
+<li><p>ConsumerからBrokerにトランザクション開始のリクエスト</p></li>
+<li><p>Consumerは取得対象のTopicに対してCurrent-Offsetを確認して、最新Messageを受信リクエストし、Current-Offsetを更新</p></li>
+<li><p>受信が無事成功</p></li>
+<li><p>Commit-Offsetが更新され、Commit-OffsetとCurrent-Offsetが一致する</p></li>
+</ol>
+<p><img alt="../_images/msk_consume_success.png" src="../_images/msk_consume_success.png" /></p>
+<p>失敗した場合は以下のようにoffsetが更新される</p>
+<ol class="simple">
+<li><p>ConsumerからBrokerにトランザクション開始のリクエスト</p></li>
+<li><p>Consumerは取得対象のTopicに対してCurrent-Offsetを確認して、最新Messageを受信リクエストし、Current-Offsetを更新</p></li>
+<li><p>受信が失敗</p></li>
+<li><p>Current-Offsetがロールバックされ、Commit-OffsetとCurrent-Offsetが一致する</p></li>
+</ol>
+<p><img alt="../_images/msk_consume_fail.png" src="../_images/msk_consume_fail.png" /></p>
 </section>
 </section>
 </section>
@@ -145,22 +188,22 @@ Producer/Consumerはトピックを指定することができる</p></li>
 <p><img alt="../_images/msk_image.png" src="../_images/msk_image.png" /></p>
 <p>これらを踏まえ、たとえば<a class="reference external" href="https://aws.amazon.com/jp/blogs/news/best-practices-for-running-apache-kafka-on-aws/">EC2上にKafkaを導入</a>する場合とMSKを利用する場合では以下のような差がある</p>
 <p><img alt="../_images/msk_hikaku_manual.png" src="../_images/msk_hikaku_manual.png" /></p>
-<section id="id6">
-<h3><span class="section-number">15.2.1. </span>MSKのデプロイメント<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id7">
+<h3><span class="section-number">15.2.1. </span>MSKのデプロイメント<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKでは、AZ間でブローカーを均等にデプロイすると言うベストプラクティスを自動で適用してくれる。<br />作成時に以下を設定する</p>
 <ul class="simple">
 <li><p>適用するAZ</p></li>
 <li><p>AZあたりのブローカー数</p></li>
 </ul>
 </section>
-<section id="id7">
-<h3><span class="section-number">15.2.2. </span>MSKのネットワーク<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id8">
+<h3><span class="section-number">15.2.2. </span>MSKのネットワーク<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKでは、自動で作成したクラスターに対する接続はエンドポイントが払い出されるので、そのエンドポイントに対して、クライアントから通信すれば良い。</p>
 <p>セキュリティグループはMSKクラスターで指定したセキュリティグループが適用されるが、クライアントと同じセキュリティグループにしておくと比較的簡単に通信ができるようになる。</p>
 <p><img alt="../_images/msk_network.png" src="../_images/msk_network.png" /></p>
 </section>
-<section id="id8">
-<h3><span class="section-number">15.2.3. </span>MSKの監視<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">15.2.3. </span>MSKの監視<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKではAWSのCloudWatchと統合されており、メトリクスを取得可能
 以下のメトリクスレベルを選択可能</p>
 <ul class="simple">
@@ -176,8 +219,8 @@ Producer/Consumerはトピックを指定することができる</p></li>
 </ul>
 <p><img alt="../_images/msk_topic_monitering.png" src="../_images/msk_topic_monitering.png" /></p>
 </section>
-<section id="id9">
-<h3><span class="section-number">15.2.4. </span>MSKのセキュリティ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">15.2.4. </span>MSKのセキュリティ<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>大きく以下の４つの機能が存在し、今回は、データの保護、クライアント認証について整理</p>
 <ul class="simple">
 <li><p>★データの保護</p></li>
@@ -207,8 +250,8 @@ Producer/Consumerはトピックを指定することができる</p></li>
 </ol>
 <p><img alt="../_images/msk_authenticate.png" src="../_images/msk_authenticate.png" /></p>
 </section>
-<section id="id10">
-<h3><span class="section-number">15.2.5. </span>MSKによるクラスターの更新<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">15.2.5. </span>MSKによるクラスターの更新<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>カスタム構成で、既存のクラスターを更新することが可能</p>
 <ol class="simple">
 <li><p>kafkaの設定ファイルを作成</p></li>
@@ -221,8 +264,8 @@ Producer/Consumerはトピックを指定することができる</p></li>
 <p>カスタム構成では以下が設定可能</p>
 <p><img alt="../_images/msk_custom_conf.png" src="../_images/msk_custom_conf.png" /></p>
 </section>
-<section id="id11">
-<h3><span class="section-number">15.2.6. </span>MSKのスケーリング<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">15.2.6. </span>MSKのスケーリング<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>大きく３つのスケーリングが可能</p>
 <ul class="simple">
 <li><p>ストレージの拡張:ブローカーのストレージを増やせる</p></li>
@@ -232,8 +275,8 @@ Producer/Consumerはトピックを指定することができる</p></li>
 <p><img alt="../_images/msk_scaling.png" src="../_images/msk_scaling.png" /></p>
 </section>
 </section>
-<section id="id12">
-<h2><span class="section-number">15.3. </span>別サービスとの比較<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id13">
+<h2><span class="section-number">15.3. </span>別サービスとの比較<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="amazon-kinesis-data-streams">
 <h3><span class="section-number">15.3.1. </span>Amazon kinesis Data Streamsとの比較<a class="headerlink" href="#amazon-kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h3>
 <p>kinesis Data Streamsも大量のストリームをリアルタイムで収集して処理するためのデータストリーミングサービスとなっている。</p>
@@ -245,14 +288,14 @@ Producer/Consumerはトピックを指定することができる</p></li>
 <p>また、構成を見ても、エンドポイントを通じて通信を行うので、バックエンドを意識しないですむ。</p>
 <p><img alt="../_images/msk_vs_kinesis_arche.png" src="../_images/msk_vs_kinesis_arche.png" /></p>
 <p>■柔軟性<br />MSKはkafkaのオープンソースを利用しているので、kafkaのエコシステムと互換性があるのがメリットになる。</p>
-<p>MSKのメッセージ中執について、以下のようにSchema Registryを利用して、スキーマに応じた自動的なシリアライゼーションが可能となる</p>
+<p>MSKのメッセージ抽出について、以下のようにSchema Registryを利用して、スキーマに応じた自動的なシリアライゼーションが可能となる</p>
 <p><img alt="../_images/msk_schemaRegistry.png" src="../_images/msk_schemaRegistry.png" /></p>
 </section>
 </section>
-<section id="id13">
-<h2><span class="section-number">15.4. </span>MSKの実装<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id14">
-<h3><span class="section-number">15.4.1. </span>MSKの採用<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">15.4. </span>MSKの実装<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id15">
+<h3><span class="section-number">15.4.1. </span>MSKの採用<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKを採用するか否かは以下のポイントから判断する</p>
 <ol class="simple">
 <li><p>オンプレのApache Kafkaを移行したい</p></li>
@@ -261,16 +304,24 @@ Producer/Consumerはトピックを指定することができる</p></li>
 </ol>
 <p>上記以外の場合は、サーバーレスのメリットがあるので、Amazon Kinesis Data Streamsの利用が推奨</p>
 </section>
-<section id="id15">
-<h3><span class="section-number">15.4.2. </span>ベストプラクティス<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id16">
+<h3><span class="section-number">15.4.2. </span>ベストプラクティス<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKを利用する場合は、<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/bestpractices.html">ベストプラクティス</a>を参考にする</p>
 <p><img alt="../_images/msk_best_practice.png" src="../_images/msk_best_practice.png" /></p>
-<section id="id16">
-<h4><span class="section-number">15.4.2.1. </span>クラスターサイズ<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id17">
+<h4><span class="section-number">15.4.2.1. </span>クラスターサイズ<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ブローカー１台あたりのパーティションの推奨数が定義されている
 <img alt="../_images/msk_partition_num.png" src="../_images/msk_partition_num.png" /></p>
 </section>
 </section>
+</section>
+<section id="id18">
+<h2><span class="section-number">15.5. </span>参考サイト<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aws.amazon.com/jp/events/aws-event-resource/archive/?cards.sort-by=item.additionalFields.SortDate&amp;cards.sort-order=desc&amp;awsf.tech-category=*all&amp;cards.q=msk&amp;cards.q_operator=AND">black belt</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/hirooka0527/items/d15e479fa2ded428834d">qiita Apache Kafkaについてまとめる</a></p></li>
+<li><p><a class="reference external" href="https://tutuz-tech.hatenablog.com/entry/2019/03/16/155501">Apache Kafka の基本</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -292,31 +343,37 @@ Producer/Consumerはトピックを指定することができる</p></li>
 <li><a class="reference internal" href="#id3">15.1.2.2. トピックとパーティション</a></li>
 <li><a class="reference internal" href="#id4">15.1.2.3. オフセット</a></li>
 <li><a class="reference internal" href="#id5">15.1.2.4. ハイウォーターマーク</a></li>
+<li><a class="reference internal" href="#producerbroker">15.1.2.5. Producer→Brokerの送信プロセス</a><ul>
+<li><a class="reference internal" href="#id6">15.1.2.5.1. パーティショニング</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#brokerconsumer">15.1.2.6. Broker→Consumerの受信プロセス</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#msk">15.2. MSKの価値</a><ul>
-<li><a class="reference internal" href="#id6">15.2.1. MSKのデプロイメント</a></li>
-<li><a class="reference internal" href="#id7">15.2.2. MSKのネットワーク</a></li>
-<li><a class="reference internal" href="#id8">15.2.3. MSKの監視</a></li>
-<li><a class="reference internal" href="#id9">15.2.4. MSKのセキュリティ</a></li>
-<li><a class="reference internal" href="#id10">15.2.5. MSKによるクラスターの更新</a></li>
-<li><a class="reference internal" href="#id11">15.2.6. MSKのスケーリング</a></li>
+<li><a class="reference internal" href="#id7">15.2.1. MSKのデプロイメント</a></li>
+<li><a class="reference internal" href="#id8">15.2.2. MSKのネットワーク</a></li>
+<li><a class="reference internal" href="#id9">15.2.3. MSKの監視</a></li>
+<li><a class="reference internal" href="#id10">15.2.4. MSKのセキュリティ</a></li>
+<li><a class="reference internal" href="#id11">15.2.5. MSKによるクラスターの更新</a></li>
+<li><a class="reference internal" href="#id12">15.2.6. MSKのスケーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">15.3. 別サービスとの比較</a><ul>
+<li><a class="reference internal" href="#id13">15.3. 別サービスとの比較</a><ul>
 <li><a class="reference internal" href="#amazon-kinesis-data-streams">15.3.1. Amazon kinesis Data Streamsとの比較</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">15.4. MSKの実装</a><ul>
-<li><a class="reference internal" href="#id14">15.4.1. MSKの採用</a></li>
-<li><a class="reference internal" href="#id15">15.4.2. ベストプラクティス</a><ul>
-<li><a class="reference internal" href="#id16">15.4.2.1. クラスターサイズ</a></li>
+<li><a class="reference internal" href="#id14">15.4. MSKの実装</a><ul>
+<li><a class="reference internal" href="#id15">15.4.1. MSKの採用</a></li>
+<li><a class="reference internal" href="#id16">15.4.2. ベストプラクティス</a><ul>
+<li><a class="reference internal" href="#id17">15.4.2.1. クラスターサイズ</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id18">15.5. 参考サイト</a></li>
 </ul>
 </li>
 </ul>

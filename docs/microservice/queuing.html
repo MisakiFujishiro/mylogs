@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>4. キューシステム &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. Agileの基本" href="../Agile/agile.html" />
+    <link rel="prev" title="3. サーバーレスとは" href="serverless.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../Agile/agile.html" title="1. Agileの基本"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="serverless.html" title="3. サーバーレスとは"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>キューシステム</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1><span class="section-number">4. </span>キューシステム<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id2">
+<h2><span class="section-number">4.1. </span>キューの必要性：柔軟性のあるアプリケーション<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>柔軟性とは</p>
+<blockquote>
+<div><p>ビジネス要求に対するサービスの変更のしやすさ</p>
+</div></blockquote>
+<p>すなわち、以下の観点を満たしている</p>
+<ol class="simple">
+<li><p>影響範囲の把握と限定が容易</p></li>
+<li><p>開発・テストがし易い</p></li>
+<li><p>リリースし易い</p></li>
+<li><p>リリースに失敗した時の影響範囲が小さい</p></li>
+</ol>
+<p>上記1-3の観点を満たし、柔軟性のあるアプリケーションとするために</p>
+<blockquote>
+<div><p>モジュール強度を高めたアプリの適切な分割をする<br />モノリスからより小さなコンポーネントへ</p>
+</div></blockquote>
+<p><img alt="../_images/queue_flexible_point1.png" src="../_images/queue_flexible_point1.png" /></p>
+<p>また、4の観点を満たすためには、蜜結合とならないように</p>
+<blockquote>
+<div><p>コンポーネント感の結合を弱めることで影響の波及を限定的にする。<br />蜜結合から疎結合へ</p>
+</div></blockquote>
+<p><img alt="../_images/queue_flexible_point2.png" src="../_images/queue_flexible_point2.png" /></p>
+<blockquote>
+<div><p>キューなどのコネクターを利用した疎結合な呼び出しが重要<br />繋ぐコンポーネントが柔軟性あるアプリケーションを可能にする</p>
+</div></blockquote>
+</section>
+<section id="id3">
+<h2><span class="section-number">4.2. </span>アプリケーションをつなぐ方式<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>アプリケーションをつなぐ方式は以下の4つの問いにを踏まえて整理する</p>
+<ul class="simple">
+<li><p>送信するデータの種類は何か<br />ストリーミング/メッセージングの検討</p></li>
+<li><p>呼び出した処理の完了確認は必要か否か<br />同期/非同期の検討</p></li>
+<li><p>処理を行うタイミングは任意か否か<br />push/pull方式の検討</p></li>
+<li><p>処理の依頼先が1ヶ所か複数か<br />P2P publish/subscribe方式の検討</p></li>
+</ul>
+<p><img alt="../_images/queue_patterns.png" src="../_images/queue_patterns.png" /></p>
+<section id="id4">
+<h3><span class="section-number">4.2.1. </span>ストリーミング/メッセージングの検討<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>■ストリーミング<br />一連のデータを送り続け、データの順序性に意味があって、まとめて処理する</p>
+<p>■メッセージング<br />単発で完結する要求や応答をやり取りする</p>
+<p><img alt="../_images/queue_stream_message.png" src="../_images/queue_stream_message.png" /></p>
+</section>
+<section id="id5">
+<h3><span class="section-number">4.2.2. </span>同期/非同期の検討<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>■同期<br />ProducerがConsumerの処理の完了を待つ方式</p>
+<p>■非同期<br />ProducerがConsumerの処理を待たない方式</p>
+<p><img alt="../_images/queue_sync_async.png" src="../_images/queue_sync_async.png" /></p>
+</section>
+<section id="push-pull">
+<h3><span class="section-number">4.2.3. </span>push/pull方式の検討<a class="headerlink" href="#push-pull" title="この見出しへのパーマリンク">¶</a></h3>
+<p>■push方式<br />Producerがメッセージを送りつける</p>
+<p>■Pull方式
+Consumerがメッセージを取得しにいく</p>
+<p><img alt="../_images/queue_push_pull.png" src="../_images/queue_push_pull.png" /></p>
+<p>■Connector<br />ProducerもConsumerも任意のタイミングで処理するために、Connectorを挟む</p>
+<p><img alt="../_images/queue_connector.png" src="../_images/queue_connector.png" /></p>
+</section>
+<section id="p2p-publish-subscribe">
+<h3><span class="section-number">4.2.4. </span>P2P publish/subscribe方式の検討<a class="headerlink" href="#p2p-publish-subscribe" title="この見出しへのパーマリンク">¶</a></h3>
+<p>■P2P<br />ProducerとConsumerが一対一で対応する</p>
+<p>■Publish/Subscribe方式<br />1つのメッセージを複数のConsumerが受信する方式<br />1つのリクエストで複数の処理を並列して実施したい場合に有用</p>
+<p><img alt="../_images/queue_pub_sub.png" src="../_images/queue_pub_sub.png" /></p>
+</section>
+</section>
+<section id="aws">
+<h2><span class="section-number">4.3. </span>関連するAWSサービス<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
+<p>アプリケーションの連携をサポートする主要なAWSマネージドサービスには以下が挙げられる</p>
+<p><img alt="../_images/queue_aws_service.png" src="../_images/queue_aws_service.png" /></p>
+<section id="id6">
+<h3><span class="section-number">4.3.1. </span>ストリーミングデータを扱いたい場合<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下の３つのサービスが対象</p>
+<ul class="simple">
+<li><p>Amazon kinesis<br />テキストから動画までのストリーミングデータを扱うことが可能</p></li>
+<li><p>Amazon Managed Streaming for Kafka<br />ストリーミングデータを扱うApache Kafkaをマネージドに利用することが可能</p></li>
+<li><p>Amazon API Gateway
+WebSockerをサポート</p></li>
+</ul>
+<p><img alt="../_images/queue_streaming.png" src="../_images/queue_streaming.png" /></p>
+</section>
+<section id="id7">
+<h3><span class="section-number">4.3.2. </span>メッセージングデータを扱いたい場合<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下の３つのサービスが対象</p>
+<ul class="simple">
+<li><p>Amazon SNS</p></li>
+<li><p>Amazon SQS</p></li>
+<li><p>Amazon MQ</p></li>
+</ul>
+<p><img alt="../_images/queue_messaging.png" src="../_images/queue_messaging.png" /></p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">4. キューシステム</a><ul>
+<li><a class="reference internal" href="#id2">4.1. キューの必要性：柔軟性のあるアプリケーション</a></li>
+<li><a class="reference internal" href="#id3">4.2. アプリケーションをつなぐ方式</a><ul>
+<li><a class="reference internal" href="#id4">4.2.1. ストリーミング/メッセージングの検討</a></li>
+<li><a class="reference internal" href="#id5">4.2.2. 同期/非同期の検討</a></li>
+<li><a class="reference internal" href="#push-pull">4.2.3. push/pull方式の検討</a></li>
+<li><a class="reference internal" href="#p2p-publish-subscribe">4.2.4. P2P publish/subscribe方式の検討</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#aws">4.3. 関連するAWSサービス</a><ul>
+<li><a class="reference internal" href="#id6">4.3.1. ストリーミングデータを扱いたい場合</a></li>
+<li><a class="reference internal" href="#id7">4.3.2. メッセージングデータを扱いたい場合</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="serverless.html"
+                          title="前の章へ"><span class="section-number">3. </span>サーバーレスとは</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../Agile/agile.html"
+                          title="次の章へ"><span class="section-number">1. </span>Agileの基本</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/microservice/queuing.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../Agile/agile.html" title="1. Agileの基本"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="serverless.html" title="3. サーバーレスとは"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>キューシステム</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>
