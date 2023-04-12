@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>14. SQS &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="15. Amazon MQ" href="MQ.html" />
+    <link rel="prev" title="13. SNS" href="SNS.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="MQ.html" title="15. Amazon MQ"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="SNS.html" title="13. SNS"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">14. </span>SQS</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="sqs">
+<h1><span class="section-number">14. </span>SQS<a class="headerlink" href="#sqs" title="この見出しへのパーマリンク">¶</a></h1>
+<p>SQS(Simple Queue Service)は無制限のスケーラビリティを備えたフルマネージド型の<code class="docutils literal notranslate"><span class="pre">分散メッセージキューサービス</span></code>で疎結合なシステムを実現できる。</p>
+<p>キューイングの種類としては、非同期、Pull型、P2P型となる。
+すなわち、ProducerはConsumerの完了を待たず、Consumerがメッセージを拾いに行き、一対一のメッセージングとなる。</p>
+<p><img alt="../_images/sqs_image.png" src="../_images/sqs_image.png" /></p>
+<p>SQSは、ほぼ無制限のスケーラビリティを備えたフルマネージドな分散メッセージキューであり、代表的なメリットとしては以下が挙げられる</p>
+<p><img alt="../_images/sqs_merit.png" src="../_images/sqs_merit.png" /></p>
+<section id="id1">
+<h2><span class="section-number">14.1. </span>SQSの登場人物<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p>Producer：メッセージを作成する生産者</p></li>
+<li><p>Consumer：メッセージを取り出して後続処理を行う消費者</p></li>
+<li><p>キュー：ProducerとConsumer両者を疎結合にする</p></li>
+</ul>
+<p>SNSは<code class="docutils literal notranslate"><span class="pre">Push型</span></code>の仕組みであり、SQSは<code class="docutils literal notranslate"><span class="pre">Pull型</span></code>である点。<br />Push型では、TopicからSubscriberへの配信は即時に行われるが、Pull型ではキューからConsumerがメッセージを取り出す必要がある。</p>
+<p><img alt="../_images/sqs_howtouse.png" src="../_images/sqs_howtouse.png" /></p>
+</section>
+<section id="id2">
+<h2><span class="section-number">14.2. </span>SQSの利用ケース<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SQSの利用ケースの代表として以下が挙げられる</p>
+<ol class="simple">
+<li><p>大量のリクエストの均一化</p></li>
+</ol>
+<p><img alt="../_images/sqs_merit1.png" src="../_images/sqs_merit1.png" /></p>
+<ol class="simple">
+<li><p>依存関係の低減</p></li>
+</ol>
+<p><img alt="../_images/sqs_merit2.png" src="../_images/sqs_merit2.png" /></p>
+<ol class="simple">
+<li><p>処理の並列化（ファンアウト）→詳細は次節</p></li>
+</ol>
+<section id="snssqs">
+<h3><span class="section-number">14.2.1. </span>SNSとSQSの連携（ファンアウト）<a class="headerlink" href="#snssqs" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producerが複数のキューにトピックを配信する際に、SQSだけではProducer側で並列側の制御が必要であった。
+SNSとSQSを組み合わせたファンアウトでは、SNSを経由することで、１つのメッセージ送信で、全てのキューに並列配信される。</p>
+<p><img alt="../_images/sqs_fanout.png" src="../_images/sqs_fanout.png" /></p>
+<p><a class="reference external" href="https://zenn.dev/mn87/articles/57fd79e985ca19">ファンアウトのハンズオン</a></p>
+</section>
+</section>
+<section id="id3">
+<h2><span class="section-number">14.3. </span>SQSのキュー詳細<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SNS同様にスタンダードとFIFOが準備されており、順序性、重複性、スループットの面でメリデメがある。</p>
+<ul class="simple">
+<li><p>スタンダート<br />順序性と重複性が保証がされない代わりにほぼ無制限のスループットが実現できる</p></li>
+<li><p>FIFO<br />順序性についてはベストエフォートで、配信方法については少なくとも1回配信されるが2回配信される可能性がある。
+そのため、Consumer側で冪等性の仕組みなどを取り入れる必要がある。
+スループットは300件/secとなる<br />リリースが2018年11月と比較的最近</p></li>
+</ul>
+<section id="id4">
+<h3><span class="section-number">14.3.1. </span>キューの保存期間<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>デフォルトでは４日間が設定されており、最大で14日間まで変更可能
+この設定は、<code class="docutils literal notranslate"><span class="pre">MessageRetentionPeriod</span></code>で設定する</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">14.3.2. </span>SQSの容量<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SQSでやり取りすることができる容量は最大256kB</p>
+<p>しかし、S3とJava拡張ライブラリを利用することで、SQSのメッセージサイズを超過して2GBまで対応することができる。</p>
+</section>
+<section id="id6">
+<h3><span class="section-number">14.3.3. </span>SQSのキューの削除<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Purge</span> <span class="pre">Queue</span></code>を利用すると、指定したキューないのメッセージを削除することができる。</p>
+</section>
+<section id="id7">
+<h3><span class="section-number">14.3.4. </span>デットレターキュー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>正常に処理できないメッセージがキューに滞留することを避ける機能。</p>
+<p>Redriveポリシーで、移動させるルール（最大受信数）とメッセージ格納先（デットレターキュー）を指定する
+デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
+</section>
+<section id="id8">
+<h3><span class="section-number">14.3.5. </span>重複削除<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>FIFOキューでは重複を排除するための機能が備わっている。
+あるメッセージが送付されてから<code class="docutils literal notranslate"><span class="pre">5分間</span></code>の間に同一のメッセージが送られてきた時に重複を削除することができる。</p>
+</section>
+</section>
+<section id="id9">
+<h2><span class="section-number">14.4. </span>キューからのメッセージ取得<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
+<p>次の3ステップを踏む</p>
+<ol class="simple">
+<li><p>Consumerがキューをポーリング（キューの監視）</p></li>
+<li><p>Consumerがメッセージ取得（最大10件までまとめて取得可能）</p></li>
+<li><p>Consumerが処理済みメッセージをキューから削除</p></li>
+</ol>
+<p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。
+メッセージ削除の際は取得したMessageのIDである「ReceiptHandle」を指定するが、他のConsumerがメッセージに触れると「ReceiptHandle」が書き換えられてエラーになるの可能性があるので、可視化タイムアウトなどの設定を使うようにする。</p>
+<section id="id10">
+<h3><span class="section-number">14.4.1. </span>ポーリング<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。
+ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間(ReciveMessageWaitTimeSeconds)</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
+<ul class="simple">
+<li><p>ショートポーリング<br />受信待機時間を0にすると設定できる。
+分散されたSQSのサーバーから一部をサンプリングして即時返答<br />即時返答のため、SNSのようにProducerが生産してからすぐConsumerが消費できる</p></li>
+<li><p>ロングポーリング（推奨)<br />受信待機時間を1-20にすると設定できる。
+分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける<br />待機時間を設定することで、Producerが生産してからConsumerが消費するまでの待機時間を設定できる</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3><span class="section-number">14.4.2. </span>キューの待機時間設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producerがキューに格納してからConsumerが取得するまでの時間を遅延させたり、
+Consumerがキューを取得してから他のConsumerがメッセージを取得するまでの時間を遅延させたりすることができる。</p>
+<p>以下の図は、後述する遅延キュー（メッセージタイマーと可視性タイムアウトの関係）</p>
+<p><img alt="../_images/sns_delay.png" src="../_images/sns_delay.png" /></p>
+<section id="id12">
+<h4><span class="section-number">14.4.2.1. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">Producer</span></code>からキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。</p>
+<ul class="simple">
+<li><p>遅延キューはキュー全体に設定が反映される<br /><code class="docutils literal notranslate"><span class="pre">配信遅延時間(DelaySecondsパラメータ)</span></code>を設定する</p></li>
+<li><p>メッセージタイマーは特定メッセージに対して設定が反映される</p></li>
+</ul>
+<p><img alt="../_images/sqs_delay.png" src="../_images/sqs_delay.png" /></p>
+</section>
+<section id="id13">
+<h4><span class="section-number">14.4.2.2. </span>可視性タイムアウト<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">Consumer</span></code>がメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を<code class="docutils literal notranslate"><span class="pre">極力</span></code>防止することができる。
+極力というのは、スタンダートキューの場合は重複性を完全排除はできない点に注意。</p>
+<p><img alt="../_images/sqs_visibility.png" src="../_images/sqs_visibility.png" /></p>
+</section>
+</section>
+</section>
+<section id="id14">
+<h2><span class="section-number">14.5. </span>セキュリティ<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id15">
+<h3><span class="section-number">14.5.1. </span>暗号化<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SQSはKMSと統合されており、KMSによってメッセージを暗号化できる。
+ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
+<p>SQSはIAMによるアクセス制御に加えて、キューに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
+<p><img alt="../_images/sqs_secret.png" src="../_images/sqs_secret.png" /></p>
+</section>
+<section id="id16">
+<h3><span class="section-number">14.5.2. </span>アクセス制御<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下で制御が可能</p>
+<ul class="simple">
+<li><p>IAMポリシー: 特定のユーザーやロールに対してキューへのアクセス制御が可能</p></li>
+<li><p>SQSポリシー: 特定のキューに対するアクセス制御が可能</p></li>
+</ul>
+<p><img alt="../_images/sqs_policy.png" src="../_images/sqs_policy.png" /></p>
+</section>
+</section>
+<section id="id17">
+<h2><span class="section-number">14.6. </span>監視<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Amazon CloudWatchと連携して、以下の内容をモニタリングすることができ、例えばオートスケールの指標にすることができる</p>
+<p><img alt="../_images/sqs_monitoring.png" src="../_images/sqs_monitoring.png" /></p>
+</section>
+<section id="kinesis">
+<h2><span class="section-number">14.7. </span>kinesisとの比較<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ストリーミングデータであればkinesis一択。それ以外の場合は以下のデータの特性によって判断</p>
+<ul class="simple">
+<li><p>データの処理方法</p></li>
+<li><p>データサイズ</p></li>
+<li><p>保持期間</p></li>
+</ul>
+<p><img alt="../_images/sqs_vs_kinesis.png" src="../_images/sqs_vs_kinesis.png" /></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">14. SQS</a><ul>
+<li><a class="reference internal" href="#id1">14.1. SQSの登場人物</a></li>
+<li><a class="reference internal" href="#id2">14.2. SQSの利用ケース</a><ul>
+<li><a class="reference internal" href="#snssqs">14.2.1. SNSとSQSの連携（ファンアウト）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">14.3. SQSのキュー詳細</a><ul>
+<li><a class="reference internal" href="#id4">14.3.1. キューの保存期間</a></li>
+<li><a class="reference internal" href="#id5">14.3.2. SQSの容量</a></li>
+<li><a class="reference internal" href="#id6">14.3.3. SQSのキューの削除</a></li>
+<li><a class="reference internal" href="#id7">14.3.4. デットレターキュー</a></li>
+<li><a class="reference internal" href="#id8">14.3.5. 重複削除</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id9">14.4. キューからのメッセージ取得</a><ul>
+<li><a class="reference internal" href="#id10">14.4.1. ポーリング</a></li>
+<li><a class="reference internal" href="#id11">14.4.2. キューの待機時間設定</a><ul>
+<li><a class="reference internal" href="#id12">14.4.2.1. 遅延キューとメッセージタイマー</a></li>
+<li><a class="reference internal" href="#id13">14.4.2.2. 可視性タイムアウト</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">14.5. セキュリティ</a><ul>
+<li><a class="reference internal" href="#id15">14.5.1. 暗号化</a></li>
+<li><a class="reference internal" href="#id16">14.5.2. アクセス制御</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id17">14.6. 監視</a></li>
+<li><a class="reference internal" href="#kinesis">14.7. kinesisとの比較</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="SNS.html"
+                          title="前の章へ"><span class="section-number">13. </span>SNS</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="MQ.html"
+                          title="次の章へ"><span class="section-number">15. </span>Amazon MQ</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/AWS/SQS.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="MQ.html" title="15. Amazon MQ"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="SNS.html" title="13. SNS"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">14. </span>SQS</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

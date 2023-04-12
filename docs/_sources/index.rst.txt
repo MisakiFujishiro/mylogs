@@ -39,7 +39,9 @@ AWS Services(AWSサービスの概要)
    AWS/DB
    AWS/Monitoring
    AWS/EnvAutomation
-   AWS/SNS_SQS
+   AWS/SNS
+   AWS/SQS
+   AWS/MQ
    AWS/MSK
    AWS/Streaming
    AWS/AI

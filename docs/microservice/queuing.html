@@ -47,6 +47,7 @@
             
   <section id="id1">
 <h1><span class="section-number">4. </span>キューシステム<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<p>キューシステムはモジュール間の相互依存性を低減することで、柔軟性のあるアプリケーション実現に寄与する。</p>
 <section id="id2">
 <h2><span class="section-number">4.1. </span>キューの必要性：柔軟性のあるアプリケーション<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <p>柔軟性とは</p>
@@ -56,7 +57,7 @@
 <p>すなわち、以下の観点を満たしている</p>
 <ol class="simple">
 <li><p>影響範囲の把握と限定が容易</p></li>
-<li><p>開発・テストがし易い</p></li>
+<li><p>開発・テストがし易い（モジュール間は異なる言語でもOK）</p></li>
 <li><p>リリースし易い</p></li>
 <li><p>リリースに失敗した時の影響範囲が小さい</p></li>
 </ol>
@@ -70,9 +71,7 @@
 <div><p>コンポーネント感の結合を弱めることで影響の波及を限定的にする。<br />蜜結合から疎結合へ</p>
 </div></blockquote>
 <p><img alt="../_images/queue_flexible_point2.png" src="../_images/queue_flexible_point2.png" /></p>
-<blockquote>
-<div><p>キューなどのコネクターを利用した疎結合な呼び出しが重要<br />繋ぐコンポーネントが柔軟性あるアプリケーションを可能にする</p>
-</div></blockquote>
+<p>キューなどのコネクターを利用した疎結合な呼び出しが重要<br />繋ぐコンポーネントが柔軟性あるアプリケーションを可能にする</p>
 </section>
 <section id="id3">
 <h2><span class="section-number">4.2. </span>アプリケーションをつなぐ方式<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
@@ -107,13 +106,13 @@ Consumerがメッセージを取得しにいく</p>
 </section>
 <section id="p2p-publish-subscribe">
 <h3><span class="section-number">4.2.4. </span>P2P publish/subscribe方式の検討<a class="headerlink" href="#p2p-publish-subscribe" title="この見出しへのパーマリンク">¶</a></h3>
-<p>■P2P<br />ProducerとConsumerが一対一で対応する</p>
+<p>■P2P<br />メッセージとConsumerが一対一で対応する<br />すなわち、1つのメッセージを1つのConsumerが処理する。</p>
 <p>■Publish/Subscribe方式<br />1つのメッセージを複数のConsumerが受信する方式<br />1つのリクエストで複数の処理を並列して実施したい場合に有用</p>
 <p><img alt="../_images/queue_pub_sub.png" src="../_images/queue_pub_sub.png" /></p>
 </section>
 </section>
 <section id="aws">
-<h2><span class="section-number">4.3. </span>関連するAWSサービス<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.3. </span>関連するAWSサービスとその比較<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
 <p>アプリケーションの連携をサポートする主要なAWSマネージドサービスには以下が挙げられる</p>
 <p><img alt="../_images/queue_aws_service.png" src="../_images/queue_aws_service.png" /></p>
 <section id="id6">
@@ -135,7 +134,27 @@ WebSockerをサポート</p></li>
 <li><p>Amazon SQS</p></li>
 <li><p>Amazon MQ</p></li>
 </ul>
+<p>■仕組み的な分類</p>
 <p><img alt="../_images/queue_messaging.png" src="../_images/queue_messaging.png" /></p>
+<p>■特徴的な分類<br />ポイントはSQSとSNSはクラウドネイティブであり、MQはアプリケーションの移行を意識している点</p>
+<p><img alt="../_images/queue_messaging_2.png" src="../_images/queue_messaging_2.png" /></p>
+<p>■使い分けフローチャート<br />ポイントは以下</p>
+<ul class="simple">
+<li><p>新規かつリファクタリング可能ならSNS/SQS</p>
+<ul>
+<li><p>最近SNS/SQSがFIFO対応となったので、選択可能性が高まった</p></li>
+</ul>
+</li>
+<li><p>現行を継続する場合はMQかEC2作り込み</p></li>
+</ul>
+<p><img alt="../_images/queue_flowchart.png" src="../_images/queue_flowchart.png" /></p>
+<section id="amazon-mq">
+<h4><span class="section-number">4.3.2.1. </span>Amazon MQ<a class="headerlink" href="#amazon-mq" title="この見出しへのパーマリンク">¶</a></h4>
+<p>１番の特徴は、オンプレミスで既にキューシステムを利用しているアプリケーションからAmazon MQへの移行が比較的容易に可能な点。</p>
+<p>SNSやSQSはクラウドネイティブなサービスであり、連携するアプリケーションとしても、クラウドネイティブなアプリを想定している。
+そのため、オンプレミスなどトラディショナルなアプリとの連携を考える時に、アプリケーション側に改修が必要になる課題があった。</p>
+<p>スケーリングについては、自動スケーリングではない点に注意</p>
+</section>
 </section>
 </section>
 </section>
@@ -159,9 +178,12 @@ WebSockerをサポート</p></li>
 <li><a class="reference internal" href="#p2p-publish-subscribe">4.2.4. P2P publish/subscribe方式の検討</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aws">4.3. 関連するAWSサービス</a><ul>
+<li><a class="reference internal" href="#aws">4.3. 関連するAWSサービスとその比較</a><ul>
 <li><a class="reference internal" href="#id6">4.3.1. ストリーミングデータを扱いたい場合</a></li>
-<li><a class="reference internal" href="#id7">4.3.2. メッセージングデータを扱いたい場合</a></li>
+<li><a class="reference internal" href="#id7">4.3.2. メッセージングデータを扱いたい場合</a><ul>
+<li><a class="reference internal" href="#amazon-mq">4.3.2.1. Amazon MQ</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
