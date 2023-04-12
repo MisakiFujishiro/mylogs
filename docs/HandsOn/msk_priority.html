@@ -65,76 +65,55 @@
 </ol>
 </section>
 <section id="id2">
-<h2><span class="section-number">2.2. </span>メッセージの中に優先度のキーを追加<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
-<p>Topicを共通として、Producer側でメッセージに対して優先度を付与する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">producer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">broker</span><span class="o">-</span><span class="nb">list</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">9092</span> <span class="o">--</span><span class="n">topic</span> <span class="n">test</span> \
-<span class="o">--</span><span class="nb">property</span> <span class="s2">&quot;parse.key=true&quot;</span> \
-<span class="o">--</span><span class="nb">property</span> <span class="s2">&quot;key.separator=:&quot;</span>
-<span class="o">&gt;</span> <span class="n">high_priority_key</span><span class="p">:{</span><span class="s2">&quot;priority&quot;</span><span class="p">:</span> <span class="s2">&quot;high&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;some_data&quot;</span><span class="p">}</span>
-<span class="o">&gt;</span> <span class="n">low_priority_key</span><span class="p">:{</span><span class="s2">&quot;priority&quot;</span><span class="p">:</span> <span class="s2">&quot;low&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;some_other_data&quot;</span><span class="p">}</span>
+<h2><span class="section-number">2.2. </span>パーティションキーの利用<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Producer側でパーティションキーを設定し、特定のパーティションにメッセージを送付するように設定を行う。
+Consumer側でもパーティションキーに従って、特定のパーティションにメッセージを読み込むように設定を行う。</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiita.com/akiyoshi_tomita/items/bd46bb320cd7ea217b2f">Kafkaを利用した分散処理について</a></p></li>
+</ul>
+<p>■手順</p>
+<ol class="simple">
+<li><p>Producer側で、メッセージに応じてPartitionキーを指定する。優先度の高いメッセージは特定のPartitionに紐付ける</p></li>
+<li><p>Consumer側でも、特定のConsumerに対して、Partitionキーを指定するようにする。</p></li>
+</ol>
+<p>■懸念点<br />AutoScalingとどうやって整合性をとるか<br />Topicは共通だが、Consumer側は優先度高い用と低いようを作成するように見える</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">2.3. </span>メッセージの中に優先度のキーを追加<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Topicを共通として、Producer側でメッセージに対して優先度を付与する<br />Producer側では、送信するメッセージの中にkey-valueとしてpriorityを一つ追加する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;priority&quot;</span><span class="p">:</span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;customerCode&quot;</span><span class="p">:</span><span class="s2">&quot;xxx&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;data&quot;</span><span class="p">:</span><span class="s2">&quot;hoge&quot;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p>Consumer側で優先度を比較する。</p>
-<p>■懸念点<br />Consumer側でまとめてPartitionのメッセージを読み込んで、優先度の高いメッセージを探すように見える
-今はConsumer側で1つのメッセージを受け取っているような印象。
-ここから検証が必要か。</p>
-<p>次のセクションで説明するkafka ストリームで特定メッセージをフィルターして別トピックに格納する方法が対応の一つだが、それなら元々別トピックに書き込むのと同じ。
-今回はProducerからして違うので、Topicを変更するのが一番良い。</p>
+<p>Consumer側で優先度を比較する実装を行う。</p>
+<p>■懸念点<br />チーム内にConsumer側の優先度に応じた、処理のソートまで実装できる能力があるか。<br />現在は、1つ1つメッセージを拾っている実装だと理解しているがまとめてpartition内のデータを取得して、優先度順に並び替える必要がある<br />（1つづつなのかまとめてやっているのかから調査）<br />offsetについても順番が入れ替わるので、優先度が高いメッセージのoffsetよりも小さいoffsetのデータが正しく処理されるか確認する必要がある。</p>
 </section>
 <section id="kafka">
-<h2><span class="section-number">2.3. </span>kafkaストリームの利用<a class="headerlink" href="#kafka" title="この見出しへのパーマリンク">¶</a></h2>
-<p><a class="reference external" href="https://qiita.com/41semicolon/items/60f92a1db6dfce4303c5">Kafka Streams</a>
-を利用すると、特定のメッセージをフィルタリングすることが可能なようには見える。</p>
-<p>特定のキーを持つメッセージだけをConsumeする場合、Kafka Streamsのfilter()関数を使用して、指定されたキーを持つメッセージだけをストリームからフィルタリングすることが可能に見える。</p>
-<p>■懸念点<br />filterした後は別のTopicに書き込む処理のようなので、そもそもTopicを書き分ける方が直接的な印象。<br />filterしたものを処理するフローも書けるのかもしれないが、処理しなかった方のメッセージがどうなるか不明瞭</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Predicate;
-
-KStream&lt;String, String&gt; inputStream = builder.stream(&quot;input-topic&quot;);
-KStream&lt;String, String&gt; filteredStream = inputStream.filter(new Predicate&lt;String, String&gt;() {
-  @Override
-  public boolean test(String key, String value) {
-    // フィルタ条件を記述する
-    // 例えば、valueが&quot;important&quot;であるレコードのみをフィルタする場合は
-    // return value.equals(&quot;important&quot;);
-    // のように記述します
-  }
-});
-filteredStream.to(&quot;output-topic&quot;);
-</pre></div>
-</div>
+<h2><span class="section-number">2.4. </span>kafkaストリームの利用<a class="headerlink" href="#kafka" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://kafka.apache.org/documentation/streams/">Kafka Streams</a><br />Kafka Streams はKafka内に格納されているデータの処理と解析のためのクライアントライブラリです。
+とのことで、優先度についても使い込めばできるのかもしれないが、一旦は調査していない。</p>
 </section>
 <section id="schema-registry">
-<h2><span class="section-number">2.4. </span>schema Registryの利用<a class="headerlink" href="#schema-registry" title="この見出しへのパーマリンク">¶</a></h2>
-<p><a class="reference external" href="https://qiita.com/tomotagwork/items/5e456400197457cc4291">Schema Registry簡易テスト</a></p>
-<p>ProducerとConsumerのやり取をSchema Registryを介して行う</p>
+<h2><span class="section-number">2.5. </span>schema Registryの利用<a class="headerlink" href="#schema-registry" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Schema Registry(スキーマ レジストリ)とは、メッセージングシステム「Apache Kafka」ベースのストリームデータ基盤「Confluent Platform」の1コンポーネントです。一元的なスキーマ管理機能を提供します。
+スキーマ管理に対して一元管理されたシリアライズ機構を提供します。</p>
+<p>とのことで、シリアライズ機構を提供してくれるそうなので、こちらも可能性がある。
+詳しく調べられていないが、外部にスキーマを持たせて、メッセージを管理するようなイメージ？</p>
 <p><img alt="../_images/msk_schemaRegistry1.png" src="../_images/msk_schemaRegistry1.png" /></p>
-<section id="producer">
-<h3><span class="section-number">2.4.1. </span>メッセージ送信時(Producer)<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h3>
-<ol class="simple">
-<li><p>メッセージフォーマットを示すschemaを準備</p></li>
-<li><p>SchemaをRegistryに登録する</p></li>
-<li><p>RegistryからIDが返却される</p></li>
-<li><p>idとデータセットをTopicに送信する</p></li>
-</ol>
-</section>
-<section id="consumer">
-<h3><span class="section-number">2.4.2. </span>メッセージ受信時(Consumer)<a class="headerlink" href="#consumer" title="この見出しへのパーマリンク">¶</a></h3>
-<ol class="simple">
-<li><p>Consumer側でschemaに問い合わせて優先度の高いものを確認</p></li>
-<li><p>優先度の高いidを抽出して処理</p></li>
-</ol>
-<p>■懸念点<br />結局Consumer側で優先順位順に処理するロジックがあれば、わざわざschema Resitryは不要な印象
-Resistry側で処理済み、未処理のチェックをしているのかが不明（何回も処理指定しまう？）</p>
+<p>■懸念点<br />やっぱり学習コストがかかりそう。
+また、単純に外部にスキーマを持たせて問い合わせという方式だと処理時間が追加でかかりそうな印象。<br />結局Consumer側で優先順位順に処理するロジックがあれば、わざわざschema Resitryは不要では？</p>
+<section id="id4">
+<h3><span class="section-number">2.5.1. </span>動作検証するなら<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://qiita.com/tomotagwork/items/5e456400197457cc4291">Schema Registry簡易テスト</a></p>
 </section>
 </section>
 <section id="decaton">
-<h2><span class="section-number">2.5. </span>Decatonの利用<a class="headerlink" href="#decaton" title="この見出しへのパーマリンク">¶</a></h2>
-<p>優先度をつけたメッセージを優先的に処理はできるらしい。
-ただ、Decaton自体は、並列処理を実行するが目的に見えるように見える。
-優先順を付与するだけのためにdecatonまで導入するかは要相談
-※どれだけドキュメントが充実しているかなどが定かではない・・・・</p>
-<p>■懸念点<br />改めて、kafkaストリームについて習得する必要があり、難易度が高い可能性あり<br />トラブルシューティング時に、Decaton含めて調査が必要</p>
+<h2><span class="section-number">2.6. </span>Decatonの利用<a class="headerlink" href="#decaton" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Lineのライブラリっぽい。ドキュメント量も少なそうなので、一旦調査していない。</p>
+<p>■懸念点</p>
 </section>
 </section>
 
@@ -150,14 +129,14 @@ Resistry側で処理済み、未処理のチェックをしているのかが不
     <ul>
 <li><a class="reference internal" href="#">2. MSKにおけるメッセージの優先順位について</a><ul>
 <li><a class="reference internal" href="#id1">2.1. 優先度付きのトピックを作成</a></li>
-<li><a class="reference internal" href="#id2">2.2. メッセージの中に優先度のキーを追加</a></li>
-<li><a class="reference internal" href="#kafka">2.3. kafkaストリームの利用</a></li>
-<li><a class="reference internal" href="#schema-registry">2.4. schema Registryの利用</a><ul>
-<li><a class="reference internal" href="#producer">2.4.1. メッセージ送信時(Producer)</a></li>
-<li><a class="reference internal" href="#consumer">2.4.2. メッセージ受信時(Consumer)</a></li>
+<li><a class="reference internal" href="#id2">2.2. パーティションキーの利用</a></li>
+<li><a class="reference internal" href="#id3">2.3. メッセージの中に優先度のキーを追加</a></li>
+<li><a class="reference internal" href="#kafka">2.4. kafkaストリームの利用</a></li>
+<li><a class="reference internal" href="#schema-registry">2.5. schema Registryの利用</a><ul>
+<li><a class="reference internal" href="#id4">2.5.1. 動作検証するなら</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#decaton">2.5. Decatonの利用</a></li>
+<li><a class="reference internal" href="#decaton">2.6. Decatonの利用</a></li>
 </ul>
 </li>
 </ul>
