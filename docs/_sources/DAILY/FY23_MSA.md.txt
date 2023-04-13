@@ -49,14 +49,14 @@
 ## 活動履歴
 ### 4月上旬
 - Black Belt
-    - [MQ](file:///Users/misakifujishiro/PycharmProjects/mysphinx/mylogs/docs/AWS/MQ.html)【完了】
+    - [MQ](https://misakifujishiro.github.io/mylogs/AWS/MQ.html)【完了】
     - SQS【実施中】
     - SNS【実施中】
-    - [MSK](file:///Users/misakifujishiro/PycharmProjects/mysphinx/mylogs/docs/AWS/MSK.html)【完了】
+    - [MSK](https://misakifujishiro.github.io/mylogs/AWS/MSK.html)【完了】
     - kinesis【未実施】
 - MSAにおけるメッセージングキューの役割調査【未実施】
 - 実装内容検討【未実施】  
-    Blackbeltを踏まえて何を実装すか考える
+    Blackbeltを踏まえて何を実装するか考える
 ### 4月下旬
 ### 5月上旬
 ### 5月下旬
