@@ -130,6 +130,12 @@ ProducerもConsumerも任意のタイミングで処理するために、Connect
 ![](img/queue_messaging_2.png)
 
 
+■マッピング図  
+ポイントは、SQSはキューサービスであり、SNSはMessagingサービスである点。  
+なお、SNSにはモバイル通知の機能もあるが、Amazon pinpointで代用できるため、あまり触れない
+
+![](img/queue_mapping.png)
+
 ■使い分けフローチャート  
 ポイントは以下
 - 新規かつリファクタリング可能ならSNS/SQS
