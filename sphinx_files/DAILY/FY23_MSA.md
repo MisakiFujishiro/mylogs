@@ -20,8 +20,8 @@
 
 ■4月  
 - メッセージングサービス調査
-- MSAにおけるメッセージングサービスの役割調査
-- 実装内容検討
+- テーマ具体化と実装内容検討  
+- 環境構築
 
 ■5月  
 - 実装開始
@@ -48,15 +48,25 @@
 
 ## 活動履歴
 ### 4月上旬
-- Black Belt
+- メッセージングサービス調査  
+    Black Beltでサービスの特徴整理
     - [MQ](https://misakifujishiro.github.io/mylogs/AWS/MQ.html)【完了】
-    - SQS【実施中】
-    - SNS【実施中】
+    - [SQS](https://misakifujishiro.github.io/mylogs/AWS/SQS.html)【完了】
+    - [SNS](https://misakifujishiro.github.io/mylogs/AWS/SNS.html)【完了】
     - [MSK](https://misakifujishiro.github.io/mylogs/AWS/MSK.html)【完了】
     - kinesis【未実施】
-- MSAにおけるメッセージングキューの役割調査【未実施】
-- 実装内容検討【未実施】  
-    Blackbeltを踏まえて何を実装するか考える
+- テーマ具体化と実装内容検討  
+    - [MIRO](https://miro.com/app/board/uXjVMTUlajs=/)で整理中
+        - メッセージキューの整理
+        - AWSサービスのメッセージキューサービスの使い分け
+        - 実案件で困っている部分の比較
+
+    
+- 環境構築
+    - workspaces（バーチャルディスプレイ環境）
+    - AWSの環境の中にWindowsかAmazon Linuxの環境を構築できる。
+    - ここに開発ツールをインストールする
+
 ### 4月下旬
 ### 5月上旬
 ### 5月下旬
