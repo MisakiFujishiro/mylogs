@@ -24,8 +24,9 @@
 - 環境構築
 
 ■5月  
-- 実装開始
+- 実装の構成図作成
 - 対象サービスの深掘り
+- 実装開始
 
 ■6月  
 - 実装継続
@@ -56,20 +57,23 @@
     - [MSK](https://misakifujishiro.github.io/mylogs/AWS/MSK.html)【完了】
     - kinesis【未実施】
 - テーマ具体化と実装内容検討  
-    - [MIRO](https://miro.com/app/board/uXjVMTUlajs=/)で整理中
+    - [MIRO](https://miro.com/app/board/uXjVMTUlajs=/)で整理
         - メッセージキューの整理
         - AWSサービスのメッセージキューサービスの使い分け
         - 実案件で困っている部分の比較
-
-    
+        - 実装のイメージも検討
 - 環境構築
     - workspaces（バーチャルディスプレイ環境）
     - AWSの環境の中にWindowsかAmazon Linuxの環境を構築できる。
     - ここに開発ツールをインストールする
-
-### 4月下旬
 ### 5月上旬
+- 実装の構成図作成
+- 対象サービスの深掘り
+- 実装開始
+
 ### 5月下旬
+
+
 ### 6月上旬
 ### 6月下旬
 ### 7月上旬
