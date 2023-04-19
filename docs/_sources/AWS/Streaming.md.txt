@@ -15,6 +15,14 @@ Kinesisは、ストリーミングデータを扱うために４つのサービ�
 ## Kinesis Data Streams
 異なるシステムやサーバー、デバイスから送信されるストリームデータを受信して、各種AWSサービスにリアルタイムに配信するサービス。
 
+メリットとしては以下が挙げられる
+- 簡単な管理と低コスト
+- リアルタイムと柔軟性あるパフォーマンス
+- 安全で耐久性あるストレージ
+- 1MB/s 1000rec/sの書き込み性能
+- 2MV/s 5rec/sの読み込み性能
+
+
 AWSのリソースに配信されるが、Consumer側で作り込みが必要になる点に注意。
 
 ![](img/kinesis_data_sterams.png)
@@ -25,6 +33,53 @@ AWSのリソースに配信されるが、Consumer側で作り込みが必要に
 - ストリーム: kafkaだとTopicに対応、データのグループ
 - シャード: kafkaだとPartitionに対応、ストリームの分割単位
 
+![](img/kinesis_overview.png)
+
+### kinesisの分散処理
+データレコードのパーティションキーを利用して分散する
+
+![](img/kinesis_partitionkey.png)
+
+分散されたデータはシャード毎にユニークなシーケンス番号が割り振られ、データ処理時にシーケンス番号でレコード取得開始ポジションを指定する
+
+![](img/kinesis_sequence.png)
+
+### kinesisのProducer実装
+#### Kinesis Agent
+kinesisサービスにデータを収集して取り込むOSSのアプリケーション
+- エージェントでモニタリングするファイルのパターンと送信先ストリームを指定
+- 前処理の機能を提供
+- 送信前のバッファリングも可能
+
+#### Kinesis Producer Library(KPL)
+kinesis SStreamsにデータ送信するOSSの補助ライブラリ
+- Aggregation:複数のデータをまとめて送信可能
+- Collection:複数のレコードをバッファリングして送信
+
+
+#### Fluent plugin for Amazon kinesis
+kinesis StreamsとFirehoseにイベント送信するOSSのFluentdプラグイン
+
+Fluendをログ収集に利用していると、このプラグインを利用するだけでAmazon kinesisシェのデータ投入が可能
+
+#### Kinesis Data Generator(KDG)
+テストデータを簡単に送信することが可能
+- HTMLとJSで実装されたOSSテスト用のUI
+- [Github](https://github.com/awslabs/amazon-kinesis-data-generator)にホストされたUIや性的ウェブサイトホスティングが可能
+
+
+### kinesisのConsumer実装
+#### Kinesis Client Library(KCL)
+- kinesisアプリケーションを作成可能
+- Java/Ruby/Pythonの開発に利用することが可能
+- KCLアプリは以下3つのコンポーネントを含む
+    1. Record Processor; シャードから取り出したデータを処理するプロセッサー単位
+    2. Record Processor Factory:Record Processorを作成する
+    3. Worker: ここのAppインスタンスとマッピングする処理単位
+
+![](img/kinesis_worker.png)
+
+
 ### Data Streamの暗号化
 - 通信の暗号化(HTTPS)  
     HTTPSエンドポイントが準備されており、　HTTPSによるデータ通信でデータを暗号化することができる
@@ -33,7 +88,9 @@ AWSのリソースに配信されるが、Consumer側で作り込みが必要に
 
 
 ### 保存期間
-デフォルトでは24時間の保存期間が設定されており、最大で168時間まで設定可能。
+デフォルトでは24時間の保存期間が設定されており、最大で一年
+
+![](img/kinesis_storage.png)
 
 ### シャードのパフォーマンス調整
 パフォーマンスの調整はシャーディングの分割や結合を通じて行うことができる。
@@ -60,6 +117,23 @@ kinesisシャードの書き込み性能は
 対策として、以下が挙げられる
 - エクスポ年シャルバックオフアルゴリズムによる、再試行の感覚を長くする対策
 - GetRecord処理をする際にバッチ処理を高速分散化する対策
+
+
+## kinesi Data Streams on demand
+2021年に発表された新たな機能
+- シンプルな操作性  
+    シャードの管理が自動化され、より一層管理を簡素化することが可能
+- 柔軟なスケーリング  
+    データ量の変化に応じて自動でキャパシティをスケール
+- コスト削減  
+    従量課金
+
+過去30日間のピーク時の2倍以上のトラフィックを吸収するのに十分な容量を持つ。
+これを超えた場合も15分以内にスケールアウトする。
+
+
+
+
 
 
 

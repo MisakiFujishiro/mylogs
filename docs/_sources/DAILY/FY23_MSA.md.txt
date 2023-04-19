@@ -63,9 +63,10 @@
         - 実案件で困っている部分の比較
         - 実装のイメージも検討
 - 環境構築
-    - workspaces（バーチャルディスプレイ環境）
-    - AWSの環境の中にWindowsかAmazon Linuxの環境を構築できる。
-    - ここに開発ツールをインストールする
+    - workspaces（バーチャルディスプレイ環境）構築完了
+    - Chrom/AWSCLI/IntelliJ/JDKインストール
+    - Hello World
+
 ### 5月上旬
 - 実装の構成図作成
 - 対象サービスの深掘り

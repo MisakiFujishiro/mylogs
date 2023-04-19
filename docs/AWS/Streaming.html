@@ -61,6 +61,14 @@
 <section id="kinesis-data-streams">
 <h2><span class="section-number">17.1. </span>Kinesis Data Streams<a class="headerlink" href="#kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h2>
 <p>異なるシステムやサーバー、デバイスから送信されるストリームデータを受信して、各種AWSサービスにリアルタイムに配信するサービス。</p>
+<p>メリットとしては以下が挙げられる</p>
+<ul class="simple">
+<li><p>簡単な管理と低コスト</p></li>
+<li><p>リアルタイムと柔軟性あるパフォーマンス</p></li>
+<li><p>安全で耐久性あるストレージ</p></li>
+<li><p>1MB/s 1000rec/sの書き込み性能</p></li>
+<li><p>2MV/s 5rec/sの読み込み性能</p></li>
+</ul>
 <p>AWSのリソースに配信されるが、Consumer側で作り込みが必要になる点に注意。</p>
 <p><img alt="../_images/kinesis_data_sterams.png" src="../_images/kinesis_data_sterams.png" /></p>
 <section id="data-streams">
@@ -71,20 +79,80 @@
 <li><p>ストリーム: kafkaだとTopicに対応、データのグループ</p></li>
 <li><p>シャード: kafkaだとPartitionに対応、ストリームの分割単位</p></li>
 </ul>
+<p><img alt="../_images/kinesis_overview.png" src="../_images/kinesis_overview.png" /></p>
+</section>
+<section id="id1">
+<h3><span class="section-number">17.1.2. </span>kinesisの分散処理<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<p>データレコードのパーティションキーを利用して分散する</p>
+<p><img alt="../_images/kinesis_partitionkey.png" src="../_images/kinesis_partitionkey.png" /></p>
+<p>分散されたデータはシャード毎にユニークなシーケンス番号が割り振られ、データ処理時にシーケンス番号でレコード取得開始ポジションを指定する</p>
+<p><img alt="../_images/kinesis_sequence.png" src="../_images/kinesis_sequence.png" /></p>
+</section>
+<section id="kinesisproducer">
+<h3><span class="section-number">17.1.3. </span>kinesisのProducer実装<a class="headerlink" href="#kinesisproducer" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="kinesis-agent">
+<h4><span class="section-number">17.1.3.1. </span>Kinesis Agent<a class="headerlink" href="#kinesis-agent" title="この見出しへのパーマリンク">¶</a></h4>
+<p>kinesisサービスにデータを収集して取り込むOSSのアプリケーション</p>
+<ul class="simple">
+<li><p>エージェントでモニタリングするファイルのパターンと送信先ストリームを指定</p></li>
+<li><p>前処理の機能を提供</p></li>
+<li><p>送信前のバッファリングも可能</p></li>
+</ul>
+</section>
+<section id="kinesis-producer-library-kpl">
+<h4><span class="section-number">17.1.3.2. </span>Kinesis Producer Library(KPL)<a class="headerlink" href="#kinesis-producer-library-kpl" title="この見出しへのパーマリンク">¶</a></h4>
+<p>kinesis SStreamsにデータ送信するOSSの補助ライブラリ</p>
+<ul class="simple">
+<li><p>Aggregation:複数のデータをまとめて送信可能</p></li>
+<li><p>Collection:複数のレコードをバッファリングして送信</p></li>
+</ul>
+</section>
+<section id="fluent-plugin-for-amazon-kinesis">
+<h4><span class="section-number">17.1.3.3. </span>Fluent plugin for Amazon kinesis<a class="headerlink" href="#fluent-plugin-for-amazon-kinesis" title="この見出しへのパーマリンク">¶</a></h4>
+<p>kinesis StreamsとFirehoseにイベント送信するOSSのFluentdプラグイン</p>
+<p>Fluendをログ収集に利用していると、このプラグインを利用するだけでAmazon kinesisシェのデータ投入が可能</p>
+</section>
+<section id="kinesis-data-generator-kdg">
+<h4><span class="section-number">17.1.3.4. </span>Kinesis Data Generator(KDG)<a class="headerlink" href="#kinesis-data-generator-kdg" title="この見出しへのパーマリンク">¶</a></h4>
+<p>テストデータを簡単に送信することが可能</p>
+<ul class="simple">
+<li><p>HTMLとJSで実装されたOSSテスト用のUI</p></li>
+<li><p><a class="reference external" href="https://github.com/awslabs/amazon-kinesis-data-generator">Github</a>にホストされたUIや性的ウェブサイトホスティングが可能</p></li>
+</ul>
+</section>
+</section>
+<section id="kinesisconsumer">
+<h3><span class="section-number">17.1.4. </span>kinesisのConsumer実装<a class="headerlink" href="#kinesisconsumer" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="kinesis-client-library-kcl">
+<h4><span class="section-number">17.1.4.1. </span>Kinesis Client Library(KCL)<a class="headerlink" href="#kinesis-client-library-kcl" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p>kinesisアプリケーションを作成可能</p></li>
+<li><p>Java/Ruby/Pythonの開発に利用することが可能</p></li>
+<li><p>KCLアプリは以下3つのコンポーネントを含む</p>
+<ol class="simple">
+<li><p>Record Processor; シャードから取り出したデータを処理するプロセッサー単位</p></li>
+<li><p>Record Processor Factory:Record Processorを作成する</p></li>
+<li><p>Worker: ここのAppインスタンスとマッピングする処理単位</p></li>
+</ol>
+</li>
+</ul>
+<p><img alt="../_images/kinesis_worker.png" src="../_images/kinesis_worker.png" /></p>
+</section>
 </section>
 <section id="data-stream">
-<h3><span class="section-number">17.1.2. </span>Data Streamの暗号化<a class="headerlink" href="#data-stream" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.1.5. </span>Data Streamの暗号化<a class="headerlink" href="#data-stream" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>通信の暗号化(HTTPS)<br />HTTPSエンドポイントが準備されており、　HTTPSによるデータ通信でデータを暗号化することができる</p></li>
 <li><p>保存中の暗号化（KMS)<br />KMSを利用することでサーバーサイド暗号化を行うことが可能</p></li>
 </ul>
 </section>
-<section id="id1">
-<h3><span class="section-number">17.1.3. </span>保存期間<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
-<p>デフォルトでは24時間の保存期間が設定されており、最大で168時間まで設定可能。</p>
-</section>
 <section id="id2">
-<h3><span class="section-number">17.1.4. </span>シャードのパフォーマンス調整<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.1.6. </span>保存期間<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>デフォルトでは24時間の保存期間が設定されており、最大で一年</p>
+<p><img alt="../_images/kinesis_storage.png" src="../_images/kinesis_storage.png" /></p>
+</section>
+<section id="id3">
+<h3><span class="section-number">17.1.7. </span>シャードのパフォーマンス調整<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>パフォーマンスの調整はシャーディングの分割や結合を通じて行うことができる。
 Kinesisでは、シャードに対して課金されるため、分割すると性能は上がるが、コストは増加する点に注意。</p>
 <p>リシャーディングを行う際には、メトリクスを使用して<code class="docutils literal notranslate"><span class="pre">ホット</span></code>シャードと<code class="docutils literal notranslate"><span class="pre">コールド</span></code>シャードを分析する</p>
@@ -93,10 +161,10 @@ Kinesisでは、シャードに対して課金されるため、分割すると�
 <li><p>コールドシャード：予想よりも少ないデータを受信するシャード</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3><span class="section-number">17.1.5. </span>トラブルシューティング<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id4">
+<h3><span class="section-number">17.1.8. </span>トラブルシューティング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="provisionedthroughputexceededexception">
-<h4><span class="section-number">17.1.5.1. </span>ProvisionedThroughputExceededException<a class="headerlink" href="#provisionedthroughputexceededexception" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">17.1.8.1. </span>ProvisionedThroughputExceededException<a class="headerlink" href="#provisionedthroughputexceededexception" title="この見出しへのパーマリンク">¶</a></h4>
 <p>現在のパフォーマンスでは要求された量のデータが処理できていないことが原因のエラー</p>
 <p>kinesisシャードの読み取り性能は</p>
 <ul class="simple">
@@ -117,8 +185,19 @@ Kinesisでは、シャードに対して課金されるため、分割すると�
 </section>
 </section>
 </section>
+<section id="kinesi-data-streams-on-demand">
+<h2><span class="section-number">17.2. </span>kinesi Data Streams on demand<a class="headerlink" href="#kinesi-data-streams-on-demand" title="この見出しへのパーマリンク">¶</a></h2>
+<p>2021年に発表された新たな機能</p>
+<ul class="simple">
+<li><p>シンプルな操作性<br />シャードの管理が自動化され、より一層管理を簡素化することが可能</p></li>
+<li><p>柔軟なスケーリング<br />データ量の変化に応じて自動でキャパシティをスケール</p></li>
+<li><p>コスト削減<br />従量課金</p></li>
+</ul>
+<p>過去30日間のピーク時の2倍以上のトラフィックを吸収するのに十分な容量を持つ。
+これを超えた場合も15分以内にスケールアウトする。</p>
+</section>
 <section id="kinesis-data-firehose">
-<h2><span class="section-number">17.2. </span>Kinesis Data Firehose<a class="headerlink" href="#kinesis-data-firehose" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.3. </span>Kinesis Data Firehose<a class="headerlink" href="#kinesis-data-firehose" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3、Redshift、OenSeearchなどのストレージサービスやDBにストリームデータをロードさせるサービス。
 Redshiftに保存するためには一度S3に格納する必要がある点に注意</p>
 <p>Kinesis Data FirehoseはLambdaと統合されており、受信したデータに変換をしてから、配信することが可能。</p>
@@ -126,7 +205,7 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
 <p><img alt="../_images/kinesis_data_firehose.png" src="../_images/kinesis_data_firehose.png" /></p>
 </section>
 <section id="kinesis-data-analytics">
-<h2><span class="section-number">17.3. </span>Kinesis Data Analytics<a class="headerlink" href="#kinesis-data-analytics" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.4. </span>Kinesis Data Analytics<a class="headerlink" href="#kinesis-data-analytics" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Kinesis Data streamsとKinesis Data Firehoseに格納されたストリームデータに対して分析が可能なサービス</p>
 <p>SQLなどを利用して、データ分析を行い、Lambdaと統合されているためデータ形式の変換を行なうことも可能。</p>
 <p>Kinesis Data Analyticsで分析した後は、Firehoseで分析結果を蓄積したり、Streamsへ流してよりリッチな分析を行うことが可能。
@@ -134,7 +213,7 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
 <p><img alt="../_images/kinesis_data_analytics.png" src="../_images/kinesis_data_analytics.png" /></p>
 </section>
 <section id="kinesis-video-streams">
-<h2><span class="section-number">17.4. </span>kinesis Video Streams<a class="headerlink" href="#kinesis-video-streams" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.5. </span>kinesis Video Streams<a class="headerlink" href="#kinesis-video-streams" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ビデオカメラなどのデバイスから送られてくる動画データをストリームデータとしてAWSに取り込み、ストリーミング（データ転送）するサービス。</p>
 <p>データ分析を行う際には、Kinesis Video Streams Parser Streams　Libraryを利用した動画解析や機械学習サービスであるAmazon Rekognition VideoやSage Makerとの連携が可能。</p>
 <p>データ分析を行うほか、WebRTCを使用して、レイテンシーを短くすることで、オンライン会議のような双方向での配信も可能である。</p>
@@ -155,18 +234,31 @@ Redshiftに保存するためには一度S3に格納する必要がある点に�
 <li><a class="reference internal" href="#">17. Kinesis</a><ul>
 <li><a class="reference internal" href="#kinesis-data-streams">17.1. Kinesis Data Streams</a><ul>
 <li><a class="reference internal" href="#data-streams">17.1.1. Data Streamsの登場人物</a></li>
-<li><a class="reference internal" href="#data-stream">17.1.2. Data Streamの暗号化</a></li>
-<li><a class="reference internal" href="#id1">17.1.3. 保存期間</a></li>
-<li><a class="reference internal" href="#id2">17.1.4. シャードのパフォーマンス調整</a></li>
-<li><a class="reference internal" href="#id3">17.1.5. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#provisionedthroughputexceededexception">17.1.5.1. ProvisionedThroughputExceededException</a></li>
+<li><a class="reference internal" href="#id1">17.1.2. kinesisの分散処理</a></li>
+<li><a class="reference internal" href="#kinesisproducer">17.1.3. kinesisのProducer実装</a><ul>
+<li><a class="reference internal" href="#kinesis-agent">17.1.3.1. Kinesis Agent</a></li>
+<li><a class="reference internal" href="#kinesis-producer-library-kpl">17.1.3.2. Kinesis Producer Library(KPL)</a></li>
+<li><a class="reference internal" href="#fluent-plugin-for-amazon-kinesis">17.1.3.3. Fluent plugin for Amazon kinesis</a></li>
+<li><a class="reference internal" href="#kinesis-data-generator-kdg">17.1.3.4. Kinesis Data Generator(KDG)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kinesisconsumer">17.1.4. kinesisのConsumer実装</a><ul>
+<li><a class="reference internal" href="#kinesis-client-library-kcl">17.1.4.1. Kinesis Client Library(KCL)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-stream">17.1.5. Data Streamの暗号化</a></li>
+<li><a class="reference internal" href="#id2">17.1.6. 保存期間</a></li>
+<li><a class="reference internal" href="#id3">17.1.7. シャードのパフォーマンス調整</a></li>
+<li><a class="reference internal" href="#id4">17.1.8. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#provisionedthroughputexceededexception">17.1.8.1. ProvisionedThroughputExceededException</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#kinesis-data-firehose">17.2. Kinesis Data Firehose</a></li>
-<li><a class="reference internal" href="#kinesis-data-analytics">17.3. Kinesis Data Analytics</a></li>
-<li><a class="reference internal" href="#kinesis-video-streams">17.4. kinesis Video Streams</a></li>
+<li><a class="reference internal" href="#kinesi-data-streams-on-demand">17.2. kinesi Data Streams on demand</a></li>
+<li><a class="reference internal" href="#kinesis-data-firehose">17.3. Kinesis Data Firehose</a></li>
+<li><a class="reference internal" href="#kinesis-data-analytics">17.4. Kinesis Data Analytics</a></li>
+<li><a class="reference internal" href="#kinesis-video-streams">17.5. kinesis Video Streams</a></li>
 </ul>
 </li>
 </ul>

@@ -370,7 +370,8 @@ MSKを利用する場合は、[ベストプラクティス](https://docs.aws.ama
 
 
 
-
+## MSK Serverles
+2021年に新規発表された
 
 
 
