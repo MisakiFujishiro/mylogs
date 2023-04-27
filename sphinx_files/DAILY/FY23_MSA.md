@@ -20,11 +20,10 @@
 
 ■4月  
 - メッセージングサービス調査
-- テーマ具体化と実装内容検討  
 - 環境構築
 
 ■5月  
-- 実装の構成図作成
+- テーマ具体化と実装内容検討  
 - 対象サービスの深掘り
 - 実装開始
 
@@ -55,20 +54,22 @@
     - [SQS](https://misakifujishiro.github.io/mylogs/AWS/SQS.html)【完了】
     - [SNS](https://misakifujishiro.github.io/mylogs/AWS/SNS.html)【完了】
     - [MSK](https://misakifujishiro.github.io/mylogs/AWS/MSK.html)【完了】
-    - kinesis【未実施】
+    - [kinesis](https://misakifujishiro.github.io/mylogs/AWS/Streaming.html#kinesis-data-streams)【完了】
+- 環境構築
+    - workspaces（バーチャルディスプレイ環境）構築完了
+    - Chrom/AWSCLI/IntelliJインストール完了
+    - JDKのインストール完了
+    - IntelliJのアカウント対応中
+- AWS Summit  
+    - メッセージキューなどについて色々AWS技術者に相談できてすごく有意義でした。来年も行きます。
+
+### 5月上旬
 - テーマ具体化と実装内容検討  
     - [MIRO](https://miro.com/app/board/uXjVMTUlajs=/)で整理
         - メッセージキューの整理
         - AWSサービスのメッセージキューサービスの使い分け
         - 実案件で困っている部分の比較
         - 実装のイメージも検討
-- 環境構築
-    - workspaces（バーチャルディスプレイ環境）構築完了
-    - Chrom/AWSCLI/IntelliJ/JDKインストール
-    - Hello World
-
-### 5月上旬
-- 実装の構成図作成
 - 対象サービスの深掘り
 - 実装開始
 
