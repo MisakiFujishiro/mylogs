@@ -27,6 +27,7 @@ AWS Services(AWSサービスの概要)
    :maxdepth: 2
    :numbered:
 
+   AWS/AWS
    AWS/Network
    AWS/security
    AWS/EC2
