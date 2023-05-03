@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>11. 監視系 &#8212; my_sphinx  ドキュメント</title>
+    <title>12. 監視系 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="12. 環境構築自動化" href="EnvAutomation.html" />
-    <link rel="prev" title="10. DataBase" href="DB.html" /> 
+    <link rel="next" title="13. 環境構築自動化" href="EnvAutomation.html" />
+    <link rel="prev" title="11. DataBase" href="DB.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="12. 環境構築自動化"
+          <a href="EnvAutomation.html" title="13. 環境構築自動化"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="DB.html" title="10. DataBase"
+          <a href="DB.html" title="11. DataBase"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">11. </span>監視系</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>監視系</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,9 @@
           <div class="body" role="main">
             
   <section id="id1">
-<h1><span class="section-number">11. </span>監視系<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">12. </span>監視系<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="cloud-watch">
-<h2><span class="section-number">11.1. </span>Cloud Watch<a class="headerlink" href="#cloud-watch" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.1. </span>Cloud Watch<a class="headerlink" href="#cloud-watch" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSのリソースやAppの監視を行うサービス</p>
 <p>各種メトリクス（パフォーマンスの時系列データ）の監視機能だけでなく、ログを収集機能やそれらの情報を分析集約する機能を持つ。</p>
 <p>以下の代表的な機能についてまとめる。</p>
@@ -61,11 +61,11 @@
 <li><p>CloudWatch Events：イベントや時間を契機に処理を実施</p></li>
 </ul>
 <section id="cloudwatch-metrics">
-<h3><span class="section-number">11.1.1. </span>CloudWatch Metrics<a class="headerlink" href="#cloudwatch-metrics" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.1. </span>CloudWatch Metrics<a class="headerlink" href="#cloudwatch-metrics" title="この見出しへのパーマリンク">¶</a></h3>
 <p>監視対象のリソースのメトリクスを収集するサービス</p>
 <p>統合CloudWatchエージェントというツールを利用することでAWSのサービスに限らず、オンプレミスのメトリクスを収集することが可能。</p>
 <section id="cloud-watch-metrics">
-<h4><span class="section-number">11.1.1.1. </span>Cloud Watch Metricsの登場人物<a class="headerlink" href="#cloud-watch-metrics" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.1.1.1. </span>Cloud Watch Metricsの登場人物<a class="headerlink" href="#cloud-watch-metrics" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>メトリクス<br /><code class="docutils literal notranslate"><span class="pre">メトリクス</span></code>とは、システムのパフォーマンスを示す時系列データポイントのセットのことを指す。
 取得期間は各サービスで設定可能だが、基本は１分程度</p></li>
@@ -74,7 +74,7 @@
 </ul>
 </section>
 <section id="id2">
-<h4><span class="section-number">11.1.1.2. </span>メトリクス<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.1.1.2. </span>メトリクス<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h4>
 <p>■標準メトリクスの例</p>
 <ul class="simple">
 <li><p>ネットワークIO</p></li>
@@ -83,7 +83,7 @@
 </ul>
 <p>■Metrics Math<br />既存のメトリクスと数式を利用して、新しいメトリクスを作成することができる。</p>
 <section id="id3">
-<h5><span class="section-number">11.1.1.2.1. </span>標準メトリクスとカスタムメトリクス<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">12.1.1.2.1. </span>標準メトリクスとカスタムメトリクス<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h5>
 <p>EC2のCPU使用率など、事前にAWSで準備されているメトリクスを標準メトリクスと呼ぶ。</p>
 <p>標準メトリクスに準備されていないメトリクスはカスタムメトリクスとして、独自に定義する必要がある。
 その場合、CloudWatchエージェントを使用して、カスタムメトリクスを送信するように設定する。
@@ -92,12 +92,12 @@
 <p>なお、EC2だけでなく、オンプレでも監視ができるがその場合も、CloudWatchエージェントのインストールが必要である。</p>
 </section>
 <section id="id4">
-<h5><span class="section-number">11.1.1.2.2. </span>高解像度アラーム<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">12.1.1.2.2. </span>高解像度アラーム<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h5>
 <p>カスタムメトリクスを利用して、高解像度アラームを設定することができる。標準の60sec以下の細かいメトリクスを取得することが可能。</p>
 <p>標準メトリクスで準備されているCPUなどを取得する場合は、カスタムメトリクスを利用するが、エージェントのインストールは不要</p>
 </section>
 <section id="id5">
-<h5><span class="section-number">11.1.1.2.3. </span>データベースメトリクス<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">12.1.1.2.3. </span>データベースメトリクス<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h5>
 <p>RDS DBの拡張モニタリングで以下のメトリクスを取得できる</p>
 <ul class="simple">
 <li><p>RDSの子プロセス</p></li>
@@ -106,7 +106,7 @@
 </section>
 </section>
 <section id="id6">
-<h4><span class="section-number">11.1.1.3. </span>異常検出<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.1.1.3. </span>異常検出<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
 <p>統計および機械学習を利用してメトリクスの異常を検出することができる。
 メトリクスの新規作成時に以下の画面で設定可能</p>
 <p><img alt="../_images/cloudwatch_metics_ijou.jpeg" src="../_images/cloudwatch_metics_ijou.jpeg" /></p>
@@ -115,7 +115,7 @@
 </section>
 </section>
 <section id="cloudwatch-alarms">
-<h3><span class="section-number">11.1.2. </span>CloudWatch Alarms<a class="headerlink" href="#cloudwatch-alarms" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.2. </span>CloudWatch Alarms<a class="headerlink" href="#cloudwatch-alarms" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatch Metricsで収集したメトリクスを監視対象として、以下を設定できる</p>
 <ul class="simple">
 <li><p>アラームの発行</p></li>
@@ -137,7 +137,7 @@
 </ol>
 </section>
 <section id="cloudwatch-logs">
-<h3><span class="section-number">11.1.3. </span>CloudWatch Logs<a class="headerlink" href="#cloudwatch-logs" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.3. </span>CloudWatch Logs<a class="headerlink" href="#cloudwatch-logs" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSサービスやアプリケーションのログファイルの監視、保存、アクセスができるサービス</p>
 <p>ログは階層構造となっている</p>
 <ul class="simple">
@@ -148,13 +148,13 @@
 <p>ロググループレベルやログストリームレベルでのフィルタリングが可能なことを踏まえてログ設計をするべき。
 ログの種類ごとにロググループを作成し、ログを出力するアプリケーションのインスタンごとにストリームを作成するとわかりやすい。</p>
 <section id="s3">
-<h4><span class="section-number">11.1.3.1. </span>保存期間とS3連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.1.3.1. </span>保存期間とS3連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ロググループは保管期間を設定できるが、ログの保管料金が割高のため、S3にエクスポートすることがおすすめ。
 手動によるS3エクスポートか一度Kinesis Data Firehoseを経由してS3にエクスポートできる。</p>
 <p><img alt="../_images/cloudwatch_logs_s3.png" src="../_images/cloudwatch_logs_s3.png" /></p>
 </section>
 <section id="id7">
-<h4><span class="section-number">11.1.3.2. </span>サブスクリプションフィルタとメトリクスフィルタ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.1.3.2. </span>サブスクリプションフィルタとメトリクスフィルタ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
 <p>■サブスクリプションフィルタ<br />指定したフィルタパターンに合致する文字列がログに含まれていた場合に、LambdaやFirehoseなどのAWSサービスをイベント駆動（サブスクリプション）する機能。<br />サブスクリプションフィルタで検知したログは一度Lambdaで処理する必要があり、直接SNSの発酵を行うことはできない点に注意。
 Lambdaの同期処理のエラー検出などで利用される。</p>
 <p>■メトリクスフィルタ<br />定義したファイルパターンに合致する文字列がログに含まれていた場合に、CloudWatch Mericsにメトリクスデータとして送信する機能。
@@ -162,26 +162,26 @@ CloudWatch Metricsで可視化することが可能であり、CloudWatch Alarms
 </section>
 </section>
 <section id="cloudwatch-logs-insights">
-<h3><span class="section-number">11.1.4. </span>CloudWatch Logs Insights<a class="headerlink" href="#cloudwatch-logs-insights" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.4. </span>CloudWatch Logs Insights<a class="headerlink" href="#cloudwatch-logs-insights" title="この見出しへのパーマリンク">¶</a></h3>
 <p>専用のクエリ言語使って、CloudWatch Logs内のログの検索と可視化をする機能</p>
 <p>S3にエクスポートしたデータに対してクエリを発行することはできない点に注意する。</p>
 </section>
 <section id="cloudwatch-dashboards">
-<h3><span class="section-number">11.1.5. </span>CloudWatch Dashboards<a class="headerlink" href="#cloudwatch-dashboards" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.5. </span>CloudWatch Dashboards<a class="headerlink" href="#cloudwatch-dashboards" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Cloud Watchのコンソール画面においてダッシュボードを作成、カスタマイズすることで各機能での監視情報を集約することができる。</p>
 <p>マルチアカウントやマルチリージョンの監視情報を集約することが可能で、ダッシュボードでシステム全体の稼働状況を確認することも可能。</p>
 <p><img alt="../_images/cloudwatch_dashboard_ex.png" src="../_images/cloudwatch_dashboard_ex.png" /></p>
 </section>
 <section id="cloudwatch-events">
-<h3><span class="section-number">11.1.6. </span>CloudWatch Events<a class="headerlink" href="#cloudwatch-events" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.6. </span>CloudWatch Events<a class="headerlink" href="#cloudwatch-events" title="この見出しへのパーマリンク">¶</a></h3>
 <p>システム側のイベントやスケジュールを契機にして、後続処理を実行させることができる。
 皇族のサービスとして<code class="docutils literal notranslate"><span class="pre">Event</span> <span class="pre">Bridge</span></code>が提供されている</p>
 <section id="id8">
-<h4><span class="section-number">11.1.6.1. </span>イベント契機<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.1.6.1. </span>イベント契機<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
 <p>システムソース（イベントの発生元）の変更と事前に定義したルールを照らし合わせて、一致した場合に、後続の処理を実行する</p>
 </section>
 <section id="id9">
-<h4><span class="section-number">11.1.6.2. </span>スケジュール契機<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.1.6.2. </span>スケジュール契機<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
 <p>スケジュールでは、特定の時間や時間間隔を定義して処理を実行する。</p>
 <p>特定時間の定義にはCron式を利用する</p>
 <blockquote>
@@ -199,14 +199,14 @@ CloudWatch Metricsで可視化することが可能であり、CloudWatch Alarms
 </section>
 </section>
 <section id="cloud-trail">
-<h2><span class="section-number">11.2. </span>Cloud Trail<a class="headerlink" href="#cloud-trail" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.2. </span>Cloud Trail<a class="headerlink" href="#cloud-trail" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSインフラ全体で実行されるAPIの実行履歴を記録することが可能なサービス</p>
 <p>AWSアカウント内のユーザー、ロール、サービスがコンソール・CLI・SDKから実行したAPIアクションをイベントとして記録する。
 CloudTrailを有効化することで15分後とに出力され、90日間の記録を残すことが可能。S3やCloudWatchに連携することも可能。</p>
 <p>CloudTrailの有効化はリージョンごとの設定だが、一括で有効化することが推奨されている</p>
 <p><img alt="../_images/cloudTrail_image.png" src="../_images/cloudTrail_image.png" /></p>
 <section id="id10">
-<h3><span class="section-number">11.2.1. </span>記録対象のイベント<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.1. </span>記録対象のイベント<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>全部で３種類のイベントがあり、記録対象を選択することができる。</p>
 <ul class="simple">
 <li><p>管理イベント<br />AWSアカウントのリソースで実行される管理オペレーションが対象<br />IAMポリシーのアタッチやネットワークの構成変更などが対象となる</p></li>
@@ -214,12 +214,12 @@ CloudTrailを有効化することで15分後とに出力され、90日間の記
 <li><p>インサイトイベント<br />管理イベントの異常な挙動やエラーを示した場合が対象<br />S3バケットが大量に作成されたり、API呼び出し頻度が跳ね上がったりしていると、異常を検知する。</p></li>
 </ul>
 <section id="kms">
-<h4><span class="section-number">11.2.1.1. </span>KMSの監視<a class="headerlink" href="#kms" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.2.1.1. </span>KMSの監視<a class="headerlink" href="#kms" title="この見出しへのパーマリンク">¶</a></h4>
 <p>AWS KMS内におけるユーザーやロール、AWSサービスからのアクションを監視している。</p>
 </section>
 </section>
 <section id="id11">
-<h3><span class="section-number">11.2.2. </span>イベント履歴の調査<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.2. </span>イベント履歴の調査<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>CloudTrail コンソール画面<br />複雑な検索はできないが、フィルタリングなどを手動で実施できる。</p></li>
 <li><p>S3 Athena<br />S3内の構造データを対象にSQLで分析可能
@@ -229,14 +229,14 @@ CloudTrailを有効化することで15分後とに出力され、90日間の記
 </ul>
 </section>
 <section id="cloudtrail">
-<h3><span class="section-number">11.2.3. </span>CloudTrailのセキュリティ<a class="headerlink" href="#cloudtrail" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.3. </span>CloudTrailのセキュリティ<a class="headerlink" href="#cloudtrail" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■暗号化<br />SSE-KMSを使って暗号化して保存可能</p>
 <p>■改竄対策<br />SHA-256の暗号化を利用して、ログの改竄がないことを証明する署名を付与することができる。
 CLIからvalidate-logsコマンドより、改竄確認ができる。</p>
 </section>
 </section>
 <section id="x-ray">
-<h2><span class="section-number">11.3. </span>X-Ray<a class="headerlink" href="#x-ray" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.3. </span>X-Ray<a class="headerlink" href="#x-ray" title="この見出しへのパーマリンク">¶</a></h2>
 <p>分散アーキテクチャでの処理状況をトレーシングし、呼び出し関係、実効成否、レスポンス時間を可視化することができる。
 マイクロサービスなどの複数のサービスが連携し合うアーキテクチャに適したサービス</p>
 <p>アプリケーション全体としての処理の流れを整理して、ボトルネックなどを洗い出すことができる。</p>
@@ -244,7 +244,7 @@ CLIからvalidate-logsコマンドより、改竄確認ができる。</p>
 <a class="reference external" href="https://pages.awscloud.com/rs/112-TZM-766/images/20200526_BlackBelt_X-Ray.pdf">Black Belt</a>
 はわかりやすい。</p>
 <section id="id12">
-<h3><span class="section-number">11.3.1. </span>X-Rayの概念<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.1. </span>X-Rayの概念<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>セグメント<br />リソース名・リクエスト詳細などの動作に関するデータ（どこまでどこを測定するか）</p></li>
 <li><p>サブセグメント<br />AWSのサービス・外部HTTP APIなど呼び出しに関する追加の詳細情報（セグメントの中でどこを一塊にするか）</p></li>
@@ -253,7 +253,7 @@ CLIからvalidate-logsコマンドより、改竄確認ができる。</p>
 <p><img alt="../_images/x-ray_outline.png" src="../_images/x-ray_outline.png" /></p>
 </section>
 <section id="id13">
-<h3><span class="section-number">11.3.2. </span>X-Rayの仕組み<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.2. </span>X-Rayの仕組み<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>トレースに含まれるセグメントを管理するために、リクエストごとに一意な<code class="docutils literal notranslate"><span class="pre">トレースID</span></code>を発行する。</p>
 <p><img alt="../_images/x-ray_traceID.png" src="../_images/x-ray_traceID.png" /></p>
 <p>セグメントのつながりや順序を管理するために、トレース内のセグメントに対して一意な<code class="docutils literal notranslate"><span class="pre">セグメントID</span></code>を発行する。
@@ -262,7 +262,7 @@ CLIからvalidate-logsコマンドより、改竄確認ができる。</p>
 <p>トレースIDとセグメントIDを使って、どのトレースに含まれるどの順番で実行されたセグメントかを整理することができる。</p>
 </section>
 <section id="id14">
-<h3><span class="section-number">11.3.3. </span>X-Rayの機能<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.3. </span>X-Rayの機能<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>サービスマップ<br />サービス単位やAWSサービス間の呼び出し成否や処理にかかった時間を<code class="docutils literal notranslate"><span class="pre">可視化</span></code>する</p></li>
 </ul>
@@ -277,7 +277,7 @@ CLIからvalidate-logsコマンドより、改竄確認ができる。</p>
 </ul>
 </section>
 <section id="id15">
-<h3><span class="section-number">11.3.4. </span>利用できる言語<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.4. </span>利用できる言語<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>メトリクス収集のSDKライブラリが提供されており、以下の言語で利用可能</p>
 <ul class="simple">
 <li><p>Java</p></li>
@@ -289,12 +289,12 @@ CLIからvalidate-logsコマンドより、改竄確認ができる。</p>
 </ul>
 </section>
 <section id="id16">
-<h3><span class="section-number">11.3.5. </span>X-rayの利用<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.5. </span>X-rayの利用<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アプリケーションの中でX-rayのSDKライブラリを経由して、APIを呼び出す。</p>
 <p>呼び出し方としてはAppから直接呼び出すのではなく、X-rayのデーモンを利用することが多い。
 EC2ではデーモンをインストールする。</p>
 <section id="ecsx-ray">
-<h4><span class="section-number">11.3.5.1. </span>ECSでのX-Rayの利用<a class="headerlink" href="#ecsx-ray" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.1. </span>ECSでのX-Rayの利用<a class="headerlink" href="#ecsx-ray" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ECSでは別コンテナでデーモンコンテナを立ち上げる。
 具体的にはX-Rayデーモンを実行するDockerイメージを作成して、それをDockerイメージリポジトリにアップロードしてからAmazon ECSクラスターにデプロイすることが求められる。</p>
 <p><img alt="../_images/x-ray_ecs.png" src="../_images/x-ray_ecs.png" /></p>
@@ -307,37 +307,37 @@ EC2ではデーモンをインストールする。</p>
 </ul>
 </section>
 <section id="sql">
-<h4><span class="section-number">11.3.5.2. </span>SQLクライアントでの利用<a class="headerlink" href="#sql" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.2. </span>SQLクライアントでの利用<a class="headerlink" href="#sql" title="この見出しへのパーマリンク">¶</a></h4>
 <p>SQLクライアントにX-rayの設定を追加する場合は、DBへの接続ドライバーやSQLクライアントにCーRayの設定を行う。</p>
 </section>
 </section>
 <section id="id17">
-<h3><span class="section-number">11.3.6. </span>フィルタ式<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.6. </span>フィルタ式<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">トレースを抽出するための機能</span></code>で、時間のかかっている処理の抽出やステータスコードによる検索ができる</p>
 </section>
 <section id="id18">
-<h3><span class="section-number">11.3.7. </span>X-Rayのコマンド<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.7. </span>X-Rayのコマンド<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="gettracesummaries-api">
-<h4><span class="section-number">11.3.7.1. </span>GetTraceSummaries API<a class="headerlink" href="#gettracesummaries-api" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.7.1. </span>GetTraceSummaries API<a class="headerlink" href="#gettracesummaries-api" title="この見出しへのパーマリンク">¶</a></h4>
 <p>フィルタ式で抽出したトレースに対して、特定の情報に紐づいた<code class="docutils literal notranslate"><span class="pre">セグメント</span></code>を検索することができる。</p>
 </section>
 <section id="batchgettraces-api">
-<h4><span class="section-number">11.3.7.2. </span>BatchGetTraces API<a class="headerlink" href="#batchgettraces-api" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.7.2. </span>BatchGetTraces API<a class="headerlink" href="#batchgettraces-api" title="この見出しへのパーマリンク">¶</a></h4>
 <p>トレースのリストを取得することができる。</p>
 </section>
 <section id="puttracesegments-api">
-<h4><span class="section-number">11.3.7.3. </span>PutTraceSegments API<a class="headerlink" href="#puttracesegments-api" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.7.3. </span>PutTraceSegments API<a class="headerlink" href="#puttracesegments-api" title="この見出しへのパーマリンク">¶</a></h4>
 <p>セグメントを構成する要素である、<code class="docutils literal notranslate"><span class="pre">サブセグメント</span></code>をX-rayに直接送信する。</p>
 </section>
 </section>
 <section id="annotations-metadata">
-<h3><span class="section-number">11.3.8. </span>注釈(Annotations)とメタデータ(Metadata)<a class="headerlink" href="#annotations-metadata" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.8. </span>注釈(Annotations)とメタデータ(Metadata)<a class="headerlink" href="#annotations-metadata" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■注釈<br />フィルタ式で使用するためのインデックス化されたキーとバリューのペア
 これを利用することでフィルタ式の絞り込みを行うことができる。</p>
 <p>■メタデータ<br />任意のタイプで指定できるキーとバリューのペア<br />フィルタ式で利用するインデックスは作成されない</p>
 </section>
 <section id="cloudwatch">
-<h3><span class="section-number">11.3.9. </span>CloudWatchとの連携<a class="headerlink" href="#cloudwatch" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.9. </span>CloudWatchとの連携<a class="headerlink" href="#cloudwatch" title="この見出しへのパーマリンク">¶</a></h3>
 <p>X-Rayで収集したデータは、CloudWatchに統合されており、<code class="docutils literal notranslate"><span class="pre">CloudWatch</span> <span class="pre">ServiceLends</span></code>でサービスマップやトレースリストなどを確認することができる。</p>
 </section>
 </section>
@@ -353,62 +353,62 @@ EC2ではデーモンをインストールする。</p>
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">11. 監視系</a><ul>
-<li><a class="reference internal" href="#cloud-watch">11.1. Cloud Watch</a><ul>
-<li><a class="reference internal" href="#cloudwatch-metrics">11.1.1. CloudWatch Metrics</a><ul>
-<li><a class="reference internal" href="#cloud-watch-metrics">11.1.1.1. Cloud Watch Metricsの登場人物</a></li>
-<li><a class="reference internal" href="#id2">11.1.1.2. メトリクス</a><ul>
-<li><a class="reference internal" href="#id3">11.1.1.2.1. 標準メトリクスとカスタムメトリクス</a></li>
-<li><a class="reference internal" href="#id4">11.1.1.2.2. 高解像度アラーム</a></li>
-<li><a class="reference internal" href="#id5">11.1.1.2.3. データベースメトリクス</a></li>
+<li><a class="reference internal" href="#">12. 監視系</a><ul>
+<li><a class="reference internal" href="#cloud-watch">12.1. Cloud Watch</a><ul>
+<li><a class="reference internal" href="#cloudwatch-metrics">12.1.1. CloudWatch Metrics</a><ul>
+<li><a class="reference internal" href="#cloud-watch-metrics">12.1.1.1. Cloud Watch Metricsの登場人物</a></li>
+<li><a class="reference internal" href="#id2">12.1.1.2. メトリクス</a><ul>
+<li><a class="reference internal" href="#id3">12.1.1.2.1. 標準メトリクスとカスタムメトリクス</a></li>
+<li><a class="reference internal" href="#id4">12.1.1.2.2. 高解像度アラーム</a></li>
+<li><a class="reference internal" href="#id5">12.1.1.2.3. データベースメトリクス</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">11.1.1.3. 異常検出</a></li>
+<li><a class="reference internal" href="#id6">12.1.1.3. 異常検出</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cloudwatch-alarms">11.1.2. CloudWatch Alarms</a></li>
-<li><a class="reference internal" href="#cloudwatch-logs">11.1.3. CloudWatch Logs</a><ul>
-<li><a class="reference internal" href="#s3">11.1.3.1. 保存期間とS3連携</a></li>
-<li><a class="reference internal" href="#id7">11.1.3.2. サブスクリプションフィルタとメトリクスフィルタ</a></li>
+<li><a class="reference internal" href="#cloudwatch-alarms">12.1.2. CloudWatch Alarms</a></li>
+<li><a class="reference internal" href="#cloudwatch-logs">12.1.3. CloudWatch Logs</a><ul>
+<li><a class="reference internal" href="#s3">12.1.3.1. 保存期間とS3連携</a></li>
+<li><a class="reference internal" href="#id7">12.1.3.2. サブスクリプションフィルタとメトリクスフィルタ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cloudwatch-logs-insights">11.1.4. CloudWatch Logs Insights</a></li>
-<li><a class="reference internal" href="#cloudwatch-dashboards">11.1.5. CloudWatch Dashboards</a></li>
-<li><a class="reference internal" href="#cloudwatch-events">11.1.6. CloudWatch Events</a><ul>
-<li><a class="reference internal" href="#id8">11.1.6.1. イベント契機</a></li>
-<li><a class="reference internal" href="#id9">11.1.6.2. スケジュール契機</a></li>
+<li><a class="reference internal" href="#cloudwatch-logs-insights">12.1.4. CloudWatch Logs Insights</a></li>
+<li><a class="reference internal" href="#cloudwatch-dashboards">12.1.5. CloudWatch Dashboards</a></li>
+<li><a class="reference internal" href="#cloudwatch-events">12.1.6. CloudWatch Events</a><ul>
+<li><a class="reference internal" href="#id8">12.1.6.1. イベント契機</a></li>
+<li><a class="reference internal" href="#id9">12.1.6.2. スケジュール契機</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cloud-trail">11.2. Cloud Trail</a><ul>
-<li><a class="reference internal" href="#id10">11.2.1. 記録対象のイベント</a><ul>
-<li><a class="reference internal" href="#kms">11.2.1.1. KMSの監視</a></li>
+<li><a class="reference internal" href="#cloud-trail">12.2. Cloud Trail</a><ul>
+<li><a class="reference internal" href="#id10">12.2.1. 記録対象のイベント</a><ul>
+<li><a class="reference internal" href="#kms">12.2.1.1. KMSの監視</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id11">11.2.2. イベント履歴の調査</a></li>
-<li><a class="reference internal" href="#cloudtrail">11.2.3. CloudTrailのセキュリティ</a></li>
+<li><a class="reference internal" href="#id11">12.2.2. イベント履歴の調査</a></li>
+<li><a class="reference internal" href="#cloudtrail">12.2.3. CloudTrailのセキュリティ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#x-ray">11.3. X-Ray</a><ul>
-<li><a class="reference internal" href="#id12">11.3.1. X-Rayの概念</a></li>
-<li><a class="reference internal" href="#id13">11.3.2. X-Rayの仕組み</a></li>
-<li><a class="reference internal" href="#id14">11.3.3. X-Rayの機能</a></li>
-<li><a class="reference internal" href="#id15">11.3.4. 利用できる言語</a></li>
-<li><a class="reference internal" href="#id16">11.3.5. X-rayの利用</a><ul>
-<li><a class="reference internal" href="#ecsx-ray">11.3.5.1. ECSでのX-Rayの利用</a></li>
-<li><a class="reference internal" href="#sql">11.3.5.2. SQLクライアントでの利用</a></li>
+<li><a class="reference internal" href="#x-ray">12.3. X-Ray</a><ul>
+<li><a class="reference internal" href="#id12">12.3.1. X-Rayの概念</a></li>
+<li><a class="reference internal" href="#id13">12.3.2. X-Rayの仕組み</a></li>
+<li><a class="reference internal" href="#id14">12.3.3. X-Rayの機能</a></li>
+<li><a class="reference internal" href="#id15">12.3.4. 利用できる言語</a></li>
+<li><a class="reference internal" href="#id16">12.3.5. X-rayの利用</a><ul>
+<li><a class="reference internal" href="#ecsx-ray">12.3.5.1. ECSでのX-Rayの利用</a></li>
+<li><a class="reference internal" href="#sql">12.3.5.2. SQLクライアントでの利用</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">11.3.6. フィルタ式</a></li>
-<li><a class="reference internal" href="#id18">11.3.7. X-Rayのコマンド</a><ul>
-<li><a class="reference internal" href="#gettracesummaries-api">11.3.7.1. GetTraceSummaries API</a></li>
-<li><a class="reference internal" href="#batchgettraces-api">11.3.7.2. BatchGetTraces API</a></li>
-<li><a class="reference internal" href="#puttracesegments-api">11.3.7.3. PutTraceSegments API</a></li>
+<li><a class="reference internal" href="#id17">12.3.6. フィルタ式</a></li>
+<li><a class="reference internal" href="#id18">12.3.7. X-Rayのコマンド</a><ul>
+<li><a class="reference internal" href="#gettracesummaries-api">12.3.7.1. GetTraceSummaries API</a></li>
+<li><a class="reference internal" href="#batchgettraces-api">12.3.7.2. BatchGetTraces API</a></li>
+<li><a class="reference internal" href="#puttracesegments-api">12.3.7.3. PutTraceSegments API</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#annotations-metadata">11.3.8. 注釈(Annotations)とメタデータ(Metadata)</a></li>
-<li><a class="reference internal" href="#cloudwatch">11.3.9. CloudWatchとの連携</a></li>
+<li><a class="reference internal" href="#annotations-metadata">12.3.8. 注釈(Annotations)とメタデータ(Metadata)</a></li>
+<li><a class="reference internal" href="#cloudwatch">12.3.9. CloudWatchとの連携</a></li>
 </ul>
 </li>
 </ul>
@@ -419,12 +419,12 @@ EC2ではデーモンをインストールする。</p>
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="DB.html"
-                          title="前の章へ"><span class="section-number">10. </span>DataBase</a></p>
+                          title="前の章へ"><span class="section-number">11. </span>DataBase</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="EnvAutomation.html"
-                          title="次の章へ"><span class="section-number">12. </span>環境構築自動化</a></p>
+                          title="次の章へ"><span class="section-number">13. </span>環境構築自動化</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -454,13 +454,13 @@ EC2ではデーモンをインストールする。</p>
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="12. 環境構築自動化"
+          <a href="EnvAutomation.html" title="13. 環境構築自動化"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="DB.html" title="10. DataBase"
+          <a href="DB.html" title="11. DataBase"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">11. </span>監視系</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>監視系</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

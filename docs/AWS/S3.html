@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>9. S3 &#8212; my_sphinx  ドキュメント</title>
+    <title>10. S3 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="10. DataBase" href="DB.html" />
-    <link rel="prev" title="8. Lambda" href="Lambda.html" /> 
+    <link rel="next" title="11. DataBase" href="DB.html" />
+    <link rel="prev" title="9. Lambda" href="Lambda.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="DB.html" title="10. DataBase"
+          <a href="DB.html" title="11. DataBase"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="Lambda.html" title="8. Lambda"
+          <a href="Lambda.html" title="9. Lambda"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>S3</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>S3</a></li> 
       </ul>
     </div>  
 
@@ -46,29 +46,29 @@
           <div class="body" role="main">
             
   <section id="s3">
-<h1><span class="section-number">9. </span>S3<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">10. </span>S3<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id1">
-<h2><span class="section-number">9.1. </span>基本情報<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.1. </span>基本情報<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3はイレブンナインの耐久性がある高い耐久性のオブジェクトストレージである。
 少なくとも3つのAZに格納される。
 オブジェクトストレージでは、データをオブジェクトと呼ばれる単位で管理し、固有のURLやメタデータが付与され、HTTP/HTTPS通信でファイルの読み書きが可能。</p>
 <section id="id2">
-<h3><span class="section-number">9.1.1. </span>オブジェクト<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.1.1. </span>オブジェクト<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>PCで扱われるファイルと同じ単位で保存する実態データをオブジェクトと呼ぶ。<br />１オブジェクトあたり5TBまでデータサイズが許容される。<br />オブジェクトは異なる3ヶ所のAZに格納されるため、一時的に差分が生まれる結果整合モデルが採用されている。</p>
 </section>
 <section id="id3">
-<h3><span class="section-number">9.1.2. </span>バケット<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.1.2. </span>バケット<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>オブジェクトを格納する場所で、すべてのリージョンの中で一意である必要がある点に注意</p>
 <p>バケット単位で、バージョン管理することが可能。
 <a class="reference external" href="https://dev.classmethod.jp/articles/3minutes-s3-versioning-lifecycle/">絵で見て 3分でおさらい</a></p>
 </section>
 <section id="id4">
-<h3><span class="section-number">9.1.3. </span>キー<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.1.3. </span>キー<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>オブジェクトを指し示すパスで、バケットないでユニークである必要がある。</p>
 </section>
 </section>
 <section id="id5">
-<h2><span class="section-number">9.2. </span>S3のストレージクラス<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.2. </span>S3のストレージクラス<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3では、アクセス頻度や用途に応じたストレージクラスが準備されている。</p>
 <ul class="simple">
 <li><p>S3標準<br />高耐久・高可用性でデフォルトストレージ</p></li>
@@ -82,14 +82,14 @@ S3から一定時間がかかるとGlacierに移すというライフサイク�
 </ul>
 </section>
 <section id="id6">
-<h2><span class="section-number">9.3. </span>S3のセキュリティ保護<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.3. </span>S3のセキュリティ保護<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3では、インターネットに直接公開することが可能なため、セキュリティ対策を徹底する必要がある。</p>
 <p><code class="docutils literal notranslate"><span class="pre">ユーザーポリシー</span></code>、<code class="docutils literal notranslate"><span class="pre">バケットポリシー</span></code>、<code class="docutils literal notranslate"><span class="pre">ACL(Access</span> <span class="pre">Control</span> <span class="pre">List)</span></code>を利用して、オブジェクトへのアクセス制御を設定することができる。</p>
 <p>バケットポリシーを基本的に利用して、権限制御をするのがAWSの推奨。
 ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 <p>パブリックアクセスはセキュリティ事故に直結するため、最近は<code class="docutils literal notranslate"><span class="pre">ブロックパブリックアクセス</span></code>の機能もある。</p>
 <section id="id7">
-<h3><span class="section-number">9.3.1. </span>ユーザーポリシー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.1. </span>ユーザーポリシー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>IAユーザーに対して、アクセス権限を設定することができる。</p>
 <p>実態は、IAMポリシーと同様で以下の項目に具体的な値を設定して定義する。</p>
 <ul class="simple">
@@ -100,7 +100,7 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 </ul>
 </section>
 <section id="id8">
-<h3><span class="section-number">9.3.2. </span>バケットポリシー<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.2. </span>バケットポリシー<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>バケットに対して、IAMポリシーを付与してアクセス権限を設定することができる。</p>
 <p>実態は、ユーザーポリシー同様にIAMポリシーと同様で以下の項目に具体的な値を設定して定義する。</p>
 <ul class="simple">
@@ -112,7 +112,7 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 <p>さらにバケットポリシーではCondition要素を利用することで、IPアドレス指定やMFAを利用したアクセス制御、特定VPCエンドポイントの制御が可能</p>
 </section>
 <section id="acl">
-<h3><span class="section-number">9.3.3. </span>ACL<a class="headerlink" href="#acl" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.3. </span>ACL<a class="headerlink" href="#acl" title="この見出しへのパーマリンク">¶</a></h3>
 <p>バケットおよびオブジェクトに設定するアクセス制御<br />AWSアカウントに所属しない不特定多数のユーザーへのアクセス制御をしたい場合に利用する</p>
 <p>ACLでは、ユーザーを４つのグループにざっくりと区分けしていて、それぞれのグループに対して、アクセス許可をする。</p>
 <ul class="simple">
@@ -128,7 +128,7 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 </ul>
 </section>
 <section id="id9">
-<h3><span class="section-number">9.3.4. </span>ブロックパブリックアクセス<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.4. </span>ブロックパブリックアクセス<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>意図しない、パブリックアクセスを抑止するための機能</p>
 <ul class="simple">
 <li><p>BlockPublicAcls<br />パブリックアクセスを許可したACLの設定の更新や付与されたオブジェクトのアップロードを許さない</p></li>
@@ -138,13 +138,13 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 </ul>
 </section>
 <section id="id10">
-<h3><span class="section-number">9.3.5. </span>アクセスポイント<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.5. </span>アクセスポイント<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>バケットにアクセスしてくるユーザーが増えた際に、バケットポリシーの管理が煩雑になる課題があった。
 この課題に対して、ユーザーごとにアクセスポイントを作成して、アクセスポイント単位で、アクセス制御することが可能となった。</p>
 <p><img alt="../_images/s3_access_point.png" src="../_images/s3_access_point.png" /></p>
 </section>
 <section id="id11">
-<h3><span class="section-number">9.3.6. </span>オブジェクトロック<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.6. </span>オブジェクトロック<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>バケット単位に読み取り専用期間を設定することができる。
 間違えて設定すると数十年間読み取りだけになってしまうので注意</p>
 <ul class="simple">
@@ -153,13 +153,13 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 </ul>
 </section>
 <section id="id12">
-<h3><span class="section-number">9.3.7. </span>暗号化とS3アップロード<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.3.7. </span>暗号化とS3アップロード<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>S3へ暗号化しながらアップロードする場合は、アプリ側に<code class="docutils literal notranslate"><span class="pre">kms:</span> <span class="pre">Encrypt</span></code>のポリシーをアタッチする</p>
 <p>S3の容量が大きい場合はマルチパートアップロードをする必要があり、その際に<code class="docutils literal notranslate"><span class="pre">kms:Deencrypt</span></code>のポリシーをアタッチする必要がある。</p>
 </section>
 </section>
 <section id="id13">
-<h2><span class="section-number">9.4. </span>クロスアカウント<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.4. </span>クロスアカウント<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ユーザーポリシーとバケットポリシーは、対象が異なるだけで定義内容は同じ。
 すなわち、アクセスするユーザーととバケットの所有者が同一の場合、どちらかが設定されておけばアクセスすることができる。</p>
 <p>一方で、アクセスするユーザーと、バケットの所有者が異なる<code class="docutils literal notranslate"><span class="pre">クロスアカウント</span></code>の場合、以下の設定が必要</p>
@@ -170,13 +170,13 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 <p><img alt="../_images/s3_cross.png" src="../_images/s3_cross.png" /></p>
 <p><a class="reference external" href="https://cloud5.jp/crossaccount-access/">ハンズオン</a>の参考サイトに具体的な設定内容があるので参考になります。</p>
 <section id="id14">
-<h3><span class="section-number">9.4.1. </span>クロスアカウントのアクセスポイント<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.4.1. </span>クロスアカウントのアクセスポイント<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p><img alt="../_images/s3-cross-account-endpoint.jpeg" src="../_images/s3-cross-account-endpoint.jpeg" /></p>
 <p><a class="reference external" href="https://dev.classmethod.jp/articles/s3-newupdate-crossaccount-accesspoint/">クロスアカウントのS3アクセスポイント</a>の紹介ページ</p>
 </section>
 </section>
 <section id="cors-cross-origin-resource-sharing">
-<h2><span class="section-number">9.5. </span>CORS(Cross Origin Resource Sharing)<a class="headerlink" href="#cors-cross-origin-resource-sharing" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.5. </span>CORS(Cross Origin Resource Sharing)<a class="headerlink" href="#cors-cross-origin-resource-sharing" title="この見出しへのパーマリンク">¶</a></h2>
 <p>バケット単位でCORSを有効化することができる。</p>
 <p>そもそもCORSとは？<br />ブラウザなどがセキュリティの理由から、アクセスしたURLと同一のドメインの静的コンテンツのみを取得してレンダリングする仕様となっている。
 すなわち、異なるオリジン（ドメイン＋ポート番号）の静的コンテンツリソースの取得を防止している
@@ -186,31 +186,31 @@ ACLは設定対象が広いので、設定が難しいので非推奨。</p>
 S3側でCORSを許可するオリジンやメソッドを許可しておけば、CORSヘッダを含むリクエストに正常に返答することができる。</p>
 </section>
 <section id="id15">
-<h2><span class="section-number">9.6. </span>静的ウェブサイトホスティング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.6. </span>静的ウェブサイトホスティング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3にWebサーバーの役割を付与することで、アップロードしたHTMLサイトなどの静的なウェブサイトを一般公開すること</p>
 <p>バケットの設定でこの機能を設定すると、以下の形式でWebサイト用のURLが発行される</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">bucket</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">-&lt;</span><span class="n">region</span><span class="o">&gt;.</span><span class="n">amazon</span><span class="o">.</span><span class="n">com</span>
 </pre></div>
 </div>
 <section id="web">
-<h3><span class="section-number">9.6.1. </span>Webドメインとの連携<a class="headerlink" href="#web" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.6.1. </span>Webドメインとの連携<a class="headerlink" href="#web" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Route53を利用してWebドメインをS3の静的ウェブサイトホスティングと連携する場合、
 <code class="docutils literal notranslate"><span class="pre">取得するドメイン</span></code>と<code class="docutils literal notranslate"><span class="pre">バケット名</span></code>が一致している必要性があることに注意</p>
 </section>
 </section>
 <section id="s3lambda">
-<h2><span class="section-number">9.7. </span>S3のイベントとLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.7. </span>S3のイベントとLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="h4b">
-<h3><span class="section-number">9.7.1. </span>H4bの全体像<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.7.1. </span>H4bの全体像<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">AWS Lambda と AWS AI Services を組み合わせて作る音声文字起こし &amp; 感情分析パイプライン</a>
 にていおてS3のイベントを起因としたLambdaの呼び出しが実装されているので、こちらを参考に手順を整理する。</p>
 <p><img alt="../_images/lambda_s3_archie.png" src="../_images/lambda_s3_archie.png" /></p>
 <section id="id16">
-<h4><span class="section-number">9.7.1.1. </span>S3の作成<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.7.1.1. </span>S3の作成<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>バケット名はユニークにする。</p>
 </section>
 <section id="lambda">
-<h4><span class="section-number">9.7.1.2. </span>Lambdaの作成<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.7.1.2. </span>Lambdaの作成<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
 <p>関数の作成で、設計図の使用をして、pythonのGet-S3-Objectを選択する。</p>
 <p><img alt="../_images/lambda_s3_event_lambda.png" src="../_images/lambda_s3_event_lambda.png" /></p>
 <p>関数の詳細設定においてS3のトリガーの設定でバケットやイベントタイプを指定する。</p>
@@ -254,7 +254,7 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 <p>試しに、S3にファイルをアップロードすると、CloudWatchのログにコンテントタイプが出力される。</p>
 </section>
 <section id="id17">
-<h4><span class="section-number">9.7.1.3. </span>S3イベントの変更<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">10.7.1.3. </span>S3イベントの変更<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Lambdaの設定後、Lambdaを起動するイベントを変更したい場合、バケット、プロパティ、イベント通知から変更が可能</p>
 <p><img alt="../_images/s3-event-edit.png" src="../_images/s3-event-edit.png" /></p>
 <ul class="simple">
@@ -263,7 +263,7 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
 </section>
 </section>
 <section id="id18">
-<h3><span class="section-number">9.7.2. </span>S3間でオブジェクトをコピーする<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.7.2. </span>S3間でオブジェクトをコピーする<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>基本的には、S3のバケットを二つ作成して、Lambdaに準備されている設計図からgetS3Objの設計図を作成する。</p>
 <p>Lambda側のコードに以下を設定する。<br />S3のイベントで設定したディレクトリへのアップロードを検知して、所定のS3へファイルをコピーする。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
@@ -344,41 +344,41 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">9. S3</a><ul>
-<li><a class="reference internal" href="#id1">9.1. 基本情報</a><ul>
-<li><a class="reference internal" href="#id2">9.1.1. オブジェクト</a></li>
-<li><a class="reference internal" href="#id3">9.1.2. バケット</a></li>
-<li><a class="reference internal" href="#id4">9.1.3. キー</a></li>
+<li><a class="reference internal" href="#">10. S3</a><ul>
+<li><a class="reference internal" href="#id1">10.1. 基本情報</a><ul>
+<li><a class="reference internal" href="#id2">10.1.1. オブジェクト</a></li>
+<li><a class="reference internal" href="#id3">10.1.2. バケット</a></li>
+<li><a class="reference internal" href="#id4">10.1.3. キー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id5">9.2. S3のストレージクラス</a></li>
-<li><a class="reference internal" href="#id6">9.3. S3のセキュリティ保護</a><ul>
-<li><a class="reference internal" href="#id7">9.3.1. ユーザーポリシー</a></li>
-<li><a class="reference internal" href="#id8">9.3.2. バケットポリシー</a></li>
-<li><a class="reference internal" href="#acl">9.3.3. ACL</a></li>
-<li><a class="reference internal" href="#id9">9.3.4. ブロックパブリックアクセス</a></li>
-<li><a class="reference internal" href="#id10">9.3.5. アクセスポイント</a></li>
-<li><a class="reference internal" href="#id11">9.3.6. オブジェクトロック</a></li>
-<li><a class="reference internal" href="#id12">9.3.7. 暗号化とS3アップロード</a></li>
+<li><a class="reference internal" href="#id5">10.2. S3のストレージクラス</a></li>
+<li><a class="reference internal" href="#id6">10.3. S3のセキュリティ保護</a><ul>
+<li><a class="reference internal" href="#id7">10.3.1. ユーザーポリシー</a></li>
+<li><a class="reference internal" href="#id8">10.3.2. バケットポリシー</a></li>
+<li><a class="reference internal" href="#acl">10.3.3. ACL</a></li>
+<li><a class="reference internal" href="#id9">10.3.4. ブロックパブリックアクセス</a></li>
+<li><a class="reference internal" href="#id10">10.3.5. アクセスポイント</a></li>
+<li><a class="reference internal" href="#id11">10.3.6. オブジェクトロック</a></li>
+<li><a class="reference internal" href="#id12">10.3.7. 暗号化とS3アップロード</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">9.4. クロスアカウント</a><ul>
-<li><a class="reference internal" href="#id14">9.4.1. クロスアカウントのアクセスポイント</a></li>
+<li><a class="reference internal" href="#id13">10.4. クロスアカウント</a><ul>
+<li><a class="reference internal" href="#id14">10.4.1. クロスアカウントのアクセスポイント</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cors-cross-origin-resource-sharing">9.5. CORS(Cross Origin Resource Sharing)</a></li>
-<li><a class="reference internal" href="#id15">9.6. 静的ウェブサイトホスティング</a><ul>
-<li><a class="reference internal" href="#web">9.6.1. Webドメインとの連携</a></li>
+<li><a class="reference internal" href="#cors-cross-origin-resource-sharing">10.5. CORS(Cross Origin Resource Sharing)</a></li>
+<li><a class="reference internal" href="#id15">10.6. 静的ウェブサイトホスティング</a><ul>
+<li><a class="reference internal" href="#web">10.6.1. Webドメインとの連携</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#s3lambda">9.7. S3のイベントとLambdaの連携</a><ul>
-<li><a class="reference internal" href="#h4b">9.7.1. H4bの全体像</a><ul>
-<li><a class="reference internal" href="#id16">9.7.1.1. S3の作成</a></li>
-<li><a class="reference internal" href="#lambda">9.7.1.2. Lambdaの作成</a></li>
-<li><a class="reference internal" href="#id17">9.7.1.3. S3イベントの変更</a></li>
+<li><a class="reference internal" href="#s3lambda">10.7. S3のイベントとLambdaの連携</a><ul>
+<li><a class="reference internal" href="#h4b">10.7.1. H4bの全体像</a><ul>
+<li><a class="reference internal" href="#id16">10.7.1.1. S3の作成</a></li>
+<li><a class="reference internal" href="#lambda">10.7.1.2. Lambdaの作成</a></li>
+<li><a class="reference internal" href="#id17">10.7.1.3. S3イベントの変更</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id18">9.7.2. S3間でオブジェクトをコピーする</a></li>
+<li><a class="reference internal" href="#id18">10.7.2. S3間でオブジェクトをコピーする</a></li>
 </ul>
 </li>
 </ul>
@@ -389,12 +389,12 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="Lambda.html"
-                          title="前の章へ"><span class="section-number">8. </span>Lambda</a></p>
+                          title="前の章へ"><span class="section-number">9. </span>Lambda</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="DB.html"
-                          title="次の章へ"><span class="section-number">10. </span>DataBase</a></p>
+                          title="次の章へ"><span class="section-number">11. </span>DataBase</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -424,13 +424,13 @@ S3側でCORSを許可するオリジンやメソッドを許可しておけば�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="DB.html" title="10. DataBase"
+          <a href="DB.html" title="11. DataBase"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="Lambda.html" title="8. Lambda"
+          <a href="Lambda.html" title="9. Lambda"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>S3</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>S3</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

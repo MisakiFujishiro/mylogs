@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>13. SNS &#8212; my_sphinx  ドキュメント</title>
+    <title>14. SNS &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="14. SQS" href="SQS.html" />
-    <link rel="prev" title="12. 環境構築自動化" href="EnvAutomation.html" /> 
+    <link rel="next" title="15. SQS" href="SQS.html" />
+    <link rel="prev" title="13. 環境構築自動化" href="EnvAutomation.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="SQS.html" title="14. SQS"
+          <a href="SQS.html" title="15. SQS"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="12. 環境構築自動化"
+          <a href="EnvAutomation.html" title="13. 環境構築自動化"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">13. </span>SNS</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">14. </span>SNS</a></li> 
       </ul>
     </div>  
 
@@ -46,13 +46,13 @@
           <div class="body" role="main">
             
   <section id="sns">
-<h1><span class="section-number">13. </span>SNS<a class="headerlink" href="#sns" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">14. </span>SNS<a class="headerlink" href="#sns" title="この見出しへのパーマリンク">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference external" href="https://pages.awscloud.com/rs/112-TZM-766/images/20190604_AWS-Blackbelt_AmazonSNS.pdf">blackbelt</a></p></li>
 <li><p><a class="reference external" href="https://www.youtube.com/watch?v=bPCjOG_jQlc">blackbelt_movie</a></p></li>
 </ul>
 <section id="id1">
-<h2><span class="section-number">13.1. </span>SNS概要<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">14.1. </span>SNS概要<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>SNS(Simple Notification Service)は、マネージド型の<code class="docutils literal notranslate"><span class="pre">メッセージ配信サービス</span></code>で非同期なメッセージ配信を実現することができる</p>
 <p>複数のSubscriberに対してpush型でメッセージを送信することが可能</p>
 <p>特徴を整理すると以下</p>
@@ -63,14 +63,14 @@
 </ul>
 <p><img alt="../_images/sns_image.png" src="../_images/sns_image.png" /></p>
 <section id="push">
-<h3><span class="section-number">13.1.1. </span>Push型のメリット<a class="headerlink" href="#push" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.1.1. </span>Push型のメリット<a class="headerlink" href="#push" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SNSは、push型であるため、Subscribe側でPollingの必要がない。</p>
 <p>pull型である、SQSやMQでは、独立しているConsumerがpollingをする必要があり、Consumerが多くなるほど、コストがかかるという問題がある。また、キュー側も適切にpollingに対して解答が必要</p>
 <p><img alt="../_images/sns_push.png" src="../_images/sns_push.png" /></p>
 </section>
 </section>
 <section id="id2">
-<h2><span class="section-number">13.2. </span>SNSの代表機能<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">14.2. </span>SNSの代表機能<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <p>大きく二つの機能が存在</p>
 <ul class="simple">
 <li><p>Mobile Push(プッシュ通知)<br />より一層マネージドなpippointを利用することが推奨されている。</p>
@@ -82,7 +82,7 @@
 <li><p>★pub-sub<br />基本的には分散アプリケーションの統合用途に利用</p></li>
 </ul>
 <section id="pub-sub">
-<h3><span class="section-number">13.2.1. </span>pub-subについて<a class="headerlink" href="#pub-sub" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.2.1. </span>pub-subについて<a class="headerlink" href="#pub-sub" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SNSはpub-subの機能として、以下が可能</p>
 <ul class="simple">
 <li><p>様々なSubscriberに対してメッセージ配信</p>
@@ -100,26 +100,26 @@
 </section>
 </section>
 <section id="id3">
-<h2><span class="section-number">13.3. </span>SNSの登場人物<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">14.3. </span>SNSの登場人物<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>Publisher：メッセージを配信する発行者</p></li>
 <li><p>Subscriber：メッセージを受信する購買者</p></li>
 <li><p>Topic：PubとSubを仲介して疎結合にする</p></li>
 </ul>
 <section id="publisher">
-<h3><span class="section-number">13.3.1. </span>Publisher<a class="headerlink" href="#publisher" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.3.1. </span>Publisher<a class="headerlink" href="#publisher" title="この見出しへのパーマリンク">¶</a></h3>
 <p>256キロバイトまでのメッセージをTopicに対して発行することができる。</p>
 <p>S3のイベントやCodePipelineやLambdaから送信することができる。</p>
 </section>
 <section id="subscriber">
-<h3><span class="section-number">13.3.2. </span>Subscriber<a class="headerlink" href="#subscriber" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.3.2. </span>Subscriber<a class="headerlink" href="#subscriber" title="この見出しへのパーマリンク">¶</a></h3>
 <p>事前に興味のあるTopicを購読設定しておくことで、メッセージが配信されるとSub側で受信することができる。<br />Filter機能を利用することで、Topicの中でも特定のメッセージを購読することができる。</p>
 <p>LambdaやSQS、Eメールなどが設定可能。
 PubとしてCode PipelineをSubとしてEメールを設定しておけば、Deploy前にメールで承認依頼を出すといったことができる。</p>
 </section>
 </section>
 <section id="topic">
-<h2><span class="section-number">13.4. </span>Topic<a class="headerlink" href="#topic" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">14.4. </span>Topic<a class="headerlink" href="#topic" title="この見出しへのパーマリンク">¶</a></h2>
 <p>通信チャネルとして機能する論理的なエンドポイント</p>
 <p>TopicにはスタンダートとFIFOの２種類が存在し、順序性、重複性、スループットの面でメリデメがある。</p>
 <ul class="simple">
@@ -127,52 +127,52 @@ PubとしてCode PipelineをSubとしてEメールを設定しておけば、Dep
 <li><p>FIFO<br />順序性と重複排除が保証されるが、スループットは300件/secとなる</p></li>
 </ul>
 <section id="id4">
-<h3><span class="section-number">13.4.1. </span>順序性<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.4.1. </span>順序性<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>FIFOトピックではメッセージを発行時に、<code class="docutils literal notranslate"><span class="pre">メッセージグループID</span></code>を発行する。
 同一のメッセージグループでは配信順序が保証され。すべてのメッセージで配信順序を担保するためには一つのメッセージグループIDとすれば良い。</p>
 </section>
 <section id="id5">
-<h3><span class="section-number">13.4.2. </span>重複排除<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.4.2. </span>重複排除<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>リトライなどで、同じメッセージが配信されてしまうことは銀行業務などでは許されないので、重複排除の機能を利用する。</p>
 <p>基本思想としては、特定の重複排除IDを持つメッセージが発行されてから５分間は同一IDを持つメッセージ配信を行わないようにする。
 SNSではコンテンツベースの重複削除が機能として提供されており、SNSのコンテンツをSHA-256で暗号化して重複IDとする。</p>
 </section>
 <section id="id6">
-<h3><span class="section-number">13.4.3. </span>セキュリティ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.4.3. </span>セキュリティ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id7">
-<h4><span class="section-number">13.4.3.1. </span>メッセージの暗号化<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">14.4.3.1. </span>メッセージの暗号化<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
 <p>KMSによってTopic内のメッセージ（本文）を暗号化することができる。
 ただし、Topic名などのメタデータは暗号化対象外であることに注意。</p>
 <p>SNSはIAMによるアクセス制御に加えて、Topicに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
 </section>
 <section id="id8">
-<h4><span class="section-number">13.4.3.2. </span>通信経路のセキュリティ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">14.4.3.2. </span>通信経路のセキュリティ<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Publisherから、Topicへのメッセージ送信はVPC endpointを利用することでAWSのVPC内部で通信を行うことができる。</p>
 </section>
 </section>
 </section>
 <section id="id9">
-<h2><span class="section-number">13.5. </span>高度な利用方法<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">14.5. </span>高度な利用方法<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id10">
-<h3><span class="section-number">13.5.1. </span>アクセスコントロール<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.5.1. </span>アクセスコントロール<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Topicに対して、アクセスポリシーを発行することができる。</p>
 <p>同じアカウント内であれば、基本的に設定は不要だが、オープンエンドポイントとして公開する場合はアクセスポリシーを設定する。</p>
 </section>
 <section id="id11">
-<h3><span class="section-number">13.5.2. </span>フィルター<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.5.2. </span>フィルター<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Publisherがメッセージを発行する際、MessageAttributes（メッセージ属性）を利用することで、メタデータを指定することができる。</p>
 <p>SubscriberはFilter Policyをリヨすいて、購読中のTopicに送信されるmessageをフィルターして部分受信することができる。</p>
 <p><img alt="../_images/sns_filter.png" src="../_images/sns_filter.png" /></p>
 <p>Filterは複数条件の組み合わせやホワイトリスト・ブラックリストが可能</p>
 </section>
 <section id="id12">
-<h3><span class="section-number">13.5.3. </span>配信方法<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.5.3. </span>配信方法<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>送信するデータの形式を、エンドポイントごとに変更することが可能。
 これによって、subscriberに応じた、メッセージ送信が可能</p>
 <p><img alt="../_images/sns_protocal_rule.png" src="../_images/sns_protocal_rule.png" /></p>
 </section>
 <section id="id13">
-<h3><span class="section-number">13.5.4. </span>リトライ<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.5.4. </span>リトライ<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>TopicからSubへのメッセージ配信が失敗した場合に、４段階のリトライポリシーに従ってリトライ処理がされる</p>
 <ol class="simple">
 <li><p>即時再試行</p></li>
@@ -184,7 +184,7 @@ SNSではコンテンツベースの重複削除が機能として提供され�
 すべてのリトライ処理が実行されても配信ができない場合は、メッセージが破棄されるが、SQSと組み合わせてデットレターキューに配信することも可能</p>
 </section>
 <section id="id14">
-<h3><span class="section-number">13.5.5. </span>ロギング<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.5.5. </span>ロギング<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatchと統合されており、配信状況については、CloudWatch Log Groupに配信される。</p>
 <p>設定を行うことにより、自動で成功用と失敗用の記録をするロググループが作成される。記録には以下が記録される</p>
 <ul class="simple">
@@ -196,21 +196,21 @@ SNSではコンテンツベースの重複削除が機能として提供され�
 </section>
 </section>
 <section id="aws">
-<h2><span class="section-number">13.6. </span>AWSサービスとの統合<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">14.6. </span>AWSサービスとの統合<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="cloudwatch-publisher">
-<h3><span class="section-number">13.6.1. </span>CloudWatchとの連携（Publisher）<a class="headerlink" href="#cloudwatch-publisher" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.6.1. </span>CloudWatchとの連携（Publisher）<a class="headerlink" href="#cloudwatch-publisher" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatch EventsのEvent Sourceとして、任意のサービスを設定し、Eventのターゲットとして、SNS Topicを設定可能</p>
 </section>
 <section id="step-function-publisher">
-<h3><span class="section-number">13.6.2. </span>Step Function（Publisher）<a class="headerlink" href="#step-function-publisher" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.6.2. </span>Step Function（Publisher）<a class="headerlink" href="#step-function-publisher" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Step FunctionのステートマシンとしてSNSを指定することができる。</p>
 </section>
 <section id="s3-publisher">
-<h3><span class="section-number">13.6.3. </span>S3（Publisher）<a class="headerlink" href="#s3-publisher" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.6.3. </span>S3（Publisher）<a class="headerlink" href="#s3-publisher" title="この見出しへのパーマリンク">¶</a></h3>
 <p>S3のオブジェクトの操作に対してSNSを発行することができる</p>
 </section>
 <section id="sqs-subdcriber">
-<h3><span class="section-number">13.6.4. </span>SQS(subdcriber)<a class="headerlink" href="#sqs-subdcriber" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.6.4. </span>SQS(subdcriber)<a class="headerlink" href="#sqs-subdcriber" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SNSとSQSの組み合わせは様々</p>
 <p>例えば、SNSからSQSへメッセージ送信を噛ませることで、Consumer側からは、pull型として扱うことができる。</p>
 <p><img alt="../_images/sns_sqs_comb_1.png" src="../_images/sns_sqs_comb_1.png" /></p>
@@ -219,7 +219,7 @@ SNSではコンテンツベースの重複削除が機能として提供され�
 <p><img alt="../_images/sns_sqs_comb_2.png" src="../_images/sns_sqs_comb_2.png" /></p>
 </section>
 <section id="lambda-subdcriber">
-<h3><span class="section-number">13.6.5. </span>Lambda(subdcriber)<a class="headerlink" href="#lambda-subdcriber" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">14.6.5. </span>Lambda(subdcriber)<a class="headerlink" href="#lambda-subdcriber" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Lambdaを噛ませることによって、様々な作り込みに対応できる。例を挙げると、</p>
 <ul class="simple">
 <li><p>SNSでは標準接続できないAWSサービスに対しての処理</p></li>
@@ -240,44 +240,44 @@ SNSではコンテンツベースの重複削除が機能として提供され�
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">13. SNS</a><ul>
-<li><a class="reference internal" href="#id1">13.1. SNS概要</a><ul>
-<li><a class="reference internal" href="#push">13.1.1. Push型のメリット</a></li>
+<li><a class="reference internal" href="#">14. SNS</a><ul>
+<li><a class="reference internal" href="#id1">14.1. SNS概要</a><ul>
+<li><a class="reference internal" href="#push">14.1.1. Push型のメリット</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">13.2. SNSの代表機能</a><ul>
-<li><a class="reference internal" href="#pub-sub">13.2.1. pub-subについて</a></li>
+<li><a class="reference internal" href="#id2">14.2. SNSの代表機能</a><ul>
+<li><a class="reference internal" href="#pub-sub">14.2.1. pub-subについて</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id3">13.3. SNSの登場人物</a><ul>
-<li><a class="reference internal" href="#publisher">13.3.1. Publisher</a></li>
-<li><a class="reference internal" href="#subscriber">13.3.2. Subscriber</a></li>
+<li><a class="reference internal" href="#id3">14.3. SNSの登場人物</a><ul>
+<li><a class="reference internal" href="#publisher">14.3.1. Publisher</a></li>
+<li><a class="reference internal" href="#subscriber">14.3.2. Subscriber</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#topic">13.4. Topic</a><ul>
-<li><a class="reference internal" href="#id4">13.4.1. 順序性</a></li>
-<li><a class="reference internal" href="#id5">13.4.2. 重複排除</a></li>
-<li><a class="reference internal" href="#id6">13.4.3. セキュリティ</a><ul>
-<li><a class="reference internal" href="#id7">13.4.3.1. メッセージの暗号化</a></li>
-<li><a class="reference internal" href="#id8">13.4.3.2. 通信経路のセキュリティ</a></li>
+<li><a class="reference internal" href="#topic">14.4. Topic</a><ul>
+<li><a class="reference internal" href="#id4">14.4.1. 順序性</a></li>
+<li><a class="reference internal" href="#id5">14.4.2. 重複排除</a></li>
+<li><a class="reference internal" href="#id6">14.4.3. セキュリティ</a><ul>
+<li><a class="reference internal" href="#id7">14.4.3.1. メッセージの暗号化</a></li>
+<li><a class="reference internal" href="#id8">14.4.3.2. 通信経路のセキュリティ</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id9">13.5. 高度な利用方法</a><ul>
-<li><a class="reference internal" href="#id10">13.5.1. アクセスコントロール</a></li>
-<li><a class="reference internal" href="#id11">13.5.2. フィルター</a></li>
-<li><a class="reference internal" href="#id12">13.5.3. 配信方法</a></li>
-<li><a class="reference internal" href="#id13">13.5.4. リトライ</a></li>
-<li><a class="reference internal" href="#id14">13.5.5. ロギング</a></li>
+<li><a class="reference internal" href="#id9">14.5. 高度な利用方法</a><ul>
+<li><a class="reference internal" href="#id10">14.5.1. アクセスコントロール</a></li>
+<li><a class="reference internal" href="#id11">14.5.2. フィルター</a></li>
+<li><a class="reference internal" href="#id12">14.5.3. 配信方法</a></li>
+<li><a class="reference internal" href="#id13">14.5.4. リトライ</a></li>
+<li><a class="reference internal" href="#id14">14.5.5. ロギング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aws">13.6. AWSサービスとの統合</a><ul>
-<li><a class="reference internal" href="#cloudwatch-publisher">13.6.1. CloudWatchとの連携（Publisher）</a></li>
-<li><a class="reference internal" href="#step-function-publisher">13.6.2. Step Function（Publisher）</a></li>
-<li><a class="reference internal" href="#s3-publisher">13.6.3. S3（Publisher）</a></li>
-<li><a class="reference internal" href="#sqs-subdcriber">13.6.4. SQS(subdcriber)</a></li>
-<li><a class="reference internal" href="#lambda-subdcriber">13.6.5. Lambda(subdcriber)</a></li>
+<li><a class="reference internal" href="#aws">14.6. AWSサービスとの統合</a><ul>
+<li><a class="reference internal" href="#cloudwatch-publisher">14.6.1. CloudWatchとの連携（Publisher）</a></li>
+<li><a class="reference internal" href="#step-function-publisher">14.6.2. Step Function（Publisher）</a></li>
+<li><a class="reference internal" href="#s3-publisher">14.6.3. S3（Publisher）</a></li>
+<li><a class="reference internal" href="#sqs-subdcriber">14.6.4. SQS(subdcriber)</a></li>
+<li><a class="reference internal" href="#lambda-subdcriber">14.6.5. Lambda(subdcriber)</a></li>
 </ul>
 </li>
 </ul>
@@ -288,12 +288,12 @@ SNSではコンテンツベースの重複削除が機能として提供され�
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="EnvAutomation.html"
-                          title="前の章へ"><span class="section-number">12. </span>環境構築自動化</a></p>
+                          title="前の章へ"><span class="section-number">13. </span>環境構築自動化</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="SQS.html"
-                          title="次の章へ"><span class="section-number">14. </span>SQS</a></p>
+                          title="次の章へ"><span class="section-number">15. </span>SQS</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -323,13 +323,13 @@ SNSではコンテンツベースの重複削除が機能として提供され�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="SQS.html" title="14. SQS"
+          <a href="SQS.html" title="15. SQS"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="EnvAutomation.html" title="12. 環境構築自動化"
+          <a href="EnvAutomation.html" title="13. 環境構築自動化"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">13. </span>SNS</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">14. </span>SNS</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

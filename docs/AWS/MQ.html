@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>15. Amazon MQ &#8212; my_sphinx  ドキュメント</title>
+    <title>16. Amazon MQ &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="16. MSK:Managed Streaming for Kafka" href="MSK.html" />
-    <link rel="prev" title="14. SQS" href="SQS.html" /> 
+    <link rel="next" title="17. MSK:Managed Streaming for Kafka" href="MSK.html" />
+    <link rel="prev" title="15. SQS" href="SQS.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="16. MSK:Managed Streaming for Kafka"
+          <a href="MSK.html" title="17. MSK:Managed Streaming for Kafka"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="SQS.html" title="14. SQS"
+          <a href="SQS.html" title="15. SQS"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">15. </span>Amazon MQ</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>Amazon MQ</a></li> 
       </ul>
     </div>  
 
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <section id="amazon-mq">
-<h1><span class="section-number">15. </span>Amazon MQ<a class="headerlink" href="#amazon-mq" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">16. </span>Amazon MQ<a class="headerlink" href="#amazon-mq" title="この見出しへのパーマリンク">¶</a></h1>
 <p>オープンソースメッセージブローカー向け完全マネージドサービス</p>
 <p>エンタープライズで既に実績のある2つのエンジンタイプに対応している</p>
 <ul class="simple">
@@ -56,14 +56,14 @@
 <p>上記のように実績のあるエンジンに対応しているようにAmazon MQは現行のアプリケーションで利用している<code class="docutils literal notranslate"><span class="pre">メッセージングアプリケーションの移行</span></code>に強みがある。</p>
 <p>さらに、AWSのマネージドサービスであるため、サーバーのプロビジョニングやセキュリティ、高耐久性、障害復旧などが自動化されているという運用負荷低減というクラウドの恩恵を享受することができる。</p>
 <section id="id1">
-<h2><span class="section-number">15.1. </span>運用監視<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.1. </span>運用監視<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSの様々なアプリケーションと連携しており、運用監視を支援している点でもクラウドの恩恵を享受できる。</p>
 <p><img alt="../_images/mq_unnyou.png" src="../_images/mq_unnyou.png" /></p>
 </section>
 <section id="amazon-mq-for-activemq">
-<h2><span class="section-number">15.2. </span>Amazon MQ for ActiveMQ<a class="headerlink" href="#amazon-mq-for-activemq" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.2. </span>Amazon MQ for ActiveMQ<a class="headerlink" href="#amazon-mq-for-activemq" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="apache-activemq">
-<h3><span class="section-number">15.2.1. </span>Apache ActiveMQとは<a class="headerlink" href="#apache-activemq" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.2.1. </span>Apache ActiveMQとは<a class="headerlink" href="#apache-activemq" title="この見出しへのパーマリンク">¶</a></h3>
 <p>多様な連携パターンをサポートするオープンソースのメッセージブローカー</p>
 <p>様々なメッセージプロトコルに対応</p>
 <ul class="simple">
@@ -81,14 +81,14 @@
 </ul>
 </section>
 <section id="id2">
-<h3><span class="section-number">15.2.2. </span>構成要素<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.2.2. </span>構成要素<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Pointo2Pointo用のキュー</p>
 <p><img alt="../_images/active_mq_queue.png" src="../_images/active_mq_queue.png" /></p>
 <p>Pub/Sub用のTopic</p>
 <p><img alt="../_images/active_mq_topic.png" src="../_images/active_mq_topic.png" /></p>
 </section>
 <section id="id3">
-<h3><span class="section-number">15.2.3. </span>ブローカー<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.2.3. </span>ブローカー<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キューやトピックをホストするブローカーはインスタンスタイプや構成方法を適用できる。</p>
 <p>ブローカーに対する接続については、インターネットからアクセスできるパブリック構成やセキュリティグループによるアクセス制御の設定が可能</p>
 <p><img alt="../_images/acrive_mq_broker.png" src="../_images/acrive_mq_broker.png" /></p>
@@ -100,9 +100,9 @@
 </section>
 </section>
 <section id="amazon-mq-for-rabbitmq">
-<h2><span class="section-number">15.3. </span>Amazon MQ for RabbitMQ<a class="headerlink" href="#amazon-mq-for-rabbitmq" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.3. </span>Amazon MQ for RabbitMQ<a class="headerlink" href="#amazon-mq-for-rabbitmq" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="rabbitmq">
-<h3><span class="section-number">15.3.1. </span>RabbitMQとは<a class="headerlink" href="#rabbitmq" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.3.1. </span>RabbitMQとは<a class="headerlink" href="#rabbitmq" title="この見出しへのパーマリンク">¶</a></h3>
 <p>企業の規模を問わず支持を集めている軽量なメッセージブローカー</p>
 <p>プロトコルはAMQPに準拠し、複数のプログラミング言語から利用可能</p>
 <ul class="simple">
@@ -114,7 +114,7 @@
 <p>特徴としてプラグインに対応しているが、Amazon MQ Rabbitでは事前にインストールしているプラグインのみが利用でき、追加のプラグインは利用できない</p>
 </section>
 <section id="id4">
-<h3><span class="section-number">15.3.2. </span>構成要素<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.3.2. </span>構成要素<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>メッセージングのために3つの要素が存在する</p>
 <ul class="simple">
 <li><p>Exchanges<br />メッセージを最初に受付け、Queueにルーティングする<br />ルーティング方法もDirect/Topic/Fanoutなどが可能</p></li>
@@ -124,7 +124,7 @@
 <p><img alt="../_images/rabbit_mq_broker.png" src="../_images/rabbit_mq_broker.png" /></p>
 </section>
 <section id="id5">
-<h3><span class="section-number">15.3.3. </span>ブローカー<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">16.3.3. </span>ブローカー<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ブローカーの構成方法は単一とクラスターが可能</p>
 <p>単一ブローカー<br />SLAが定義されないので、テスト環境用<br />環境は顧客のVPCではなく、MQ用のVPC内に構築され、パブリックの場合はIGW、プライベートの場合はVPCエンドポイントを経由してアクセスされる</p>
 <p><img alt="../_images/rabbit_mq_broker_simple.png" src="../_images/rabbit_mq_broker_simple.png" /></p>
@@ -133,7 +133,7 @@
 </section>
 </section>
 <section id="id6">
-<h2><span class="section-number">15.4. </span>オンプレからの移行<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">16.4. </span>オンプレからの移行<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
 <p>最終的な目標は完全マネージドでクラウドネイティブなSNSやSQSに移行すること。</p>
 <p>ただ、アプリケーションのリファクタリングなどかなりコストを要するので、段階的にHWをEC2にしてクラウド上に移行するRe-hostや、AmazonMQを利用してブローカーをマネージドにするRe-platformなどを行うユーザーも多い。</p>
 <p>最近はオンプレで既存のキューイングを利用しつつも、AmazonMQにレプリケーションをして、分析や新規機能をクラウド上で実施するという考え方もある。</p>
@@ -151,21 +151,21 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">15. Amazon MQ</a><ul>
-<li><a class="reference internal" href="#id1">15.1. 運用監視</a></li>
-<li><a class="reference internal" href="#amazon-mq-for-activemq">15.2. Amazon MQ for ActiveMQ</a><ul>
-<li><a class="reference internal" href="#apache-activemq">15.2.1. Apache ActiveMQとは</a></li>
-<li><a class="reference internal" href="#id2">15.2.2. 構成要素</a></li>
-<li><a class="reference internal" href="#id3">15.2.3. ブローカー</a></li>
+<li><a class="reference internal" href="#">16. Amazon MQ</a><ul>
+<li><a class="reference internal" href="#id1">16.1. 運用監視</a></li>
+<li><a class="reference internal" href="#amazon-mq-for-activemq">16.2. Amazon MQ for ActiveMQ</a><ul>
+<li><a class="reference internal" href="#apache-activemq">16.2.1. Apache ActiveMQとは</a></li>
+<li><a class="reference internal" href="#id2">16.2.2. 構成要素</a></li>
+<li><a class="reference internal" href="#id3">16.2.3. ブローカー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#amazon-mq-for-rabbitmq">15.3. Amazon MQ for RabbitMQ</a><ul>
-<li><a class="reference internal" href="#rabbitmq">15.3.1. RabbitMQとは</a></li>
-<li><a class="reference internal" href="#id4">15.3.2. 構成要素</a></li>
-<li><a class="reference internal" href="#id5">15.3.3. ブローカー</a></li>
+<li><a class="reference internal" href="#amazon-mq-for-rabbitmq">16.3. Amazon MQ for RabbitMQ</a><ul>
+<li><a class="reference internal" href="#rabbitmq">16.3.1. RabbitMQとは</a></li>
+<li><a class="reference internal" href="#id4">16.3.2. 構成要素</a></li>
+<li><a class="reference internal" href="#id5">16.3.3. ブローカー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">15.4. オンプレからの移行</a></li>
+<li><a class="reference internal" href="#id6">16.4. オンプレからの移行</a></li>
 </ul>
 </li>
 </ul>
@@ -174,12 +174,12 @@
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="SQS.html"
-                          title="前の章へ"><span class="section-number">14. </span>SQS</a></p>
+                          title="前の章へ"><span class="section-number">15. </span>SQS</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="次の章へ"><span class="section-number">16. </span>MSK:Managed Streaming for Kafka</a></p>
+                          title="次の章へ"><span class="section-number">17. </span>MSK:Managed Streaming for Kafka</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -209,13 +209,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="16. MSK:Managed Streaming for Kafka"
+          <a href="MSK.html" title="17. MSK:Managed Streaming for Kafka"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="SQS.html" title="14. SQS"
+          <a href="SQS.html" title="15. SQS"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">15. </span>Amazon MQ</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>Amazon MQ</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

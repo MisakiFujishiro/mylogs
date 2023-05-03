@@ -27,6 +27,7 @@ AWS Services(AWSサービスの概要)
    :maxdepth: 2
    :numbered:
 
+   AWS/AWS
    AWS/Network
    AWS/security
    AWS/EC2
@@ -63,7 +64,7 @@ Hands On（実装方法の整理）
    HandsOn/cloudfront
    HandsOn/waf
    HandsOn/static_contents
-   
+   HandsOn//cloudformaiton_CICD
 
 
 成果物(作成したアプリケーション)

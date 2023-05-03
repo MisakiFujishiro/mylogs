@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>1. AWSのネットワーク &#8212; my_sphinx  ドキュメント</title>
+    <title>2. AWSのネットワーク &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. セキュリティ" href="security.html" />
-    <link rel="prev" title="2. 塾の活動(FY23 上期)" href="../DAILY/FY23_MSA.html" /> 
+    <link rel="next" title="3. セキュリティ" href="security.html" />
+    <link rel="prev" title="1. AWS" href="AWS.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="security.html" title="2. セキュリティ"
+          <a href="security.html" title="3. セキュリティ"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="../DAILY/FY23_MSA.html" title="2. 塾の活動(FY23 上期)"
+          <a href="AWS.html" title="1. AWS"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWSのネットワーク</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>AWSのネットワーク</a></li> 
       </ul>
     </div>  
 
@@ -46,19 +46,19 @@
           <div class="body" role="main">
             
   <section id="aws">
-<h1><span class="section-number">1. </span>AWSのネットワーク<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">2. </span>AWSのネットワーク<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="acl">
-<h2><span class="section-number">1.1. </span>セキュリティグループとネットワークACL<a class="headerlink" href="#acl" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.1. </span>セキュリティグループとネットワークACL<a class="headerlink" href="#acl" title="この見出しへのパーマリンク">¶</a></h2>
 <p>以下の説明はよく聞くけどどういうことなのか</p>
 <blockquote>
 <div><p>セキュリティグループはステートフルで、１つの通信を設定すれば戻り値の設定は不要<br />ネットワークACLは送受信で個々の設定が必要</p>
 </div></blockquote>
 <section id="id1">
-<h3><span class="section-number">1.1.1. </span>ステートフルとは？<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.1. </span>ステートフルとは？<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ステートフルパケットインスペクションの略であり、出入りするパケットの通信状態を把握して、動的に通信の可否を決めるということ</p>
 </section>
 <section id="id2">
-<h3><span class="section-number">1.1.2. </span>セキュリティグループ<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.2. </span>セキュリティグループ<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>サブネットの中で定義することができる。</p>
 <p>インバウンドとアウトバウンドを定義することができる。
 ただし、ステートフルなので、インバウンドで許可したものは自動でアウトバウンドで許可される</p>
@@ -67,7 +67,7 @@
 </div></blockquote>
 </section>
 <section id="id3">
-<h3><span class="section-number">1.1.3. </span>ネットワークACL<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.1.3. </span>ネットワークACL<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>サブネットに紐づけて定義をする。EC2などのインスタンスに設定することができる。</p>
 <p>ステートレスなので、インバウンドもアウトバウンドも明示的にルール設定する</p>
 <blockquote>
@@ -76,7 +76,7 @@
 </section>
 </section>
 <section id="id4">
-<h2><span class="section-number">1.2. </span>AWSとの通信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.2. </span>AWSとの通信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSとの通信には、ネットワークを通じた通信と専用回線による通信がある。
 さらに、ネットワークを通じた通信は「HTTPS/SSH」と「VPN」がある。</p>
 <ul class="simple">
@@ -89,12 +89,12 @@
 <li><p>専用回線</p></li>
 </ul>
 <section id="direct-connect">
-<h3><span class="section-number">1.2.1. </span>Direct Connect<a class="headerlink" href="#direct-connect" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.2.1. </span>Direct Connect<a class="headerlink" href="#direct-connect" title="この見出しへのパーマリンク">¶</a></h3>
 <p>専用回線による通信のソリューション
 キャリアから調達した専用線の片端とAWS をDirect Connctionロケーションで接続するサービスを指す。</p>
 </section>
 <section id="gateway">
-<h3><span class="section-number">1.2.2. </span>Gateway<a class="headerlink" href="#gateway" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.2.2. </span>Gateway<a class="headerlink" href="#gateway" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSでは、インターネット接続に必要な、NAT GWとInternet GWがある。
 それぞれの違いは以下</p>
 <ul class="simple">
@@ -104,19 +104,19 @@
 <p><img alt="../_images/network_gw.png" src="../_images/network_gw.png" /></p>
 </section>
 <section id="vpc">
-<h3><span class="section-number">1.2.3. </span>VPCフローログ<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.2.3. </span>VPCフローログ<a class="headerlink" href="#vpc" title="この見出しへのパーマリンク">¶</a></h3>
 <p>VPCのネットワークインターフェースで行き来するIPトラフィック情報をキャプチャする機能</p>
 </section>
 </section>
 <section id="route53">
-<h2><span class="section-number">1.3. </span>Route53<a class="headerlink" href="#route53" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.3. </span>Route53<a class="headerlink" href="#route53" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSのDNS(Domain Name System)サービス。<br />VPCで構築したリソースに、特定多数のユーザーをアクセスさせるためには、Route53を利用する。</p>
 <p>取得したドメインを記録するレジストリ機能と名前解決をするネームサーバーとしての機能がある。</p>
 <p><img alt="../_images/route53_img.png" src="../_images/route53_img.png" /></p>
 <section id="dns">
-<h3><span class="section-number">1.3.1. </span>DNSの基本<a class="headerlink" href="#dns" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.1. </span>DNSの基本<a class="headerlink" href="#dns" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id5">
-<h4><span class="section-number">1.3.1.1. </span>DNSの種類<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.1.1. </span>DNSの種類<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
 <p>DNSサーバーには基本的に以下の２種類が存在する。</p>
 <ul class="simple">
 <li><p>権威DNSサーバー<br />権威DNSサーバーとは、DNS Resolverから問い合わせに応じて、自身が管理するのゾーン情報を返却する。</p></li>
@@ -125,7 +125,7 @@
 <p><img alt="../_images/network_dns_kind.png" src="../_images/network_dns_kind.png" /></p>
 </section>
 <section id="id6">
-<h4><span class="section-number">1.3.1.2. </span>DNSの動き<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.1.2. </span>DNSの動き<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
 <p>DNSはグローバルIPアドレスとドメインを紐づける役割を持っている</p>
 <p>具体的なDNSの動きを以下の図を見ながら確認する</p>
 <ol class="simple">
@@ -138,13 +138,13 @@
 </section>
 </section>
 <section id="id7">
-<h3><span class="section-number">1.3.2. </span>Route53の機能<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.2. </span>Route53の機能<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Route53では、ホストゾーンを設定することで、権威DNSサーバーを設定することができる。</p>
 <p>DNS Resolverの働きはVPCを作成すると自動で構築されるRoute53 Resolverが行う。
 オンプレへのルーティングなどを設定するに利用する。</p>
 </section>
 <section id="id8">
-<h3><span class="section-number">1.3.3. </span>ホストゾーン<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.3. </span>ホストゾーン<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>各権威DNSサーバーが保持する範囲</p>
 <p>Route53ではゾーンの範囲によって種類が２つ存在する。</p>
 <ul class="simple">
@@ -164,7 +164,7 @@
 </ul>
 <p><img alt="../_images/network_dns_record.png" src="../_images/network_dns_record.png" /></p>
 <section id="id9">
-<h4><span class="section-number">1.3.3.1. </span>レコードタイプ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.3.1. </span>レコードタイプ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>SOA：Start Of Authority：ドメインやゾーンの基本情報</p></li>
 <li><p>NS：ゾーンを管理するネームサーバーのドメイン名。親子で同じNSコードを登録しておく</p></li>
@@ -176,7 +176,7 @@ Route53の拡張レコードとして、ELBやCloufFront、S3といったAWSリ�
 </ul>
 </section>
 <section id="id10">
-<h4><span class="section-number">1.3.3.2. </span>トラフィックルーティング<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.3.2. </span>トラフィックルーティング<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
 <p>いくつかのオプションが準備されている。</p>
 <ul class="simple">
 <li><p>シンプルルーティング：紐づいたアドレスを返す</p></li>
@@ -190,12 +190,12 @@ Route53の拡張レコードとして、ELBやCloufFront、S3といったAWSリ�
 </section>
 </section>
 <section id="route53-resolver">
-<h3><span class="section-number">1.3.4. </span>Route53 Resolver<a class="headerlink" href="#route53-resolver" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.4. </span>Route53 Resolver<a class="headerlink" href="#route53-resolver" title="この見出しへのパーマリンク">¶</a></h3>
 <p>VPCを構築した時に同時に作成される。
 Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの機能を持っている。
 フルサービスリゾルバの機能は上述した通り、各種ネームサーバーに対する再起的な問い合わせを行う。</p>
 <section id="id11">
-<h4><span class="section-number">1.3.4.1. </span>オンプレとの接続<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.4.1. </span>オンプレとの接続<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>オンプレとのルーティングを設定する場合は、Route53でアウトバンドエンドポイントを設定し、以下を設定する必要がある。</p>
 <ul class="simple">
 <li><p>アクセス元とVPCおよびセキュリティグループ</p></li>
@@ -205,7 +205,7 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 <p><img alt="../_images/route53_onpre.png" src="../_images/route53_onpre.png" /></p>
 </section>
 <section id="id12">
-<h4><span class="section-number">1.3.4.2. </span>DNSフォワーダ<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.3.4.2. </span>DNSフォワーダ<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
 <p>企業内のネットワークなどを考えると、フルサービスリゾルバにさまざまなドメインの問い合わせが集中して負荷が大きくなる。
 要求を振り分けるDNSフォワーダによりこの問題を解決する。
 フォワーダは特定ドメインの名前解決要求に対して、ネームサーバーや別のDNSサーバーに集中するるルールを設定することができる。</p>
@@ -213,21 +213,21 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 </section>
 </section>
 <section id="elb-elastic-load-balancer">
-<h2><span class="section-number">1.4. </span>ELB(Elastic  Load Balancer)<a class="headerlink" href="#elb-elastic-load-balancer" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.4. </span>ELB(Elastic  Load Balancer)<a class="headerlink" href="#elb-elastic-load-balancer" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWSが提供する完全マネージドな仮装ロードバランシングサービス。
 複数のWebサーバーやアプリケーションに対してリクエスト要求の負荷を分散させることができる。
 複数のAZを跨いで構築することができ、VPC内に仮想的に配置される。
 あたかも１つのリソースのように見えるが、内部的には冗長化されており、スケールアウトやスケールインを自動で行ってくれている。</p>
 <p><img alt="../_images/network_elb.png" src="../_images/network_elb.png" /></p>
 <section id="elb">
-<h3><span class="section-number">1.4.1. </span>ELBの共通機能<a class="headerlink" href="#elb" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.4.1. </span>ELBの共通機能<a class="headerlink" href="#elb" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id13">
-<h4><span class="section-number">1.4.1.1. </span>ヘルスチェック<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.1.1. </span>ヘルスチェック<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ターゲット（EC2やコンテナやLambda）に対して、リクエストを送信して、死活監視をおこなっている、
 リクエストに関してはタイムアウト時間や閾値を設定可能で、CloudWatchでモニタリングも可能</p>
 </section>
 <section id="ssl-tls">
-<h4><span class="section-number">1.4.1.2. </span>SSL/TLSターミネーション<a class="headerlink" href="#ssl-tls" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.1.2. </span>SSL/TLSターミネーション<a class="headerlink" href="#ssl-tls" title="この見出しへのパーマリンク">¶</a></h4>
 <p>『クライアント→ELB→インスタンス』の通信において、SSL/LSTを利用した暗号化が可能で暗号化する範囲や誰が暗号化するかも設定可能</p>
 <p>以下のパターンが代表的</p>
 <ul class="simple">
@@ -237,27 +237,27 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 </ul>
 </section>
 <section id="connection-drain">
-<h4><span class="section-number">1.4.1.3. </span>Connection Drain<a class="headerlink" href="#connection-drain" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.1.3. </span>Connection Drain<a class="headerlink" href="#connection-drain" title="この見出しへのパーマリンク">¶</a></h4>
 <p>LBが終了する際に、リクエストが残らないように処理終了までの遅延時間を設定可能</p>
 </section>
 <section id="id14">
-<h4><span class="section-number">1.4.1.4. </span>スティッキーセッション<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.1.4. </span>スティッキーセッション<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
 <p>同じクライアントからのリクエストに常に同じターゲットに振り分けるような利用する。
 買い物かご機能を実現するために利用される。
 リクエストの振り分け識別子にはELBによって生成されたCookieが利用される。</p>
 </section>
 <section id="ip">
-<h4><span class="section-number">1.4.1.5. </span>クライアントのIPアドレス<a class="headerlink" href="#ip" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.1.5. </span>クライアントのIPアドレス<a class="headerlink" href="#ip" title="この見出しへのパーマリンク">¶</a></h4>
 <p>クライアント→ELB→アプリケーションと通信をする際に、アプリケーション側で、クライアントのIPアドレスを知りたい場合は、<code class="docutils literal notranslate"><span class="pre">X-Forwarded-For</span></code>ヘッダーにデータが格納されている。</p>
 </section>
 </section>
 <section id="alb-application-load-balancer">
-<h3><span class="section-number">1.4.2. </span>ALB(Application Load Balancer)<a class="headerlink" href="#alb-application-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.4.2. </span>ALB(Application Load Balancer)<a class="headerlink" href="#alb-application-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
 <p>OIS参照モデルの第７層(アプリケーション層)レベルでルーティングを行う。
 「リスナー」と呼ばれるコンポーネントを作成し、使用するプロトコルとポートを設定して、ルーティングルールを設定する。</p>
 <p><img alt="../_images/network_alb_pathrooting.png" src="../_images/network_alb_pathrooting.png" /></p>
 <section id="id15">
-<h4><span class="section-number">1.4.2.1. </span>ルーティング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.2.1. </span>ルーティング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
 <p>複数のルーティングが提供されている。</p>
 <ul class="simple">
 <li><p>パスルーティング<br />リクエストのパスに従ってルーティング</p></li>
@@ -269,12 +269,12 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 </ul>
 </section>
 <section id="id16">
-<h4><span class="section-number">1.4.2.2. </span>認証認可<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.2.2. </span>認証認可<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CognitoやOIDCのID プロバイダと連携してユーザー認証をサポート。
 認証が成功すると、ALBがアクセストークンやIDトークンをHTTPヘッダーに付与してリクエストを転送してくれる。</p>
 </section>
 <section id="id17">
-<h4><span class="section-number">1.4.2.3. </span>他のサービスとの連携<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.4.2.3. </span>他のサービスとの連携<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>EC2/ECS/Lambda<br />トラフィックのルーティング先として、設定できる</p></li>
 <li><p>Route53<br />エイリアスコードを利用して、ドメイン名とロードバランサーの紐付けを行える</p></li>
@@ -285,16 +285,16 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 </section>
 </section>
 <section id="nlb-network-load-balancer">
-<h3><span class="section-number">1.4.3. </span>NLB(Network  Load Balancer)<a class="headerlink" href="#nlb-network-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.4.3. </span>NLB(Network  Load Balancer)<a class="headerlink" href="#nlb-network-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
 <p>OIS参照モデルの第4層(トランスポート層)レベルでルーティングを行う。</p>
 <p>IPアドレスとポートを元に振り分けを行うので、低負荷で負荷分散が可能である。</p>
 </section>
 <section id="clb-classic-load-balancer">
-<h3><span class="section-number">1.4.4. </span>CLB(Classic  Load Balancer)<a class="headerlink" href="#clb-classic-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.4.4. </span>CLB(Classic  Load Balancer)<a class="headerlink" href="#clb-classic-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
 <p>かつてはL4やL7のロードバランサー機能を提供していたが、現在はALBやNLBを利用するため、メンテナンスモードに近い位置付け。</p>
 </section>
 <section id="glb-gateway-load-balancer">
-<h3><span class="section-number">1.4.5. </span>GLB(Gateway  Load Balancer)<a class="headerlink" href="#glb-gateway-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.4.5. </span>GLB(Gateway  Load Balancer)<a class="headerlink" href="#glb-gateway-load-balancer" title="この見出しへのパーマリンク">¶</a></h3>
 <p>2020年11月に発表された4番目のLB。 ただし、ALBやNLBとは異なった利用方法をする。
 具体的にはGWで受け付けたネットワークを別VPCに転送して、不正な攻撃が含まれていないか検出する。</p>
 <p>GLBでは、IGWや仮想プライベートゲートウェイにおける送受信ネットワークトラフィックを別のVPCに中継し、
@@ -302,9 +302,9 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 </section>
 </section>
 <section id="cloud-front">
-<h2><span class="section-number">1.5. </span>Cloud Front<a class="headerlink" href="#cloud-front" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.5. </span>Cloud Front<a class="headerlink" href="#cloud-front" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id18">
-<h3><span class="section-number">1.5.1. </span>エッジサービスについて<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.1. </span>エッジサービスについて<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSでは、24のリージョンと77のAZを持っている。
 それとは別に225箇所のエッジロケーションを持っており、CDNやDNSはユーザーから近い場所から提供されることが望ましいため、エッジロケーションが利用される。</p>
 <p>エッジロケーションでは以下の課題を解決するため、Cloud FrontやAWS WAFといったサービスが提供されている</p>
@@ -316,14 +316,14 @@ Route53 Resolverでは、フルサービスリゾルバとDNSフォワーダの�
 <p><img alt="../_images/cloudfront_edge.png" src="../_images/cloudfront_edge.png" /></p>
 </section>
 <section id="id19">
-<h3><span class="section-number">1.5.2. </span>Cloud Frontについて<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.2. </span>Cloud Frontについて<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudFrontはCDN（Contents Delivery Netwoerk)の機能を持つマネージドサービス。
 CloudFrontを利用することで、クライアントへコンテンツを高速配信することが可能。</p>
 <p>AWSは、エッジロケーションを世界中に保有しているため、グローバル単位でコンテンツ配信を高速化可能であり、
 さらに他のAWSサービスと統合されているため、アクセスのモニタリングやセキュリティの担保が可能となる。</p>
 </section>
 <section id="cdn">
-<h3><span class="section-number">1.5.3. </span>CDNとは<a class="headerlink" href="#cdn" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.3. </span>CDNとは<a class="headerlink" href="#cdn" title="この見出しへのパーマリンク">¶</a></h3>
 <p>各地に配置されたエッジサーバーにコンテンツをキャッシュすることによって、コンテンツ配信の高速化や負荷分散する処理。</p>
 <p>オリジンサーバー(S3,API GW etc..)とエッジサーバー（CloufFront etc..）で構成されている</p>
 <ul class="simple">
@@ -333,7 +333,7 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 <p><img alt="../_images/cloudfront_cdn.png" src="../_images/cloudfront_cdn.png" /></p>
 </section>
 <section id="id20">
-<h3><span class="section-number">1.5.4. </span>CDNの配信対象<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.4. </span>CDNの配信対象<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ウェブアプリケーションについては、動的コンテンツと静的コンテンツが存在する。</p>
 <ul class="simple">
 <li><p>動的コンテンツ：ユーザーのリクエストによって変わるコンテンツ</p></li>
@@ -345,7 +345,7 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 <p><img alt="../_images/cloudfront_path.png" src="../_images/cloudfront_path.png" /></p>
 </section>
 <section id="id21">
-<h3><span class="section-number">1.5.5. </span>Cloud Frontの構成要素<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.5. </span>Cloud Frontの構成要素<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ディストリビューション<br /><code class="docutils literal notranslate"><span class="pre">作成したCloud</span> <span class="pre">Frontを指し示すもの</span></code><br />設定するドメインごとに割り当てられるCloudFrontの設定。
 ディストリビューションを作成することで、エッジサーバーを指し示す「xxxx.cloudfront.net」が払い出される。</p></li>
@@ -355,7 +355,7 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 <p><img alt="../_images/cloudfront_overview.png" src="../_images/cloudfront_overview.png" /></p>
 </section>
 <section id="id22">
-<h3><span class="section-number">1.5.6. </span>ビヘイビアにおけるキャッシュの設定<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.6. </span>ビヘイビアにおけるキャッシュの設定<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キャッシュポリシーでどのようにキャッシュを扱うかの設定を行い、特に重要なのは2つ</p>
 <ul class="simple">
 <li><p>キャッシュポリシー</p>
@@ -368,9 +368,9 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 </ul>
 </section>
 <section id="id23">
-<h3><span class="section-number">1.5.7. </span>キャッシュポリシー<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.7. </span>キャッシュポリシー<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="ttl">
-<h4><span class="section-number">1.5.7.1. </span>TTL<a class="headerlink" href="#ttl" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.5.7.1. </span>TTL<a class="headerlink" href="#ttl" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CloudFront側で、TTLを設定することができ、オリジン側もCacheControlを設定でき、比較してキャッシュの時間を決定する。</p>
 <p>■CloudFront側の設定</p>
 <ul class="simple">
@@ -384,7 +384,7 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 </ul>
 </section>
 <section id="cache-key-contents">
-<h4><span class="section-number">1.5.7.2. </span>Cache key contents<a class="headerlink" href="#cache-key-contents" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">2.5.7.2. </span>Cache key contents<a class="headerlink" href="#cache-key-contents" title="この見出しへのパーマリンク">¶</a></h4>
 <p>キャッシュのキーを設定することができる。
 すなわち、同じキーのリクエストが飛んできた場合に、同じキャッシュを返すことができる。</p>
 <ul class="simple">
@@ -395,7 +395,7 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 </section>
 </section>
 <section id="origin-request-policy">
-<h3><span class="section-number">1.5.8. </span>Origin Request Policy<a class="headerlink" href="#origin-request-policy" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.8. </span>Origin Request Policy<a class="headerlink" href="#origin-request-policy" title="この見出しへのパーマリンク">¶</a></h3>
 <p>リクエストを受け取ったCloud Frontはオリジンに転送するときに、以下のデータを渡すかをフィルタリングする。</p>
 <ul class="simple">
 <li><p>Headers: keyとなるHTTPヘッダー</p></li>
@@ -406,13 +406,13 @@ CloudFrontを利用することで、クライアントへコンテンツを高�
 <p><img alt="../_images/cloudfront_origin_request_policy.png" src="../_images/cloudfront_origin_request_policy.png" /></p>
 </section>
 <section id="id24">
-<h3><span class="section-number">1.5.9. </span>キャッシュの無効化<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.9. </span>キャッシュの無効化<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キャッシュの有効期限が切れる前に、キャッシュされているコンテンツを無効化することができる。
 コンソール上やCLIからファイルを選択して、キャッシュを無効化する。</p>
 <p>Invalidationのオペレーションは有料のため、有効期限内に大量の無効化を行うと金額が大きくなる点に注意</p>
 </section>
 <section id="id25">
-<h3><span class="section-number">1.5.10. </span>暗号化<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.10. </span>暗号化<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ビューワー接続<br />ビューワープロトコルポリシーを設定することで、クライアントとCloudFrontの間にSSL/TLSプロトコルをサポートしている<br />HTTPやHTTPSのみの許可や、Redirectも可能</p></li>
 </ul>
@@ -424,7 +424,7 @@ CloudFrontエッジとオリジン間の通信を制御</p></li>
 <p><img alt="../_images/cloudfront_origin_security.png" src="../_images/cloudfront_origin_security.png" /></p>
 </section>
 <section id="lambda-edge">
-<h3><span class="section-number">1.5.11. </span>Lambda&#64;Edge<a class="headerlink" href="#lambda-edge" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.11. </span>Lambda&#64;Edge<a class="headerlink" href="#lambda-edge" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudFrontのエッジがわで動作するLambda関数を設定することが可能。
 ４つのパターンでLambda関数を定義可能</p>
 <ul class="simple">
@@ -436,7 +436,7 @@ CloudFrontエッジとオリジン間の通信を制御</p></li>
 </ul>
 </section>
 <section id="id26">
-<h3><span class="section-number">1.5.12. </span>他のAWSサービスとの連携<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.5.12. </span>他のAWSサービスとの連携<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudWatchにより、キャッシュのヒット率やエラー状況などのモニタリングが可能</p>
 <p>アクセスログをS3に配信したり、WAFやACMによってCloudFrontと通信を保護することも可能</p>
 <p><img alt="../_images/cloudfront_image.png" src="../_images/cloudfront_image.png" /></p>
@@ -454,75 +454,75 @@ CloudFrontエッジとオリジン間の通信を制御</p></li>
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">1. AWSのネットワーク</a><ul>
-<li><a class="reference internal" href="#acl">1.1. セキュリティグループとネットワークACL</a><ul>
-<li><a class="reference internal" href="#id1">1.1.1. ステートフルとは？</a></li>
-<li><a class="reference internal" href="#id2">1.1.2. セキュリティグループ</a></li>
-<li><a class="reference internal" href="#id3">1.1.3. ネットワークACL</a></li>
+<li><a class="reference internal" href="#">2. AWSのネットワーク</a><ul>
+<li><a class="reference internal" href="#acl">2.1. セキュリティグループとネットワークACL</a><ul>
+<li><a class="reference internal" href="#id1">2.1.1. ステートフルとは？</a></li>
+<li><a class="reference internal" href="#id2">2.1.2. セキュリティグループ</a></li>
+<li><a class="reference internal" href="#id3">2.1.3. ネットワークACL</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">1.2. AWSとの通信</a><ul>
-<li><a class="reference internal" href="#direct-connect">1.2.1. Direct Connect</a></li>
-<li><a class="reference internal" href="#gateway">1.2.2. Gateway</a></li>
-<li><a class="reference internal" href="#vpc">1.2.3. VPCフローログ</a></li>
+<li><a class="reference internal" href="#id4">2.2. AWSとの通信</a><ul>
+<li><a class="reference internal" href="#direct-connect">2.2.1. Direct Connect</a></li>
+<li><a class="reference internal" href="#gateway">2.2.2. Gateway</a></li>
+<li><a class="reference internal" href="#vpc">2.2.3. VPCフローログ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#route53">1.3. Route53</a><ul>
-<li><a class="reference internal" href="#dns">1.3.1. DNSの基本</a><ul>
-<li><a class="reference internal" href="#id5">1.3.1.1. DNSの種類</a></li>
-<li><a class="reference internal" href="#id6">1.3.1.2. DNSの動き</a></li>
+<li><a class="reference internal" href="#route53">2.3. Route53</a><ul>
+<li><a class="reference internal" href="#dns">2.3.1. DNSの基本</a><ul>
+<li><a class="reference internal" href="#id5">2.3.1.1. DNSの種類</a></li>
+<li><a class="reference internal" href="#id6">2.3.1.2. DNSの動き</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id7">1.3.2. Route53の機能</a></li>
-<li><a class="reference internal" href="#id8">1.3.3. ホストゾーン</a><ul>
-<li><a class="reference internal" href="#id9">1.3.3.1. レコードタイプ</a></li>
-<li><a class="reference internal" href="#id10">1.3.3.2. トラフィックルーティング</a></li>
+<li><a class="reference internal" href="#id7">2.3.2. Route53の機能</a></li>
+<li><a class="reference internal" href="#id8">2.3.3. ホストゾーン</a><ul>
+<li><a class="reference internal" href="#id9">2.3.3.1. レコードタイプ</a></li>
+<li><a class="reference internal" href="#id10">2.3.3.2. トラフィックルーティング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#route53-resolver">1.3.4. Route53 Resolver</a><ul>
-<li><a class="reference internal" href="#id11">1.3.4.1. オンプレとの接続</a></li>
-<li><a class="reference internal" href="#id12">1.3.4.2. DNSフォワーダ</a></li>
+<li><a class="reference internal" href="#route53-resolver">2.3.4. Route53 Resolver</a><ul>
+<li><a class="reference internal" href="#id11">2.3.4.1. オンプレとの接続</a></li>
+<li><a class="reference internal" href="#id12">2.3.4.2. DNSフォワーダ</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#elb-elastic-load-balancer">1.4. ELB(Elastic  Load Balancer)</a><ul>
-<li><a class="reference internal" href="#elb">1.4.1. ELBの共通機能</a><ul>
-<li><a class="reference internal" href="#id13">1.4.1.1. ヘルスチェック</a></li>
-<li><a class="reference internal" href="#ssl-tls">1.4.1.2. SSL/TLSターミネーション</a></li>
-<li><a class="reference internal" href="#connection-drain">1.4.1.3. Connection Drain</a></li>
-<li><a class="reference internal" href="#id14">1.4.1.4. スティッキーセッション</a></li>
-<li><a class="reference internal" href="#ip">1.4.1.5. クライアントのIPアドレス</a></li>
+<li><a class="reference internal" href="#elb-elastic-load-balancer">2.4. ELB(Elastic  Load Balancer)</a><ul>
+<li><a class="reference internal" href="#elb">2.4.1. ELBの共通機能</a><ul>
+<li><a class="reference internal" href="#id13">2.4.1.1. ヘルスチェック</a></li>
+<li><a class="reference internal" href="#ssl-tls">2.4.1.2. SSL/TLSターミネーション</a></li>
+<li><a class="reference internal" href="#connection-drain">2.4.1.3. Connection Drain</a></li>
+<li><a class="reference internal" href="#id14">2.4.1.4. スティッキーセッション</a></li>
+<li><a class="reference internal" href="#ip">2.4.1.5. クライアントのIPアドレス</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#alb-application-load-balancer">1.4.2. ALB(Application Load Balancer)</a><ul>
-<li><a class="reference internal" href="#id15">1.4.2.1. ルーティング</a></li>
-<li><a class="reference internal" href="#id16">1.4.2.2. 認証認可</a></li>
-<li><a class="reference internal" href="#id17">1.4.2.3. 他のサービスとの連携</a></li>
+<li><a class="reference internal" href="#alb-application-load-balancer">2.4.2. ALB(Application Load Balancer)</a><ul>
+<li><a class="reference internal" href="#id15">2.4.2.1. ルーティング</a></li>
+<li><a class="reference internal" href="#id16">2.4.2.2. 認証認可</a></li>
+<li><a class="reference internal" href="#id17">2.4.2.3. 他のサービスとの連携</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#nlb-network-load-balancer">1.4.3. NLB(Network  Load Balancer)</a></li>
-<li><a class="reference internal" href="#clb-classic-load-balancer">1.4.4. CLB(Classic  Load Balancer)</a></li>
-<li><a class="reference internal" href="#glb-gateway-load-balancer">1.4.5. GLB(Gateway  Load Balancer)</a></li>
+<li><a class="reference internal" href="#nlb-network-load-balancer">2.4.3. NLB(Network  Load Balancer)</a></li>
+<li><a class="reference internal" href="#clb-classic-load-balancer">2.4.4. CLB(Classic  Load Balancer)</a></li>
+<li><a class="reference internal" href="#glb-gateway-load-balancer">2.4.5. GLB(Gateway  Load Balancer)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cloud-front">1.5. Cloud Front</a><ul>
-<li><a class="reference internal" href="#id18">1.5.1. エッジサービスについて</a></li>
-<li><a class="reference internal" href="#id19">1.5.2. Cloud Frontについて</a></li>
-<li><a class="reference internal" href="#cdn">1.5.3. CDNとは</a></li>
-<li><a class="reference internal" href="#id20">1.5.4. CDNの配信対象</a></li>
-<li><a class="reference internal" href="#id21">1.5.5. Cloud Frontの構成要素</a></li>
-<li><a class="reference internal" href="#id22">1.5.6. ビヘイビアにおけるキャッシュの設定</a></li>
-<li><a class="reference internal" href="#id23">1.5.7. キャッシュポリシー</a><ul>
-<li><a class="reference internal" href="#ttl">1.5.7.1. TTL</a></li>
-<li><a class="reference internal" href="#cache-key-contents">1.5.7.2. Cache key contents</a></li>
+<li><a class="reference internal" href="#cloud-front">2.5. Cloud Front</a><ul>
+<li><a class="reference internal" href="#id18">2.5.1. エッジサービスについて</a></li>
+<li><a class="reference internal" href="#id19">2.5.2. Cloud Frontについて</a></li>
+<li><a class="reference internal" href="#cdn">2.5.3. CDNとは</a></li>
+<li><a class="reference internal" href="#id20">2.5.4. CDNの配信対象</a></li>
+<li><a class="reference internal" href="#id21">2.5.5. Cloud Frontの構成要素</a></li>
+<li><a class="reference internal" href="#id22">2.5.6. ビヘイビアにおけるキャッシュの設定</a></li>
+<li><a class="reference internal" href="#id23">2.5.7. キャッシュポリシー</a><ul>
+<li><a class="reference internal" href="#ttl">2.5.7.1. TTL</a></li>
+<li><a class="reference internal" href="#cache-key-contents">2.5.7.2. Cache key contents</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#origin-request-policy">1.5.8. Origin Request Policy</a></li>
-<li><a class="reference internal" href="#id24">1.5.9. キャッシュの無効化</a></li>
-<li><a class="reference internal" href="#id25">1.5.10. 暗号化</a></li>
-<li><a class="reference internal" href="#lambda-edge">1.5.11. Lambda&#64;Edge</a></li>
-<li><a class="reference internal" href="#id26">1.5.12. 他のAWSサービスとの連携</a></li>
+<li><a class="reference internal" href="#origin-request-policy">2.5.8. Origin Request Policy</a></li>
+<li><a class="reference internal" href="#id24">2.5.9. キャッシュの無効化</a></li>
+<li><a class="reference internal" href="#id25">2.5.10. 暗号化</a></li>
+<li><a class="reference internal" href="#lambda-edge">2.5.11. Lambda&#64;Edge</a></li>
+<li><a class="reference internal" href="#id26">2.5.12. 他のAWSサービスとの連携</a></li>
 </ul>
 </li>
 </ul>
@@ -532,13 +532,13 @@ CloudFrontエッジとオリジン間の通信を制御</p></li>
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="../DAILY/FY23_MSA.html"
-                          title="前の章へ"><span class="section-number">2. </span>塾の活動(FY23 上期)</a></p>
+    <p class="topless"><a href="AWS.html"
+                          title="前の章へ"><span class="section-number">1. </span>AWS</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="security.html"
-                          title="次の章へ"><span class="section-number">2. </span>セキュリティ</a></p>
+                          title="次の章へ"><span class="section-number">3. </span>セキュリティ</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -568,13 +568,13 @@ CloudFrontエッジとオリジン間の通信を制御</p></li>
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="security.html" title="2. セキュリティ"
+          <a href="security.html" title="3. セキュリティ"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="../DAILY/FY23_MSA.html" title="2. 塾の活動(FY23 上期)"
+          <a href="AWS.html" title="1. AWS"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>AWSのネットワーク</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>AWSのネットワーク</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

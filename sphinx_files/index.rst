@@ -64,7 +64,7 @@ Hands On（実装方法の整理）
    HandsOn/cloudfront
    HandsOn/waf
    HandsOn/static_contents
-   
+   HandsOn//cloudformaiton_CICD
 
 
 成果物(作成したアプリケーション)
