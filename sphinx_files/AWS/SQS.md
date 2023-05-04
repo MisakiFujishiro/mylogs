@@ -163,10 +163,61 @@ SQSはIAMによるアクセス制御に加えて、キューに対して、独�
 
 
 
-### 監視
-Amazon CloudWatchと連携して、以下の内容をモニタリングすることができ、例えばオートスケールの指標にすることができる
+
+### SQSのメトリクス
+Amazon CloudWatchと連携して、モニタリングが可能。
+詳細は[公式ドキュメント](https://docs.aws.amazon.com/ja_jp/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html)を参照されたい。
 
 ![](img/sqs_monitoring.png)
+
+USEメソッド（利用率、飽和率、エラー率）とその他に分けて、メトリクスを紹介する。
+その前に、メトリクスを理解する上でも重要なReceiveMessage APIについて解説する。
+
+#### ReceiveMessage API
+SQSで利用できるAPIであり、メトリクスの取得でも利用されている。
+
+SQSでメッセージを取得するために利用するAPIである。アプリケーションはReceiveMessage APIを利用して、処理に必要な情報を取得する。
+ReceiveMessage APIが提供する機能は以下
+- キューに対するポーリング
+- メッセージを処理するための情報の取得（メッセージID・本文・タイムスタンプ）
+- メッセージ受信後のメッセージに対する更新
+
+このAPIのパラメタ設定を行い、受信数などを調整する。
+
+
+#### Utilization
+どれだけキューが利用されているかを確認するためのメトリクス
+- NumberOfMessageSent:キューに追加されたメッセージ数
+- SentMessageSize:キューに追加されたメッセージサイズ（バイト数）
+
+#### Satulation
+どれだけキューにメッセージが溜まっているかを確認するためのメトリクス
+- ApproximateNumberOfMessageVisible: キューから取得可能なメッセージ数
+- ApproximateNumberOfMessageNotVisible: 処理中のメッセージ数。Consumerに受け取られてまだ削除されていないメッセージや可視性タイムアウト中のメッセージが対象
+- ApproximateAgeOfOldestMessage:キューに入ってから、処理されていないキューの最大時間
+- ApproximateNumberOfMessageDelayed:遅延キューやメッセージタイマーの対象となっているメッセージキューの数。
+
+#### Errors
+キューにおける失敗したメッセージを確認するメトリクス。
+失敗したメッセージについては、DLQに移動させることが多いので、DLQでApproximateNumberOfMessageVisibleなどを取得する方法が挙げられる。単独のキューに対しては以下のようなメトリクスが取得できる。
+￥
+- NumberOfMessagesReceived: Consumerが正しく`受信`をしたメッセ- NumberOfMessagesDeleted: キューから`削除`されたメッセージ数。すなわち正しく`処理`されたメッセージ数を把握できる。
+- NumberOfEmptyReceives: AppがReceive Message APIを送信したが、取得できるメッセージがなかったという返り値が返却された回数。この回数が多いことは、タイミングや頻度が悪く、メッセージを効率よく取得できていないことを表す。
+
+
+
+
+
+### SQSのメトリクスを利用したオートスケーリング
+[公式ドキュメント](https://docs.aws.amazon.com/ja_jp/autoscaling/ec2/userguide/as-using-sqs-queue.html)にSQSを利用したオートスケーリングの記事があったので、その内容を整理する。
+
+ドキュメント内で注意されているのは、SQSの処理可能なメッセージ数を表すApproximateNumberOfMessagesVisibleを利用してオートスケーリングを設定しても良いが、このメトリクスはキュー内のメッセージ数だけを取得しており、この値だけを利用してスケールアウトしても適切な処理台数を設定できないという課題を扱っている
+
+オートスケールの台数は複数の要因に従って、用件を決め、それを満たせるようなルールを設定するべき。例えば以下の要件があることを考える。
+- メッセージの処理時間
+- 許容されるレイテンシー
+
+許容されるレイテンシーが10secであり、メッセージの処理時間が0.1secであれば、1台あたり、100件のメッセージまでは処理することができる。ApproximateNumberOfMessagesVisibleに対して100で割ることで必要な台数を算出し、それを踏まえて台数を決定する。
 
 
 ### kinesisとの比較
@@ -176,3 +227,11 @@ Amazon CloudWatchと連携して、以下の内容をモニタリングするこ
 - 保持期間
 
 ![](img/sqs_vs_kinesis.png)
+
+
+
+
+
+
+
+

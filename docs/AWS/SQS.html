@@ -184,12 +184,66 @@ ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。<
 </section>
 </section>
 <section id="id17">
-<h2><span class="section-number">15.6. </span>監視<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
-<p>Amazon CloudWatchと連携して、以下の内容をモニタリングすることができ、例えばオートスケールの指標にすることができる</p>
+<h2><span class="section-number">15.6. </span>SQSのメトリクス<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Amazon CloudWatchと連携して、モニタリングが可能。
+詳細は<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html">公式ドキュメント</a>を参照されたい。</p>
 <p><img alt="../_images/sqs_monitoring.png" src="../_images/sqs_monitoring.png" /></p>
+<p>USEメソッド（利用率、飽和率、エラー率）とその他に分けて、メトリクスを紹介する。
+その前に、メトリクスを理解する上でも重要なReceiveMessage APIについて解説する。</p>
+<section id="receivemessage-api">
+<h3><span class="section-number">15.6.1. </span>ReceiveMessage API<a class="headerlink" href="#receivemessage-api" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SQSで利用できるAPIであり、メトリクスの取得でも利用されている。</p>
+<p>SQSでメッセージを取得するために利用するAPIである。アプリケーションはReceiveMessage APIを利用して、処理に必要な情報を取得する。
+ReceiveMessage APIが提供する機能は以下</p>
+<ul class="simple">
+<li><p>キューに対するポーリング</p></li>
+<li><p>メッセージを処理するための情報の取得（メッセージID・本文・タイムスタンプ）</p></li>
+<li><p>メッセージ受信後のメッセージに対する更新</p></li>
+</ul>
+<p>このAPIのパラメタ設定を行い、受信数などを調整する。</p>
+</section>
+<section id="utilization">
+<h3><span class="section-number">15.6.2. </span>Utilization<a class="headerlink" href="#utilization" title="この見出しへのパーマリンク">¶</a></h3>
+<p>どれだけキューが利用されているかを確認するためのメトリクス</p>
+<ul class="simple">
+<li><p>NumberOfMessageSent:キューに追加されたメッセージ数</p></li>
+<li><p>SentMessageSize:キューに追加されたメッセージサイズ（バイト数）</p></li>
+</ul>
+</section>
+<section id="satulation">
+<h3><span class="section-number">15.6.3. </span>Satulation<a class="headerlink" href="#satulation" title="この見出しへのパーマリンク">¶</a></h3>
+<p>どれだけキューにメッセージが溜まっているかを確認するためのメトリクス</p>
+<ul class="simple">
+<li><p>ApproximateNumberOfMessageVisible: キューから取得可能なメッセージ数</p></li>
+<li><p>ApproximateNumberOfMessageNotVisible: 処理中のメッセージ数。Consumerに受け取られてまだ削除されていないメッセージや可視性タイムアウト中のメッセージが対象</p></li>
+<li><p>ApproximateAgeOfOldestMessage:キューに入ってから、処理されていないキューの最大時間</p></li>
+<li><p>ApproximateNumberOfMessageDelayed:遅延キューやメッセージタイマーの対象となっているメッセージキューの数。</p></li>
+</ul>
+</section>
+<section id="errors">
+<h3><span class="section-number">15.6.4. </span>Errors<a class="headerlink" href="#errors" title="この見出しへのパーマリンク">¶</a></h3>
+<p>キューにおける失敗したメッセージを確認するメトリクス。
+失敗したメッセージについては、DLQに移動させることが多いので、DLQでApproximateNumberOfMessageVisibleなどを取得する方法が挙げられる。単独のキューに対しては以下のようなメトリクスが取得できる。
+￥</p>
+<ul class="simple">
+<li><p>NumberOfMessagesReceived: Consumerが正しく<code class="docutils literal notranslate"><span class="pre">受信</span></code>をしたメッセ- NumberOfMessagesDeleted: キューから<code class="docutils literal notranslate"><span class="pre">削除</span></code>されたメッセージ数。すなわち正しく<code class="docutils literal notranslate"><span class="pre">処理</span></code>されたメッセージ数を把握できる。</p></li>
+<li><p>NumberOfEmptyReceives: AppがReceive Message APIを送信したが、取得できるメッセージがなかったという返り値が返却された回数。この回数が多いことは、タイミングや頻度が悪く、メッセージを効率よく取得できていないことを表す。</p></li>
+</ul>
+</section>
+</section>
+<section id="id18">
+<h2><span class="section-number">15.7. </span>SQSのメトリクスを利用したオートスケーリング<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/autoscaling/ec2/userguide/as-using-sqs-queue.html">公式ドキュメント</a>にSQSを利用したオートスケーリングの記事があったので、その内容を整理する。</p>
+<p>ドキュメント内で注意されているのは、SQSの処理可能なメッセージ数を表すApproximateNumberOfMessagesVisibleを利用してオートスケーリングを設定しても良いが、このメトリクスはキュー内のメッセージ数だけを取得しており、この値だけを利用してスケールアウトしても適切な処理台数を設定できないという課題を扱っている</p>
+<p>オートスケールの台数は複数の要因に従って、用件を決め、それを満たせるようなルールを設定するべき。例えば以下の要件があることを考える。</p>
+<ul class="simple">
+<li><p>メッセージの処理時間</p></li>
+<li><p>許容されるレイテンシー</p></li>
+</ul>
+<p>許容されるレイテンシーが10secであり、メッセージの処理時間が0.1secであれば、1台あたり、100件のメッセージまでは処理することができる。ApproximateNumberOfMessagesVisibleに対して100で割ることで必要な台数を算出し、それを踏まえて台数を決定する。</p>
 </section>
 <section id="kinesis">
-<h2><span class="section-number">15.7. </span>kinesisとの比較<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">15.8. </span>kinesisとの比較<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ストリーミングデータであればkinesis一択。それ以外の場合は以下のデータの特性によって判断</p>
 <ul class="simple">
 <li><p>データの処理方法</p></li>
@@ -238,8 +292,15 @@ ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。<
 <li><a class="reference internal" href="#id16">15.5.2. アクセス制御</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">15.6. 監視</a></li>
-<li><a class="reference internal" href="#kinesis">15.7. kinesisとの比較</a></li>
+<li><a class="reference internal" href="#id17">15.6. SQSのメトリクス</a><ul>
+<li><a class="reference internal" href="#receivemessage-api">15.6.1. ReceiveMessage API</a></li>
+<li><a class="reference internal" href="#utilization">15.6.2. Utilization</a></li>
+<li><a class="reference internal" href="#satulation">15.6.3. Satulation</a></li>
+<li><a class="reference internal" href="#errors">15.6.4. Errors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id18">15.7. SQSのメトリクスを利用したオートスケーリング</a></li>
+<li><a class="reference internal" href="#kinesis">15.8. kinesisとの比較</a></li>
 </ul>
 </li>
 </ul>
