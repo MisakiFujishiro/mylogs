@@ -77,8 +77,8 @@
 - テーマ深掘り【完了】
     - キューイングの価値、マイクロサービスにおける重要性を[ドキュメント化](https://misakifujishiro.github.io/mylogs/microservice/queuing.html)
 - 対象サービスの深掘り【完了】
-    - SQSのメトリクスについて[調査]()【完了】
-    - MSKのメトリクスについて[調査]()
+    - SQSのメトリクスについて[調査](https://misakifujishiro.github.io/mylogs/AWS/SQS.html#id17)【完了】
+    - MSKのメトリクスについて[調査](https://misakifujishiro.github.io/mylogs/AWS/MSK.html#id14)【実施中】
 - 実装【未着手】
     - SQSとMSKのセッティング
     - Lambdaからそれぞれを呼び出してみる

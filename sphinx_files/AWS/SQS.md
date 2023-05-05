@@ -170,7 +170,7 @@ Amazon CloudWatchと連携して、モニタリングが可能。
 
 ![](img/sqs_monitoring.png)
 
-USEメソッド（利用率、飽和率、エラー率）とその他に分けて、メトリクスを紹介する。
+USEメソッド（利用度、飽和度、エラー数）とその他に分けて、メトリクスを紹介する。
 その前に、メトリクスを理解する上でも重要なReceiveMessage APIについて解説する。
 
 #### ReceiveMessage API
@@ -185,22 +185,24 @@ ReceiveMessage APIが提供する機能は以下
 このAPIのパラメタ設定を行い、受信数などを調整する。
 
 
-#### Utilization
+#### Utilization(使用度)
 どれだけキューが利用されているかを確認するためのメトリクス
 - NumberOfMessageSent:キューに追加されたメッセージ数
 - SentMessageSize:キューに追加されたメッセージサイズ（バイト数）
+- ApproximateNumberOfMessageVisible: キューから取得可能なメッセージ数
+- ApproximateNumberOfMessageNotVisible: 処理中のメッセージ数。Consumerに受け取られてまだ削除されていないメッセージや可視性タイムアウト中のメッセージが対象
 
-#### Satulation
-どれだけキューにメッセージが溜まっているかを確認するためのメトリクス
+#### Satulation(飽和度)
+どれだけキューにメッセージが溜まり、システムが正しく処理を捌き切れているかを確認するためのメトリクス
+飽和度はシステムが詰まって、正しく処理をできていないことを図る指標であるのでApproximateNumberOfMessageVisibleやApproximateNumberOfMessageNotVisibleを含めるかは微妙。
 - ApproximateNumberOfMessageVisible: キューから取得可能なメッセージ数
 - ApproximateNumberOfMessageNotVisible: 処理中のメッセージ数。Consumerに受け取られてまだ削除されていないメッセージや可視性タイムアウト中のメッセージが対象
 - ApproximateAgeOfOldestMessage:キューに入ってから、処理されていないキューの最大時間
 - ApproximateNumberOfMessageDelayed:遅延キューやメッセージタイマーの対象となっているメッセージキューの数。
 
-#### Errors
+#### Errors(エラー数)
 キューにおける失敗したメッセージを確認するメトリクス。
 失敗したメッセージについては、DLQに移動させることが多いので、DLQでApproximateNumberOfMessageVisibleなどを取得する方法が挙げられる。単独のキューに対しては以下のようなメトリクスが取得できる。
-￥
 - NumberOfMessagesReceived: Consumerが正しく`受信`をしたメッセ- NumberOfMessagesDeleted: キューから`削除`されたメッセージ数。すなわち正しく`処理`されたメッセージ数を把握できる。
 - NumberOfEmptyReceives: AppがReceive Message APIを送信したが、取得できるメッセージがなかったという返り値が返却された回数。この回数が多いことは、タイミングや頻度が悪く、メッセージを効率よく取得できていないことを表す。
 

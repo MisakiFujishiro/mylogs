@@ -95,8 +95,307 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 <ol class="simple">
 <li><p>リポジトリからソースアーティファクトを取得して、S3バケットにアップロードする</p></li>
 <li><p>テストスタックを作成して、実行か追加変更かを選べる。承認プロセスも含む</p></li>
-<li><p>本番スタックに対するへこうセットを作成して、承認を待ち、承認後に変更が実行される</p></li>
+<li><p>本番スタックに対する変更セットを作成して、承認を待ち、承認後に変更が実行される</p></li>
 </ol>
+<section id="iac">
+<h3><span class="section-number">10.2.1. </span>IaCの基本<a class="headerlink" href="#iac" title="この見出しへのパーマリンク">¶</a></h3>
+<p>登場人物</p>
+<ul class="simple">
+<li><p>リポジトリ：gitなどコードを管理する場所</p></li>
+<li><p>IaCコード：実際のコード</p></li>
+<li><p>アーティファクトストア：IaCのコードなどを保管する</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3><span class="section-number">10.2.2. </span>事前準備<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>ネットワークに接続できるEC2を作成しておく（IGWが取り付けられたpublic subnetに所属しているEC2）。</p></li>
+<li><p>パブリックサブネットにEC2を作成してキーペアを保存しておく</p></li>
+<li><p>バージョニングが有効かされたS3を作成しておく</p></li>
+</ul>
+</section>
+<section id="s3">
+<h3><span class="section-number">10.2.3. </span>ステップ１：コードを修正してS3にアップロードする<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>今回、アーティファクトストアにはS3を利用する。
+S3を利用する場合、ソースファイルをzipファイルに変換してから、S3にコピーをする。</p>
+<p>チュートリアルではワードプレスを作成するアーティファクトファイルが事前に準備されているので構成ファイル内のKeyNameをEC2で利用したキーペア名に変更しておく</p>
+<ul class="simple">
+<li><p>wordpress-single-instance.yaml:WordPress用のCFnコード</p></li>
+<li><p>test-stack-configuration.json:テスト用構成ファイル</p></li>
+<li><p>prod-stack-configuration.json:本番用構成ファイル</p></li>
+</ul>
+<p>CFnのzipファイルをアップロードする</p>
+</section>
+<section id="id6">
+<h3><span class="section-number">10.2.4. </span>ステップ2:パイプラインスタックを作成する<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CFNの画面から、チュートリアルにある、CICDを構成するCFNコードをアップロードして、実行する。</p>
+<p><img alt="../_images/cfn_upload.png" src="../_images/cfn_upload.png" /></p>
+<p>CFNコードでは最初に設定するパラメータについて定義している。
+パラメータセクションで定義された変数は、CFNを実行する最初にコンソールから入力を求められる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Parameters</span><span class="p">:</span>
+  <span class="n">PipelineName</span><span class="p">:</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">A</span> <span class="n">name</span> <span class="k">for</span> <span class="n">pipeline</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">S3Bucket</span><span class="p">:</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">The</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">S3</span> <span class="n">bucket</span> <span class="n">that</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">source</span> <span class="n">artifact</span><span class="p">,</span> <span class="n">which</span> <span class="n">must</span> <span class="n">be</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">same</span> <span class="n">region</span> <span class="k">as</span> <span class="n">this</span> <span class="n">stack</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">SourceS3Key</span><span class="p">:</span>
+    <span class="n">Default</span><span class="p">:</span> <span class="n">wordpress</span><span class="o">-</span><span class="n">single</span><span class="o">-</span><span class="n">instance</span><span class="o">.</span><span class="n">zip</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">The</span> <span class="n">file</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">source</span> <span class="n">artifact</span><span class="p">,</span> <span class="n">such</span> <span class="k">as</span> <span class="n">myfolder</span><span class="o">/</span><span class="n">myartifact</span><span class="o">.</span><span class="n">zip</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">TemplateFileName</span><span class="p">:</span>
+    <span class="n">Default</span><span class="p">:</span> <span class="n">wordpress</span><span class="o">-</span><span class="n">single</span><span class="o">-</span><span class="n">instance</span><span class="o">.</span><span class="n">yaml</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">The</span> <span class="n">file</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">WordPress</span> <span class="n">template</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">TestStackName</span><span class="p">:</span>
+    <span class="n">Default</span><span class="p">:</span> <span class="n">Test</span><span class="o">-</span><span class="n">MyWordPressSite</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">A</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">test</span> <span class="n">WordPress</span> <span class="n">stack</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">TestStackConfig</span><span class="p">:</span>
+    <span class="n">Default</span><span class="p">:</span> <span class="n">test</span><span class="o">-</span><span class="n">stack</span><span class="o">-</span><span class="n">configuration</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">The</span> <span class="n">configuration</span> <span class="n">file</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">test</span> <span class="n">WordPress</span> <span class="n">stack</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">ProdStackName</span><span class="p">:</span>
+    <span class="n">Default</span><span class="p">:</span> <span class="n">Prod</span><span class="o">-</span><span class="n">MyWordPressSite</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">A</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">production</span> <span class="n">WordPress</span> <span class="n">stack</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">ProdStackConfig</span><span class="p">:</span>
+    <span class="n">Default</span><span class="p">:</span> <span class="n">prod</span><span class="o">-</span><span class="n">stack</span><span class="o">-</span><span class="n">configuration</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">The</span> <span class="n">configuration</span> <span class="n">file</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">production</span> <span class="n">WordPress</span> <span class="n">stack</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">ChangeSetName</span><span class="p">:</span>
+    <span class="n">Default</span><span class="p">:</span> <span class="n">UpdatePreview</span><span class="o">-</span><span class="n">MyWordPressSite</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">A</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">production</span> <span class="n">WordPress</span> <span class="n">stack</span> <span class="n">change</span> <span class="nb">set</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+  <span class="n">Email</span><span class="p">:</span>
+    <span class="n">Description</span><span class="p">:</span> <span class="n">The</span> <span class="n">email</span> <span class="n">address</span> <span class="n">where</span> <span class="n">CodePipeline</span> <span class="n">sends</span> <span class="n">pipeline</span> <span class="n">notifications</span>
+    <span class="n">Type</span><span class="p">:</span> <span class="n">String</span>
+</pre></div>
+</div>
+<p>スタック名設定</p>
+<p><img alt="../_images/cfn_stuck_name.png" src="../_images/cfn_stuck_name.png" /></p>
+<p>パイプラインに関するパラメータ設定</p>
+<p><img alt="../_images/cfn_para_pipeline.png" src="../_images/cfn_para_pipeline.png" /></p>
+<p>設定ファイルに関するパラメータ設定</p>
+<p><img alt="../_images/cfn_para_config.png" src="../_images/cfn_para_config.png" /></p>
+<p>CFNコードでは、パラメータ入力画面の制御をMetadataセクションのInterfaceで行なっている</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Metadata</span><span class="p">:</span>
+  <span class="n">AWS</span><span class="p">::</span><span class="n">CloudFormation</span><span class="p">::</span><span class="n">Interface</span><span class="p">:</span>
+    <span class="n">ParameterGroups</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">Label</span><span class="p">:</span>
+          <span class="n">default</span><span class="p">:</span> <span class="s2">&quot;CodePipeline Settings&quot;</span>
+        <span class="n">Parameters</span><span class="p">:</span>
+          <span class="o">-</span> <span class="n">PipelineName</span>
+          <span class="o">-</span> <span class="n">S3Bucket</span>
+          <span class="o">-</span> <span class="n">SourceS3Key</span>
+          <span class="o">-</span> <span class="n">Email</span>
+      <span class="o">-</span> <span class="n">Label</span><span class="p">:</span>
+          <span class="n">default</span><span class="p">:</span> <span class="s2">&quot;Test Stack Settings&quot;</span>
+        <span class="n">Parameters</span><span class="p">:</span>
+          <span class="o">-</span> <span class="n">TestStackName</span>
+          <span class="o">-</span> <span class="n">TemplateFileName</span>
+          <span class="o">-</span> <span class="n">TestStackConfig</span>
+      <span class="o">-</span> <span class="n">Label</span><span class="p">:</span>
+          <span class="n">default</span><span class="p">:</span> <span class="s2">&quot;Production Stack Settings&quot;</span>
+        <span class="n">Parameters</span><span class="p">:</span>
+          <span class="o">-</span> <span class="n">ChangeSetName</span>
+          <span class="o">-</span> <span class="n">ProdStackName</span>
+          <span class="o">-</span> <span class="n">ProdStackConfig</span>
+</pre></div>
+</div>
+<p>また、Artifactを格納するS3バケット（ArtifactStore）とSNS Topic、IAM Roleを作成している</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Resources:
+  ArtifactStoreBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+
+  CodePipelineSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !Ref Email
+          Protocol: email
+</pre></div>
+</div>
+<p>CodePipelineに対して、必要なロールを付与している。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PipelineRole</span><span class="p">:</span>
+<span class="n">Type</span><span class="p">:</span> <span class="n">AWS</span><span class="p">::</span><span class="n">IAM</span><span class="p">::</span><span class="n">Role</span>
+<span class="n">Properties</span><span class="p">:</span>
+    <span class="n">AssumeRolePolicyDocument</span><span class="p">:</span>
+    <span class="n">Statement</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">Action</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;sts:AssumeRole&#39;</span><span class="p">]</span>
+        <span class="n">Effect</span><span class="p">:</span> <span class="n">Allow</span>
+        <span class="n">Principal</span><span class="p">:</span>
+        <span class="n">Service</span><span class="p">:</span> <span class="p">[</span><span class="n">codepipeline</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="p">]</span>
+    <span class="n">Version</span><span class="p">:</span> <span class="s1">&#39;2012-10-17&#39;</span>
+    <span class="n">Path</span><span class="p">:</span> <span class="o">/</span>
+    <span class="n">Policies</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">PolicyName</span><span class="p">:</span> <span class="n">CodePipelineAccess</span>
+        <span class="n">PolicyDocument</span><span class="p">:</span>
+        <span class="n">Version</span><span class="p">:</span> <span class="s1">&#39;2012-10-17&#39;</span>
+        <span class="n">Statement</span><span class="p">:</span>
+            <span class="o">-</span> <span class="n">Action</span><span class="p">:</span>
+            <span class="o">-</span> <span class="s1">&#39;s3:*&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:CreateStack&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:DescribeStacks&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:DeleteStack&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:UpdateStack&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:CreateChangeSet&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:ExecuteChangeSet&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:DeleteChangeSet&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:DescribeChangeSet&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;cloudformation:SetStackPolicy&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;iam:PassRole&#39;</span>
+            <span class="o">-</span> <span class="s1">&#39;sns:Publish&#39;</span>
+            <span class="n">Effect</span><span class="p">:</span> <span class="n">Allow</span>
+            <span class="n">Resource</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span>
+</pre></div>
+</div>
+<section id="id7">
+<h4><span class="section-number">10.2.4.1. </span>パイプラインの作成<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>CFNコードでCodePipelineを作成する。
+まずは、CodePipelineで作成されるArtifactの格納場所であるArtifactStoreを定義する。S3を利用する宣言と、バケットを指定する。
+バケットは事前に作成したArtifactStoreBuckerを利用する。</p>
+<p>Roleに関してもCFNで定義しているものを利用する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Location: !Ref &#39;ArtifactStoreBucket&#39;
+        Type: S3
+      DisableInboundStageTransitions: []
+      Name: !Ref &#39;PipelineName&#39;
+      RoleArn: !GetAtt [PipelineRole, Arn]
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h4><span class="section-number">10.2.4.2. </span>ソースステージの作成<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ソースステージでは、S3に置かれているCFNコードを参照できるようにする。</p>
+<p>事前にCFN作成時にパラメタで指定したバケットとパスを使って、今回の対象となるCFNコードのzipがどこにあるかを把握する。</p>
+<p>本ステージの出力として<code class="docutils literal notranslate"><span class="pre">TemplateSource</span></code>を指定しているので、別ステージでもこのソースコードを参照できるようになる。</p>
+<p><img alt="../_images/cfn_pipeline_source_stage.png" src="../_images/cfn_pipeline_source_stage.png" /></p>
+<p>このステージを作成するCFNコードは以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- Name: S3Source
+  Actions:
+    - Name: TemplateSource
+      ActionTypeId:
+        Category: Source
+        Owner: AWS
+        Provider: S3
+        Version: &#39;1&#39;
+      Configuration:
+        S3Bucket: !Ref &#39;S3Bucket&#39;
+        S3ObjectKey: !Ref &#39;SourceS3Key&#39;
+      OutputArtifacts:
+        - Name: TemplateSource
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h4><span class="section-number">10.2.4.3. </span>テストステージの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<p>テストステージは3つのステージに分割される</p>
+<ol class="simple">
+<li><p>スタックを作成する</p></li>
+<li><p>承認する</p></li>
+<li><p>スタックを削除する</p></li>
+</ol>
+<p><img alt="../_images/cfn_test_stage1.png" src="../_images/cfn_test_stage1.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- Name: TestStage
+  Actions:
+    - Name: CreateStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: &#39;1&#39;
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: REPLACE_ON_FAILURE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+        TemplateConfiguration: !Sub &quot;TemplateSource::${TestStackConfig}&quot;
+        TemplatePath: !Sub &quot;TemplateSource::${TemplateFileName}&quot;
+      RunOrder: &#39;1&#39;
+</pre></div>
+</div>
+<p><img alt="../_images/cfn_test_stage2.png" src="../_images/cfn_test_stage2.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    - Name: ApproveTestStack
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: &#39;1&#39;
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub &#39;Do you want to create a change set against the production stack and delete the ${TestStackName} stack?&#39;
+      RunOrder: &#39;2&#39;
+</pre></div>
+</div>
+<p><img alt="../_images/cfn_test_stage3.png" src="../_images/cfn_test_stage3.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    - Name: DeleteTestStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: &#39;1&#39;
+      Configuration:
+        ActionMode: DELETE_ONLY
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+      RunOrder: &#39;3&#39;
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h4><span class="section-number">10.2.4.4. </span>本番ステージの作成<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<p>本番ステージは以下は3つのステージに分割される</p>
+<ol class="simple">
+<li><p>スタックを作成する</p></li>
+<li><p>承認する</p></li>
+<li><p>スタックを適用する</p></li>
+</ol>
+<p><img alt="../_images/cfn_prd_stage1.png" src="../_images/cfn_prd_stage1.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- Name: ProdStage
+    Actions:
+    - Name: CreateChangeSet
+        ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: &#39;1&#39;
+        InputArtifacts:
+        - Name: TemplateSource
+        Configuration:
+        ActionMode: CHANGE_SET_REPLACE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+        ChangeSetName: !Ref ChangeSetName
+        TemplateConfiguration: !Sub &quot;TemplateSource::${ProdStackConfig}&quot;
+        TemplatePath: !Sub &quot;TemplateSource::${TemplateFileName}&quot;
+        RunOrder: &#39;1&#39;
+</pre></div>
+</div>
+<p><img alt="../_images/cfn_prd_stage2.png" src="../_images/cfn_prd_stage2.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    - Name: ExecuteChangeSet
+        ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: &#39;1&#39;
+        Configuration:
+        ActionMode: CHANGE_SET_EXECUTE
+        ChangeSetName: !Ref ChangeSetName
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+        RunOrder: &#39;3&#39;
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 </section>
 
@@ -117,7 +416,19 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 <li><a class="reference internal" href="#id3">10.1.3. CloudFormationの設定項目：権限</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">10.2. チュートリアルをやってみる</a></li>
+<li><a class="reference internal" href="#id4">10.2. チュートリアルをやってみる</a><ul>
+<li><a class="reference internal" href="#iac">10.2.1. IaCの基本</a></li>
+<li><a class="reference internal" href="#id5">10.2.2. 事前準備</a></li>
+<li><a class="reference internal" href="#s3">10.2.3. ステップ１：コードを修正してS3にアップロードする</a></li>
+<li><a class="reference internal" href="#id6">10.2.4. ステップ2:パイプラインスタックを作成する</a><ul>
+<li><a class="reference internal" href="#id7">10.2.4.1. パイプラインの作成</a></li>
+<li><a class="reference internal" href="#id8">10.2.4.2. ソースステージの作成</a></li>
+<li><a class="reference internal" href="#id9">10.2.4.3. テストステージの作成</a></li>
+<li><a class="reference internal" href="#id10">10.2.4.4. 本番ステージの作成</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

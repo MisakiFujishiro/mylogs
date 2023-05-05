@@ -199,23 +199,7 @@ MSKでは、自動で作成したクラスターに対する接続はエンド�
 
 ![](img/msk_network.png)
 
-### MSKの監視
-MSKではAWSのCloudWatchと統合されており、メトリクスを取得可能
-以下のメトリクスレベルを選択可能
-- 基本モニタリング（DEFAULT）  
-    基本的なクラスターレベルとブローカーレベルのメトリクス
 
-![](img/msk_basic_monitering.png)
-
-- 拡張ブローカーレベルモニタリング(PRE_BROKER)  
-    基本モニタリングおよび拡張ブローカレベル(ブローカーごとも取得)
-
-![](img/msk_broker_monitering.png)
-
-- 拡張トピックレベルモニタリング(PER_TOPIC_PER_BROKER)  
-    拡張ブローカーレベルおよび拡張トピックレベル（トピックごとも取得）
-
-![](img/msk_topic_monitering.png)
 
 
 ### MSKのセキュリティ
@@ -280,23 +264,91 @@ MSKではAWSのCloudWatchと統合されており、メトリクスを取得可�
 
 
 
+## MSKのメトリクス
+MSKではAWSのCloudWatchと統合されており、メトリクスを取得可能  
+基本、拡張ブローカー、拡張トピックの3つのメトリクスレベルがあり、取得できるメトリクスについては、Amazon CloudWatchと連携して、モニタリングが可能。 詳細は[公式ドキュメント](https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/metrics-details.html)を参照されたい。
+
+代表的なものを紹介する
+- 基本モニタリング（DEFAULT）  
+    基本的なクラスターレベルとブローカーレベルのメトリクス  
+
+![](img/msk_basic_monitering.png)
+
+- 拡張ブローカーレベルモニタリング(PRE_BROKER)  
+    基本モニタリングおよび拡張ブローカレベル(ブローカーごとも取得)  
+
+![](img/msk_broker_monitering.png)
+
+- 拡張トピックレベルモニタリング(PER_TOPIC_PER_BROKER)  
+    拡張ブローカーレベルおよび拡張トピックレベル（トピックごとも取得）  
+
+![](img/msk_topic_monitering.png)
+
+- 拡張トピックレベルモニタリング(PER_TOPIC_PER_PARTITION)
+    拡張ブローカーレベルおよび拡張パーティションレベル（パーティションごとも取得）  
+
+
+
+
+### USEメソッドに関連するメトリクス
+USEメソッド（利用度、飽和度、エラー数）とその他に分けて、メトリクスを紹介する。
+
+#### Utilization(使用度)
+どれだけキューが利用されているかを確認するためのメトリクス
+
+- BytesInPerSec(DEFAULT)  
+    Producerから受信したメッセージのバイト数
+- BytesOutPerSec(DEFAULT)  
+    Consumerへ送信したメッセージのバイト数
+- MemoryUsed(DEFAULT)  
+    ブローカーのメモリの使用率
+- NetworkRxPackets(DEFAULT)  
+    ブローカーが受信したデータ数
+- MessagesInPerSec(PER_TOPIC_PER_BROKER)  
+    1秒あたりに受信したメッセージ数
+
+
+#### Satulation(飽和度)
+どれだけキューにメッセージが溜まり、システムが正しく処理を捌き切れているかを確認するためのメトリクス
+- sumoffsetlag(DEFAULT)    
+    トピックごとの処理されていないメッセージの総数
+- OffsetLag(PER_TOPIC_PER_PARTITION)  
+    パーティションごとの処理されていないメッセージの総数
+- EstimatedMaxTimeLag(DEFAULT)  
+    トピックごとの現在の最後のメッセージが処理されるまでの必要な時間の推定値
+- EstimatedTimeLag(PER_TOPIC_PER_PARTITION)  
+    パーティションごとの現在の最後のメッセージが処理されるまでの必要な時間の推定値
+
+
+#### Errors(エラー数)
+キューにおける失敗したメッセージを確認するメトリクス。
+- NetworkRxErrors(DEFAULT)    
+  ブローカーのネットワーク受信エラーの数
+- NetworkTxDropped(DEFAULT)    
+    ブローカーのネットワーク送信エラーの数。
 
 
 
 
 
+### オートスケーリングに利用するメトリクス
+MSKのメトリクスを利用する際の注意点は、各メトリクスが取得できるタイミングに幾つかのパターンがある。
+- クラスターが ACTIVE 状態になった後
+- トピックを作成した後
+- プロデューサー/コンシューマーが立ち上がった後
+- コンシューマーグループがトピックから消費した後
 
+上記の条件を満たしてからでないと、オートスケーリングのルール設定でメトリクスを選択できないので注意する。
 
-
-
-
-
-
-
-
-
-
-
+MSKのメトリクスを監視して、Consumerのオートスケーリングを行う場合に利用できるメトリクスの候補は以下
+- BytesInPerSec  
+    どれだけのメッセージサイズがMSKに流入しているかから判断する
+- MessagesInPerSec  
+    どれだけのメッセージ数をMSKが受信しているかから判断する
+- sumoffsetlag  
+    どれだけのメッセージがMSKに溜まっているかから判断する
+- EstimatedMaxTimeLag  
+    メッセージが処理されるまでにどの程度かかるかから判断する
 
 
 
