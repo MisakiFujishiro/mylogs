@@ -278,11 +278,12 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 <li><p>拡張トピックレベルモニタリング(PER_TOPIC_PER_PARTITION)
 拡張ブローカーレベルおよび拡張パーティションレベル（パーティションごとも取得）</p></li>
 </ul>
+</section>
 <section id="use">
-<h3><span class="section-number">17.3.1. </span>USEメソッドに関連するメトリクス<a class="headerlink" href="#use" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">17.4. </span>USEメソッドに関連するメトリクス<a class="headerlink" href="#use" title="この見出しへのパーマリンク">¶</a></h2>
 <p>USEメソッド（利用度、飽和度、エラー数）とその他に分けて、メトリクスを紹介する。</p>
 <section id="utilization">
-<h4><span class="section-number">17.3.1.1. </span>Utilization(使用度)<a class="headerlink" href="#utilization" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">17.4.1. </span>Utilization(使用度)<a class="headerlink" href="#utilization" title="この見出しへのパーマリンク">¶</a></h3>
 <p>どれだけキューが利用されているかを確認するためのメトリクス</p>
 <ul class="simple">
 <li><p>BytesInPerSec(DEFAULT)<br />Producerから受信したメッセージのバイト数</p></li>
@@ -293,7 +294,7 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 </ul>
 </section>
 <section id="satulation">
-<h4><span class="section-number">17.3.1.2. </span>Satulation(飽和度)<a class="headerlink" href="#satulation" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">17.4.2. </span>Satulation(飽和度)<a class="headerlink" href="#satulation" title="この見出しへのパーマリンク">¶</a></h3>
 <p>どれだけキューにメッセージが溜まり、システムが正しく処理を捌き切れているかを確認するためのメトリクス</p>
 <ul class="simple">
 <li><p>sumoffsetlag(DEFAULT)<br />トピックごとの処理されていないメッセージの総数</p></li>
@@ -303,16 +304,15 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 </ul>
 </section>
 <section id="errors">
-<h4><span class="section-number">17.3.1.3. </span>Errors(エラー数)<a class="headerlink" href="#errors" title="この見出しへのパーマリンク">¶</a></h4>
+<h3><span class="section-number">17.4.3. </span>Errors(エラー数)<a class="headerlink" href="#errors" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キューにおける失敗したメッセージを確認するメトリクス。</p>
 <ul class="simple">
 <li><p>NetworkRxErrors(DEFAULT)<br />ブローカーのネットワーク受信エラーの数</p></li>
 <li><p>NetworkTxDropped(DEFAULT)<br />ブローカーのネットワーク送信エラーの数。</p></li>
 </ul>
 </section>
-</section>
 <section id="id13">
-<h3><span class="section-number">17.3.2. </span>オートスケーリングに利用するメトリクス<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.4.4. </span>オートスケーリングに利用するメトリクス<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKのメトリクスを利用する際の注意点は、各メトリクスが取得できるタイミングに幾つかのパターンがある。</p>
 <ul class="simple">
 <li><p>クラスターが ACTIVE 状態になった後</p></li>
@@ -331,9 +331,9 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 </section>
 </section>
 <section id="id14">
-<h2><span class="section-number">17.4. </span>別サービスとの比較<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.5. </span>別サービスとの比較<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="amazon-kinesis-data-streams">
-<h3><span class="section-number">17.4.1. </span>Amazon kinesis Data Streamsとの比較<a class="headerlink" href="#amazon-kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.5.1. </span>Amazon kinesis Data Streamsとの比較<a class="headerlink" href="#amazon-kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h3>
 <p>kinesis Data Streamsも大量のストリームをリアルタイムで収集して処理するためのデータストリーミングサービスとなっている。</p>
 <p><img alt="../_images/msk_kinesis_merit.png" src="../_images/msk_kinesis_merit.png" /></p>
 <p>■API<br />MSKは、オープンソース互換のAPIなのでKafkaのエコシステムを利用することができる。<br />一方で、kinesisはAWSが提供するAPIを利用するため、他のAWSサービスとの連携が密となっている</p>
@@ -348,9 +348,9 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 </section>
 </section>
 <section id="id15">
-<h2><span class="section-number">17.5. </span>MSKの実装<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.6. </span>MSKの実装<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id16">
-<h3><span class="section-number">17.5.1. </span>MSKの採用<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.6.1. </span>MSKの採用<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKを採用するか否かは以下のポイントから判断する</p>
 <ol class="simple">
 <li><p>オンプレのApache Kafkaを移行したい</p></li>
@@ -360,22 +360,22 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 <p>上記以外の場合は、サーバーレスのメリットがあるので、Amazon Kinesis Data Streamsの利用が推奨</p>
 </section>
 <section id="id17">
-<h3><span class="section-number">17.5.2. </span>ベストプラクティス<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.6.2. </span>ベストプラクティス<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKを利用する場合は、<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/bestpractices.html">ベストプラクティス</a>を参考にする</p>
 <p><img alt="../_images/msk_best_practice.png" src="../_images/msk_best_practice.png" /></p>
 <section id="id18">
-<h4><span class="section-number">17.5.2.1. </span>クラスターサイズ<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">17.6.2.1. </span>クラスターサイズ<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ブローカー１台あたりのパーティションの推奨数が定義されている
 <img alt="../_images/msk_partition_num.png" src="../_images/msk_partition_num.png" /></p>
 </section>
 </section>
 </section>
 <section id="msk-serverles">
-<h2><span class="section-number">17.6. </span>MSK Serverles<a class="headerlink" href="#msk-serverles" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.7. </span>MSK Serverles<a class="headerlink" href="#msk-serverles" title="この見出しへのパーマリンク">¶</a></h2>
 <p>2021年に新規発表された</p>
 </section>
 <section id="id19">
-<h2><span class="section-number">17.7. </span>参考サイト<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.8. </span>参考サイト<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://aws.amazon.com/jp/events/aws-event-resource/archive/?cards.sort-by=item.additionalFields.SortDate&amp;cards.sort-order=desc&amp;awsf.tech-category=*all&amp;cards.q=msk&amp;cards.q_operator=AND">black belt</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/hirooka0527/items/d15e479fa2ded428834d">qiita Apache Kafkaについてまとめる</a></p></li>
@@ -419,30 +419,28 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 <li><a class="reference internal" href="#id11">17.2.5. MSKのスケーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">17.3. MSKのメトリクス</a><ul>
-<li><a class="reference internal" href="#use">17.3.1. USEメソッドに関連するメトリクス</a><ul>
-<li><a class="reference internal" href="#utilization">17.3.1.1. Utilization(使用度)</a></li>
-<li><a class="reference internal" href="#satulation">17.3.1.2. Satulation(飽和度)</a></li>
-<li><a class="reference internal" href="#errors">17.3.1.3. Errors(エラー数)</a></li>
+<li><a class="reference internal" href="#id12">17.3. MSKのメトリクス</a></li>
+<li><a class="reference internal" href="#use">17.4. USEメソッドに関連するメトリクス</a><ul>
+<li><a class="reference internal" href="#utilization">17.4.1. Utilization(使用度)</a></li>
+<li><a class="reference internal" href="#satulation">17.4.2. Satulation(飽和度)</a></li>
+<li><a class="reference internal" href="#errors">17.4.3. Errors(エラー数)</a></li>
+<li><a class="reference internal" href="#id13">17.4.4. オートスケーリングに利用するメトリクス</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">17.3.2. オートスケーリングに利用するメトリクス</a></li>
+<li><a class="reference internal" href="#id14">17.5. 別サービスとの比較</a><ul>
+<li><a class="reference internal" href="#amazon-kinesis-data-streams">17.5.1. Amazon kinesis Data Streamsとの比較</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">17.4. 別サービスとの比較</a><ul>
-<li><a class="reference internal" href="#amazon-kinesis-data-streams">17.4.1. Amazon kinesis Data Streamsとの比較</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id15">17.5. MSKの実装</a><ul>
-<li><a class="reference internal" href="#id16">17.5.1. MSKの採用</a></li>
-<li><a class="reference internal" href="#id17">17.5.2. ベストプラクティス</a><ul>
-<li><a class="reference internal" href="#id18">17.5.2.1. クラスターサイズ</a></li>
+<li><a class="reference internal" href="#id15">17.6. MSKの実装</a><ul>
+<li><a class="reference internal" href="#id16">17.6.1. MSKの採用</a></li>
+<li><a class="reference internal" href="#id17">17.6.2. ベストプラクティス</a><ul>
+<li><a class="reference internal" href="#id18">17.6.2.1. クラスターサイズ</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#msk-serverles">17.6. MSK Serverles</a></li>
-<li><a class="reference internal" href="#id19">17.7. 参考サイト</a></li>
+<li><a class="reference internal" href="#msk-serverles">17.7. MSK Serverles</a></li>
+<li><a class="reference internal" href="#id19">17.8. 参考サイト</a></li>
 </ul>
 </li>
 </ul>
