@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>2. SQSのチュートリアル実装 &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="3. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" />
+    <link rel="prev" title="1. CodePipelineを利用してCFNのCICD環境を作成する" href="cloudformaiton_CICD.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="cognito_authentication.html" title="3. Cognitoで認証をして、AWSのリソースにアクセスする"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>SQSのチュートリアル実装</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="sqs">
+<h1><span class="section-number">2. </span>SQSのチュートリアル実装<a class="headerlink" href="#sqs" title="この見出しへのパーマリンク">¶</a></h1>
+<p>以下の内容に関して理解するためにチュートリアルを行う</p>
+<ul class="simple">
+<li><p>キューの作り方</p></li>
+<li><p>DLTの設定方法</p></li>
+<li><p>メッセージの送受信方法</p></li>
+</ul>
+<p>参考にしたサイト</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://weblabo.oscasierra.net/aws-sqs-tutorial/">CLIで作成・送受信</a></p></li>
+</ul>
+<section id="id1">
+<h2><span class="section-number">2.1. </span>キューの作り方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SQSのキューの作成方法について整理する</p>
+<section id="cli">
+<h3><span class="section-number">2.1.1. </span>CLIで作成する場合<a class="headerlink" href="#cli" title="この見出しへのパーマリンク">¶</a></h3>
+<p>まずは、キューが存在するかの確認。以下コマンドで、現在のキューを確認できる。何もない場合は返値なし</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs list-queues
+</pre></div>
+</div>
+<p>キューの作成はcreate-queueコマンド（以下は標準キューを作成する場合）</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs create-queue --queue-name [YOUR_QUEUE_NAME]
+{
+    &quot;QueueUrl&quot;: &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot;
+}
+</pre></div>
+</div>
+<p>FIFOキューを作成する場合は、キュー名の最後に<code class="docutils literal notranslate"><span class="pre">.fifo</span></code>を追加して、FifoQueue=Trueのオプションを追加する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs create-queue --queue-name [YOUR_QUEUE_NAME].fifo --attributes FifoQueue=true
+</pre></div>
+</div>
+<p>改めて、キューの確認を行うと作成したキューが確認できる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs list-queues
+{
+    &quot;QueueUrls&quot;: [
+        &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot;
+    ]
+}
+</pre></div>
+</div>
+<p>また、作成したキューについての詳細を<code class="docutils literal notranslate"><span class="pre">get-queue-attributes</span></code>で表示させることができる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs get-queue-attributes --attribute-names All --queue-url https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME] 
+
+{
+    &quot;Attributes&quot;: {
+        &quot;QueueArn&quot;: &quot;arn:aws:sqs:ap-northeast-1:[AWS_ACCOUNT_ID]:[YOUR_QUEUE_NAME]&quot;,
+        &quot;ApproximateNumberOfMessages&quot;: &quot;0&quot;,
+        &quot;ApproximateNumberOfMessagesNotVisible&quot;: &quot;0&quot;,
+        &quot;ApproximateNumberOfMessagesDelayed&quot;: &quot;0&quot;,
+        &quot;CreatedTimestamp&quot;: &quot;1683331260&quot;,
+        &quot;LastModifiedTimestamp&quot;: &quot;1683331260&quot;,
+        &quot;VisibilityTimeout&quot;: &quot;30&quot;,
+        &quot;MaximumMessageSize&quot;: &quot;262144&quot;,
+        &quot;MessageRetentionPeriod&quot;: &quot;345600&quot;,
+        &quot;DelaySeconds&quot;: &quot;0&quot;,
+        &quot;ReceiveMessageWaitTimeSeconds&quot;: &quot;0&quot;,
+        &quot;SqsManagedSseEnabled&quot;: &quot;true&quot;
+    }
+}
+</pre></div>
+</div>
+<p>得られる属性値のうち、キューの状態を表すものは以下</p>
+<ul class="simple">
+<li><p>ApproximateNumberOfMessages:未処理のメッセージの数</p></li>
+<li><p>ApproximateNumberOfMessagesNotVisible:Consumerが取得したが、処理完了していないメッセージ数（処理中のメッセージ数）</p></li>
+<li><p>ApproximateNumberOfMessagesDelayed:遅延時間が設定されているメッセージ数（Consumer処理可能になるまで待機しているメッセージ数）
+得られる属性値のうち、キューの設定値を表すものは以下</p></li>
+<li><p>VisibilityTimeout:可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）</p></li>
+<li><p>DelaySeconds:遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）</p></li>
+<li><p>ReceiveMessageWaitTimeSeconds:メッセージがポーリングされる際の最大待機時間</p></li>
+<li><p>MessageRetentionPeriod:メッセージが保管される期間</p></li>
+</ul>
+<p>コンソールから確認すると以下</p>
+<p><img alt="../_images/sqs_setting.png" src="../_images/sqs_setting.png" /></p>
+</section>
+<section id="gui">
+<h3><span class="section-number">2.1.2. </span>GUIで作成する場合<a class="headerlink" href="#gui" title="この見出しへのパーマリンク">¶</a></h3>
+<p>キュータイプと名前を指定する</p>
+<p><img alt="../_images/sqs_setting_manual1.png" src="../_images/sqs_setting_manual1.png" /></p>
+<p>キューに対する遅延時間や可視性タイムアウトを設定する</p>
+<p><img alt="../_images/sqs_setting_manual2.png" src="../_images/sqs_setting_manual2.png" /></p>
+<p>暗号化とアクセスポリシーを設定する</p>
+<p><img alt="../_images/sqs_setting_manual3.png" src="../_images/sqs_setting_manual3.png" /></p>
+</section>
+</section>
+<section id="id2">
+<h2><span class="section-number">2.2. </span>メッセージの送受信方法<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id3">
+<h3><span class="section-number">2.2.1. </span>CLIで送信<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">send-message</span></code>を利用してメッセージを送信するとメッセージIDとメッセージのハッシュが返却される</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">sqs</span> <span class="n">send</span><span class="o">-</span><span class="n">message</span> <span class="o">--</span><span class="n">queue</span><span class="o">-</span><span class="n">url</span> <span class="s2">&quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot;</span> <span class="o">--</span><span class="n">message</span><span class="o">-</span><span class="n">body</span> <span class="s2">&quot;hello world&quot;</span>
+<span class="p">{</span>
+    <span class="s2">&quot;MD5OfMessageBody&quot;</span><span class="p">:</span> <span class="s2">&quot;5eb63bbbe01eeed093cb22bb8f5acdc3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MessageId&quot;</span><span class="p">:</span> <span class="s2">&quot;1db7869e-5ca0-4e97-810c-bb7b7b7522bc&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">2.2.2. </span>コンソールから送信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SQSのコンソールから、キューを選択しメッセージを送受信を選択</p>
+<p><img alt="../_images/sqs_txrx_console.png" src="../_images/sqs_txrx_console.png" /></p>
+<p>メッセージを送信タブから、メッセージ本文を記載して送信する
+<img alt="../_images/sqs_tx_console.png" src="../_images/sqs_tx_console.png" /></p>
+</section>
+<section id="id5">
+<h3><span class="section-number">2.2.3. </span>送信の確認<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CLIから<code class="docutils literal notranslate"><span class="pre">ApproximateNumberOfMessages</span></code>を確認する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --queue-url &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot; --message-body &quot;hello world&quot;
+{
+    &quot;Attributes&quot;: {
+        &quot;ApproximateNumberOfMessages&quot;: &quot;2&quot;
+    }
+}
+</pre></div>
+</div>
+<p>もしくは、コンソールから<code class="docutils literal notranslate"><span class="pre">利用可能なメッセージ</span></code>を確認する</p>
+<p><img alt="../_images/sqs_message_num.png" src="../_images/sqs_message_num.png" /></p>
+</section>
+</section>
+<section id="dlt">
+<h2><span class="section-number">2.3. </span>DLTの設定方法<a class="headerlink" href="#dlt" title="この見出しへのパーマリンク">¶</a></h2>
+<p>CLIから作成する場合は、<code class="docutils literal notranslate"><span class="pre">RedrivePolicy</span></code>をオプションとして指定することで作成することができるが、詳細は<a class="reference external" href="https://docs.aws.amazon.com/cli/latest/reference/sqs/create-queue.html">公式ドキュメント</a>を参照されたい。</p>
+<p>コンソール画面からは、キューを作成や更新する際に指定することができる。注意点として、DLQは送信元のキューと同じキュータイプ（標準・FIFO）を設定する必要がある。</p>
+<p><img alt="../_images/sqs_dlq_setting.png" src="../_images/sqs_dlq_setting.png" /></p>
+<p>最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。</p>
+</section>
+<section id="id6">
+<h2><span class="section-number">2.4. </span>メッセージの受信方法<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id7">
+<h3><span class="section-number">2.4.1. </span>コンソールで受信確認<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>まず、コンソールからキュー内のメッセージを受信することができる。
+注意点は、SQSはメッセージを受信しただけではなく、削除までする必要があるので、このオペレーションを繰り返すと、受信回数が増えてDLQに移動してしまうこと。</p>
+<p>SQSのコンソールから、キューを選択しメッセージを送受信を選択</p>
+<p><img alt="../_images/sqs_txrx_console.png" src="../_images/sqs_txrx_console.png" /></p>
+<p>メッセージを受信タブから、メッセージをポーリングする。
+<img alt="../_images/sqs_rx_console1.png" src="../_images/sqs_rx_console1.png" /></p>
+<p>ポーリングの結果得られたメッセージを押下すると、本文などが確認できる。
+<img alt="../_images/sqs_rx_console2.png" src="../_images/sqs_rx_console2.png" /></p>
+<p>ポーリングをDLQで設定した回数分行うとDLQに移動する</p>
+</section>
+<section id="id8">
+<h3><span class="section-number">2.4.2. </span>CLIでメッセージ受信と削除<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>次に、メッセージをコンソールから受信し、その上で削除を行う。</p>
+<p>メッセージの受信は<code class="docutils literal notranslate"><span class="pre">receive-message</span></code>を利用する。メッセージは複数格納されていても、1つのメッセージだけが受信される</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs receive-message --queue-url &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot; 
+{
+    &quot;Messages&quot;: [
+        {
+            &quot;MessageId&quot;: &quot;698a7959-7d80-4125-9ccf-2a1a52334606&quot;,
+            &quot;ReceiptHandle&quot;: &quot;AQEBQfRoUCKb74uFFlmZT~~~~&quot;,
+            &quot;MD5OfBody&quot;: &quot;11b1d675d840f10f85fed95d4af7264a&quot;,
+            &quot;Body&quot;: &quot;message_from_console1&quot;
+        }
+    ]
+}
+</pre></div>
+</div>
+<p>SQSではメッセージの処理が完了したら、明示的にメッセージの削除を行う必要がある。
+メッセージの削除は<code class="docutils literal notranslate"><span class="pre">delete-message</span></code>を利用する。また、メッセージを指定するために受信した際に受け取った`ReceiptHandle&quot;を指定して削除するメッセージを決める</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs delete-message --queue-url &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot; --receipt-handle &quot;AQEBQfRoUCKb74uFFlmZT~~~~&quot;
+</pre></div>
+</div>
+<p>削除されたことで、メッセージキューにも、DLQにもメッセージが存在しないことが確認できる。</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">2. SQSのチュートリアル実装</a><ul>
+<li><a class="reference internal" href="#id1">2.1. キューの作り方</a><ul>
+<li><a class="reference internal" href="#cli">2.1.1. CLIで作成する場合</a></li>
+<li><a class="reference internal" href="#gui">2.1.2. GUIで作成する場合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">2.2. メッセージの送受信方法</a><ul>
+<li><a class="reference internal" href="#id3">2.2.1. CLIで送信</a></li>
+<li><a class="reference internal" href="#id4">2.2.2. コンソールから送信</a></li>
+<li><a class="reference internal" href="#id5">2.2.3. 送信の確認</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dlt">2.3. DLTの設定方法</a></li>
+<li><a class="reference internal" href="#id6">2.4. メッセージの受信方法</a><ul>
+<li><a class="reference internal" href="#id7">2.4.1. コンソールで受信確認</a></li>
+<li><a class="reference internal" href="#id8">2.4.2. CLIでメッセージ受信と削除</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="cloudformaiton_CICD.html"
+                          title="前の章へ"><span class="section-number">1. </span>CodePipelineを利用してCFNのCICD環境を作成する</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="cognito_authentication.html"
+                          title="次の章へ"><span class="section-number">3. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/HandsOn/SQS.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="cognito_authentication.html" title="3. Cognitoで認証をして、AWSのリソースにアクセスする"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>SQSのチュートリアル実装</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

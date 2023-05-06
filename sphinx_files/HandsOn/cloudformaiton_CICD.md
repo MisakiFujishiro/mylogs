@@ -14,7 +14,7 @@ CloudFormationのスタックセットは、別リージョンや複数のAWSア
 - スタックを削除する  
     指定されたCFNスタックを削除する  
 - 故障したスタックを取り替える  
-    指定されたCFNスタックが故障した場合、新しいスタックを作成して置き換える      
+    新規で作成するスタックの作成に失敗した場合に、更新前のスタックに自動で戻る。新しいスタックの削除などを自動で行うため、試行錯誤に向いている      
 - 変更セットを作成または更新する  
     指定されたCFNスタックに対する変更セットを作成、更新する  
     このアクションにより、変更をスタックに反映する前に、変更の影響を予測し、評価するために使用される。
@@ -142,7 +142,7 @@ Parameters:
 
 ![](img/cfn_para_config.png)
 
-CFNコードでは、パラメータ入力画面の制御をMetadataセクションのInterfaceで行なっている
+CFNコードでは、上記のパラメータ入力画面の制御をMetadataセクションのInterfaceで行なっている
 ```
 Metadata:
   AWS::CloudFormation::Interface:
@@ -169,7 +169,8 @@ Metadata:
 
 ```
 
-また、Artifactを格納するS3バケット（ArtifactStore）とSNS Topic、IAM Roleを作成している
+#### 必要なリソースの作成
+Artifactを格納するS3バケット（ArtifactStoreBucket）とSNS Topic(CodePipelineSNSTopic)を作成している
 ```
 Resources:
   ArtifactStoreBucket:
@@ -186,7 +187,7 @@ Resources:
           Protocol: email
 ```
 
-CodePipelineに対して、必要なロールを付与している。
+また、CodePipelineに対して付与するIAM Role(PipelineRole)を作成している。
 ```
 PipelineRole:
 Type: AWS::IAM::Role
@@ -239,10 +240,10 @@ Roleに関してもCFNで定義しているものを利用する
       RoleArn: !GetAtt [PipelineRole, Arn]
 ```
 
-#### ソースステージの作成
-ソースステージでは、S3に置かれているCFNコードを参照できるようにする。
 
-事前にCFN作成時にパラメタで指定したバケットとパスを使って、今回の対象となるCFNコードのzipがどこにあるかを把握する。
+#### ソースステージの作成
+ソースステージでは、S3に置かれているCFNコードを参照できるように、参照先のS3を定義する。
+事前にCFN作成時にパラメタで指定したバケットとパスを使って、今回の対象となるCFNコードのzipがどこにあるかを定義。
 
 本ステージの出力として`TemplateSource`を指定しているので、別ステージでもこのソースコードを参照できるようになる。
 
@@ -267,12 +268,15 @@ Roleに関してもCFNで定義しているものを利用する
 
 
 #### テストステージの作成
-テストステージは3つのステージに分割される
-1. スタックを作成する
-2. 承認する
-3. スタックを削除する
+テストステージは3つのステージに分割され、スタックを作成して、確認が終われば、スタックを削除する。
+1. スタックを作成する(CreateStack)
+2. 承認する(ApproveTestStack)
+3. スタックを削除する(DeleteTestStack)
 
+まず、CreateStackではスタックを作成します。
+ここでは、`故障したスタックを取り替える（REPLACE_ON_FAILURE）`というアクションタイプを指定する。これにより、指定されたスタックが存在しない場合、スタックを作成します。スタックが存在しており、失敗状態の場合、そのスタックを削除して新しいスタックを作成します。
 
+作成されたスタックとリソースを次の承認ステージでユーザーに確認してもらう。
 
 ![](img/cfn_test_stage1.png)
 
@@ -296,6 +300,9 @@ Roleに関してもCFNで定義しているものを利用する
       RunOrder: '1'
 ```
 
+
+次に、ApproveTestStackでは、手動承認アクションを準備し、SNSを利用して承認確認メールを送信する。ユーザーは前のステージで作成されたスタックとリソースを確認する。
+
 ![](img/cfn_test_stage2.png)
 
 ```
@@ -310,6 +317,10 @@ Roleに関してもCFNで定義しているものを利用する
         CustomData: !Sub 'Do you want to create a change set against the production stack and delete the ${TestStackName} stack?'
       RunOrder: '2'
 ```
+
+
+最後に、DeleteTestStackでは、作成されたスタックを削除する。
+テストステージではリソースを残さずに、確認が終わったら、削除する。
 
 ![](img/cfn_test_stage3.png)
 
@@ -328,51 +339,57 @@ Roleに関してもCFNで定義しているものを利用する
 ```
 
 
-#### 本番ステージの作成
-本番ステージは以下は3つのステージに分割される
-1. スタックを作成する
-2. 承認する
-3. スタックを適用する
 
+#### 本番ステージの作成
+本番ステージは以下は3つのステージに分割され、既存の本稼働スタックに対する変更セットを作成し、承認を待ってから、変更セットを実行します。
+1. 変更スタックを作成する(CreateChangeSet)
+2. 承認する(ApproveChangeSet)
+3. 変更スタックを適用する(ExecuteChangeSet)
+
+
+まず、CreateChangeSetでは、変更スタックを作成する。
+ActionModeは`変更セットを作成または交換する（CHANGE_SET_REPLACE）`というアクションタイプを指定する。これにより、変更セットが存在しない場合、指定されたスタック名とテンプレートに基づいて変更セットを作成します。変更セットが存在する場合は、AWS CloudFormation はそれを削除して新しいものを作成します。
 
 
 ![](img/cfn_prd_stage1.png)
 ```
 - Name: ProdStage
-    Actions:
+  Actions:
     - Name: CreateChangeSet
-        ActionTypeId:
+      ActionTypeId:
         Category: Deploy
         Owner: AWS
         Provider: CloudFormation
         Version: '1'
-        InputArtifacts:
+      InputArtifacts:
         - Name: TemplateSource
-        Configuration:
+      Configuration:
         ActionMode: CHANGE_SET_REPLACE
         RoleArn: !GetAtt [CFNRole, Arn]
         StackName: !Ref ProdStackName
         ChangeSetName: !Ref ChangeSetName
         TemplateConfiguration: !Sub "TemplateSource::${ProdStackConfig}"
         TemplatePath: !Sub "TemplateSource::${TemplateFileName}"
-        RunOrder: '1'
+      RunOrder: '1'
 ```
 
+
+承認プロセス(ApproveChangeSet)を設け、最後に`変更セットの実行(ExecuteChangeSet)`を行う。事前にパラメタとして設定したChangeSetNameを利用して変更セットの実行を行う。
 
 
 ![](img/cfn_prd_stage2.png)
 
 ```
-    - Name: ExecuteChangeSet
-        ActionTypeId:
+   - Name: ExecuteChangeSet
+      ActionTypeId:
         Category: Deploy
         Owner: AWS
         Provider: CloudFormation
         Version: '1'
-        Configuration:
+      Configuration:
         ActionMode: CHANGE_SET_EXECUTE
         ChangeSetName: !Ref ChangeSetName
         RoleArn: !GetAtt [CFNRole, Arn]
         StackName: !Ref ProdStackName
-        RunOrder: '3'
+      RunOrder: '3'
 ```

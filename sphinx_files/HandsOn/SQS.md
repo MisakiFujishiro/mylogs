@@ -1,0 +1,196 @@
+# SQSのチュートリアル実装
+以下の内容に関して理解するためにチュートリアルを行う
+- キューの作り方
+- DLTの設定方法
+- メッセージの送受信方法
+
+参考にしたサイト
+- [CLIで作成・送受信](https://weblabo.oscasierra.net/aws-sqs-tutorial/)
+
+
+
+
+## キューの作り方
+SQSのキューの作成方法について整理する
+### CLIで作成する場合
+まずは、キューが存在するかの確認。以下コマンドで、現在のキューを確認できる。何もない場合は返値なし
+```
+$ aws sqs list-queues
+```
+
+キューの作成はcreate-queueコマンド（以下は標準キューを作成する場合）
+```
+$ aws sqs create-queue --queue-name [YOUR_QUEUE_NAME]
+{
+    "QueueUrl": "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]"
+}
+```
+FIFOキューを作成する場合は、キュー名の最後に`.fifo`を追加して、FifoQueue=Trueのオプションを追加する
+```
+$ aws sqs create-queue --queue-name [YOUR_QUEUE_NAME].fifo --attributes FifoQueue=true
+```
+
+改めて、キューの確認を行うと作成したキューが確認できる
+```
+$ aws sqs list-queues
+{
+    "QueueUrls": [
+        "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]"
+    ]
+}
+```
+
+また、作成したキューについての詳細を`get-queue-attributes`で表示させることができる
+```
+$ aws sqs get-queue-attributes --attribute-names All --queue-url https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME] 
+
+{
+    "Attributes": {
+        "QueueArn": "arn:aws:sqs:ap-northeast-1:[AWS_ACCOUNT_ID]:[YOUR_QUEUE_NAME]",
+        "ApproximateNumberOfMessages": "0",
+        "ApproximateNumberOfMessagesNotVisible": "0",
+        "ApproximateNumberOfMessagesDelayed": "0",
+        "CreatedTimestamp": "1683331260",
+        "LastModifiedTimestamp": "1683331260",
+        "VisibilityTimeout": "30",
+        "MaximumMessageSize": "262144",
+        "MessageRetentionPeriod": "345600",
+        "DelaySeconds": "0",
+        "ReceiveMessageWaitTimeSeconds": "0",
+        "SqsManagedSseEnabled": "true"
+    }
+}
+```
+得られる属性値のうち、キューの状態を表すものは以下
+- ApproximateNumberOfMessages:未処理のメッセージの数
+- ApproximateNumberOfMessagesNotVisible:Consumerが取得したが、処理完了していないメッセージ数（処理中のメッセージ数）
+- ApproximateNumberOfMessagesDelayed:遅延時間が設定されているメッセージ数（Consumer処理可能になるまで待機しているメッセージ数）
+得られる属性値のうち、キューの設定値を表すものは以下
+- VisibilityTimeout:可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）
+- DelaySeconds:遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）
+- ReceiveMessageWaitTimeSeconds:メッセージがポーリングされる際の最大待機時間
+- MessageRetentionPeriod:メッセージが保管される期間
+
+コンソールから確認すると以下
+
+![](img/sqs_setting.png)
+
+### GUIで作成する場合
+キュータイプと名前を指定する
+
+![](img/sqs_setting_manual1.png)
+
+キューに対する遅延時間や可視性タイムアウトを設定する
+
+![](img/sqs_setting_manual2.png)
+
+暗号化とアクセスポリシーを設定する
+
+![](img/sqs_setting_manual3.png)
+
+
+
+
+
+
+
+
+
+
+## メッセージの送受信方法
+### CLIで送信
+`send-message`を利用してメッセージを送信するとメッセージIDとメッセージのハッシュが返却される
+```
+aws sqs send-message --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]" --message-body "hello world"
+{
+    "MD5OfMessageBody": "5eb63bbbe01eeed093cb22bb8f5acdc3",
+    "MessageId": "1db7869e-5ca0-4e97-810c-bb7b7b7522bc"
+}
+```
+
+
+### コンソールから送信
+SQSのコンソールから、キューを選択しメッセージを送受信を選択
+
+![](img/sqs_txrx_console.png)
+
+メッセージを送信タブから、メッセージ本文を記載して送信する
+![](img/sqs_tx_console.png)
+
+### 送信の確認
+CLIから`ApproximateNumberOfMessages`を確認する
+```
+$ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]" --message-body "hello world"
+{
+    "Attributes": {
+        "ApproximateNumberOfMessages": "2"
+    }
+}
+```
+
+もしくは、コンソールから`利用可能なメッセージ`を確認する
+
+![](img/sqs_message_num.png)
+
+
+
+## DLTの設定方法
+CLIから作成する場合は、`RedrivePolicy`をオプションとして指定することで作成することができるが、詳細は[公式ドキュメント](https://docs.aws.amazon.com/cli/latest/reference/sqs/create-queue.html)を参照されたい。
+
+コンソール画面からは、キューを作成や更新する際に指定することができる。注意点として、DLQは送信元のキューと同じキュータイプ（標準・FIFO）を設定する必要がある。
+
+![](img/sqs_dlq_setting.png)
+
+
+最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。
+
+
+
+
+
+
+## メッセージの受信方法
+### コンソールで受信確認
+まず、コンソールからキュー内のメッセージを受信することができる。
+注意点は、SQSはメッセージを受信しただけではなく、削除までする必要があるので、このオペレーションを繰り返すと、受信回数が増えてDLQに移動してしまうこと。
+
+SQSのコンソールから、キューを選択しメッセージを送受信を選択
+
+![](img/sqs_txrx_console.png)
+
+メッセージを受信タブから、メッセージをポーリングする。
+![](img/sqs_rx_console1.png)
+
+ポーリングの結果得られたメッセージを押下すると、本文などが確認できる。
+![](img/sqs_rx_console2.png)
+
+ポーリングをDLQで設定した回数分行うとDLQに移動する
+
+### CLIでメッセージ受信と削除
+次に、メッセージをコンソールから受信し、その上で削除を行う。
+
+メッセージの受信は`receive-message`を利用する。メッセージは複数格納されていても、1つのメッセージだけが受信される
+```
+$ aws sqs receive-message --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]" 
+{
+    "Messages": [
+        {
+            "MessageId": "698a7959-7d80-4125-9ccf-2a1a52334606",
+            "ReceiptHandle": "AQEBQfRoUCKb74uFFlmZT~~~~",
+            "MD5OfBody": "11b1d675d840f10f85fed95d4af7264a",
+            "Body": "message_from_console1"
+        }
+    ]
+}
+```
+
+SQSではメッセージの処理が完了したら、明示的にメッセージの削除を行う必要がある。
+メッセージの削除は`delete-message`を利用する。また、メッセージを指定するために受信した際に受け取った`ReceiptHandle"を指定して削除するメッセージを決める
+```
+$ aws sqs delete-message --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]" --receipt-handle "AQEBQfRoUCKb74uFFlmZT~~~~"
+```
+
+削除されたことで、メッセージキューにも、DLQにもメッセージが存在しないことが確認できる。
+
+
+

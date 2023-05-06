@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>10. CodePipelineを利用してCFNのCICD環境を作成する &#8212; my_sphinx  ドキュメント</title>
+    <title>1. CodePipelineを利用してCFNのCICD環境を作成する &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="1. AWS ECS上に構築するSpringアプリケーション" href="../Artifact/ecs.html" />
-    <link rel="prev" title="9. 静的コンテンツの公開 S3/CloudFront/ACM/Route53" href="static_contents.html" /> 
+    <link rel="next" title="2. SQSのチュートリアル実装" href="SQS.html" />
+    <link rel="prev" title="19. AIサービス" href="../AWS/AI.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+          <a href="SQS.html" title="2. SQSのチュートリアル実装"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="static_contents.html" title="9. 静的コンテンツの公開 S3/CloudFront/ACM/Route53"
+          <a href="../AWS/AI.html" title="19. AIサービス"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>CodePipelineを利用してCFNのCICD環境を作成する</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>CodePipelineを利用してCFNのCICD環境を作成する</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,9 @@
           <div class="body" role="main">
             
   <section id="codepipelinecfncicd">
-<h1><span class="section-number">10. </span>CodePipelineを利用してCFNのCICD環境を作成する<a class="headerlink" href="#codepipelinecfncicd" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">1. </span>CodePipelineを利用してCFNのCICD環境を作成する<a class="headerlink" href="#codepipelinecfncicd" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id1">
-<h2><span class="section-number">10.1. </span>デプロイステージについて<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.1. </span>デプロイステージについて<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>デプロイステージとして以下2つの選択肢がある</p>
 <ul class="simple">
 <li><p>CloudFormation</p></li>
@@ -56,18 +56,18 @@
 </ul>
 <p>CloudFormationのスタックセットは、別リージョンや複数のAWSアカウントにデプロイする機能なので、今回はCloudFormationを利用することになるはず</p>
 <section id="cloudformation">
-<h3><span class="section-number">10.1.1. </span>CloudFormationの設定項目：アクションモード<a class="headerlink" href="#cloudformation" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.1. </span>CloudFormationの設定項目：アクションモード<a class="headerlink" href="#cloudformation" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アクションモードとして以下が選択できる</p>
 <ul class="simple">
 <li><p>スタックを作成または更新する<br />新規のスタックを作成するか、すでにスタックがあれば、更新を行う。</p></li>
 <li><p>スタックを削除する<br />指定されたCFNスタックを削除する</p></li>
-<li><p>故障したスタックを取り替える<br />指定されたCFNスタックが故障した場合、新しいスタックを作成して置き換える</p></li>
+<li><p>故障したスタックを取り替える<br />新規で作成するスタックの作成に失敗した場合に、更新前のスタックに自動で戻る。新しいスタックの削除などを自動で行うため、試行錯誤に向いている</p></li>
 <li><p>変更セットを作成または更新する<br />指定されたCFNスタックに対する変更セットを作成、更新する<br />このアクションにより、変更をスタックに反映する前に、変更の影響を予測し、評価するために使用される。</p></li>
 <li><p>変更セットを実行する<br />指定されたCFNスタックに対する変更セットを実行する<br />変更を実際に反映するためのアクション</p></li>
 </ul>
 </section>
 <section id="id2">
-<h3><span class="section-number">10.1.2. </span>CloudFormationの設定項目：スタック名<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.2. </span>CloudFormationの設定項目：スタック名<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>設定項目は以下</p>
 <ul class="simple">
 <li><p>スタック名<br />作成する場合は作成されるスタック名を意味する
@@ -76,7 +76,7 @@
 </ul>
 </section>
 <section id="id3">
-<h3><span class="section-number">10.1.3. </span>CloudFormationの設定項目：権限<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.1.3. </span>CloudFormationの設定項目：権限<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWS CloudFormationがスタックを作成するために、スタックテンプレートに特定の機能が含まれていることを明示的に確認する必要があり、その設定を行う。
 CloudFormationを使用するにはIAMユーザーやロールに必要な権限を付与する必要がある。
 アクションに必要な権限は”能力(CAPABILITY)”というパラメータで付与する</p>
@@ -89,7 +89,7 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 </section>
 </section>
 <section id="id4">
-<h2><span class="section-number">10.2. </span>チュートリアルをやってみる<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">1.2. </span>チュートリアルをやってみる<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html">テストおよび本稼働スタック用のパイプラインを構築する</a>をやってみる</p>
 <p>最終的に3つのステージが完成する</p>
 <ol class="simple">
@@ -98,7 +98,7 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 <li><p>本番スタックに対する変更セットを作成して、承認を待ち、承認後に変更が実行される</p></li>
 </ol>
 <section id="iac">
-<h3><span class="section-number">10.2.1. </span>IaCの基本<a class="headerlink" href="#iac" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.1. </span>IaCの基本<a class="headerlink" href="#iac" title="この見出しへのパーマリンク">¶</a></h3>
 <p>登場人物</p>
 <ul class="simple">
 <li><p>リポジトリ：gitなどコードを管理する場所</p></li>
@@ -107,7 +107,7 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 </ul>
 </section>
 <section id="id5">
-<h3><span class="section-number">10.2.2. </span>事前準備<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.2. </span>事前準備<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ネットワークに接続できるEC2を作成しておく（IGWが取り付けられたpublic subnetに所属しているEC2）。</p></li>
 <li><p>パブリックサブネットにEC2を作成してキーペアを保存しておく</p></li>
@@ -115,7 +115,7 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 </ul>
 </section>
 <section id="s3">
-<h3><span class="section-number">10.2.3. </span>ステップ１：コードを修正してS3にアップロードする<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.3. </span>ステップ１：コードを修正してS3にアップロードする<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>今回、アーティファクトストアにはS3を利用する。
 S3を利用する場合、ソースファイルをzipファイルに変換してから、S3にコピーをする。</p>
 <p>チュートリアルではワードプレスを作成するアーティファクトファイルが事前に準備されているので構成ファイル内のKeyNameをEC2で利用したキーペア名に変更しておく</p>
@@ -127,7 +127,7 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
 <p>CFnのzipファイルをアップロードする</p>
 </section>
 <section id="id6">
-<h3><span class="section-number">10.2.4. </span>ステップ2:パイプラインスタックを作成する<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">1.2.4. </span>ステップ2:パイプラインスタックを作成する<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CFNの画面から、チュートリアルにある、CICDを構成するCFNコードをアップロードして、実行する。</p>
 <p><img alt="../_images/cfn_upload.png" src="../_images/cfn_upload.png" /></p>
 <p>CFNコードでは最初に設定するパラメータについて定義している。
@@ -178,7 +178,7 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
 <p><img alt="../_images/cfn_para_pipeline.png" src="../_images/cfn_para_pipeline.png" /></p>
 <p>設定ファイルに関するパラメータ設定</p>
 <p><img alt="../_images/cfn_para_config.png" src="../_images/cfn_para_config.png" /></p>
-<p>CFNコードでは、パラメータ入力画面の制御をMetadataセクションのInterfaceで行なっている</p>
+<p>CFNコードでは、上記のパラメータ入力画面の制御をMetadataセクションのInterfaceで行なっている</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Metadata</span><span class="p">:</span>
   <span class="n">AWS</span><span class="p">::</span><span class="n">CloudFormation</span><span class="p">::</span><span class="n">Interface</span><span class="p">:</span>
     <span class="n">ParameterGroups</span><span class="p">:</span>
@@ -203,7 +203,9 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
           <span class="o">-</span> <span class="n">ProdStackConfig</span>
 </pre></div>
 </div>
-<p>また、Artifactを格納するS3バケット（ArtifactStore）とSNS Topic、IAM Roleを作成している</p>
+<section id="id7">
+<h4><span class="section-number">1.2.4.1. </span>必要なリソースの作成<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Artifactを格納するS3バケット（ArtifactStoreBucket）とSNS Topic(CodePipelineSNSTopic)を作成している</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Resources:
   ArtifactStoreBucket:
     Type: AWS::S3::Bucket
@@ -219,7 +221,7 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
           Protocol: email
 </pre></div>
 </div>
-<p>CodePipelineに対して、必要なロールを付与している。</p>
+<p>また、CodePipelineに対して付与するIAM Role(PipelineRole)を作成している。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PipelineRole</span><span class="p">:</span>
 <span class="n">Type</span><span class="p">:</span> <span class="n">AWS</span><span class="p">::</span><span class="n">IAM</span><span class="p">::</span><span class="n">Role</span>
 <span class="n">Properties</span><span class="p">:</span>
@@ -253,8 +255,9 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
             <span class="n">Resource</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span>
 </pre></div>
 </div>
-<section id="id7">
-<h4><span class="section-number">10.2.4.1. </span>パイプラインの作成<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+</section>
+<section id="id8">
+<h4><span class="section-number">1.2.4.2. </span>パイプラインの作成<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
 <p>CFNコードでCodePipelineを作成する。
 まずは、CodePipelineで作成されるArtifactの格納場所であるArtifactStoreを定義する。S3を利用する宣言と、バケットを指定する。
 バケットは事前に作成したArtifactStoreBuckerを利用する。</p>
@@ -271,10 +274,10 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
 </pre></div>
 </div>
 </section>
-<section id="id8">
-<h4><span class="section-number">10.2.4.2. </span>ソースステージの作成<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
-<p>ソースステージでは、S3に置かれているCFNコードを参照できるようにする。</p>
-<p>事前にCFN作成時にパラメタで指定したバケットとパスを使って、今回の対象となるCFNコードのzipがどこにあるかを把握する。</p>
+<section id="id9">
+<h4><span class="section-number">1.2.4.3. </span>ソースステージの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ソースステージでは、S3に置かれているCFNコードを参照できるように、参照先のS3を定義する。
+事前にCFN作成時にパラメタで指定したバケットとパスを使って、今回の対象となるCFNコードのzipがどこにあるかを定義。</p>
 <p>本ステージの出力として<code class="docutils literal notranslate"><span class="pre">TemplateSource</span></code>を指定しているので、別ステージでもこのソースコードを参照できるようになる。</p>
 <p><img alt="../_images/cfn_pipeline_source_stage.png" src="../_images/cfn_pipeline_source_stage.png" /></p>
 <p>このステージを作成するCFNコードは以下</p>
@@ -294,14 +297,17 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
 </pre></div>
 </div>
 </section>
-<section id="id9">
-<h4><span class="section-number">10.2.4.3. </span>テストステージの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
-<p>テストステージは3つのステージに分割される</p>
+<section id="id10">
+<h4><span class="section-number">1.2.4.4. </span>テストステージの作成<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
+<p>テストステージは3つのステージに分割され、スタックを作成して、確認が終われば、スタックを削除する。</p>
 <ol class="simple">
-<li><p>スタックを作成する</p></li>
-<li><p>承認する</p></li>
-<li><p>スタックを削除する</p></li>
+<li><p>スタックを作成する(CreateStack)</p></li>
+<li><p>承認する(ApproveTestStack)</p></li>
+<li><p>スタックを削除する(DeleteTestStack)</p></li>
 </ol>
+<p>まず、CreateStackではスタックを作成します。
+ここでは、<code class="docutils literal notranslate"><span class="pre">故障したスタックを取り替える（REPLACE_ON_FAILURE）</span></code>というアクションタイプを指定する。これにより、指定されたスタックが存在しない場合、スタックを作成します。スタックが存在しており、失敗状態の場合、そのスタックを削除して新しいスタックを作成します。</p>
+<p>作成されたスタックとリソースを次の承認ステージでユーザーに確認してもらう。</p>
 <p><img alt="../_images/cfn_test_stage1.png" src="../_images/cfn_test_stage1.png" /></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- Name: TestStage
   Actions:
@@ -322,6 +328,7 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
       RunOrder: &#39;1&#39;
 </pre></div>
 </div>
+<p>次に、ApproveTestStackでは、手動承認アクションを準備し、SNSを利用して承認確認メールを送信する。ユーザーは前のステージで作成されたスタックとリソースを確認する。</p>
 <p><img alt="../_images/cfn_test_stage2.png" src="../_images/cfn_test_stage2.png" /></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    - Name: ApproveTestStack
       ActionTypeId:
@@ -335,6 +342,8 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
       RunOrder: &#39;2&#39;
 </pre></div>
 </div>
+<p>最後に、DeleteTestStackでは、作成されたスタックを削除する。
+テストステージではリソースを残さずに、確認が終わったら、削除する。</p>
 <p><img alt="../_images/cfn_test_stage3.png" src="../_images/cfn_test_stage3.png" /></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    - Name: DeleteTestStack
       ActionTypeId:
@@ -350,48 +359,51 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
 </pre></div>
 </div>
 </section>
-<section id="id10">
-<h4><span class="section-number">10.2.4.4. </span>本番ステージの作成<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
-<p>本番ステージは以下は3つのステージに分割される</p>
+<section id="id11">
+<h4><span class="section-number">1.2.4.5. </span>本番ステージの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<p>本番ステージは以下は3つのステージに分割され、既存の本稼働スタックに対する変更セットを作成し、承認を待ってから、変更セットを実行します。</p>
 <ol class="simple">
-<li><p>スタックを作成する</p></li>
-<li><p>承認する</p></li>
-<li><p>スタックを適用する</p></li>
+<li><p>変更スタックを作成する(CreateChangeSet)</p></li>
+<li><p>承認する(ApproveChangeSet)</p></li>
+<li><p>変更スタックを適用する(ExecuteChangeSet)</p></li>
 </ol>
+<p>まず、CreateChangeSetでは、変更スタックを作成する。
+ActionModeは<code class="docutils literal notranslate"><span class="pre">変更セットを作成または交換する（CHANGE_SET_REPLACE）</span></code>というアクションタイプを指定する。これにより、変更セットが存在しない場合、指定されたスタック名とテンプレートに基づいて変更セットを作成します。変更セットが存在する場合は、AWS CloudFormation はそれを削除して新しいものを作成します。</p>
 <p><img alt="../_images/cfn_prd_stage1.png" src="../_images/cfn_prd_stage1.png" /></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- Name: ProdStage
-    Actions:
+  Actions:
     - Name: CreateChangeSet
-        ActionTypeId:
+      ActionTypeId:
         Category: Deploy
         Owner: AWS
         Provider: CloudFormation
         Version: &#39;1&#39;
-        InputArtifacts:
+      InputArtifacts:
         - Name: TemplateSource
-        Configuration:
+      Configuration:
         ActionMode: CHANGE_SET_REPLACE
         RoleArn: !GetAtt [CFNRole, Arn]
         StackName: !Ref ProdStackName
         ChangeSetName: !Ref ChangeSetName
         TemplateConfiguration: !Sub &quot;TemplateSource::${ProdStackConfig}&quot;
         TemplatePath: !Sub &quot;TemplateSource::${TemplateFileName}&quot;
-        RunOrder: &#39;1&#39;
+      RunOrder: &#39;1&#39;
 </pre></div>
 </div>
+<p>承認プロセス(ApproveChangeSet)を設け、最後に<code class="docutils literal notranslate"><span class="pre">変更セットの実行(ExecuteChangeSet)</span></code>を行う。事前にパラメタとして設定したChangeSetNameを利用して変更セットの実行を行う。</p>
 <p><img alt="../_images/cfn_prd_stage2.png" src="../_images/cfn_prd_stage2.png" /></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    - Name: ExecuteChangeSet
-        ActionTypeId:
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   - Name: ExecuteChangeSet
+      ActionTypeId:
         Category: Deploy
         Owner: AWS
         Provider: CloudFormation
         Version: &#39;1&#39;
-        Configuration:
+      Configuration:
         ActionMode: CHANGE_SET_EXECUTE
         ChangeSetName: !Ref ChangeSetName
         RoleArn: !GetAtt [CFNRole, Arn]
         StackName: !Ref ProdStackName
-        RunOrder: &#39;3&#39;
+      RunOrder: &#39;3&#39;
 </pre></div>
 </div>
 </section>
@@ -409,22 +421,23 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">10. CodePipelineを利用してCFNのCICD環境を作成する</a><ul>
-<li><a class="reference internal" href="#id1">10.1. デプロイステージについて</a><ul>
-<li><a class="reference internal" href="#cloudformation">10.1.1. CloudFormationの設定項目：アクションモード</a></li>
-<li><a class="reference internal" href="#id2">10.1.2. CloudFormationの設定項目：スタック名</a></li>
-<li><a class="reference internal" href="#id3">10.1.3. CloudFormationの設定項目：権限</a></li>
+<li><a class="reference internal" href="#">1. CodePipelineを利用してCFNのCICD環境を作成する</a><ul>
+<li><a class="reference internal" href="#id1">1.1. デプロイステージについて</a><ul>
+<li><a class="reference internal" href="#cloudformation">1.1.1. CloudFormationの設定項目：アクションモード</a></li>
+<li><a class="reference internal" href="#id2">1.1.2. CloudFormationの設定項目：スタック名</a></li>
+<li><a class="reference internal" href="#id3">1.1.3. CloudFormationの設定項目：権限</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">10.2. チュートリアルをやってみる</a><ul>
-<li><a class="reference internal" href="#iac">10.2.1. IaCの基本</a></li>
-<li><a class="reference internal" href="#id5">10.2.2. 事前準備</a></li>
-<li><a class="reference internal" href="#s3">10.2.3. ステップ１：コードを修正してS3にアップロードする</a></li>
-<li><a class="reference internal" href="#id6">10.2.4. ステップ2:パイプラインスタックを作成する</a><ul>
-<li><a class="reference internal" href="#id7">10.2.4.1. パイプラインの作成</a></li>
-<li><a class="reference internal" href="#id8">10.2.4.2. ソースステージの作成</a></li>
-<li><a class="reference internal" href="#id9">10.2.4.3. テストステージの作成</a></li>
-<li><a class="reference internal" href="#id10">10.2.4.4. 本番ステージの作成</a></li>
+<li><a class="reference internal" href="#id4">1.2. チュートリアルをやってみる</a><ul>
+<li><a class="reference internal" href="#iac">1.2.1. IaCの基本</a></li>
+<li><a class="reference internal" href="#id5">1.2.2. 事前準備</a></li>
+<li><a class="reference internal" href="#s3">1.2.3. ステップ１：コードを修正してS3にアップロードする</a></li>
+<li><a class="reference internal" href="#id6">1.2.4. ステップ2:パイプラインスタックを作成する</a><ul>
+<li><a class="reference internal" href="#id7">1.2.4.1. 必要なリソースの作成</a></li>
+<li><a class="reference internal" href="#id8">1.2.4.2. パイプラインの作成</a></li>
+<li><a class="reference internal" href="#id9">1.2.4.3. ソースステージの作成</a></li>
+<li><a class="reference internal" href="#id10">1.2.4.4. テストステージの作成</a></li>
+<li><a class="reference internal" href="#id11">1.2.4.5. 本番ステージの作成</a></li>
 </ul>
 </li>
 </ul>
@@ -436,13 +449,13 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
   </div>
   <div>
     <h4>前のトピックへ</h4>
-    <p class="topless"><a href="static_contents.html"
-                          title="前の章へ"><span class="section-number">9. </span>静的コンテンツの公開 S3/CloudFront/ACM/Route53</a></p>
+    <p class="topless"><a href="../AWS/AI.html"
+                          title="前の章へ"><span class="section-number">19. </span>AIサービス</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="../Artifact/ecs.html"
-                          title="次の章へ"><span class="section-number">1. </span>AWS ECS上に構築するSpringアプリケーション</a></p>
+    <p class="topless"><a href="SQS.html"
+                          title="次の章へ"><span class="section-number">2. </span>SQSのチュートリアル実装</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -472,13 +485,13 @@ S3を利用する場合、ソースファイルをzipファイルに変換して
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="../Artifact/ecs.html" title="1. AWS ECS上に構築するSpringアプリケーション"
+          <a href="SQS.html" title="2. SQSのチュートリアル実装"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="static_contents.html" title="9. 静的コンテンツの公開 S3/CloudFront/ACM/Route53"
+          <a href="../AWS/AI.html" title="19. AIサービス"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>CodePipelineを利用してCFNのCICD環境を作成する</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>CodePipelineを利用してCFNのCICD環境を作成する</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

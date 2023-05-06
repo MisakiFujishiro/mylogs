@@ -65,7 +65,7 @@
 - AWS Summit  
     - メッセージキューなどについて色々AWS技術者に相談できてすごく有意義でした。来年も行きます。
 
-### 5月上旬
+### 5月
 - 取り組みの全体像と実装内容検討【完了】  
     - [MIRO](https://miro.com/app/board/uXjVMTUlajs=/)で整理
         - 背景
@@ -78,11 +78,12 @@
     - キューイングの価値、マイクロサービスにおける重要性を[ドキュメント化](https://misakifujishiro.github.io/mylogs/microservice/queuing.html)
 - 対象サービスの深掘り【完了】
     - SQSのメトリクスについて[調査](https://misakifujishiro.github.io/mylogs/AWS/SQS.html#id17)【完了】
-    - MSKのメトリクスについて[調査](https://misakifujishiro.github.io/mylogs/AWS/MSK.html#id14)【実施中】
+    - MSKのメトリクスについて[調査](https://misakifujishiro.github.io/mylogs/AWS/MSK.html#id14)【完了】
+    - オートスケーリングを設定するときに利用できそうなメトリクスを整理。溜まっているメッセージ数を利用するかCPUなどのメトリクスを見るか、どのような方針かも深掘りで整理したい。
+
 - 実装【未着手】
     - SQSとMSKのセッティング
     - Lambdaからそれぞれを呼び出してみる
-### 5月下旬
 
 
 ### 6月上旬

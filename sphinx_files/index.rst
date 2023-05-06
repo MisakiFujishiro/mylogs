@@ -55,6 +55,8 @@ Hands On（実装方法の整理）
    :maxdepth: 2
    :numbered:
 
+   HandsOn/cloudformaiton_CICD
+   HandsOn/SQS
    HandsOn/cognito_authentication
    HandsOn/msk_priority
    HandsOn/lambda
@@ -64,8 +66,6 @@ Hands On（実装方法の整理）
    HandsOn/cloudfront
    HandsOn/waf
    HandsOn/static_contents
-   HandsOn//cloudformaiton_CICD
-
 
 成果物(作成したアプリケーション)
 ====================================
