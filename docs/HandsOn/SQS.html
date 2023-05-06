@@ -131,10 +131,17 @@
 <p><img alt="../_images/sqs_setting_manual3.png" src="../_images/sqs_setting_manual3.png" /></p>
 </section>
 </section>
+<section id="dlt">
+<h2><span class="section-number">2.2. </span>DLTの設定方法<a class="headerlink" href="#dlt" title="この見出しへのパーマリンク">¶</a></h2>
+<p>CLIから作成する場合は、<code class="docutils literal notranslate"><span class="pre">RedrivePolicy</span></code>をオプションとして指定することで作成することができるが、詳細は<a class="reference external" href="https://docs.aws.amazon.com/cli/latest/reference/sqs/create-queue.html">公式ドキュメント</a>を参照されたい。</p>
+<p>コンソール画面からは、キューを作成や更新する際に指定することができる。注意点として、DLQは送信元のキューと同じキュータイプ（標準・FIFO）を設定する必要がある。</p>
+<p><img alt="../_images/sqs_dlq_setting.png" src="../_images/sqs_dlq_setting.png" /></p>
+<p>最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。</p>
+</section>
 <section id="id2">
-<h2><span class="section-number">2.2. </span>メッセージの送受信方法<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.3. </span>メッセージの送受信方法<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id3">
-<h3><span class="section-number">2.2.1. </span>CLIで送信<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.1. </span>CLIで送信<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">send-message</span></code>を利用してメッセージを送信するとメッセージIDとメッセージのハッシュが返却される</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">sqs</span> <span class="n">send</span><span class="o">-</span><span class="n">message</span> <span class="o">--</span><span class="n">queue</span><span class="o">-</span><span class="n">url</span> <span class="s2">&quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot;</span> <span class="o">--</span><span class="n">message</span><span class="o">-</span><span class="n">body</span> <span class="s2">&quot;hello world&quot;</span>
 <span class="p">{</span>
@@ -145,14 +152,14 @@
 </div>
 </section>
 <section id="id4">
-<h3><span class="section-number">2.2.2. </span>コンソールから送信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.2. </span>コンソールから送信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SQSのコンソールから、キューを選択しメッセージを送受信を選択</p>
 <p><img alt="../_images/sqs_txrx_console.png" src="../_images/sqs_txrx_console.png" /></p>
-<p>メッセージを送信タブから、メッセージ本文を記載して送信する
-<img alt="../_images/sqs_tx_console.png" src="../_images/sqs_tx_console.png" /></p>
+<p>メッセージを送信タブから、メッセージ本文を記載して送信する</p>
+<p><img alt="../_images/sqs_tx_console.png" src="../_images/sqs_tx_console.png" /></p>
 </section>
 <section id="id5">
-<h3><span class="section-number">2.2.3. </span>送信の確認<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.3. </span>送信の確認<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CLIから<code class="docutils literal notranslate"><span class="pre">ApproximateNumberOfMessages</span></code>を確認する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --queue-url &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot; --message-body &quot;hello world&quot;
 {
@@ -165,18 +172,8 @@
 <p>もしくは、コンソールから<code class="docutils literal notranslate"><span class="pre">利用可能なメッセージ</span></code>を確認する</p>
 <p><img alt="../_images/sqs_message_num.png" src="../_images/sqs_message_num.png" /></p>
 </section>
-</section>
-<section id="dlt">
-<h2><span class="section-number">2.3. </span>DLTの設定方法<a class="headerlink" href="#dlt" title="この見出しへのパーマリンク">¶</a></h2>
-<p>CLIから作成する場合は、<code class="docutils literal notranslate"><span class="pre">RedrivePolicy</span></code>をオプションとして指定することで作成することができるが、詳細は<a class="reference external" href="https://docs.aws.amazon.com/cli/latest/reference/sqs/create-queue.html">公式ドキュメント</a>を参照されたい。</p>
-<p>コンソール画面からは、キューを作成や更新する際に指定することができる。注意点として、DLQは送信元のキューと同じキュータイプ（標準・FIFO）を設定する必要がある。</p>
-<p><img alt="../_images/sqs_dlq_setting.png" src="../_images/sqs_dlq_setting.png" /></p>
-<p>最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。</p>
-</section>
 <section id="id6">
-<h2><span class="section-number">2.4. </span>メッセージの受信方法<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id7">
-<h3><span class="section-number">2.4.1. </span>コンソールで受信確認<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">2.3.4. </span>コンソールで受信確認<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>まず、コンソールからキュー内のメッセージを受信することができる。
 注意点は、SQSはメッセージを受信しただけではなく、削除までする必要があるので、このオペレーションを繰り返すと、受信回数が増えてDLQに移動してしまうこと。</p>
 <p>SQSのコンソールから、キューを選択しメッセージを送受信を選択</p>
@@ -187,8 +184,8 @@
 <img alt="../_images/sqs_rx_console2.png" src="../_images/sqs_rx_console2.png" /></p>
 <p>ポーリングをDLQで設定した回数分行うとDLQに移動する</p>
 </section>
-<section id="id8">
-<h3><span class="section-number">2.4.2. </span>CLIでメッセージ受信と削除<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id7">
+<h3><span class="section-number">2.3.5. </span>CLIでメッセージ受信と削除<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>次に、メッセージをコンソールから受信し、その上で削除を行う。</p>
 <p>メッセージの受信は<code class="docutils literal notranslate"><span class="pre">receive-message</span></code>を利用する。メッセージは複数格納されていても、1つのメッセージだけが受信される</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs receive-message --queue-url &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot; 
@@ -230,16 +227,13 @@
 <li><a class="reference internal" href="#gui">2.1.2. GUIで作成する場合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">2.2. メッセージの送受信方法</a><ul>
-<li><a class="reference internal" href="#id3">2.2.1. CLIで送信</a></li>
-<li><a class="reference internal" href="#id4">2.2.2. コンソールから送信</a></li>
-<li><a class="reference internal" href="#id5">2.2.3. 送信の確認</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dlt">2.3. DLTの設定方法</a></li>
-<li><a class="reference internal" href="#id6">2.4. メッセージの受信方法</a><ul>
-<li><a class="reference internal" href="#id7">2.4.1. コンソールで受信確認</a></li>
-<li><a class="reference internal" href="#id8">2.4.2. CLIでメッセージ受信と削除</a></li>
+<li><a class="reference internal" href="#dlt">2.2. DLTの設定方法</a></li>
+<li><a class="reference internal" href="#id2">2.3. メッセージの送受信方法</a><ul>
+<li><a class="reference internal" href="#id3">2.3.1. CLIで送信</a></li>
+<li><a class="reference internal" href="#id4">2.3.2. コンソールから送信</a></li>
+<li><a class="reference internal" href="#id5">2.3.3. 送信の確認</a></li>
+<li><a class="reference internal" href="#id6">2.3.4. コンソールで受信確認</a></li>
+<li><a class="reference internal" href="#id7">2.3.5. CLIでメッセージ受信と削除</a></li>
 </ul>
 </li>
 </ul>

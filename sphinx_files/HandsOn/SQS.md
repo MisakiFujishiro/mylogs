@@ -90,6 +90,18 @@ $ aws sqs get-queue-attributes --attribute-names All --queue-url https://sqs.ap-
 
 
 
+## DLTの設定方法
+CLIから作成する場合は、`RedrivePolicy`をオプションとして指定することで作成することができるが、詳細は[公式ドキュメント](https://docs.aws.amazon.com/cli/latest/reference/sqs/create-queue.html)を参照されたい。
+
+コンソール画面からは、キューを作成や更新する際に指定することができる。注意点として、DLQは送信元のキューと同じキュータイプ（標準・FIFO）を設定する必要がある。
+
+![](img/sqs_dlq_setting.png)
+
+
+最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。
+
+
+
 
 
 
@@ -115,6 +127,7 @@ SQSのコンソールから、キューを選択しメッセージを送受信�
 ![](img/sqs_txrx_console.png)
 
 メッセージを送信タブから、メッセージ本文を記載して送信する
+
 ![](img/sqs_tx_console.png)
 
 ### 送信の確認
@@ -134,22 +147,9 @@ $ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --
 
 
 
-## DLTの設定方法
-CLIから作成する場合は、`RedrivePolicy`をオプションとして指定することで作成することができるが、詳細は[公式ドキュメント](https://docs.aws.amazon.com/cli/latest/reference/sqs/create-queue.html)を参照されたい。
-
-コンソール画面からは、キューを作成や更新する際に指定することができる。注意点として、DLQは送信元のキューと同じキュータイプ（標準・FIFO）を設定する必要がある。
-
-![](img/sqs_dlq_setting.png)
-
-
-最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。
 
 
 
-
-
-
-## メッセージの受信方法
 ### コンソールで受信確認
 まず、コンソールからキュー内のメッセージを受信することができる。
 注意点は、SQSはメッセージを受信しただけではなく、削除までする必要があるので、このオペレーションを繰り返すと、受信回数が増えてDLQに移動してしまうこと。
@@ -165,6 +165,8 @@ SQSのコンソールから、キューを選択しメッセージを送受信�
 ![](img/sqs_rx_console2.png)
 
 ポーリングをDLQで設定した回数分行うとDLQに移動する
+
+
 
 ### CLIでメッセージ受信と削除
 次に、メッセージをコンソールから受信し、その上で削除を行う。
