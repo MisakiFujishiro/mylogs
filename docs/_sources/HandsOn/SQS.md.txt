@@ -62,14 +62,22 @@ $ aws sqs get-queue-attributes --attribute-names All --queue-url https://sqs.ap-
 }
 ```
 得られる属性値のうち、キューの状態を表すものは以下
-- ApproximateNumberOfMessages:未処理のメッセージの数
-- ApproximateNumberOfMessagesNotVisible:Consumerが取得したが、処理完了していないメッセージ数（処理中のメッセージ数）
-- ApproximateNumberOfMessagesDelayed:遅延時間が設定されているメッセージ数（Consumer処理可能になるまで待機しているメッセージ数）
+- ApproximateNumberOfMessages  
+    未処理のメッセージの数
+- ApproximateNumberOfMessagesNotVisible  
+    Consumerが取得したが、処理完了していないメッセージ数（処理中のメッセージ数）
+- ApproximateNumberOfMessagesDelayed  
+    遅延時間が設定されているメッセージ数（Consumer処理可能になるまで待機しているメッセージ数）
+
 得られる属性値のうち、キューの設定値を表すものは以下
-- VisibilityTimeout:可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）
-- DelaySeconds:遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）
-- ReceiveMessageWaitTimeSeconds:メッセージがポーリングされる際の最大待機時間
-- MessageRetentionPeriod:メッセージが保管される期間
+- VisibilityTimeout  
+    可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）
+- DelaySeconds  
+    遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）
+- ReceiveMessageWaitTimeSeconds     
+    メッセージがポーリングされる際の最大待機時間
+- MessageRetentionPeriod  
+    メッセージが保管される期間
 
 コンソールから確認すると以下
 
@@ -133,7 +141,7 @@ SQSのコンソールから、キューを選択しメッセージを送受信�
 ### 送信の確認
 CLIから`ApproximateNumberOfMessages`を確認する
 ```
-$ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]" --message-body "hello world"
+$ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]" 
 {
     "Attributes": {
         "ApproximateNumberOfMessages": "2"
@@ -158,10 +166,12 @@ SQSのコンソールから、キューを選択しメッセージを送受信�
 
 ![](img/sqs_txrx_console.png)
 
-メッセージを受信タブから、メッセージをポーリングする。
+メッセージを受信タブから、メッセージをポーリングする
+
 ![](img/sqs_rx_console1.png)
 
 ポーリングの結果得られたメッセージを押下すると、本文などが確認できる。
+
 ![](img/sqs_rx_console2.png)
 
 ポーリングをDLQで設定した回数分行うとDLQに移動する

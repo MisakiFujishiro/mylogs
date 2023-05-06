@@ -109,14 +109,16 @@
 </div>
 <p>得られる属性値のうち、キューの状態を表すものは以下</p>
 <ul class="simple">
-<li><p>ApproximateNumberOfMessages:未処理のメッセージの数</p></li>
-<li><p>ApproximateNumberOfMessagesNotVisible:Consumerが取得したが、処理完了していないメッセージ数（処理中のメッセージ数）</p></li>
-<li><p>ApproximateNumberOfMessagesDelayed:遅延時間が設定されているメッセージ数（Consumer処理可能になるまで待機しているメッセージ数）
-得られる属性値のうち、キューの設定値を表すものは以下</p></li>
-<li><p>VisibilityTimeout:可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）</p></li>
-<li><p>DelaySeconds:遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）</p></li>
-<li><p>ReceiveMessageWaitTimeSeconds:メッセージがポーリングされる際の最大待機時間</p></li>
-<li><p>MessageRetentionPeriod:メッセージが保管される期間</p></li>
+<li><p>ApproximateNumberOfMessages<br />未処理のメッセージの数</p></li>
+<li><p>ApproximateNumberOfMessagesNotVisible<br />Consumerが取得したが、処理完了していないメッセージ数（処理中のメッセージ数）</p></li>
+<li><p>ApproximateNumberOfMessagesDelayed<br />遅延時間が設定されているメッセージ数（Consumer処理可能になるまで待機しているメッセージ数）</p></li>
+</ul>
+<p>得られる属性値のうち、キューの設定値を表すものは以下</p>
+<ul class="simple">
+<li><p>VisibilityTimeout<br />可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）</p></li>
+<li><p>DelaySeconds<br />遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）</p></li>
+<li><p>ReceiveMessageWaitTimeSeconds<br />メッセージがポーリングされる際の最大待機時間</p></li>
+<li><p>MessageRetentionPeriod<br />メッセージが保管される期間</p></li>
 </ul>
 <p>コンソールから確認すると以下</p>
 <p><img alt="../_images/sqs_setting.png" src="../_images/sqs_setting.png" /></p>
@@ -161,7 +163,7 @@
 <section id="id5">
 <h3><span class="section-number">2.3.3. </span>送信の確認<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CLIから<code class="docutils literal notranslate"><span class="pre">ApproximateNumberOfMessages</span></code>を確認する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --queue-url &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot; --message-body &quot;hello world&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws sqs get-queue-attributes --attribute-names ApproximateNumberOfMessages  --queue-url &quot;https://sqs.ap-northeast-1.amazonaws.com/[AWS_ACCOUNT_ID]/[YOUR_QUEUE_NAME]&quot; 
 {
     &quot;Attributes&quot;: {
         &quot;ApproximateNumberOfMessages&quot;: &quot;2&quot;
@@ -178,10 +180,10 @@
 注意点は、SQSはメッセージを受信しただけではなく、削除までする必要があるので、このオペレーションを繰り返すと、受信回数が増えてDLQに移動してしまうこと。</p>
 <p>SQSのコンソールから、キューを選択しメッセージを送受信を選択</p>
 <p><img alt="../_images/sqs_txrx_console.png" src="../_images/sqs_txrx_console.png" /></p>
-<p>メッセージを受信タブから、メッセージをポーリングする。
-<img alt="../_images/sqs_rx_console1.png" src="../_images/sqs_rx_console1.png" /></p>
-<p>ポーリングの結果得られたメッセージを押下すると、本文などが確認できる。
-<img alt="../_images/sqs_rx_console2.png" src="../_images/sqs_rx_console2.png" /></p>
+<p>メッセージを受信タブから、メッセージをポーリングする</p>
+<p><img alt="../_images/sqs_rx_console1.png" src="../_images/sqs_rx_console1.png" /></p>
+<p>ポーリングの結果得られたメッセージを押下すると、本文などが確認できる。</p>
+<p><img alt="../_images/sqs_rx_console2.png" src="../_images/sqs_rx_console2.png" /></p>
 <p>ポーリングをDLQで設定した回数分行うとDLQに移動する</p>
 </section>
 <section id="id7">
