@@ -57,6 +57,7 @@ Hands On（実装方法の整理）
 
    HandsOn/cloudformaiton_CICD
    HandsOn/SQS
+   HandsOn/MSK
    HandsOn/cognito_authentication
    HandsOn/msk_priority
    HandsOn/lambda

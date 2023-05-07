@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. SQSのチュートリアル実装" href="SQS.html" />
+    <link rel="next" title="2. SQSのチュートリアル実装(CLI編)" href="SQS.html" />
     <link rel="prev" title="19. AIサービス" href="../AWS/AI.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="SQS.html" title="2. SQSのチュートリアル実装"
+          <a href="SQS.html" title="2. SQSのチュートリアル実装(CLI編)"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="../AWS/AI.html" title="19. AIサービス"
@@ -57,22 +57,55 @@
 <p>CloudFormationのスタックセットは、別リージョンや複数のAWSアカウントにデプロイする機能なので、今回はCloudFormationを利用することになるはず</p>
 <section id="cloudformation">
 <h3><span class="section-number">1.1.1. </span>CloudFormationの設定項目：アクションモード<a class="headerlink" href="#cloudformation" title="この見出しへのパーマリンク">¶</a></h3>
-<p>アクションモードとして以下が選択できる</p>
+<p>CodePipelineのデプロイステージとして、CFnを利用することができる。
+デプロイの方法（アクションモード）として以下のパターンがある。詳細は<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html">公式ドキュメント</a>を参照されたい。</p>
 <ul class="simple">
-<li><p>スタックを作成または更新する<br />新規のスタックを作成するか、すでにスタックがあれば、更新を行う。</p></li>
-<li><p>スタックを削除する<br />指定されたCFNスタックを削除する</p></li>
-<li><p>故障したスタックを取り替える<br />新規で作成するスタックの作成に失敗した場合に、更新前のスタックに自動で戻る。新しいスタックの削除などを自動で行うため、試行錯誤に向いている</p></li>
-<li><p>変更セットを作成または更新する<br />指定されたCFNスタックに対する変更セットを作成、更新する<br />このアクションにより、変更をスタックに反映する前に、変更の影響を予測し、評価するために使用される。</p></li>
-<li><p>変更セットを実行する<br />指定されたCFNスタックに対する変更セットを実行する<br />変更を実際に反映するためのアクション</p></li>
+<li><p>Create or update a stack (スタックの作成または更新)</p>
+<ul>
+<li><p>スタックを作成するなら作成</p></li>
+<li><p>スタックが既に存在していれば更新を実行する（確認なし）</p></li>
+</ul>
+</li>
+<li><p>Create or replace a change set (変更セットの作成または置換)</p>
+<ul>
+<li><p>変更セットがなければ作成する</p></li>
+<li><p>変更セットが既に存在していれば変更セットを更新する（スタック自体には影響はない）</p></li>
+</ul>
+</li>
+<li><p>Execute a change set (変更セットの実行)</p>
+<ul>
+<li><p>指定された変更セットでスタックに対して変更を実行する</p></li>
+</ul>
+</li>
+<li><p>Delete a stack (スタックの削除)</p>
+<ul>
+<li><p>スタックを削除する</p></li>
+</ul>
+</li>
+<li><p>Replace a failed stack (失敗したスタックの置換)</p>
+<ul>
+<li><p>スタックが存在しなければ作成する</p></li>
+<li><p>スタックが既に存在していて、失敗しているものがあればその部分を更新する</p></li>
+<li><p>スタックが既に存在していて、失敗しているものがなければ、変更を試みる</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="id2">
 <h3><span class="section-number">1.1.2. </span>CloudFormationの設定項目：スタック名<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>設定項目は以下</p>
 <ul class="simple">
-<li><p>スタック名<br />作成する場合は作成されるスタック名を意味する
-更新する場合は更新対象のスタックを意味する</p></li>
-<li><p>テンプレート</p></li>
+<li><p>スタック名</p>
+<ul>
+<li><p>作成する場合は作成されるスタック名を意味する</p></li>
+<li><p>更新する場合は更新対象のスタックを意味する</p></li>
+</ul>
+</li>
+<li><p>テンプレート</p>
+<ul>
+<li><p>作成する環境ごとのパラメータなど</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="id3">
@@ -90,7 +123,10 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 </section>
 <section id="id4">
 <h2><span class="section-number">1.2. </span>チュートリアルをやってみる<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
-<p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html">テストおよび本稼働スタック用のパイプラインを構築する</a>をやってみる</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html">テストおよび本稼働スタック用のパイプラインを構築する</a>をやってみる</p></li>
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html">AWS CloudFormation 構成プロパティのリファレンス</a></p></li>
+</ul>
 <p>最終的に3つのステージが完成する</p>
 <ol class="simple">
 <li><p>リポジトリからソースアーティファクトを取得して、S3バケットにアップロードする</p></li>
@@ -455,7 +491,7 @@ ActionModeは<code class="docutils literal notranslate"><span class="pre">変更
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="SQS.html"
-                          title="次の章へ"><span class="section-number">2. </span>SQSのチュートリアル実装</a></p>
+                          title="次の章へ"><span class="section-number">2. </span>SQSのチュートリアル実装(CLI編)</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -485,7 +521,7 @@ ActionModeは<code class="docutils literal notranslate"><span class="pre">変更
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="SQS.html" title="2. SQSのチュートリアル実装"
+          <a href="SQS.html" title="2. SQSのチュートリアル実装(CLI編)"
              >次へ</a> |</li>
         <li class="right" >
           <a href="../AWS/AI.html" title="19. AIサービス"

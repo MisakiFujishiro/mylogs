@@ -1,4 +1,4 @@
-# SQSのチュートリアル実装
+# SQSのチュートリアル実装(CLI編)
 以下の内容に関して理解するためにチュートリアルを行う
 - キューの作り方
 - DLTの設定方法
@@ -206,3 +206,12 @@ $ aws sqs delete-message --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[
 
 
 
+
+
+
+# SQSのチュートリアル実装(Lambda編)
+
+
+
+
+# SQSのチュートリアル実装(Java編)

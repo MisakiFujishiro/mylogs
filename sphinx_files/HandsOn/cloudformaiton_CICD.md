@@ -8,26 +8,30 @@
 CloudFormationのスタックセットは、別リージョンや複数のAWSアカウントにデプロイする機能なので、今回はCloudFormationを利用することになるはず
 
 ### CloudFormationの設定項目：アクションモード
-アクションモードとして以下が選択できる
-- スタックを作成または更新する  
-    新規のスタックを作成するか、すでにスタックがあれば、更新を行う。  
-- スタックを削除する  
-    指定されたCFNスタックを削除する  
-- 故障したスタックを取り替える  
-    新規で作成するスタックの作成に失敗した場合に、更新前のスタックに自動で戻る。新しいスタックの削除などを自動で行うため、試行錯誤に向いている      
-- 変更セットを作成または更新する  
-    指定されたCFNスタックに対する変更セットを作成、更新する  
-    このアクションにより、変更をスタックに反映する前に、変更の影響を予測し、評価するために使用される。
-- 変更セットを実行する  
-    指定されたCFNスタックに対する変更セットを実行する  
-    変更を実際に反映するためのアクション
+CodePipelineのデプロイステージとして、CFnを利用することができる。
+デプロイの方法（アクションモード）として以下のパターンがある。詳細は[公式ドキュメント](https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html)を参照されたい。
+- Create or update a stack (スタックの作成または更新)  
+  - スタックを作成するなら作成
+  - スタックが既に存在していれば更新を実行する（確認なし）
+- Create or replace a change set (変更セットの作成または置換)  
+  - 変更セットがなければ作成する
+  - 変更セットが既に存在していれば変更セットを更新する（スタック自体には影響はない）
+- Execute a change set (変更セットの実行)  
+  - 指定された変更セットでスタックに対して変更を実行する
+- Delete a stack (スタックの削除)  
+  - スタックを削除する
+- Replace a failed stack (失敗したスタックの置換)  
+  - スタックが存在しなければ作成する
+  - スタックが既に存在していて、失敗しているものがあればその部分を更新する
+  - スタックが既に存在していて、失敗しているものがなければ、変更を試みる
 
 ### CloudFormationの設定項目：スタック名
 設定項目は以下
 - スタック名  
-    作成する場合は作成されるスタック名を意味する
-    更新する場合は更新対象のスタックを意味する
-- テンプレート
+    - 作成する場合は作成されるスタック名を意味する
+    - 更新する場合は更新対象のスタックを意味する
+- テンプレート  
+    - 作成する環境ごとのパラメータなど
 
 
 
@@ -48,8 +52,8 @@ CloudFormationを使用するにはIAMユーザーやロールに必要な権限
 
 
 ## チュートリアルをやってみる
-[テストおよび本稼働スタック用のパイプラインを構築する](https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html)をやってみる
-
+- [テストおよび本稼働スタック用のパイプラインを構築する](https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html)をやってみる
+- [AWS CloudFormation 構成プロパティのリファレンス](https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html)
 
 最終的に3つのステージが完成する
 1. リポジトリからソースアーティファクトを取得して、S3バケットにアップロードする
