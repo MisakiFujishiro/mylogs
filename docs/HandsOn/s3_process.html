@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>9. S3の処理 &#8212; my_sphinx  ドキュメント</title>
+    <title>12. S3の処理 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="10. LambdaとS3・AIなどのAWSサービスの連携" href="s3_event.html" />
-    <link rel="prev" title="8. API Gateway" href="apigw.html" /> 
+    <link rel="next" title="13. LambdaとS3・AIなどのAWSサービスの連携" href="s3_event.html" />
+    <link rel="prev" title="11. API Gateway" href="apigw.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="s3_event.html" title="10. LambdaとS3・AIなどのAWSサービスの連携"
+          <a href="s3_event.html" title="13. LambdaとS3・AIなどのAWSサービスの連携"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="apigw.html" title="8. API Gateway"
+          <a href="apigw.html" title="11. API Gateway"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>S3の処理</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>S3の処理</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,9 @@
           <div class="body" role="main">
             
   <section id="s3">
-<h1><span class="section-number">9. </span>S3の処理<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">12. </span>S3の処理<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id1">
-<h2><span class="section-number">9.1. </span>S3とローカルディレクトリを同期する<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.1. </span>S3とローカルディレクトリを同期する<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>AWS CLIを利用して、ローカルのディレクトリとS3のディレクトリを同期する</p>
 <p>コマンドとしては左側から右側へコピーをする</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">sync</span> <span class="p">[</span><span class="n">FROM_DIR</span><span class="p">]</span> <span class="p">[</span><span class="n">TARGET_DIR</span><span class="p">]</span> <span class="o">--</span><span class="n">exact</span><span class="o">-</span><span class="n">timestamps</span>
@@ -59,19 +59,19 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--delete</span></code>を付与するとコピー元にないファイルを削除しようとする</p></li>
 </ul>
 <section id="id2">
-<h3><span class="section-number">9.1.1. </span>S3にあるファイルをローカルに同期<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.1. </span>S3にあるファイルをローカルに同期<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">sync</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">BUCKET_NAME</span><span class="p">]</span> <span class="p">[</span><span class="n">LOCAL_DIR</span><span class="p">]</span> <span class="o">--</span><span class="n">exact</span><span class="o">-</span><span class="n">timestamps</span>
 </pre></div>
 </div>
 </section>
 <section id="id3">
-<h3><span class="section-number">9.1.2. </span>ローカルにあるファイルをS3に同期<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.2. </span>ローカルにあるファイルをS3に同期<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">sync</span>  <span class="p">[</span><span class="n">LOCAL_DIR</span><span class="p">]</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">BUCKET_NAME</span><span class="p">]</span>　<span class="o">--</span><span class="n">exact</span><span class="o">-</span><span class="n">timestamps</span>　<span class="o">--</span><span class="n">delete</span>
 </pre></div>
 </div>
 </section>
 <section id="id4">
-<h3><span class="section-number">9.1.3. </span>参考文献<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.3. </span>参考文献<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.wakuwakubank.com/posts/642-aws-cli-s3/#index_id15">AWS CLIでS3操作(ls,mb,rb,cp,mv,rm,sync)</a></p></li>
 <li><p><a class="reference external" href="https://book.st-hakky.com/docs/aws-s3-sync/">syncのオプション</a></p></li>
@@ -79,10 +79,10 @@
 </section>
 </section>
 <section id="id5">
-<h2><span class="section-number">9.2. </span>ライフサイクルの設定<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.2. </span>ライフサイクルの設定<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3に格納されるオブジェクトに対して、ライフサイクルを設定することで、一定期間が経った段階でストレージクラスのレベルを変更したり、削除したりすることができる。</p>
 <section id="id6">
-<h3><span class="section-number">9.2.1. </span>ルールのアクション<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.1. </span>ルールのアクション<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ライフサイクルで設定することができるルールについて整理する。</p>
 <p><img alt="../_images/s3_lifecycle_rule.png" src="../_images/s3_lifecycle_rule.png" /></p>
 <ul class="simple">
@@ -98,7 +98,7 @@
 </ul>
 </section>
 <section id="id7">
-<h3><span class="section-number">9.2.2. </span>設定方法<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.2. </span>設定方法<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>対象のバケットを選択して<code class="docutils literal notranslate"><span class="pre">管理</span></code>タブを開き<code class="docutils literal notranslate"><span class="pre">ライフサイクルルールを作成</span></code>を選択</p>
 <p><img alt="../_images/s3_lifecycle_setting.png" src="../_images/s3_lifecycle_setting.png" /></p>
 <p>ライフサイクルルール名を指定して、<code class="docutils literal notranslate"><span class="pre">プレフィックス</span></code>には、対象となるフォルダを記述する。<br />※S3 バケットからのフルパスではなくて、対象のフォルダ名だけでOK</p>
@@ -107,24 +107,24 @@
 <p><img alt="../_images/s3_lifecycle_day.png" src="../_images/s3_lifecycle_day.png" /></p>
 </section>
 <section id="id8">
-<h3><span class="section-number">9.2.3. </span>設定確認<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.3. </span>設定確認<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>今回作成されたルールが各オブジェクトに適用されているかのルールを確認する。</p>
 <p>設定したprefix配下のオブジェクトを選択し、プロパティの中に<code class="docutils literal notranslate"><span class="pre">オブジェクト管理の概要</span></code>という項目があり<code class="docutils literal notranslate"><span class="pre">有効期限ルール</span></code>の箇所に削除日時が表示されている。</p>
 <p><img alt="../_images/s3_lifecycle_check.png" src="../_images/s3_lifecycle_check.png" /></p>
 </section>
 <section id="id9">
-<h3><span class="section-number">9.2.4. </span>削除タイミングについて<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.4. </span>削除タイミングについて<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>挙動としては、設定された日時を迎えたら9:00(JST)に非同期の削除バッチに追加されて、削除が開始される。
 設定時に削除の期限を迎えていた場合は、次の9:00(JST)に削除バッチに追加される。</p>
 <p>処理としては、非同期のバッチに入ってから削除されるので9:00に削除されるとは限らない。金額は設定時で換算される。</p>
 </section>
 <section id="id10">
-<h3><span class="section-number">9.2.5. </span>注意事項<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.5. </span>注意事項<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ライフサイクルによって、フォルダ配下のファイルが全て削除されると、フォルダ自体も削除されてしまう点に注意。</p>
 <p>データをアップロードするときにもパスを指定するとフォルダごと作成してくれるので、影響はないはず。</p>
 </section>
 <section id="id11">
-<h3><span class="section-number">9.2.6. </span>参考文献<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.6. </span>参考文献<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.capybara-engineer.com/entry/2021/09/16/151849">S3のライフサイクルルールのアクションを理解する</a><br />設定できるルールのアクションについて解説している。</p></li>
 <li><p><a class="reference external" href="https://nakada-r.com/2021/01/s3-lifecycle/">S3ライフサイクルルールで古いオブジェクトを自動削除する</a><br />一番丁寧に設定順序を整理してくれている</p></li>
@@ -133,7 +133,7 @@
 </section>
 </section>
 <section id="id12">
-<h2><span class="section-number">9.3. </span>S3レプリケーション<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.3. </span>S3レプリケーション<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3のレプリケーションを利用することで、以下のようなメリットを享受できる</p>
 <ul class="simple">
 <li><p>バックアップのバケット複製</p></li>
@@ -141,11 +141,11 @@
 <li><p>異なるアカウント間のオブジェクト連携</p></li>
 </ul>
 <section id="id13">
-<h3><span class="section-number">9.3.1. </span>クロスリージョン・同一リージョンのレプリケーション<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.1. </span>クロスリージョン・同一リージョンのレプリケーション<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>S3のレプリケーションにはリージョン間でレプリケーションを行うCRR(Cross-Region Replication)と同一のリージョンでレプリケーションを行うSRR（Single-Region Replication)がある。</p>
 </section>
 <section id="id14">
-<h3><span class="section-number">9.3.2. </span>注意点<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.2. </span>注意点<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>レプリケーション設定前に存在しているオブジェクトはレプリケーションされない</p></li>
 <li><p>双方のバケットでバージョニングの有効化が必要</p></li>
@@ -153,14 +153,14 @@
 </ul>
 </section>
 <section id="id15">
-<h3><span class="section-number">9.3.3. </span>通信経路について<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.3. </span>通信経路について<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>明示的に記述はないが、SRRではAWS内部のトラフィックを利用しているので、料金に通信量などが書かれていない。</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/userguide/replication.html#replication-configurations-rules-considerations">オブジェクトのレプリケーション</a></p></li>
 </ul>
 </section>
 <section id="id16">
-<h3><span class="section-number">9.3.4. </span>同一リージョンで異なるアカウント間のS3でレプリケーション<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.4. </span>同一リージョンで異なるアカウント間のS3でレプリケーション<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>手順は以下</p>
 <ul class="simple">
 <li><p>事前準備</p>
@@ -176,9 +176,9 @@
 </ul>
 </section>
 <section id="id17">
-<h3><span class="section-number">9.3.5. </span>事前準備<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.5. </span>事前準備<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id18">
-<h4><span class="section-number">9.3.5.1. </span>S3バケットの作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.1. </span>S3バケットの作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Account-AとAccount-BでS3バケットを作成する。</p>
 <ul class="simple">
 <li><p>両方を同一リージョン（ap-northeast-1)</p></li>
@@ -188,7 +188,7 @@
 <p><img alt="../_images/s3_replication_bucket_setting.png" src="../_images/s3_replication_bucket_setting.png" /></p>
 </section>
 <section id="id19">
-<h4><span class="section-number">9.3.5.2. </span>送信元バケットのレプリケーション設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.2. </span>送信元バケットのレプリケーション設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
 <p>S3バケットの設定タブからレプリケーションルールを作成する</p>
 <p><img alt="../_images/s3_replication_make_rule.png" src="../_images/s3_replication_make_rule.png" /></p>
 <p>具体的には以下の内容を設定</p>
@@ -238,7 +238,7 @@
 <p><img alt="../_images/s3_replication_rule_setting_5.png" src="../_images/s3_replication_rule_setting_5.png" /></p>
 </section>
 <section id="iam">
-<h4><span class="section-number">9.3.5.3. </span>新規で作成されたIAMの確認<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.3. </span>新規で作成されたIAMの確認<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
 <p>以下のポリシーが付与されている。
 次の送信先の設定で利用するため、IAMロールのARNをメモしておく。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -281,7 +281,7 @@
 </div>
 </section>
 <section id="id20">
-<h4><span class="section-number">9.3.5.4. </span>送信先バケットのポリシー設定<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.4. </span>送信先バケットのポリシー設定<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
 <p>送信先バケットにて、バケットポリシーを編集する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
@@ -306,7 +306,7 @@
 </div>
 </section>
 <section id="id21">
-<h4><span class="section-number">9.3.5.5. </span>動作確認<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.5. </span>動作確認<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
 <p>送信元のバケットにオブジェクトを格納する。
 アップロードしたオブジェクトのプロパティからレプリケーションステータスを確認するとレプリケーションの状況を確認することができる。</p>
 <p><img alt="../_images/s3_replication_status_pending.png" src="../_images/s3_replication_status_pending.png" /></p>
@@ -314,12 +314,12 @@
 <p><img alt="../_images/s3_replication_status_complite.png" src="../_images/s3_replication_status_complite.png" /></p>
 </section>
 <section id="id22">
-<h4><span class="section-number">9.3.5.6. </span>S3レプリケーションをイベント契機にする場合<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.6. </span>S3レプリケーションをイベント契機にする場合<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
 <p>S3のレプリケーションによって、ファイルがアップロードされた場合のイベントは<code class="docutils literal notranslate"><span class="pre">S3:ObjectCreated:Put</span></code>であるので、注意。</p>
 <p>ちなみに、S3 syncコマンドによるファイルアップロードは<code class="docutils literal notranslate"><span class="pre">S3:ObjectCreated:Copy</span></code>となる。</p>
 </section>
 <section id="id23">
-<h4><span class="section-number">9.3.5.7. </span>参考文献<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.5.7. </span>参考文献<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p><a class="reference external" href="https://dev.classmethod.jp/articles/try-s3-cross-account-replication/">クラスメソッド</a></p></li>
 <li><p><a class="reference external" href="https://dev.classmethod.jp/articles/s3event-difference-between-s3sync-and-s3replication/">S3 replictionにおけるイベント連携</a></p></li>
@@ -339,35 +339,35 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">9. S3の処理</a><ul>
-<li><a class="reference internal" href="#id1">9.1. S3とローカルディレクトリを同期する</a><ul>
-<li><a class="reference internal" href="#id2">9.1.1. S3にあるファイルをローカルに同期</a></li>
-<li><a class="reference internal" href="#id3">9.1.2. ローカルにあるファイルをS3に同期</a></li>
-<li><a class="reference internal" href="#id4">9.1.3. 参考文献</a></li>
+<li><a class="reference internal" href="#">12. S3の処理</a><ul>
+<li><a class="reference internal" href="#id1">12.1. S3とローカルディレクトリを同期する</a><ul>
+<li><a class="reference internal" href="#id2">12.1.1. S3にあるファイルをローカルに同期</a></li>
+<li><a class="reference internal" href="#id3">12.1.2. ローカルにあるファイルをS3に同期</a></li>
+<li><a class="reference internal" href="#id4">12.1.3. 参考文献</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id5">9.2. ライフサイクルの設定</a><ul>
-<li><a class="reference internal" href="#id6">9.2.1. ルールのアクション</a></li>
-<li><a class="reference internal" href="#id7">9.2.2. 設定方法</a></li>
-<li><a class="reference internal" href="#id8">9.2.3. 設定確認</a></li>
-<li><a class="reference internal" href="#id9">9.2.4. 削除タイミングについて</a></li>
-<li><a class="reference internal" href="#id10">9.2.5. 注意事項</a></li>
-<li><a class="reference internal" href="#id11">9.2.6. 参考文献</a></li>
+<li><a class="reference internal" href="#id5">12.2. ライフサイクルの設定</a><ul>
+<li><a class="reference internal" href="#id6">12.2.1. ルールのアクション</a></li>
+<li><a class="reference internal" href="#id7">12.2.2. 設定方法</a></li>
+<li><a class="reference internal" href="#id8">12.2.3. 設定確認</a></li>
+<li><a class="reference internal" href="#id9">12.2.4. 削除タイミングについて</a></li>
+<li><a class="reference internal" href="#id10">12.2.5. 注意事項</a></li>
+<li><a class="reference internal" href="#id11">12.2.6. 参考文献</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">9.3. S3レプリケーション</a><ul>
-<li><a class="reference internal" href="#id13">9.3.1. クロスリージョン・同一リージョンのレプリケーション</a></li>
-<li><a class="reference internal" href="#id14">9.3.2. 注意点</a></li>
-<li><a class="reference internal" href="#id15">9.3.3. 通信経路について</a></li>
-<li><a class="reference internal" href="#id16">9.3.4. 同一リージョンで異なるアカウント間のS3でレプリケーション</a></li>
-<li><a class="reference internal" href="#id17">9.3.5. 事前準備</a><ul>
-<li><a class="reference internal" href="#id18">9.3.5.1. S3バケットの作成</a></li>
-<li><a class="reference internal" href="#id19">9.3.5.2. 送信元バケットのレプリケーション設定</a></li>
-<li><a class="reference internal" href="#iam">9.3.5.3. 新規で作成されたIAMの確認</a></li>
-<li><a class="reference internal" href="#id20">9.3.5.4. 送信先バケットのポリシー設定</a></li>
-<li><a class="reference internal" href="#id21">9.3.5.5. 動作確認</a></li>
-<li><a class="reference internal" href="#id22">9.3.5.6. S3レプリケーションをイベント契機にする場合</a></li>
-<li><a class="reference internal" href="#id23">9.3.5.7. 参考文献</a></li>
+<li><a class="reference internal" href="#id12">12.3. S3レプリケーション</a><ul>
+<li><a class="reference internal" href="#id13">12.3.1. クロスリージョン・同一リージョンのレプリケーション</a></li>
+<li><a class="reference internal" href="#id14">12.3.2. 注意点</a></li>
+<li><a class="reference internal" href="#id15">12.3.3. 通信経路について</a></li>
+<li><a class="reference internal" href="#id16">12.3.4. 同一リージョンで異なるアカウント間のS3でレプリケーション</a></li>
+<li><a class="reference internal" href="#id17">12.3.5. 事前準備</a><ul>
+<li><a class="reference internal" href="#id18">12.3.5.1. S3バケットの作成</a></li>
+<li><a class="reference internal" href="#id19">12.3.5.2. 送信元バケットのレプリケーション設定</a></li>
+<li><a class="reference internal" href="#iam">12.3.5.3. 新規で作成されたIAMの確認</a></li>
+<li><a class="reference internal" href="#id20">12.3.5.4. 送信先バケットのポリシー設定</a></li>
+<li><a class="reference internal" href="#id21">12.3.5.5. 動作確認</a></li>
+<li><a class="reference internal" href="#id22">12.3.5.6. S3レプリケーションをイベント契機にする場合</a></li>
+<li><a class="reference internal" href="#id23">12.3.5.7. 参考文献</a></li>
 </ul>
 </li>
 </ul>
@@ -380,12 +380,12 @@
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="apigw.html"
-                          title="前の章へ"><span class="section-number">8. </span>API Gateway</a></p>
+                          title="前の章へ"><span class="section-number">11. </span>API Gateway</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="s3_event.html"
-                          title="次の章へ"><span class="section-number">10. </span>LambdaとS3・AIなどのAWSサービスの連携</a></p>
+                          title="次の章へ"><span class="section-number">13. </span>LambdaとS3・AIなどのAWSサービスの連携</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -415,13 +415,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="s3_event.html" title="10. LambdaとS3・AIなどのAWSサービスの連携"
+          <a href="s3_event.html" title="13. LambdaとS3・AIなどのAWSサービスの連携"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="apigw.html" title="8. API Gateway"
+          <a href="apigw.html" title="11. API Gateway"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>S3の処理</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>S3の処理</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

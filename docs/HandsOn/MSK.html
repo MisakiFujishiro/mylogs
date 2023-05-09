@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>5. MSKのチュートリアル実装(CLI編) &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="8. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" />
+    <link rel="prev" title="2. SQSのチュートリアル実装(CLI編)" href="SQS.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="cognito_authentication.html" title="8. Cognitoで認証をして、AWSのリソースにアクセスする"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="SQS.html" title="2. SQSのチュートリアル実装(CLI編)"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>MSKのチュートリアル実装(CLI編)</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="msk-cli">
+<h1><span class="section-number">5. </span>MSKのチュートリアル実装(CLI編)<a class="headerlink" href="#msk-cli" title="この見出しへのパーマリンク">¶</a></h1>
+<p>MSKを利用したメッセージの送受信を行うために、MSKのクラスターを作成する。
+その後、クラスターに対してキュートなるトピックを作成する。
+最後に、EC2上からCLIを利用して、メッセージの送受信を行う。</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/getting-started.html">クラスターの作り方</a></p></li>
+</ul>
+<section id="id1">
+<h2><span class="section-number">5.1. </span>クラスターの作り方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>基本的にMSKはマネージドなkafkaのクラスターを提供するサービスである。
+そのため、kafkaのトピック作成やメッセージの送受信、メッセージの中身の確認といった部分のサポートは提供されていない。</p>
+<p>MSKのコンソールからクラスターを作成を選択。カスタムを選択する</p>
+<p><img alt="../_images/msk_cluster_setting2.png" src="../_images/msk_cluster_setting2.png" /></p>
+<p>クラスター名を設定する。</p>
+<p><img alt="../_images/msk_cluster_setting3.png" src="../_images/msk_cluster_setting3.png" /></p>
+<p>クラスターのタイプはプロビジョンドを利用</p>
+<p><img alt="../_images/msk_cluster_setting4.png" src="../_images/msk_cluster_setting4.png" /></p>
+<p>ブローカーのインスタンスのファミリーのタイプを選択を行う。<br />ブローカーがどの程度分散されるかなどを設定できるか、AZに分散をするので、この後に設定するネットワークの設定と関連する。</p>
+<p><img alt="../_images/msk_cluster_setting5.png" src="../_images/msk_cluster_setting5.png" /></p>
+<p>ネットワークの設定を行う。<br />事前に設定するVPC、AZ、セキュリティグループを作成しておく。
+後ほど、EC2のクライアントと接続できるようにセキュリティグループの設定を行う。</p>
+<p><img alt="../_images/msk_cluster_setting6.png" src="../_images/msk_cluster_setting6.png" /></p>
+<p>セキュリティの設定を行う。一旦はIAMベースでのセキュリティやメッセージの暗号化について設定しておく</p>
+<p><img alt="../_images/msk_cluster_setting7.png" src="../_images/msk_cluster_setting7.png" /></p>
+<p>モニタリングの設定をする前にロググループを設定しておく
+<img alt="../_images/msk_cluster_setting8.png" src="../_images/msk_cluster_setting8.png" /></p>
+<p>作成したロググループを使って、ログの出力を行う。ログのレベルはDEFAULTでOK</p>
+<p><img alt="../_images/msk_cluster_setting9.png" src="../_images/msk_cluster_setting9.png" /></p>
+<p>作成後に変更できる項目などの一覧は以下
+<img alt="../_images/msk_cluster_setting1.png" src="../_images/msk_cluster_setting1.png" /></p>
+</section>
+<section id="ec2">
+<h2><span class="section-number">5.2. </span>EC2の作成<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="iam-role">
+<h3><span class="section-number">5.2.1. </span>IAM Roleの作成<a class="headerlink" href="#iam-role" title="この見出しへのパーマリンク">¶</a></h3>
+<p>EC2に付与するMSKにアクセスすることができるポリシー及びロールを作成する</p>
+<p>ポリシーを作成して、以下のポリシーに対して3点変更する</p>
+<ul class="simple">
+<li><p>Account-ID</p></li>
+<li><p>MSKTutorialCluster</p></li>
+<li><p>region</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;kafka-cluster:Connect&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;kafka-cluster:AlterCluster&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;kafka-cluster:DescribeCluster&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:kafka:region:Account-ID:cluster/MSKTutorialCluster/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;kafka-cluster:*Topic*&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;kafka-cluster:WriteData&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;kafka-cluster:ReadData&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:kafka:region:Account-ID:topic/MSKTutorialCluster/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;kafka-cluster:AlterGroup&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;kafka-cluster:DescribeGroup&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:kafka:region:Account-ID:group/MSKTutorialCluster/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>ロールを作成して、一般的なユースケースで EC2を選択した上で、先ほどのロールに対しても追加する。</p>
+</section>
+<section id="id2">
+<h3><span class="section-number">5.2.2. </span>EC2インスタンスの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>MSKのクライアントをEC2で作成する。
+簡単のためにMSKと同じVPC上にEC2を作成する。</p>
+<p>名前とインスタンスの設定はデフォルト</p>
+<p><img alt="../_images/msk-ec2-setting1.png" src="../_images/msk-ec2-setting1.png" /></p>
+<p>ネットワークの設定はMSKと同じVPC内にEC2を作成する</p>
+<p><img alt="../_images/msk-ec2-setting2.png" src="../_images/msk-ec2-setting2.png" /></p>
+<p>作成が完了したら、セキュリティグループのルールの変更とIAMロールの付与を行う。</p>
+<p>まず、セキュリティグループを修正するためVPCのコンソール画面からセキュリティグループの画面に移動する。</p>
+<ul class="simple">
+<li><p>MSK側のSG<br />インバウンドルールを編集して<code class="docutils literal notranslate"><span class="pre">EC2のSG</span></code>からのすべてのトラフィックについて許可する。</p></li>
+<li><p>EC2側のSG<br />SSHの許可をする。ポート22に対して0.0.0.0/0で許可する。</p></li>
+</ul>
+<p>次に、IAMロールを付与するためにEC2のコンソールからIAM Roleの付与を思う。</p>
+</section>
+</section>
+<section id="id3">
+<h2><span class="section-number">5.3. </span>トピックの作り方<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>EC2からインスタンスを選択して、接続する。</p>
+<p>javaのインストール</p>
+<blockquote>
+<div><p>sudo yum -y install java-11</p>
+</div></blockquote>
+<p>kafkaのダウンロードと解凍</p>
+<blockquote>
+<div><p>wget https://archive.apache.org/dist/kafka/2.8.1/kafka_2.12-2.8.1.tgz<br />tar -xzf kafka_2.12-2.8.1.tgz</p>
+</div></blockquote>
+<p>kafka_2.12-2.8.1/libsディレクトリに移動し、次のコマンドを実行して Amazon MSK IAM JAR ファイルをダウンロードします。Amazon MSK IAM JAR により、クライアントマシンはクラスターにアクセスできます。</p>
+<blockquote>
+<div><p>wget https://github.com/aws/aws-msk-iam-auth/releases/download/v1.1.1/aws-msk-iam-auth-1.1.1-all.jar</p>
+</div></blockquote>
+<p>kafka_2.12-2.8.1/bin ディレクトリに移動します。次のプロパティ設定をコピーして、新しいファイルに貼り付けます。ファイルに client.properties という名前を付け、保存します。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">security</span><span class="o">.</span><span class="n">protocol</span><span class="o">=</span><span class="n">SASL_SSL</span>
+<span class="n">sasl</span><span class="o">.</span><span class="n">mechanism</span><span class="o">=</span><span class="n">AWS_MSK_IAM</span>
+<span class="n">sasl</span><span class="o">.</span><span class="n">jaas</span><span class="o">.</span><span class="n">config</span><span class="o">=</span><span class="n">software</span><span class="o">.</span><span class="n">amazon</span><span class="o">.</span><span class="n">msk</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">iam</span><span class="o">.</span><span class="n">IAMLoginModule</span> <span class="n">required</span><span class="p">;</span>
+<span class="n">sasl</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">class</span><span class="o">=</span><span class="n">software</span><span class="o">.</span><span class="n">amazon</span><span class="o">.</span><span class="n">msk</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">iam</span><span class="o">.</span><span class="n">IAMClientCallbackHandler</span>
+</pre></div>
+</div>
+<p>以下を実行するとTopicが作成される</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">2</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">1</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2><span class="section-number">5.4. </span>メッセージの送信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">kafka</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">producer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">broker</span><span class="o">-</span><span class="nb">list</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">producer</span><span class="o">.</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span>
+</pre></div>
+</div>
+<p>コンソールが出力されるのでメッセージを記入
+<img alt="../_images/msk_producer.png" src="../_images/msk_producer.png" /></p>
+</section>
+<section id="id5">
+<h2><span class="section-number">5.5. </span>メッセージの受信<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<p>別のEC2を起動し、javaやkafkaのインストールをする。</p>
+<p>以下のコマンドを実行すると、producerで送信されたメッセージが受信できる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">kafka</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">consumer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">consumer</span><span class="o">.</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span> <span class="o">--</span><span class="n">from</span><span class="o">-</span><span class="n">beginning</span>
+</pre></div>
+</div>
+<p><img alt="../_images/msk_consumer.png" src="../_images/msk_consumer.png" /></p>
+</section>
+<section id="dlt">
+<h2><span class="section-number">5.6. </span>DLTの設定<a class="headerlink" href="#dlt" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+</section>
+<section id="msk-lambda">
+<h1><span class="section-number">6. </span>MSKのチュートリアル実装(Lambda編)<a class="headerlink" href="#msk-lambda" title="この見出しへのパーマリンク">¶</a></h1>
+</section>
+<section id="msk-java">
+<h1><span class="section-number">7. </span>MSKのチュートリアル実装(Java編)<a class="headerlink" href="#msk-java" title="この見出しへのパーマリンク">¶</a></h1>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">5. MSKのチュートリアル実装(CLI編)</a><ul>
+<li><a class="reference internal" href="#id1">5.1. クラスターの作り方</a></li>
+<li><a class="reference internal" href="#ec2">5.2. EC2の作成</a><ul>
+<li><a class="reference internal" href="#iam-role">5.2.1. IAM Roleの作成</a></li>
+<li><a class="reference internal" href="#id2">5.2.2. EC2インスタンスの作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">5.3. トピックの作り方</a></li>
+<li><a class="reference internal" href="#id4">5.4. メッセージの送信</a></li>
+<li><a class="reference internal" href="#id5">5.5. メッセージの受信</a></li>
+<li><a class="reference internal" href="#dlt">5.6. DLTの設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#msk-lambda">6. MSKのチュートリアル実装(Lambda編)</a></li>
+<li><a class="reference internal" href="#msk-java">7. MSKのチュートリアル実装(Java編)</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="SQS.html"
+                          title="前の章へ"><span class="section-number">2. </span>SQSのチュートリアル実装(CLI編)</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="cognito_authentication.html"
+                          title="次の章へ"><span class="section-number">8. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/HandsOn/MSK.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="cognito_authentication.html" title="8. Cognitoで認証をして、AWSのリソースにアクセスする"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="SQS.html" title="2. SQSのチュートリアル実装(CLI編)"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>MSKのチュートリアル実装(CLI編)</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>
