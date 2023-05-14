@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>8. Cognitoで認証をして、AWSのリソースにアクセスする &#8212; my_sphinx  ドキュメント</title>
+    <title>7. Cognitoで認証をして、AWSのリソースにアクセスする &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="9. MSKにおけるメッセージの優先順位について" href="msk_priority.html" />
-    <link rel="prev" title="5. MSKのチュートリアル実装(CLI編)" href="MSK.html" /> 
+    <link rel="next" title="8. MSKにおけるメッセージの優先順位について" href="msk_priority.html" />
+    <link rel="prev" title="4. MSKのチュートリアル実装(CLI編)" href="MSK.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="msk_priority.html" title="9. MSKにおけるメッセージの優先順位について"
+          <a href="msk_priority.html" title="8. MSKにおけるメッセージの優先順位について"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="MSK.html" title="5. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="4. MSKのチュートリアル実装(CLI編)"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
       </ul>
     </div>  
 
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <section id="cognitoaws">
-<h1><span class="section-number">8. </span>Cognitoで認証をして、AWSのリソースにアクセスする<a class="headerlink" href="#cognitoaws" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">7. </span>Cognitoで認証をして、AWSのリソースにアクセスする<a class="headerlink" href="#cognitoaws" title="この見出しへのパーマリンク">¶</a></h1>
 <p>実施手順とポイント</p>
 <ol class="simple">
 <li><p>S3バケット作成</p></li>
@@ -58,9 +58,9 @@
 <li><p>【＋α】ルールベースでIAMロールを割り当てる</p></li>
 </ol>
 <section id="id1">
-<h2><span class="section-number">8.1. </span>認証フローの違い<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.1. </span>認証フローの違い<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id2">
-<h3><span class="section-number">8.1.1. </span>認証している場合<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.1.1. </span>認証している場合<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>User poolに対して、initiate-authでID _TOKENを取得(認証)</p></li>
 <li><p>ID PoolからIDENTITY_TOKENを取得(認可)</p></li>
@@ -70,7 +70,7 @@
 <p>aws s3 mv s3://ma-fujishiroms-bucket/cognito/test_img_copy.png ./test_img_comy.png</p>
 </section>
 <section id="id3">
-<h3><span class="section-number">8.1.2. </span>認証していない場合<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.1.2. </span>認証していない場合<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>ID PoolからIDENTITY_TOKENを取得(認可)</p></li>
 <li><p>STSからクレデンシャルの発行</p></li>
@@ -79,18 +79,18 @@
 </section>
 </section>
 <section id="s3">
-<h2><span class="section-number">8.2. </span>S3バケット作成<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.2. </span>S3バケット作成<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3バケットを作成する。アクセス制御はブロックしておく</p>
 <p><img alt="../_images/cognito_s3.png" src="../_images/cognito_s3.png" /></p>
 </section>
 <section id="cognito">
-<h2><span class="section-number">8.3. </span>Cognitoでユーザープールを作成<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.3. </span>Cognitoでユーザープールを作成<a class="headerlink" href="#cognito" title="この見出しへのパーマリンク">¶</a></h2>
 <p>詳細は<a class="reference external" href="https://misakifujishiro.github.io/mylogs/Artifact/cognito.html#cognito">別ページ</a>参照</p>
 <p>この時に、アプリクライアントの設定で、<code class="docutils literal notranslate"><span class="pre">クライアントシークレットの作成</span></code>については無効化しておき、<code class="docutils literal notranslate"><span class="pre">ALLOW_ADMIN_USER_PASSWORD_AUTH</span></code>を有効化する<br />また、test userも作成しておく（有効化してもなんとかなるけど、Cognitoへのログイン設定が面倒）</p>
 <p><img alt="../_images/cognito_awscli_auth_point.png" src="../_images/cognito_awscli_auth_point.png" /></p>
 </section>
 <section id="cognitoid">
-<h2><span class="section-number">8.4. </span>CognitoでIDプールを作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.4. </span>CognitoでIDプールを作成<a class="headerlink" href="#cognitoid" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>idPool名<br />同じユーザー内で一意にする</p></li>
 <li><p>認証していないID<br />有効化すると、認証していないユーザーへの権限が設定可能</p></li>
@@ -102,7 +102,7 @@
 <p><img alt="../_images/cognito_idpool_id.png" src="../_images/cognito_idpool_id.png" /></p>
 </section>
 <section id="iam">
-<h2><span class="section-number">8.5. </span>紐づくIAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.5. </span>紐づくIAMの作成<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
 <p>作成したIDpool名を冠したIAMロールが存在するはずなので、そのロールのポリシーを編集していく。</p>
 <p><img alt="../_images/cognito_idpool-iam.png" src="../_images/cognito_idpool-iam.png" /></p>
 <p>今回は、以下の権限を付与する</p>
@@ -154,7 +154,7 @@
 </div>
 </section>
 <section id="python-sdk">
-<h2><span class="section-number">8.6. </span>Python SDKからのアクセス<a class="headerlink" href="#python-sdk" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.6. </span>Python SDKからのアクセス<a class="headerlink" href="#python-sdk" title="この見出しへのパーマリンク">¶</a></h2>
 <p>認証ユーザーとして処理を実行する場合は以下のコマンドを実行</p>
 <p>対象bucketのオブジェクト一覧表示、ダウンロード、アップロードが成功する。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
@@ -314,9 +314,9 @@
 </div>
 </section>
 <section id="aws-cli">
-<h2><span class="section-number">8.7. </span>AWS CLIからのアクセス<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.7. </span>AWS CLIからのアクセス<a class="headerlink" href="#aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id4">
-<h3><span class="section-number">8.7.1. </span>初期設定<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.7.1. </span>初期設定<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の情報について、<code class="docutils literal notranslate"><span class="pre">conf.txt</span></code>に保存</p>
 <ul class="simple">
 <li><p>USER_POOL_IDはCognitoのユーザープールの全般設定から取得</p></li>
@@ -336,7 +336,7 @@ AUTH_FLOW=USER_PASSWORD_AUTH
 </div>
 </section>
 <section id="user-pool">
-<h3><span class="section-number">8.7.2. </span>USER POOLへ認証<a class="headerlink" href="#user-pool" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.7.2. </span>USER POOLへ認証<a class="headerlink" href="#user-pool" title="この見出しへのパーマリンク">¶</a></h3>
 <p>設定ファイルを読み込む</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="p">[</span><span class="n">PATH_TO_CONF</span><span class="p">]</span><span class="o">/</span><span class="n">conf</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
@@ -353,7 +353,7 @@ AUTH_FLOW=USER_PASSWORD_AUTH
 <p>initiate-authにすることに注意。<code class="docutils literal notranslate"><span class="pre">admin-initiate-auth</span> </code>の場合、AWSのアクセスキーとクレデンシャルを要求されるので注意</p>
 </section>
 <section id="id-pool">
-<h3><span class="section-number">8.7.3. </span>ID POOLへの認証<a class="headerlink" href="#id-pool" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.7.3. </span>ID POOLへの認証<a class="headerlink" href="#id-pool" title="この見出しへのパーマリンク">¶</a></h3>
 <p>取得した認証情報を渡して、紐づく認可情報を取得する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>IDENTITY_ID=$(aws cognito-identity get-id \
   --identity-pool-id ${IDENTITY_POOL_ID} \
@@ -364,7 +364,7 @@ AUTH_FLOW=USER_PASSWORD_AUTH
 </div>
 </section>
 <section id="id5">
-<h3><span class="section-number">8.7.4. </span>クレデンシャルの取得<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.7.4. </span>クレデンシャルの取得<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>STSから一時認証情報を払い出してもらって、取得する</p>
 <p>以下を実行すれば、<code class="docutils literal notranslate"><span class="pre">AccessKeyID</span></code>、<code class="docutils literal notranslate"><span class="pre">SecretKey</span></code>、<code class="docutils literal notranslate"><span class="pre">SessionToken</span></code>を取得できる</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SECURITY_TOKEN &lt;&lt;&lt; $(aws cognito-identity get-credentials-for-identity \
@@ -386,7 +386,7 @@ AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
 </div>
 </section>
 <section id="id6">
-<h3><span class="section-number">8.7.5. </span>クレデンシャルの環境変数への格納<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.7.5. </span>クレデンシャルの環境変数への格納<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>環境変数に設定</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">AWS_ACCESS_KEY_ID</span>
 <span class="n">export</span> <span class="n">AWS_SECRET_ACCESS_KEY</span>
@@ -406,7 +406,7 @@ AWS_SECURITY_TOKEN=`echo $OUTPUT | jq -r &#39;.Credentials.SessionToken&#39;`
 </div>
 </section>
 <section id="id7">
-<h3><span class="section-number">8.7.6. </span>認証されていないユーザー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.7.6. </span>認証されていないユーザー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>USER POOLへの認証を行わず、idpoolへのget-idから始める</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>IDENTITY_ID=$(aws cognito-identity get-id \
   --identity-pool-id ${IDENTITY_POOL_ID} \
@@ -434,22 +434,22 @@ export AWS_SECURITY_TOKEN
 </section>
 </section>
 <section id="id8">
-<h2><span class="section-number">8.8. </span>【参考】ユーザーごとに紐づけるロールを変更する場合<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.8. </span>【参考】ユーザーごとに紐づけるロールを変更する場合<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id9">
-<h3><span class="section-number">8.8.1. </span>IAMロールの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.8.1. </span>IAMロールの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>IAMのコンソール画面から、新しいロールを作成し、エンティティタイプをウェブアイデンティティにする。
 プロバイダーとしてCognitoを選択して、IDプールのIDを書き込み、ポリシーを付与してロールを作成する</p>
 <p><img alt="../_images/cognito_iam_setting.png" src="../_images/cognito_iam_setting.png" /></p>
 </section>
 <section id="id">
-<h3><span class="section-number">8.8.2. </span>IDプールでルールを設定<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.8.2. </span>IDプールでルールを設定<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">IDプールの編集</span></code>から、認証プロバイダを選択して、<code class="docutils literal notranslate"><span class="pre">ルールを使用してロールを選択</span></code>するから、ルール設定
 例えば、「emailにxxxxを含む」などの条件で付与するIAMを変更できる</p>
 <p><img alt="../_images/cognito_iam_condition.png" src="../_images/cognito_iam_condition.png" /></p>
 </section>
 </section>
 <section id="id10">
-<h2><span class="section-number">8.9. </span>【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.9. </span>【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ポリシーには、Cognitoで認証したユーザーごとのバケットの中でも<code class="docutils literal notranslate"><span class="pre">フェデレーティッドユーザーの</span> <span class="pre">ID${cognito-identity.:sub}</span></code>のディレクトリに紐づいたオブジェクトにのみアクセスできるポリシーを付与。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
@@ -478,7 +478,7 @@ export AWS_SECURITY_TOKEN
 </div>
 <p>UnAuthユーザーには情報を付与しない。</p>
 <section id="id11">
-<h3><span class="section-number">8.9.1. </span>S3バケットの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.9.1. </span>S3バケットの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>作成したIAMの権限に合わせて、S3バケットを作成する。
 バケット内に作成するフォルダについても、<code class="docutils literal notranslate"><span class="pre">cognito/CognitoUserID</span></code>とする。
 UserIDは先ほどの手順でログインすることでCognitoのID poolに追加されている値を利用する</p>
@@ -495,7 +495,7 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
 </div>
 </section>
 <section id="id12">
-<h3><span class="section-number">8.9.2. </span>動作確認<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">7.9.2. </span>動作確認<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>xxxxxxxのクレデンシャルを環境変数に設定しているときとyyyyyyyyyのクレデンシャルを環境ヘンスに設定している時で、アクセスできるS3が異なることを確認する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">cp</span> <span class="o">--</span><span class="n">region</span> <span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="n">ma</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">bucket</span><span class="o">/</span><span class="n">cognito</span><span class="o">/</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">xxxxxxxxx</span><span class="o">/</span><span class="n">alb_setting_basic</span><span class="o">.</span><span class="n">png</span> <span class="o">./</span>
 
@@ -506,11 +506,11 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
 </section>
 </section>
 <section id="s3local-aws-cli">
-<h2><span class="section-number">8.10. </span>【参考】S3とLocalのフォルダを同期する（AWS CLI)<a class="headerlink" href="#s3local-aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.10. </span>【参考】S3とLocalのフォルダを同期する（AWS CLI)<a class="headerlink" href="#s3local-aws-cli" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3のページで解説しているので、そちらを参照する</p>
 </section>
 <section id="id13">
-<h2><span class="section-number">8.11. </span>参考文献<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.11. </span>参考文献<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <ol class="simple">
 <li><p><a class="reference external" href="https://dev.classmethod.jp/articles/get-aws-temporary-security-credentials-with-cognito-id-pool-by-aws-cli/">クレデンシャルの取得方法</a><br />：一番参考になるAWS CLIでCognitoのクレデンシャルを取得する方法から、ルールベースで付与するIAMを変更する手順が整理されている</p></li>
 <li><p><a class="reference external" href="https://www.aws-room.com/entry/cognito-s3">Cognito を使ったユーザ認証で S3 にアクセスしてみる</a><br />：IAMの設定まで詳しく説明してくれている。pythonを利用して、cognitoから認証情報を受けてS3へのアクセス制御を検証している</p></li>
@@ -530,38 +530,38 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">8. Cognitoで認証をして、AWSのリソースにアクセスする</a><ul>
-<li><a class="reference internal" href="#id1">8.1. 認証フローの違い</a><ul>
-<li><a class="reference internal" href="#id2">8.1.1. 認証している場合</a></li>
-<li><a class="reference internal" href="#id3">8.1.2. 認証していない場合</a></li>
+<li><a class="reference internal" href="#">7. Cognitoで認証をして、AWSのリソースにアクセスする</a><ul>
+<li><a class="reference internal" href="#id1">7.1. 認証フローの違い</a><ul>
+<li><a class="reference internal" href="#id2">7.1.1. 認証している場合</a></li>
+<li><a class="reference internal" href="#id3">7.1.2. 認証していない場合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#s3">8.2. S3バケット作成</a></li>
-<li><a class="reference internal" href="#cognito">8.3. Cognitoでユーザープールを作成</a></li>
-<li><a class="reference internal" href="#cognitoid">8.4. CognitoでIDプールを作成</a></li>
-<li><a class="reference internal" href="#iam">8.5. 紐づくIAMの作成</a></li>
-<li><a class="reference internal" href="#python-sdk">8.6. Python SDKからのアクセス</a></li>
-<li><a class="reference internal" href="#aws-cli">8.7. AWS CLIからのアクセス</a><ul>
-<li><a class="reference internal" href="#id4">8.7.1. 初期設定</a></li>
-<li><a class="reference internal" href="#user-pool">8.7.2. USER POOLへ認証</a></li>
-<li><a class="reference internal" href="#id-pool">8.7.3. ID POOLへの認証</a></li>
-<li><a class="reference internal" href="#id5">8.7.4. クレデンシャルの取得</a></li>
-<li><a class="reference internal" href="#id6">8.7.5. クレデンシャルの環境変数への格納</a></li>
-<li><a class="reference internal" href="#id7">8.7.6. 認証されていないユーザー</a></li>
+<li><a class="reference internal" href="#s3">7.2. S3バケット作成</a></li>
+<li><a class="reference internal" href="#cognito">7.3. Cognitoでユーザープールを作成</a></li>
+<li><a class="reference internal" href="#cognitoid">7.4. CognitoでIDプールを作成</a></li>
+<li><a class="reference internal" href="#iam">7.5. 紐づくIAMの作成</a></li>
+<li><a class="reference internal" href="#python-sdk">7.6. Python SDKからのアクセス</a></li>
+<li><a class="reference internal" href="#aws-cli">7.7. AWS CLIからのアクセス</a><ul>
+<li><a class="reference internal" href="#id4">7.7.1. 初期設定</a></li>
+<li><a class="reference internal" href="#user-pool">7.7.2. USER POOLへ認証</a></li>
+<li><a class="reference internal" href="#id-pool">7.7.3. ID POOLへの認証</a></li>
+<li><a class="reference internal" href="#id5">7.7.4. クレデンシャルの取得</a></li>
+<li><a class="reference internal" href="#id6">7.7.5. クレデンシャルの環境変数への格納</a></li>
+<li><a class="reference internal" href="#id7">7.7.6. 認証されていないユーザー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">8.8. 【参考】ユーザーごとに紐づけるロールを変更する場合</a><ul>
-<li><a class="reference internal" href="#id9">8.8.1. IAMロールの作成</a></li>
-<li><a class="reference internal" href="#id">8.8.2. IDプールでルールを設定</a></li>
+<li><a class="reference internal" href="#id8">7.8. 【参考】ユーザーごとに紐づけるロールを変更する場合</a><ul>
+<li><a class="reference internal" href="#id9">7.8.1. IAMロールの作成</a></li>
+<li><a class="reference internal" href="#id">7.8.2. IDプールでルールを設定</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id10">8.9. 【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM</a><ul>
-<li><a class="reference internal" href="#id11">8.9.1. S3バケットの作成</a></li>
-<li><a class="reference internal" href="#id12">8.9.2. 動作確認</a></li>
+<li><a class="reference internal" href="#id10">7.9. 【参考】ユーザー毎にアクセスするオブジェクト（フォルダ）を制限する場合のIAM</a><ul>
+<li><a class="reference internal" href="#id11">7.9.1. S3バケットの作成</a></li>
+<li><a class="reference internal" href="#id12">7.9.2. 動作確認</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#s3local-aws-cli">8.10. 【参考】S3とLocalのフォルダを同期する（AWS CLI)</a></li>
-<li><a class="reference internal" href="#id13">8.11. 参考文献</a></li>
+<li><a class="reference internal" href="#s3local-aws-cli">7.10. 【参考】S3とLocalのフォルダを同期する（AWS CLI)</a></li>
+<li><a class="reference internal" href="#id13">7.11. 参考文献</a></li>
 </ul>
 </li>
 </ul>
@@ -570,12 +570,12 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="前の章へ"><span class="section-number">5. </span>MSKのチュートリアル実装(CLI編)</a></p>
+                          title="前の章へ"><span class="section-number">4. </span>MSKのチュートリアル実装(CLI編)</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="msk_priority.html"
-                          title="次の章へ"><span class="section-number">9. </span>MSKにおけるメッセージの優先順位について</a></p>
+                          title="次の章へ"><span class="section-number">8. </span>MSKにおけるメッセージの優先順位について</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -605,13 +605,13 @@ UserIDは先ほどの手順でログインすることでCognitoのID poolに追
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="msk_priority.html" title="9. MSKにおけるメッセージの優先順位について"
+          <a href="msk_priority.html" title="8. MSKにおけるメッセージの優先順位について"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="MSK.html" title="5. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="4. MSKのチュートリアル実装(CLI編)"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">8. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

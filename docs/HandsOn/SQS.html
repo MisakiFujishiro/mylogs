@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="5. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" />
+    <link rel="next" title="4. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
     <link rel="prev" title="1. CodePipelineを利用してCFNのCICD環境を作成する" href="cloudformaiton_CICD.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="cognito_authentication.html" title="5. Cognitoで認証をして、AWSのリソースにアクセスする"
+          <a href="MSK.html" title="4. MSKのチュートリアル実装(CLI編)"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
@@ -212,11 +212,23 @@
 </section>
 </section>
 </section>
-<section id="sqs-lambda">
-<h1><span class="section-number">3. </span>SQSのチュートリアル実装(Lambda編)<a class="headerlink" href="#sqs-lambda" title="この見出しへのパーマリンク">¶</a></h1>
-</section>
 <section id="sqs-java">
-<h1><span class="section-number">4. </span>SQSのチュートリアル実装(Java編)<a class="headerlink" href="#sqs-java" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">3. </span>SQSのチュートリアル実装(Java編)<a class="headerlink" href="#sqs-java" title="この見出しへのパーマリンク">¶</a></h1>
+<p>参考サイト</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.stsd.co.jp/dev-blog/send_and_receive_amazon_sqs_messages_from_java.html">JavaからAmazon SQSのメッセージ送受信を行う</a></p></li>
+<li><p><a class="reference external" href="https://weblabo.oscasierra.net/aws-sqs-tutorial-java-1/">JavaでAmazon SQSのメッセージを送受信するチュートリアル</a></p></li>
+<li><p><a class="reference external" href="https://note.com/yoshi_anpontan/n/n1e7a3c99e07e">SQS #1 - テスト環境を作ってみた (SDK for Java</a></p></li>
+</ul>
+<p>ステップ</p>
+<ul class="simple">
+<li><p>helloworldして、整理【完了】</p></li>
+<li><p>jarファイル化についても【完了】</p></li>
+<li><p>application.ymlについて整理【完了】</p></li>
+<li><p>javaのコードを実装してみる</p></li>
+<li><p>成功したらjarに固める(application.ymlで変更してlocalとcloud上を切り替える)</p></li>
+<li><p>EC2上で動作確認</p></li>
+</ul>
 </section>
 
 
@@ -246,8 +258,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sqs-lambda">3. SQSのチュートリアル実装(Lambda編)</a></li>
-<li><a class="reference internal" href="#sqs-java">4. SQSのチュートリアル実装(Java編)</a></li>
+<li><a class="reference internal" href="#sqs-java">3. SQSのチュートリアル実装(Java編)</a></li>
 </ul>
 
   </div>
@@ -258,8 +269,8 @@
   </div>
   <div>
     <h4>次のトピックへ</h4>
-    <p class="topless"><a href="cognito_authentication.html"
-                          title="次の章へ"><span class="section-number">5. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
+    <p class="topless"><a href="MSK.html"
+                          title="次の章へ"><span class="section-number">4. </span>MSKのチュートリアル実装(CLI編)</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -289,7 +300,7 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="cognito_authentication.html" title="5. Cognitoで認証をして、AWSのリソースにアクセスする"
+          <a href="MSK.html" title="4. MSKのチュートリアル実装(CLI編)"
              >次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"

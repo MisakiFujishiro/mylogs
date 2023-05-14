@@ -209,9 +209,18 @@ $ aws sqs delete-message --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[
 
 
 
-# SQSのチュートリアル実装(Lambda編)
-
-
-
-
 # SQSのチュートリアル実装(Java編)
+参考サイト
+- [JavaからAmazon SQSのメッセージ送受信を行う](https://www.stsd.co.jp/dev-blog/send_and_receive_amazon_sqs_messages_from_java.html)
+- [JavaでAmazon SQSのメッセージを送受信するチュートリアル](https://weblabo.oscasierra.net/aws-sqs-tutorial-java-1/)
+- [SQS #1 - テスト環境を作ってみた (SDK for Java](https://note.com/yoshi_anpontan/n/n1e7a3c99e07e)
+
+
+ステップ
+- javaのコードを実装してみる
+- 成功したらjarに固める(application.ymlで変更してlocalとcloud上を切り替える)
+- EC2上で動作確認
+
+
+
+

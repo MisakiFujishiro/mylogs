@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>1. IntteliJでhelloworldしてみる &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="2. Javaとは" href="java_env.html" />
+    <link rel="prev" title="5. 環境構築系の基礎知識" href="../knowledge/environment.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="java_env.html" title="2. Javaとは"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="../knowledge/environment.html" title="5. 環境構築系の基礎知識"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>IntteliJでhelloworldしてみる</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="inttelijhelloworld">
+<h1><span class="section-number">1. </span>IntteliJでhelloworldしてみる<a class="headerlink" href="#inttelijhelloworld" title="この見出しへのパーマリンク">¶</a></h1>
+<p>IntelliJを利用してブラウザ上にhellow worldを表示するアプリケーションを作成します。
+そのアプリケーションをjarファイルに固める方法およびapplication.yamlを利用することで、実行時に、設定を変更する方法をまとめます。</p>
+<p><a class="reference external" href="https://www.tairaengineer-note.com/intellij-idea-springboot-hello-world/">参考サイト</a></p>
+<section id="java">
+<h2><span class="section-number">1.1. </span>javaのバージョンについて<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h2>
+<p>PJを作成する際にjavaのバージョンと関連して、spring bootやspring frameworkのバージョンを指定する必要がある。</p>
+<p>利用するjavaのバージョンを決めたら、<a class="reference external" href="https://qiita.com/gate9/items/7351557829d7e1e668e9">対応表</a>を確認して、spring bootのバージョンなどをIDEで指定する。</p>
+</section>
+<section id="id1">
+<h2><span class="section-number">1.2. </span>新規プロジェクトの作成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>新規プロジェクトで、作成Javaのバージョンは11を利用する</p>
+<p><img alt="../_images/intellij_hello_pj.png" src="../_images/intellij_hello_pj.png" /></p>
+<p>それに伴って、spring bootのバージョンは2.Xを指定する。
+また、必要なライブラリも最初に指定する。</p>
+<p><img alt="../_images/intellij_hello_pj2.png" src="../_images/intellij_hello_pj2.png" /></p>
+</section>
+<section id="id2">
+<h2><span class="section-number">1.3. </span>各種設定の確認<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://amateur-engineer.com/intellij-gradle-java11-error/">Javaのバージョン指定</a>が参考になる</p>
+<ul class="simple">
+<li><p>プロジェクトを右クリック &gt; Open Module Settings &gt; <code class="docutils literal notranslate"><span class="pre">Project</span></code> &gt; Project SDK を確認します。</p></li>
+</ul>
+<p><img alt="../_images/inttelij_setting1.png" src="../_images/inttelij_setting1.png" /></p>
+<ul class="simple">
+<li><p>プロジェクトを右クリック &gt; Open Module Settings &gt; Modules&gt; <code class="docutils literal notranslate"><span class="pre">Sources</span></code> &gt; Language level のJavaバージョン を確認します。</p></li>
+</ul>
+<p><img alt="../_images/inttelij_setting2.png" src="../_images/inttelij_setting2.png" /></p>
+<ul class="simple">
+<li><p>プロジェクトを右クリック &gt; Open Module Settings &gt; Modules&gt; <code class="docutils literal notranslate"><span class="pre">Dependencies</span></code> &gt; Module SDK のJavaバージョン を確認します。</p></li>
+</ul>
+<p><img alt="../_images/inttelij_setting3.png" src="../_images/inttelij_setting3.png" /></p>
+</section>
+<section id="id3">
+<h2><span class="section-number">1.4. </span>コーディング<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>作成したプロジェクトで、src/main/javaの配下にあるHelloWorldApplication.javaを以下に書き換える。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">helloworld</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="p">;</span>
+
+<span class="nd">@SpringBootApplication</span>
+<span class="nd">@RestController</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">HelloWorldApplication</span> <span class="p">{</span>
+
+    <span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">HelloWorldApplication</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nd">@RequestMapping</span><span class="p">(</span><span class="s2">&quot;/hello&quot;</span><span class="p">)</span>
+    <span class="n">String</span> <span class="n">index</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>ファイルのタブを右クリックして、実行を</p>
+<p><img alt="../_images/intellij_hello.png" src="../_images/intellij_hello.png" /></p>
+<p>以下にアクセス<code class="docutils literal notranslate"><span class="pre">http://localhost:8080/hello</span></code>するとhello worldが表示される。</p>
+</section>
+<section id="jar">
+<h2><span class="section-number">1.5. </span>jarファイルに固める<a class="headerlink" href="#jar" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://note.com/latte_c/n/n0f4e78c4c4a5">参考サイト</a></p>
+<p>作成したPJをjarファイルに固めて、別環境で実行するためには、右のmavenというタブを選択してpackeageを実行する</p>
+<p><img alt="../_images/intellij_hello_packeage.png" src="../_images/intellij_hello_packeage.png" /></p>
+<p>結果として、target配下にjarファイルが作成されている</p>
+<p><img alt="../_images/intellij_hello_jar.png" src="../_images/intellij_hello_jar.png" /></p>
+<p>cliから以下を実行すると、作成したPJを実行することができる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">xxx</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+</div>
+</section>
+<section id="application-yml">
+<h2><span class="section-number">1.6. </span>application.ymlの切り替え<a class="headerlink" href="#application-yml" title="この見出しへのパーマリンク">¶</a></h2>
+<p>jarファイルを実行時に、利用するapplication.ymlを指定することで、環境ごとにコードの振る舞いを変更することができる。
+例えば、検証時はlocalhostを参照して、本番環境ではawsを参照するなど。</p>
+<p>まず、デフォルトでどの設定をを利用するのかapplication.ymlに記述</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
+  <span class="n">profiles</span><span class="p">:</span>
+    <span class="n">active</span><span class="p">:</span> <span class="n">dev</span>
+</pre></div>
+</div>
+<p>次にapplication-dev.ymlとapplication-prd.ymlを作成し、設定を記述</p>
+<p>application-dev.yml</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>app:
+  message: Hello Dev!
+server:
+  port: 8080
+</pre></div>
+</div>
+<p>application-prd.yml</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>app:
+  message: Hello Prd!
+server:
+  port: 8081
+</pre></div>
+</div>
+<section id="id4">
+<h3><span class="section-number">1.6.1. </span>コーディング<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下のコードをHelloWorldApplication.javaに貼り付ける。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">helloworld</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Value</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="p">;</span>
+
+<span class="nd">@SpringBootApplication</span>
+<span class="nd">@RestController</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">HelloWorldApplication</span> <span class="p">{</span>
+
+    <span class="nd">@Value</span><span class="p">(</span><span class="s2">&quot;$</span><span class="si">{app.message}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">private</span> <span class="n">String</span> <span class="n">message</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">HelloWorldApplication</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nd">@RequestMapping</span><span class="p">(</span><span class="s2">&quot;/hello&quot;</span><span class="p">)</span>
+    <span class="n">String</span> <span class="n">index</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="n">message</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>何も指定せずに実行すると、デフォルトでdevが有効となっているのでdevの設定ファイルによりHello Devとなる。明示的にprdを利用するとHello Prdとなる。指定方法は以下のセクション</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.6.2. </span>jarファイルの実行時<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>jarファイルを実行する際に指定する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="o">-</span><span class="n">Dspring</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">active</span><span class="o">=</span><span class="n">prd</span> <span class="n">XXXX</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+</div>
+<p>上記を実行することで</p>
+<ul class="simple">
+<li><p>devの場合はlocalhost:port8080にHello Devと表示される</p></li>
+<li><p>prdの場合はlocalhost:port8081にHello Prdと表示される</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">1. IntteliJでhelloworldしてみる</a><ul>
+<li><a class="reference internal" href="#java">1.1. javaのバージョンについて</a></li>
+<li><a class="reference internal" href="#id1">1.2. 新規プロジェクトの作成</a></li>
+<li><a class="reference internal" href="#id2">1.3. 各種設定の確認</a></li>
+<li><a class="reference internal" href="#id3">1.4. コーディング</a></li>
+<li><a class="reference internal" href="#jar">1.5. jarファイルに固める</a></li>
+<li><a class="reference internal" href="#application-yml">1.6. application.ymlの切り替え</a><ul>
+<li><a class="reference internal" href="#id4">1.6.1. コーディング</a></li>
+<li><a class="reference internal" href="#id5">1.6.2. jarファイルの実行時</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="../knowledge/environment.html"
+                          title="前の章へ"><span class="section-number">5. </span>環境構築系の基礎知識</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="java_env.html"
+                          title="次の章へ"><span class="section-number">2. </span>Javaとは</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Java/intelliJ.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="java_env.html" title="2. Javaとは"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="../knowledge/environment.html" title="5. 環境構築系の基礎知識"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>IntteliJでhelloworldしてみる</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

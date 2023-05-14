@@ -121,7 +121,8 @@ Java Spring
 .. toctree::
    :maxdepth: 1
    :numbered:
-
+   
+   Java/intelliJ
    Java/java_env
    Java/knowledge
    Java/tutorial

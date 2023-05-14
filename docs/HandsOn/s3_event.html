@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>13. LambdaとS3・AIなどのAWSサービスの連携 &#8212; my_sphinx  ドキュメント</title>
+    <title>12. LambdaとS3・AIなどのAWSサービスの連携 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="14. CloudFront" href="cloudfront.html" />
-    <link rel="prev" title="12. S3の処理" href="s3_process.html" /> 
+    <link rel="next" title="13. CloudFront" href="cloudfront.html" />
+    <link rel="prev" title="11. S3の処理" href="s3_process.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="cloudfront.html" title="14. CloudFront"
+          <a href="cloudfront.html" title="13. CloudFront"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="s3_process.html" title="12. S3の処理"
+          <a href="s3_process.html" title="11. S3の処理"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">13. </span>LambdaとS3・AIなどのAWSサービスの連携</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>LambdaとS3・AIなどのAWSサービスの連携</a></li> 
       </ul>
     </div>  
 
@@ -46,14 +46,14 @@
           <div class="body" role="main">
             
   <section id="lambdas3aiaws">
-<h1><span class="section-number">13. </span>LambdaとS3・AIなどのAWSサービスの連携<a class="headerlink" href="#lambdas3aiaws" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">12. </span>LambdaとS3・AIなどのAWSサービスの連携<a class="headerlink" href="#lambdas3aiaws" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="h4b">
-<h2><span class="section-number">13.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.1. </span>H4b<a class="headerlink" href="#h4b" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://pages.awscloud.com/JAPAN-event-OE-Hands-on-for-Beginners-Serverless-3-2022-confirmation_772.html">H4B：AWS LambdaとAWS AI Servicesを組み合わせて作る音声文字起こし&amp;感情分析パイプライン</a>
 の内容を踏まえてLambadaの手順などを整理する。</p>
 </section>
 <section id="id1">
-<h2><span class="section-number">13.2. </span>全体構成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.2. </span>全体構成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3に音声データをアップロードするとS3のイベントが発出され、Lambdaがそれを受け取る。<br />LambdaがTranscribeを呼び出して、テキストデータに変換し、そのデータをS3にアップロードする。<br />テキストのアップロードを契機として、再度Lambdaを呼び出して、ポジネガ判定を行う。</p>
 <ul class="simple">
 <li><p>Polly:テキストから音声を生成するAIサービス</p></li>
@@ -63,11 +63,11 @@
 <p><img alt="../_images/lambda_archie.png" src="../_images/lambda_archie.png" /></p>
 </section>
 <section id="s3lambda">
-<h2><span class="section-number">13.3. </span>S3とLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.3. </span>S3とLambdaの連携<a class="headerlink" href="#s3lambda" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3バケットの作成をして、Lambdaからpython-get-s3-objectからコードを作成する。</p>
 </section>
 <section id="lambdatranscribe">
-<h2><span class="section-number">13.4. </span>LambdaとTranscribeの連携<a class="headerlink" href="#lambdatranscribe" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.4. </span>LambdaとTranscribeの連携<a class="headerlink" href="#lambdatranscribe" title="この見出しへのパーマリンク">¶</a></h2>
 <p>S3内部の音声データのObjectを指定すると、文字起こしをして指定したs3のディレクトリにjsonファイルを吐き出す。</p>
 <p>LambdaのIAM Roleについて、TranscribeやS3への権限を付与する</p>
 <ul class="simple">
@@ -116,7 +116,7 @@
 <p>Lambdaファンクションを修正したら、Deployを忘れずに！</p>
 </section>
 <section id="s3">
-<h2><span class="section-number">13.5. </span>S3への連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.5. </span>S3への連携<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>TranscribeがS3に格納したイベントを契機にして、Comprehendにデータを渡す。</p>
 <ol class="simple">
 <li><p>Lambdaの作成<br />前回同様に、S3へのファイルアップロードを契機とする。<br />アップロードされたjsonファイル飲みを対象とするので、Suffixで指定</p></li>
@@ -185,12 +185,12 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">13. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
-<li><a class="reference internal" href="#h4b">13.1. H4b</a></li>
-<li><a class="reference internal" href="#id1">13.2. 全体構成</a></li>
-<li><a class="reference internal" href="#s3lambda">13.3. S3とLambdaの連携</a></li>
-<li><a class="reference internal" href="#lambdatranscribe">13.4. LambdaとTranscribeの連携</a></li>
-<li><a class="reference internal" href="#s3">13.5. S3への連携</a></li>
+<li><a class="reference internal" href="#">12. LambdaとS3・AIなどのAWSサービスの連携</a><ul>
+<li><a class="reference internal" href="#h4b">12.1. H4b</a></li>
+<li><a class="reference internal" href="#id1">12.2. 全体構成</a></li>
+<li><a class="reference internal" href="#s3lambda">12.3. S3とLambdaの連携</a></li>
+<li><a class="reference internal" href="#lambdatranscribe">12.4. LambdaとTranscribeの連携</a></li>
+<li><a class="reference internal" href="#s3">12.5. S3への連携</a></li>
 </ul>
 </li>
 </ul>
@@ -199,12 +199,12 @@
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="s3_process.html"
-                          title="前の章へ"><span class="section-number">12. </span>S3の処理</a></p>
+                          title="前の章へ"><span class="section-number">11. </span>S3の処理</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="cloudfront.html"
-                          title="次の章へ"><span class="section-number">14. </span>CloudFront</a></p>
+                          title="次の章へ"><span class="section-number">13. </span>CloudFront</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -234,13 +234,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="cloudfront.html" title="14. CloudFront"
+          <a href="cloudfront.html" title="13. CloudFront"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="s3_process.html" title="12. S3の処理"
+          <a href="s3_process.html" title="11. S3の処理"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">13. </span>LambdaとS3・AIなどのAWSサービスの連携</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>LambdaとS3・AIなどのAWSサービスの連携</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

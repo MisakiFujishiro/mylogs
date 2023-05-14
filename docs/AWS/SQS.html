@@ -88,40 +88,106 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
 <section id="id3">
 <h2><span class="section-number">15.3. </span>SQSのキュー詳細<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>SNS同様にスタンダードとFIFOが準備されており、順序性、重複性、スループットの面でメリデメがある。</p>
-<ul class="simple">
-<li><p>スタンダート<br />順序性と重複性が保証がされない代わりにほぼ無制限のスループットが実現できる</p></li>
-<li><p>FIFO<br />順序性についてはベストエフォートで、配信方法については少なくとも1回配信されるが2回配信される可能性がある。
-そのため、Consumer側で冪等性の仕組みなどを取り入れる必要がある。
-スループットは300件/secとなる<br />リリースが2018年11月と比較的最近</p></li>
-</ul>
 <section id="id4">
-<h3><span class="section-number">15.3.1. </span>キューの保存期間<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.3.1. </span>スタンダートキュー<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>順序性や重複性にある程度許容できる場合はスタンダートキューを利用する</p>
+<p><img alt="../_images/sqs_standart_queue.png" src="../_images/sqs_standart_queue.png" /></p>
+<ul class="simple">
+<li><p>スループット</p>
+<ul>
+<li><p>順序性と重複性が保証がされない代わりに、1sec当たりほぼ無制限のスループットを実現</p></li>
+</ul>
+</li>
+<li><p>順序性</p>
+<ul>
+<li><p>保証されないとしても、ベストエフォート型の順位づけは行う。</p></li>
+</ul>
+</li>
+<li><p>重複性</p>
+<ul>
+<li><p>少なくとも1回の配信は保証され、まれに複数のメッセージが配信される。</p></li>
+<li><p>アプリ側で冪等性を担保する必要があるかを見極め、必要であればアプリ側で保証する。</p></li>
+<li><p>この問題が発生するのは、キュー側でメッセ０時の冗長性を高めるためにメッセージが複数のサーバーに保存されるため</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="fifo">
+<h3><span class="section-number">15.3.2. </span>FIFOキュー<a class="headerlink" href="#fifo" title="この見出しへのパーマリンク">¶</a></h3>
+<p>順序性や重複性を厳密に保証する場合はfifoキューを利用する。</p>
+<p><img alt="../_images/sqs_fifo_queue.png" src="../_images/sqs_fifo_queue.png" /></p>
+<ul class="simple">
+<li><p>スループット</p>
+<ul>
+<li><p>スタンダートキューは1secあたり無制限であったが、fifoキューについては制限がある</p></li>
+<li><p>1secあたり最大300回のAPIコールをサポートしている(Send/Dellete/Recieve)</p></li>
+<li><p>SendMessageとDeleteMessageについてはバッチ処理で10個のメッセージを処理できるので、1secあたり最大3000回分のAPIコールが可能</p></li>
+</ul>
+</li>
+<li><p>順序性</p>
+<ul>
+<li><p>メッセージの送信・受信順序は厳密に担保</p></li>
+</ul>
+</li>
+<li><p>重複性</p>
+<ul>
+<li><p>重複はしないような仕組みが導入されている</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h2><span class="section-number">15.4. </span>FIFOキューの深掘り<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<p>FIFOキューでは送信時にメッセージグループIDとメッセージ重複IDを指定する</p>
+<p><img alt="../_images/sqs_fifo_id.png" src="../_images/sqs_fifo_id.png" /></p>
+<p>受信時には受信リクエスト試行IDを指定する</p>
+<section id="id">
+<h3><span class="section-number">15.4.1. </span>メッセージグループID<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
+<p>FIFOキューでメッセージを送信する際に、指定する必須のID<br />メッセージが特定のメッセージグループに属することを指定し、常にメッセージグループ内での順序性を担保する。（異なるメッセージグループのメッセージは順序性が担保されない）これはMSKで言う、partitionに対応。</p>
+<p>FIFOキュー全体で、メッセージの順序性を担保したい場合は、すべて同一のメッセージグループIDを指定する。</p>
+</section>
+<section id="id6">
+<h3><span class="section-number">15.4.2. </span>メッセージ重複ID<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<p>FIFOキューでメッセージ送信する際に、任意で指定するID<br />送信側〜SQSのキュー側で、重複をなくすための仕組み</p>
+<p>メッセージグループIDに限らず、キュー全体に適用され、指定したIDのメッセージが短時間（デフォルト5分)以内に送信されてくると、後から来たメッセージを削除する。</p>
+</section>
+<section id="id7">
+<h3><span class="section-number">15.4.3. </span>受信リクエスト試行ID<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>メッセージ受信APIで指定するID<br />受信側で、重複をなくすための仕組み</p>
+<p>Consumerとキューの接続に問題が発生する際に、受信リクエスト試行IDを指定して再試行する</p>
+</section>
+</section>
+<section id="id8">
+<h2><span class="section-number">15.5. </span>キューの詳細設定項目<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id9">
+<h3><span class="section-number">15.5.1. </span>キューの保存期間<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>デフォルトでは４日間が設定されており、最大で14日間まで変更可能
 この設定は、<code class="docutils literal notranslate"><span class="pre">MessageRetentionPeriod</span></code>で設定する</p>
 </section>
-<section id="id5">
-<h3><span class="section-number">15.3.2. </span>SQSの容量<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">15.5.2. </span>SQSの容量<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SQSでやり取りすることができる容量は最大256kB</p>
 <p>しかし、S3とJava拡張ライブラリを利用することで、SQSのメッセージサイズを超過して2GBまで対応することができる。</p>
 </section>
-<section id="id6">
-<h3><span class="section-number">15.3.3. </span>SQSのキューの削除<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">15.5.3. </span>SQSのキューの削除<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">Purge</span> <span class="pre">Queue</span></code>を利用すると、指定したキューないのメッセージを削除することができる。</p>
 </section>
-<section id="id7">
-<h3><span class="section-number">15.3.4. </span>デットレターキュー<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">15.5.4. </span>デットレターキュー<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>正常に処理できないメッセージがキューに滞留することを避ける機能。</p>
 <p>Redriveポリシーで、移動させるルール（最大受信数）とメッセージ格納先（デットレターキュー）を指定する
 デットレターキューでのメッセージ保存期間を設定できるが、デットレターキューに格納されてからの日数ではなく、メッセージ自体のタイムスタンプを参照する点に注意</p>
 </section>
-<section id="id8">
-<h3><span class="section-number">15.3.5. </span>重複削除<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id13">
+<h3><span class="section-number">15.5.5. </span>重複削除<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>FIFOキューでは重複を排除するための機能が備わっている。
 あるメッセージが送付されてから<code class="docutils literal notranslate"><span class="pre">5分間</span></code>の間に同一のメッセージが送られてきた時に重複を削除することができる。</p>
 </section>
 </section>
-<section id="id9">
-<h2><span class="section-number">15.4. </span>キューからのメッセージ取得<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id14">
+<h2><span class="section-number">15.6. </span>キューからのメッセージ取得<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
 <p>次の3ステップを踏む</p>
 <ol class="simple">
 <li><p>Consumerがキューをポーリング（キューの監視）</p></li>
@@ -130,8 +196,8 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
 </ol>
 <p>特に注意が必要なのはメッセージの削除であり、Consumerがキューを取得したからといって、メッセージは自動削除されない。
 メッセージ削除の際は取得したMessageのIDである「ReceiptHandle」を指定するが、他のConsumerがメッセージに触れると「ReceiptHandle」が書き換えられてエラーになるの可能性があるので、可視化タイムアウトなどの設定を使うようにする。</p>
-<section id="id10">
-<h3><span class="section-number">15.4.1. </span>ポーリング<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id15">
+<h3><span class="section-number">15.6.1. </span>ポーリング<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Consumerが一定間隔でSQSに対してメッセージを監視する仕組みをポーリングと呼ぶ。
 ポーリング時にはメッセージ<code class="docutils literal notranslate"><span class="pre">受信待機時間(ReciveMessageWaitTimeSeconds)</span></code>を設定することができ、キューに溜まったトピックを確認する間隔を設定できる。</p>
 <ul class="simple">
@@ -141,14 +207,14 @@ SNSとSQSを組み合わせたファンアウトでは、SNSを経由するこ�
 分散配置されたSQSの全サーバーに対してポーリングを行い20secの待機時間を設ける<br />待機時間を設定することで、Producerが生産してからConsumerが消費するまでの待機時間を設定できる</p></li>
 </ul>
 </section>
-<section id="id11">
-<h3><span class="section-number">15.4.2. </span>キューの待機時間設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id16">
+<h3><span class="section-number">15.6.2. </span>キューの待機時間設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Producerがキューに格納してからConsumerが取得するまでの時間を遅延させたり、
 Consumerがキューを取得してから他のConsumerがメッセージを取得するまでの時間を遅延させたりすることができる。</p>
 <p>以下の図は、後述する遅延キュー（メッセージタイマーと可視性タイムアウトの関係）</p>
 <p><img alt="../_images/sns_delay.png" src="../_images/sns_delay.png" /></p>
-<section id="id12">
-<h4><span class="section-number">15.4.2.1. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id17">
+<h4><span class="section-number">15.6.2.1. </span>遅延キューとメッセージタイマー<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">Producer</span></code>からキューにメッセージを送信してからConsumerが取得できるようになるまでをずらすことができる機能。</p>
 <ul class="simple">
 <li><p>遅延キューはキュー全体に設定が反映される<br /><code class="docutils literal notranslate"><span class="pre">配信遅延時間(DelaySecondsパラメータ)</span></code>を設定する</p></li>
@@ -156,25 +222,25 @@ Consumerがキューを取得してから他のConsumerがメッセージを取�
 </ul>
 <p><img alt="../_images/sqs_delay.png" src="../_images/sqs_delay.png" /></p>
 </section>
-<section id="id13">
-<h4><span class="section-number">15.4.2.2. </span>可視性タイムアウト<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id18">
+<h4><span class="section-number">15.6.2.2. </span>可視性タイムアウト<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">Consumer</span></code>がメッセージを取得してから、他のメッセージを取得できるようにするまでの待ち時間を設定することができる機能。<br />他のConsumerによる同一メッセージ処理を<code class="docutils literal notranslate"><span class="pre">極力</span></code>防止することができる。
 極力というのは、スタンダートキューの場合は重複性を完全排除はできない点に注意。</p>
 <p><img alt="../_images/sqs_visibility.png" src="../_images/sqs_visibility.png" /></p>
 </section>
 </section>
 </section>
-<section id="id14">
-<h2><span class="section-number">15.5. </span>セキュリティ<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id15">
-<h3><span class="section-number">15.5.1. </span>暗号化<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id19">
+<h2><span class="section-number">15.7. </span>セキュリティ<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id20">
+<h3><span class="section-number">15.7.1. </span>暗号化<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SQSはKMSと統合されており、KMSによってメッセージを暗号化できる。
 ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。</p>
 <p>SQSはIAMによるアクセス制御に加えて、キューに対して、独自のアクセスポリシーを付与することで、IAMと合わせてアクセス制御することができる。</p>
 <p><img alt="../_images/sqs_secret.png" src="../_images/sqs_secret.png" /></p>
 </section>
-<section id="id16">
-<h3><span class="section-number">15.5.2. </span>アクセス制御<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id21">
+<h3><span class="section-number">15.7.2. </span>アクセス制御<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下で制御が可能</p>
 <ul class="simple">
 <li><p>IAMポリシー: 特定のユーザーやロールに対してキューへのアクセス制御が可能</p></li>
@@ -183,15 +249,15 @@ ProducerとConsumerがKMSの暗号化鍵へアクセスする必要がある。<
 <p><img alt="../_images/sqs_policy.png" src="../_images/sqs_policy.png" /></p>
 </section>
 </section>
-<section id="id17">
-<h2><span class="section-number">15.6. </span>SQSのメトリクス<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id22">
+<h2><span class="section-number">15.8. </span>SQSのメトリクス<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Amazon CloudWatchと連携して、モニタリングが可能。
 詳細は<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html">公式ドキュメント</a>を参照されたい。</p>
 <p><img alt="../_images/sqs_monitoring.png" src="../_images/sqs_monitoring.png" /></p>
 <p>USEメソッド（利用度、飽和度、エラー数）とその他に分けて、メトリクスを紹介する。
 その前に、メトリクスを理解する上でも重要なReceiveMessage APIについて解説する。</p>
 <section id="receivemessage-api">
-<h3><span class="section-number">15.6.1. </span>ReceiveMessage API<a class="headerlink" href="#receivemessage-api" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.8.1. </span>ReceiveMessage API<a class="headerlink" href="#receivemessage-api" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SQSで利用できるAPIであり、メトリクスの取得でも利用されている。</p>
 <p>SQSでメッセージを取得するために利用するAPIである。アプリケーションはReceiveMessage APIを利用して、処理に必要な情報を取得する。
 ReceiveMessage APIが提供する機能は以下</p>
@@ -203,7 +269,7 @@ ReceiveMessage APIが提供する機能は以下</p>
 <p>このAPIのパラメタ設定を行い、受信数などを調整する。</p>
 </section>
 <section id="utilization">
-<h3><span class="section-number">15.6.2. </span>Utilization(使用度)<a class="headerlink" href="#utilization" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.8.2. </span>Utilization(使用度)<a class="headerlink" href="#utilization" title="この見出しへのパーマリンク">¶</a></h3>
 <p>どれだけキューが利用されているかを確認するためのメトリクス</p>
 <ul class="simple">
 <li><p>NumberOfMessageSent:キューに追加されたメッセージ数</p></li>
@@ -213,7 +279,7 @@ ReceiveMessage APIが提供する機能は以下</p>
 </ul>
 </section>
 <section id="satulation">
-<h3><span class="section-number">15.6.3. </span>Satulation(飽和度)<a class="headerlink" href="#satulation" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.8.3. </span>Satulation(飽和度)<a class="headerlink" href="#satulation" title="この見出しへのパーマリンク">¶</a></h3>
 <p>どれだけキューにメッセージが溜まり、システムが正しく処理を捌き切れているかを確認するためのメトリクス
 飽和度はシステムが詰まって、正しく処理をできていないことを図る指標であるのでApproximateNumberOfMessageVisibleやApproximateNumberOfMessageNotVisibleを含めるかは微妙。</p>
 <ul class="simple">
@@ -224,7 +290,7 @@ ReceiveMessage APIが提供する機能は以下</p>
 </ul>
 </section>
 <section id="errors">
-<h3><span class="section-number">15.6.4. </span>Errors(エラー数)<a class="headerlink" href="#errors" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.8.4. </span>Errors(エラー数)<a class="headerlink" href="#errors" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キューにおける失敗したメッセージを確認するメトリクス。
 失敗したメッセージについては、DLQに移動させることが多いので、DLQでApproximateNumberOfMessageVisibleなどを取得する方法が挙げられる。単独のキューに対しては以下のようなメトリクスが取得できる。</p>
 <ul class="simple">
@@ -233,8 +299,8 @@ ReceiveMessage APIが提供する機能は以下</p>
 </ul>
 </section>
 </section>
-<section id="id18">
-<h2><span class="section-number">15.7. </span>SQSのメトリクスを利用したオートスケーリング<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id23">
+<h2><span class="section-number">15.9. </span>SQSのメトリクスを利用したオートスケーリング<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/autoscaling/ec2/userguide/as-using-sqs-queue.html">公式ドキュメント</a>にSQSを利用したオートスケーリングの記事があったので、その内容を整理する。</p>
 <p>ドキュメント内で注意されているのは、SQSの処理可能なメッセージ数を表すApproximateNumberOfMessagesVisibleを利用してオートスケーリングを設定しても良いが、このメトリクスはキュー内のメッセージ数だけを取得しており、この値だけを利用してスケールアウトしても適切な処理台数を設定できないという課題を扱っている</p>
 <p>オートスケールの台数は複数の要因に従って、用件を決め、それを満たせるようなルールを設定するべき。例えば以下の要件があることを考える。</p>
@@ -245,7 +311,7 @@ ReceiveMessage APIが提供する機能は以下</p>
 <p>許容されるレイテンシーが10secであり、メッセージの処理時間が0.1secであれば、1台あたり、100件のメッセージまでは処理することができる。ApproximateNumberOfMessagesVisibleに対して100で割ることで必要な台数を算出し、それを踏まえて台数を決定する。</p>
 </section>
 <section id="kinesis">
-<h2><span class="section-number">15.8. </span>kinesisとの比較<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">15.10. </span>kinesisとの比較<a class="headerlink" href="#kinesis" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ストリーミングデータであればkinesis一択。それ以外の場合は以下のデータの特性によって判断</p>
 <ul class="simple">
 <li><p>データの処理方法</p></li>
@@ -273,36 +339,47 @@ ReceiveMessage APIが提供する機能は以下</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#id3">15.3. SQSのキュー詳細</a><ul>
-<li><a class="reference internal" href="#id4">15.3.1. キューの保存期間</a></li>
-<li><a class="reference internal" href="#id5">15.3.2. SQSの容量</a></li>
-<li><a class="reference internal" href="#id6">15.3.3. SQSのキューの削除</a></li>
-<li><a class="reference internal" href="#id7">15.3.4. デットレターキュー</a></li>
-<li><a class="reference internal" href="#id8">15.3.5. 重複削除</a></li>
+<li><a class="reference internal" href="#id4">15.3.1. スタンダートキュー</a></li>
+<li><a class="reference internal" href="#fifo">15.3.2. FIFOキュー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id9">15.4. キューからのメッセージ取得</a><ul>
-<li><a class="reference internal" href="#id10">15.4.1. ポーリング</a></li>
-<li><a class="reference internal" href="#id11">15.4.2. キューの待機時間設定</a><ul>
-<li><a class="reference internal" href="#id12">15.4.2.1. 遅延キューとメッセージタイマー</a></li>
-<li><a class="reference internal" href="#id13">15.4.2.2. 可視性タイムアウト</a></li>
+<li><a class="reference internal" href="#id5">15.4. FIFOキューの深掘り</a><ul>
+<li><a class="reference internal" href="#id">15.4.1. メッセージグループID</a></li>
+<li><a class="reference internal" href="#id6">15.4.2. メッセージ重複ID</a></li>
+<li><a class="reference internal" href="#id7">15.4.3. 受信リクエスト試行ID</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">15.5. キューの詳細設定項目</a><ul>
+<li><a class="reference internal" href="#id9">15.5.1. キューの保存期間</a></li>
+<li><a class="reference internal" href="#id10">15.5.2. SQSの容量</a></li>
+<li><a class="reference internal" href="#id11">15.5.3. SQSのキューの削除</a></li>
+<li><a class="reference internal" href="#id12">15.5.4. デットレターキュー</a></li>
+<li><a class="reference internal" href="#id13">15.5.5. 重複削除</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">15.6. キューからのメッセージ取得</a><ul>
+<li><a class="reference internal" href="#id15">15.6.1. ポーリング</a></li>
+<li><a class="reference internal" href="#id16">15.6.2. キューの待機時間設定</a><ul>
+<li><a class="reference internal" href="#id17">15.6.2.1. 遅延キューとメッセージタイマー</a></li>
+<li><a class="reference internal" href="#id18">15.6.2.2. 可視性タイムアウト</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">15.5. セキュリティ</a><ul>
-<li><a class="reference internal" href="#id15">15.5.1. 暗号化</a></li>
-<li><a class="reference internal" href="#id16">15.5.2. アクセス制御</a></li>
+<li><a class="reference internal" href="#id19">15.7. セキュリティ</a><ul>
+<li><a class="reference internal" href="#id20">15.7.1. 暗号化</a></li>
+<li><a class="reference internal" href="#id21">15.7.2. アクセス制御</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">15.6. SQSのメトリクス</a><ul>
-<li><a class="reference internal" href="#receivemessage-api">15.6.1. ReceiveMessage API</a></li>
-<li><a class="reference internal" href="#utilization">15.6.2. Utilization(使用度)</a></li>
-<li><a class="reference internal" href="#satulation">15.6.3. Satulation(飽和度)</a></li>
-<li><a class="reference internal" href="#errors">15.6.4. Errors(エラー数)</a></li>
+<li><a class="reference internal" href="#id22">15.8. SQSのメトリクス</a><ul>
+<li><a class="reference internal" href="#receivemessage-api">15.8.1. ReceiveMessage API</a></li>
+<li><a class="reference internal" href="#utilization">15.8.2. Utilization(使用度)</a></li>
+<li><a class="reference internal" href="#satulation">15.8.3. Satulation(飽和度)</a></li>
+<li><a class="reference internal" href="#errors">15.8.4. Errors(エラー数)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id18">15.7. SQSのメトリクスを利用したオートスケーリング</a></li>
-<li><a class="reference internal" href="#kinesis">15.8. kinesisとの比較</a></li>
+<li><a class="reference internal" href="#id23">15.9. SQSのメトリクスを利用したオートスケーリング</a></li>
+<li><a class="reference internal" href="#kinesis">15.10. kinesisとの比較</a></li>
 </ul>
 </li>
 </ul>
