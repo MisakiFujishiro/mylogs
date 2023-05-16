@@ -209,18 +209,300 @@ $ aws sqs delete-message --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[
 
 
 
+
+
+
+
+
+
+
+
+
 # SQSのチュートリアル実装(Java編)
 参考サイト
 - [JavaからAmazon SQSのメッセージ送受信を行う](https://www.stsd.co.jp/dev-blog/send_and_receive_amazon_sqs_messages_from_java.html)
 - [JavaでAmazon SQSのメッセージを送受信するチュートリアル](https://weblabo.oscasierra.net/aws-sqs-tutorial-java-1/)
-- [SQS #1 - テスト環境を作ってみた (SDK for Java](https://note.com/yoshi_anpontan/n/n1e7a3c99e07e)
 
 
-ステップ
-- javaのコードを実装してみる
-- 成功したらjarに固める(application.ymlで変更してlocalとcloud上を切り替える)
-- EC2上で動作確認
+## SQSの作成
+SQSは別資料で作成した標準キューを再利用する
 
 
+## EC2の作成
+基本的にはデフォルトでEC2を作成。
+
+IAMについては以下のポリシーを持つIAMポリシーを作成しておき付与する
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "sqs:DeleteMessage",
+                "sqs:ReceiveMessage",
+                "sqs:SendMessage"
+            ],
+            "Resource": "arn:aws:sqs:ap-northeast-1:[アカウントID]:[SQS_NAME]"
+        }
+    ]
+}
+
+```
+
+## Javaのプログラム作成（Producer
+JavaからSQSへのアクセスには、AWS公式のライブラリ`aws-java-sdk-sqs`を利用することとする。pomに以下を追加する。
+
+pom.xml
+```
+<dependency>
+  <groupId>com.amazonaws</groupId>
+  <artifactId>aws-java-sdk-sqs</artifactId>
+  <version>1.12.116</version>
+</dependency>
+```
+
+### config
+src/main/javaの配下にconfigのディレクトリを作成して、`sqsConfig`を作成する
+```
+package com.msa.aws.sqs.sqs_producer.config;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class sqsConfig {
+    @Bean
+    public AmazonSQS amazonSQSClient(){
+        return AmazonSQSClientBuilder.defaultClient();
+    }
+}
+```
+
+メモ
+```
+このソースコードは、AWS SQS（Simple Queue Service）クライアントを構成するための Spring Boot 設定ファイルです。
+
+@Configurationアノテーションは、Spring Framework にこのクラスが設定クラスであることを伝えます。
+
+@Beanアノテーションは、メソッドがSpring DI（Dependency Injection）コンテナによって管理されるBeanを作成することを示します。 amazonSQSClient() メソッドは、AmazonSQS クライアントを生成するために使用されます。
+
+AmazonSQSClientBuilder クラスの defaultClient() メソッドは、既定の設定を使用して AmazonSQS クライアントのインスタンスを作成します。 AmazonSQS クライアントは、AWS SQS とやり取りするための様々なメソッドを提供します。
+
+この設定ファイルは、AmazonSQS クライアントを Spring DI コンテナに登録することによって、MessageSender クラスに注入されます。これにより、MessageSender クラスは、amazonSQSClient フィールドを使用して AWS SQS とやり取りできます。
+```
+
+### MessageSender
+```
+package com.msa.aws.sqs.sqs_producer;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MessageSender {
+    @Autowired
+    private AmazonSQS amazonSQSClient;
+
+    public void sendMessage(){
+        String url = "https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard";
+
+        String message = "hello SQS!! FROM JAVA";
+
+        SendMessageRequest request = new SendMessageRequest()
+                .withQueueUrl(url)
+                .withMessageBody(message)
+                .withDelaySeconds(5);
+        amazonSQSClient.sendMessage(request);
+    }
+}
+
+```
+
+
+### main
+```
+package com.msa.aws.sqs.sqs_producer;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class SqsProducerApplication {
+
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(SqsProducerApplication.class, args);
+        MessageSender sender = context.getBean(MessageSender.class);
+        sender.sendMessage();
+    }
+
+}
+
+```
+
+
+## Javaのプログラム作成（Consumer
+### Config
+```
+package com.msa.aws.sqs.sqs_consumer.config;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class sqsConfig {
+    @Bean
+    public AmazonSQS amazonSQSClient(){
+        return AmazonSQSClientBuilder.defaultClient();
+    }
+}
+
+```
+
+### MessageReceiver
+```
+package com.msa.aws.sqs.sqs_consumer;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import com.amazonaws.services.sqs.model.ReceiveMessageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MessageReceiver {
+    @Autowired
+    private AmazonSQS amazonSQSClient;
+
+
+    public void receiveMessage(){
+    String url = "https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard";
+
+    ReceiveMessageRequest request = new ReceiveMessageRequest()
+                .withQueueUrl(url)
+                .withWaitTimeSeconds(5)
+                .withMaxNumberOfMessages(5);
+
+    ReceiveMessageResult result = amazonSQSClient.receiveMessage(request);
+
+    for (Message msg : result.getMessages()) {
+        // 受信したメッセージの情報を表示
+        System.out.println("["+msg.getMessageId()+"]");
+        System.out.println("  Message ID     : " + msg.getMessageId());
+        System.out.println("  Receipt Handle : " + msg.getReceiptHandle());
+        System.out.println("  Message Body   : " + msg.getBody());
+        System.out.println();
+
+        // 受信したメッセージを削除
+        amazonSQSClient.deleteMessage(url, msg.getReceiptHandle());
+        }
+    }
+}
+
+```
+
+
+### main
+```
+package com.msa.aws.sqs.sqs_consumer;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class SqsConsumerApplication {
+
+	public static void main(String[] args) {
+		ApplicationContext context = SpringApplication.run(SqsConsumerApplication.class, args);
+		MessageReceiver receiver = context.getBean(MessageReceiver.class);
+		receiver.receiveMessage();
+
+	}
+}
+
+```
+
+
+
+## EC2からの実行
+### jarファイルを移動させる
+- キーペアのコピー
+    - 作成した、キーペアをworkspacesにコピーしておく（ファイルのコピーはできないので、テキストベースでコピーする。
+
+- 権限付与
+```
+chmod 600 XXXX.pem 
+```
+
+- ファイルコピーコマンド実行
+```
+scp -i 'EC2秘密鍵' 'ローカルの転送したいファイル' 'EC2ユーザー名@IPアドレス:ファイル配置先 
+
+EX)scp -i .ssh/XXX.pem TEST.txt ec2-user@12.34.567.890:/home/
+```
+
+
+### javaのインストール
+EC2にjavaをインストールして、jarファイルを実行する
+
+javaのインストール
+```
+sudo yum install java-11-amazon-corretto
+```
+
+実行
+```
+java -jar XXX.jar
+```
+
+### 結果
+Producer側のjarファイルを実行
+
+![](img/sqs_tutorial_producer.png)
+
+Consumer側のjarファイルを実行すると、メッセージを取得することができる
+
+![](img/sqs_tutorial_consumer.png)
+
+CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側ではメッセージを削除するので、Produceした分増えた後、Consumeした分減る
+
+![](img/sqs_tutorial_metrix.png)
+
+
+
+
+
+
+
+
+# SQSへの実装(ECS編)
+- IntelliJとgithub連携
+- ECSの設定
+- DockerFileの作成
+- Pipelineの作成
+- buildspec.ymlの作成
+
+
+
+
+# SQSの実装(Java編)
+## Producerの改善
+- ハードコーディングした、数字分メッセージを発出する
+- 引数で数字を受け取って、数字分メッセージを発出する
+
+## Consumerの改善
+- 常時起動するようにする
+- 受け取った数字分待機するようにする
+- メトリクスの挙動を確認する
 
 

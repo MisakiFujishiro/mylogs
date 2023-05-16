@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>10. API Gateway &#8212; my_sphinx  ドキュメント</title>
+    <title>12. API Gateway &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="11. S3の処理" href="s3_process.html" />
-    <link rel="prev" title="9. Lambdaの利用方法" href="lambda.html" /> 
+    <link rel="next" title="13. S3の処理" href="s3_process.html" />
+    <link rel="prev" title="11. Lambdaの利用方法" href="lambda.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="s3_process.html" title="11. S3の処理"
+          <a href="s3_process.html" title="13. S3の処理"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="lambda.html" title="9. Lambdaの利用方法"
+          <a href="lambda.html" title="11. Lambdaの利用方法"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>API Gateway</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>API Gateway</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,9 @@
           <div class="body" role="main">
             
   <section id="api-gateway">
-<h1><span class="section-number">10. </span>API Gateway<a class="headerlink" href="#api-gateway" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">12. </span>API Gateway<a class="headerlink" href="#api-gateway" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="apigw">
-<h2><span class="section-number">10.1. </span>APIGW の設定項目<a class="headerlink" href="#apigw" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.1. </span>APIGW の設定項目<a class="headerlink" href="#apigw" title="この見出しへのパーマリンク">¶</a></h2>
 <p>大きく5つの設定を行なっていく。<br />最初にリソースとメソッドを設定したら、各<code class="docutils literal notranslate"><span class="pre">リソース×メソッド</span></code>ごとにAPIのフローを定義する。</p>
 <ul class="simple">
 <li><p>リソースとメッソドタイプ</p></li>
@@ -59,7 +59,7 @@
 </ul>
 <p><img alt="../_images/apigw_setting_overview1.png" src="../_images/apigw_setting_overview1.png" /></p>
 <section id="id1">
-<h3><span class="section-number">10.1.1. </span>リソースとメッソドタイプ<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.1. </span>リソースとメッソドタイプ<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
 <p>最初にリソースを作成する。リソースとは、APIとして公開されるエンドポイントのURLの一部に当たり、階層的に定義することも可能である。</p>
 <p>次に、各リソースに対するメソッドタイプを指定する。
 リソースに対して、以下のメソッドのうち、何を許可するかを制御することができる。</p>
@@ -72,7 +72,7 @@
 <p><img alt="../_images/apigw_resource1.png" src="../_images/apigw_resource1.png" /></p>
 </section>
 <section id="id2">
-<h3><span class="section-number">10.1.2. </span>メソッドリクエスト<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.2. </span>メソッドリクエスト<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>リクエストを受信した時に実施する処理を定義する</p>
 <p><img alt="../_images/apigw_method_request1.png" src="../_images/apigw_method_request1.png" /></p>
 <p>具体的には、以下のような設定ができる</p>
@@ -83,7 +83,7 @@
 </ul>
 </section>
 <section id="id3">
-<h3><span class="section-number">10.1.3. </span>統合タイプ<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.3. </span>統合タイプ<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>統合バックエンドを渡す前後に処理を定義する</p>
 <p><img alt="../_images/apigw_tougou_11.png" src="../_images/apigw_tougou_11.png" />
 <img alt="../_images/apigw_tougou_21.png" src="../_images/apigw_tougou_21.png" /></p>
@@ -99,7 +99,7 @@
 <p>プロキシ統合を利用するとAPIGWとLambdaで自動で、扱える形式に変換をしてくれる。</p>
 </section>
 <section id="id4">
-<h3><span class="section-number">10.1.4. </span>リクエスト/レスポンス変換<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.4. </span>リクエスト/レスポンス変換<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>レスポンスを送信する時に実行する処理を定義する</p>
 <p><img alt="../_images/apigw_method_response1.png" src="../_images/apigw_method_response1.png" /></p>
 <p>最終的なAPI GWとしてのレスポンスに関する設定</p>
@@ -109,16 +109,16 @@
 </ul>
 </section>
 <section id="id5">
-<h3><span class="section-number">10.1.5. </span>デプロイ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.1.5. </span>デプロイ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>APIの単位にデプロイを行う。</p>
 <p>ステージを作成して、そのステージごとにデプロイを行うことになる。</p>
 </section>
 </section>
 <section id="apigw-mock">
-<h2><span class="section-number">10.2. </span>APIGWの作成(Mockの利用)<a class="headerlink" href="#apigw-mock" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.2. </span>APIGWの作成(Mockの利用)<a class="headerlink" href="#apigw-mock" title="この見出しへのパーマリンク">¶</a></h2>
 <p>GETすると、jsonを返す処理を作成する</p>
 <section id="api">
-<h3><span class="section-number">10.2.1. </span>APIの作成<a class="headerlink" href="#api" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.1. </span>APIの作成<a class="headerlink" href="#api" title="この見出しへのパーマリンク">¶</a></h3>
 <p>AWSのコンソールからAPI GWに遷移して、新しいAPIを作成する。
 APIのタイプから<code class="docutils literal notranslate"><span class="pre">REST</span> <span class="pre">API</span></code>を作成する。</p>
 <p><img alt="../_images/apigw_type.png" src="../_images/apigw_type.png" /></p>
@@ -132,12 +132,12 @@ APIのタイプから<code class="docutils literal notranslate"><span class="pre
 <p><img alt="../_images/apige_make.png" src="../_images/apige_make.png" /></p>
 </section>
 <section id="http">
-<h3><span class="section-number">10.2.2. </span>リソースとHTTPメソッドの作成<a class="headerlink" href="#http" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.2. </span>リソースとHTTPメソッドの作成<a class="headerlink" href="#http" title="この見出しへのパーマリンク">¶</a></h3>
 <p>作成されたAPIの画面から、リソースやメソッドを作成していく。<br />今回はリソースとして<code class="docutils literal notranslate"><span class="pre">sample</span></code>メソッドとしてP<code class="docutils literal notranslate"><span class="pre">GET</span></code>を定義して、バックエンドにはMockを指定する。</p>
 <p><img alt="../_images/apigw_make_resource_method.png" src="../_images/apigw_make_resource_method.png" /></p>
 </section>
 <section id="id6">
-<h3><span class="section-number">10.2.3. </span>メソッドの定義<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.3. </span>メソッドの定義<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>今回はMockから固定のjsonレスポンスを返却するので、作成したGETを押下して、統合レスポンス、マッピングテンプレートから返却するjsonを記述する。</p>
 <p><img alt="../_images/apigw_make_tougou_response.png" src="../_images/apigw_make_tougou_response.png" /></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -155,29 +155,29 @@ APIのタイプから<code class="docutils literal notranslate"><span class="pre
 <p><img alt="../_images/apigw_method_test.png" src="../_images/apigw_method_test.png" /></p>
 </section>
 <section id="id7">
-<h3><span class="section-number">10.2.4. </span>デプロイ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.4. </span>デプロイ<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>アクションからAPIのデプロイを選択</p>
 <p><img alt="../_images/apigw_deploy.png" src="../_images/apigw_deploy.png" /></p>
 <p>デプロイする先のステージを選択（作成）する</p>
 <p><img alt="../_images/apigw_make_deploy_stg.png" src="../_images/apigw_make_deploy_stg.png" /></p>
 </section>
 <section id="id8">
-<h3><span class="section-number">10.2.5. </span>動作確認<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.2.5. </span>動作確認<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>作成されたデプロイのステージから、作成されたURLを確認することができる。このURLにリソースを追加することによって、今回作成したMockの返却値を受け取ることができるかを確認できる。</p>
 <p><img alt="../_images/apigw_stage_url.png" src="../_images/apigw_stage_url.png" /></p>
 </section>
 </section>
 <section id="apigw-lambda">
-<h2><span class="section-number">10.3. </span>APIGWの作成（Lambdaとの連携）<a class="headerlink" href="#apigw-lambda" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">12.3. </span>APIGWの作成（Lambdaとの連携）<a class="headerlink" href="#apigw-lambda" title="この見出しへのパーマリンク">¶</a></h2>
 <p>GETでクエリパラメータを受信してLambdaに連携して処理を噛ませてレスポンスを返す処理を実装する。</p>
 <section id="id9">
-<h3><span class="section-number">10.3.1. </span>リソースとメソッドの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.1. </span>リソースとメソッドの作成<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>リソースを作成し、メソッドを定義するときにバックエンドに<code class="docutils literal notranslate"><span class="pre">Lambda</span> <span class="pre">Function</span></code>を指定し、Lambda プロキシ統合を仕様する。（パススルー場合）</p>
 <p>どのLambdaと連携するかを指定するため、Lambdaは事前に作成しておく。</p>
 <p><img alt="../_images/apigw_with_lambda.png" src="../_images/apigw_with_lambda.png" /></p>
 </section>
 <section id="id10">
-<h3><span class="section-number">10.3.2. </span>リクエストの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.2. </span>リクエストの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>メソッドリクエストから、<code class="docutils literal notranslate"><span class="pre">URLクエリ文字列パラメータ</span></code>を押下して、クエリパラメータの定義をする。</p>
 <ul class="simple">
 <li><p>クエリパラメータの文字列</p></li>
@@ -186,7 +186,7 @@ APIのタイプから<code class="docutils literal notranslate"><span class="pre
 <p><img alt="../_images/apige_query_para_setting.png" src="../_images/apige_query_para_setting.png" /></p>
 </section>
 <section id="lambda">
-<h3><span class="section-number">10.3.3. </span>Lambda側の設定<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.3. </span>Lambda側の設定<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h3>
 <p>統合レスポンスの設定をしているので、Lambda側での返却の形を統合レスポンスに合わせておく必要がある。</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/apigateway/latest/developerguide/api-gateway-integration-settings-integration-response.html">API Gateway で統合レスポンスを設定する</a></p></li>
@@ -223,12 +223,12 @@ APIのタイプから<code class="docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <section id="id11">
-<h4><span class="section-number">10.3.3.1. </span>テストについて<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">12.3.3.1. </span>テストについて<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Lambdaのテストする際には、新しいテストを作成して、テンプレートから、apigateway-aws-proxyを指定することによって、API GWからデータを受信した時のフォーマットを自動で作成してくれる。</p>
 </section>
 </section>
 <section id="id12">
-<h3><span class="section-number">10.3.4. </span>デプロイ<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">12.3.4. </span>デプロイ<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>devステージにデプロイして、作成されたURLに対して、リソースとパラメータを指定してアクセスする。</p>
 </section>
 </section>
@@ -244,31 +244,31 @@ APIのタイプから<code class="docutils literal notranslate"><span class="pre
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">10. API Gateway</a><ul>
-<li><a class="reference internal" href="#apigw">10.1. APIGW の設定項目</a><ul>
-<li><a class="reference internal" href="#id1">10.1.1. リソースとメッソドタイプ</a></li>
-<li><a class="reference internal" href="#id2">10.1.2. メソッドリクエスト</a></li>
-<li><a class="reference internal" href="#id3">10.1.3. 統合タイプ</a></li>
-<li><a class="reference internal" href="#id4">10.1.4. リクエスト/レスポンス変換</a></li>
-<li><a class="reference internal" href="#id5">10.1.5. デプロイ</a></li>
+<li><a class="reference internal" href="#">12. API Gateway</a><ul>
+<li><a class="reference internal" href="#apigw">12.1. APIGW の設定項目</a><ul>
+<li><a class="reference internal" href="#id1">12.1.1. リソースとメッソドタイプ</a></li>
+<li><a class="reference internal" href="#id2">12.1.2. メソッドリクエスト</a></li>
+<li><a class="reference internal" href="#id3">12.1.3. 統合タイプ</a></li>
+<li><a class="reference internal" href="#id4">12.1.4. リクエスト/レスポンス変換</a></li>
+<li><a class="reference internal" href="#id5">12.1.5. デプロイ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#apigw-mock">10.2. APIGWの作成(Mockの利用)</a><ul>
-<li><a class="reference internal" href="#api">10.2.1. APIの作成</a></li>
-<li><a class="reference internal" href="#http">10.2.2. リソースとHTTPメソッドの作成</a></li>
-<li><a class="reference internal" href="#id6">10.2.3. メソッドの定義</a></li>
-<li><a class="reference internal" href="#id7">10.2.4. デプロイ</a></li>
-<li><a class="reference internal" href="#id8">10.2.5. 動作確認</a></li>
+<li><a class="reference internal" href="#apigw-mock">12.2. APIGWの作成(Mockの利用)</a><ul>
+<li><a class="reference internal" href="#api">12.2.1. APIの作成</a></li>
+<li><a class="reference internal" href="#http">12.2.2. リソースとHTTPメソッドの作成</a></li>
+<li><a class="reference internal" href="#id6">12.2.3. メソッドの定義</a></li>
+<li><a class="reference internal" href="#id7">12.2.4. デプロイ</a></li>
+<li><a class="reference internal" href="#id8">12.2.5. 動作確認</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#apigw-lambda">10.3. APIGWの作成（Lambdaとの連携）</a><ul>
-<li><a class="reference internal" href="#id9">10.3.1. リソースとメソッドの作成</a></li>
-<li><a class="reference internal" href="#id10">10.3.2. リクエストの定義</a></li>
-<li><a class="reference internal" href="#lambda">10.3.3. Lambda側の設定</a><ul>
-<li><a class="reference internal" href="#id11">10.3.3.1. テストについて</a></li>
+<li><a class="reference internal" href="#apigw-lambda">12.3. APIGWの作成（Lambdaとの連携）</a><ul>
+<li><a class="reference internal" href="#id9">12.3.1. リソースとメソッドの作成</a></li>
+<li><a class="reference internal" href="#id10">12.3.2. リクエストの定義</a></li>
+<li><a class="reference internal" href="#lambda">12.3.3. Lambda側の設定</a><ul>
+<li><a class="reference internal" href="#id11">12.3.3.1. テストについて</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">10.3.4. デプロイ</a></li>
+<li><a class="reference internal" href="#id12">12.3.4. デプロイ</a></li>
 </ul>
 </li>
 </ul>
@@ -279,12 +279,12 @@ APIのタイプから<code class="docutils literal notranslate"><span class="pre
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="lambda.html"
-                          title="前の章へ"><span class="section-number">9. </span>Lambdaの利用方法</a></p>
+                          title="前の章へ"><span class="section-number">11. </span>Lambdaの利用方法</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="s3_process.html"
-                          title="次の章へ"><span class="section-number">11. </span>S3の処理</a></p>
+                          title="次の章へ"><span class="section-number">13. </span>S3の処理</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -314,13 +314,13 @@ APIのタイプから<code class="docutils literal notranslate"><span class="pre
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="s3_process.html" title="11. S3の処理"
+          <a href="s3_process.html" title="13. S3の処理"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="lambda.html" title="9. Lambdaの利用方法"
+          <a href="lambda.html" title="11. Lambdaの利用方法"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>API Gateway</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">12. </span>API Gateway</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

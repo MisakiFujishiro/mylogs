@@ -97,12 +97,16 @@
 - 実装【実施中】
     - SQSとMSKのセッティング【完了】
     - CLIから送受信【完了】
-    - SQSについてJavaのコードで送受信（Producerはバッチなので作り切る→EC2上でOK）
-    - SQSについてメトリクスを取得
+    - [IntelliJに慣れる](https://misakifujishiro.github.io/mylogs/Java/intelliJ.html)【完了】
+    - SQSについてJavaのコードで送受信【完了】
+    - SQSについてメトリクスを取得【完了】
+---
     - SQSのConsumerをECS上で実装
+    - Producerのアプリ改修(まとめてメッセージを送信する)
+    - Consumerの改修（常時起動でポーリングする）
     - オートスケーリングを設定して挙動を確認する
 
----
+
 ### 6月上旬
 - テーマ深掘り
     - 発表資料のイントロにドラフトを作成して整理してみる
