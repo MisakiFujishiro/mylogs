@@ -481,24 +481,27 @@ CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側で�
 # SQSの開発環境構築
 ## ProducerのCICD
 Producer側はバッチで処理を流すので、CodeDeployでEC2上にjarファイルをデプロイする
-1. IntelliJとGithubを連携
-2. GithubとCodeCommitのミラーリング
+1. [IntelliJとGithubを連携](https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub)
+2. [GithubとCodeCommitのミラーリング](https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit)
 3. CodeDeoloyの準備
 3. CodeDeployの設定
 4. CodePipelineの作成
 
 ### CodeDeployの準備
-appspec.ymlをJava PJのルートディレクトリに配置する
+- appspec.ymlをJava PJのルートディレクトリに配置する
+
 ```
 version: 0.0
 os: linux
 files:
-  - source: /target/sqs_producer-0.0.1-SNAPSHOT.jar
-    destination: /home/ec2-users
+  - source: target/sqs_producer-0.0.1-SNAPSHOT.jar
+    destination: /home/ec2-user/
+permissions:
+  - object: /home/ec2-user/sqs_producer-0.0.1-SNAPSHOT.jar
+    mode: 755
 ```
 
-
-EC2上で以下を実行
+- EC2にcodedeployエージェントをインストール
 ```
 sudo yum -y update
 sudo yum install -y ruby
@@ -508,24 +511,162 @@ chmod +x ./install
 sudo ./install auto
 ```
 
+- EC2に必要なポリシーを追加  
+`AmazonEC2RoleforAWSCodeDeploy`のポリシーをEC2に付与したRoleに追加
 
-また、EC2に付与されているIAMRoleに`AmazonEC2RoleforAWSCodeDeploy`のポリシーを追加
+![](img/codedeploy_ec2_role.png)
 
-CodeDeployに利用するためのIAM Roleを作成する
+
+- CodeDeployのIAM Roleの作成  
+Roleを作成する際にCodeDeployを選択する
 
 ![](img/coddedeploy_role.jpeg)
 
-### 
+
+### CodeDeployの設定
+- Code Deployのコンソール画面>アプリケーション>アプリケーションの作成
+    - アプリケーション名を入力
+    - コンピューティングプラットフォームに'EC2'を選択
+
+![](img/codedeploy_app.png)
+
+- アプリケーションが作成できたら、そのままデプロイグループを作成する
+    - デプロイグループの名前を入力
+    - サービスロールは事前に作成したもの
+    ![](img/codedeploy_setting1.png)
+
+    - デプロイのグループはキーを利用するのでデプロイ先のEC2のタグを指定する
+    ![](img/codedeploy_setting2.png)
+
+    - DodeDeployエージェントのインストールは完了しているので、対応なし
+    ![](img/codedeploy_setting3.png)
+
+
+### CodePipelineの作成
+- Pipelineの作成
+    - パイプライン名を入力
+    - サービスロールは新規で作成する
+    ![](img/codepipeline_sqs_producer.png)
+- ソースプロバイダーは事前作成したCodeCommit
+- ビルドステージはスキップ
+- デプロイステージは事前に作成したCodeDeploy
+
+![](img/codepipeline_sqs_producer_overview.png)
+
+
+
 
 
 
 ## ConsumerのCICD
-- IntelliJとgithub連携
-- ECSの設定
-- DockerFileの作成
-- Pipelineの作成
-- buildspec.ymlの作成
+Consumerは最終的にオートスケーリングを行うことを考えて、ECSでのデプロイを目指す。
+1. [IntelliJとGithubを連携](https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub)
+2. [GithubとCodeCommitのミラーリング](https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit)
+3. DockerFileの作成
+4. ECRの設定
+5. buildspec.ymlの作成
+6. CodeBuildの設定
+7. ECSの設定
+8. Pipelineの作成(Deployまで)
 
+
+### Dockerfileの作成
+javaの環境構築済みのコンテナを起動し、githubからspringプロジェクトをcloneして、コンテナを起動する。
+```
+# Docker Imageとしてadoptopenjdk11を使用
+FROM adoptopenjdk:11-jdk-hotspot
+
+# git などのインストール
+RUN apt-get update && apt-get install -y \
+       wget tar iproute2 git
+
+# mavenのインストール
+RUN apt-get install -y maven
+
+# PJのコピー
+RUN git clone https://github.com/[YOUR_GITHUB_URL]
+
+# プロジェクトのビルド
+RUN mvn install -DskipTests=true -f /sqs_consumer/pom.xml
+
+# タイムゾーンの変更
+RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+# コンテナのポート解放
+EXPOSE 8080
+
+# Javaの実行
+CMD java -jar sqs_consumer/target/sqs_consumer-0.0.1-SNAPSHOT.jar
+
+```
+
+試しに以下のコマンドでカレントディレクトリのDockerfileを利用したdocker imageが作成されるか確認する
+```
+sudo docker built -t [YOUR_IMAGE_TAG] .
+```
+
+### ECRの設定
+パブリックで、ECRを作成しておく。
+
+
+### Buildspec.ymlの作成
+codeBuildで作成したDockerFileを利用してDockerImageを作成し、そのDocker ImageをECRへpushするように設定する
+```
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region ap-northeast-1)
+      - AWS_ACCOUNT_ID=$(echo ${CODEBUILD_BUILD_ARN} | cut -f 5 -d :)
+      - REPOSITORY_URL=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/ma-fujishiroms-sqs-consumer
+      - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION} | cut -c 1-7)
+
+  build:
+    commands:
+      - echo Building the Docker image on `date`
+      - docker build --no-cache -t ma-fujishiroms-sqs-consumer:${IMAGE_TAG} .
+      - docker tag ma-fujishiroms-sqs-consumer:${IMAGE_TAG} ${REPOSITORY_URL}:${IMAGE_TAG}
+  post_build:
+    commands:
+      - echo Pushing the Docker image on `date`
+      - docker push ${REPOSITORY_URL}:${IMAGE_TAG}
+      - printf '[{"name":"MA-fujishiroms-container-sqs-consumer","imageUri":"%s"}]' $REPOSITORY_URL:$IMAGE_TAG > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
+```
+
+### CodeBuildの設定
+CodeBuildを設定することで、buildspec.ymlが実行され、gitlabにコミットすると、Docker ImageがECRにPushされるようになる。
+
+CodeBuildのコンソールからビルドプロジェクトを作成開始
+- PJ名の入力
+![](img/sqs_consumer_codebuild1.png)
+- ソースはCodeCommitのmainブランチ（ここのルートのbuildspecを見る）
+![](img/sqs_consumer_codebuild2.png)
+- 環境を設定する
+- dockerを利用する場合は特権付与にチェックを入れる
+- サービスロールは新規で作成するが、後ほどECRへの権限を付与する
+![](img/sqs_consumer_codebuild3.png)
+- buidspec.ymlがルートディレクトリにある場合はデフォルトでOK
+![](img/sqs_consumer_codebuild4.png)
+
+
+- IAM Roleは新規作成した後に`AmazonEC2ContainerRegistryPowerUser`を付与する
+
+![](img/sqs_consumer_codebuild5.png)
+
+
+この時点でCodeBuildまでのCodePipelineを作成すると、ECRへのpushが行われる
+
+![](img/codepipeline-sqs-consumer-build.png)
+
+![](img/ecr-sqs-consumer.png)
+
+### ECSの設定
+
+
+### CodeDeployの設定
 
 
 

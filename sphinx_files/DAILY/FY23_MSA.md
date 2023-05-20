@@ -102,8 +102,8 @@
     - SQSについてメトリクスを取得【完了】
     - IntelliJをgitlabと連携＋codecommitとミラーリング【完了】
     - ProducerのPipeline作成（EC2に自動でデプロイ）【完了】
+    - ConsumerのDockerコンテナ化【完了】
 ---
-    - ConsumerのDockerコンテナ化
     - SQSのConsumerをECS上で実装
     - ConsumerのPipeline作成（ECSに自動でデプロイ
 

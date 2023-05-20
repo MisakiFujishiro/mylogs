@@ -479,23 +479,30 @@
 <h2><span class="section-number">4.1. </span>ProducerのCICD<a class="headerlink" href="#producercicd" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Producer側はバッチで処理を流すので、CodeDeployでEC2上にjarファイルをデプロイする</p>
 <ol class="simple">
-<li><p>IntelliJとGithubを連携</p></li>
-<li><p>GithubとCodeCommitのミラーリング</p></li>
+<li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub">IntelliJとGithubを連携</a></p></li>
+<li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit">GithubとCodeCommitのミラーリング</a></p></li>
 <li><p>CodeDeoloyの準備</p></li>
 <li><p>CodeDeployの設定</p></li>
 <li><p>CodePipelineの作成</p></li>
 </ol>
 <section id="codedeploy">
 <h3><span class="section-number">4.1.1. </span>CodeDeployの準備<a class="headerlink" href="#codedeploy" title="この見出しへのパーマリンク">¶</a></h3>
-<p>appspec.ymlをJava PJのルートディレクトリに配置する</p>
+<ul class="simple">
+<li><p>appspec.ymlをJava PJのルートディレクトリに配置する</p></li>
+</ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">version</span><span class="p">:</span> <span class="mf">0.0</span>
 <span class="n">os</span><span class="p">:</span> <span class="n">linux</span>
 <span class="n">files</span><span class="p">:</span>
-  <span class="o">-</span> <span class="n">source</span><span class="p">:</span> <span class="o">/</span><span class="n">target</span><span class="o">/</span><span class="n">sqs_producer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span>
-    <span class="n">destination</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ec2</span><span class="o">-</span><span class="n">users</span>
+  <span class="o">-</span> <span class="n">source</span><span class="p">:</span> <span class="n">target</span><span class="o">/</span><span class="n">sqs_producer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">destination</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ec2</span><span class="o">-</span><span class="n">user</span><span class="o">/</span>
+<span class="n">permissions</span><span class="p">:</span>
+  <span class="o">-</span> <span class="nb">object</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ec2</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">sqs_producer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="mi">755</span>
 </pre></div>
 </div>
-<p>EC2上で以下を実行</p>
+<ul class="simple">
+<li><p>EC2にcodedeployエージェントをインストール</p></li>
+</ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">update</span>
 <span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">ruby</span>
 <span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">aws</span><span class="o">-</span><span class="n">cli</span>
@@ -504,27 +511,168 @@
 <span class="n">sudo</span> <span class="o">./</span><span class="n">install</span> <span class="n">auto</span>
 </pre></div>
 </div>
-<p>また、EC2に付与されているIAMRoleに<code class="docutils literal notranslate"><span class="pre">AmazonEC2RoleforAWSCodeDeploy</span></code>のポリシーを追加</p>
-<p>CodeDeployに利用するためのIAM Roleを作成する</p>
+<ul class="simple">
+<li><p>EC2に必要なポリシーを追加<br /><code class="docutils literal notranslate"><span class="pre">AmazonEC2RoleforAWSCodeDeploy</span></code>のポリシーをEC2に付与したRoleに追加</p></li>
+</ul>
+<p><img alt="../_images/codedeploy_ec2_role.png" src="../_images/codedeploy_ec2_role.png" /></p>
+<ul class="simple">
+<li><p>CodeDeployのIAM Roleの作成<br />Roleを作成する際にCodeDeployを選択する</p></li>
+</ul>
 <p><img alt="../_images/coddedeploy_role.jpeg" src="../_images/coddedeploy_role.jpeg" /></p>
 </section>
 <section id="id13">
-<h3><span class="section-number">4.1.2. </span><a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.1.2. </span>CodeDeployの設定<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>Code Deployのコンソール画面&gt;アプリケーション&gt;アプリケーションの作成</p>
+<ul>
+<li><p>アプリケーション名を入力</p></li>
+<li><p>コンピューティングプラットフォームに'EC2'を選択</p></li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/codedeploy_app.png" src="../_images/codedeploy_app.png" /></p>
+<ul class="simple">
+<li><p>アプリケーションが作成できたら、そのままデプロイグループを作成する</p>
+<ul>
+<li><p>デプロイグループの名前を入力</p></li>
+<li><p>サービスロールは事前に作成したもの
+<img alt="../_images/codedeploy_setting1.png" src="../_images/codedeploy_setting1.png" /></p></li>
+<li><p>デプロイのグループはキーを利用するのでデプロイ先のEC2のタグを指定する
+<img alt="../_images/codedeploy_setting2.png" src="../_images/codedeploy_setting2.png" /></p></li>
+<li><p>DodeDeployエージェントのインストールは完了しているので、対応なし
+<img alt="../_images/codedeploy_setting3.png" src="../_images/codedeploy_setting3.png" /></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="codepipeline">
+<h3><span class="section-number">4.1.3. </span>CodePipelineの作成<a class="headerlink" href="#codepipeline" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>Pipelineの作成</p>
+<ul>
+<li><p>パイプライン名を入力</p></li>
+<li><p>サービスロールは新規で作成する
+<img alt="../_images/codepipeline_sqs_producer.png" src="../_images/codepipeline_sqs_producer.png" /></p></li>
+</ul>
+</li>
+<li><p>ソースプロバイダーは事前作成したCodeCommit</p></li>
+<li><p>ビルドステージはスキップ</p></li>
+<li><p>デプロイステージは事前に作成したCodeDeploy</p></li>
+</ul>
+<p><img alt="../_images/codepipeline_sqs_producer_overview.png" src="../_images/codepipeline_sqs_producer_overview.png" /></p>
 </section>
 </section>
 <section id="consumercicd">
 <h2><span class="section-number">4.2. </span>ConsumerのCICD<a class="headerlink" href="#consumercicd" title="この見出しへのパーマリンク">¶</a></h2>
-<ul class="simple">
-<li><p>IntelliJとgithub連携</p></li>
-<li><p>ECSの設定</p></li>
+<p>Consumerは最終的にオートスケーリングを行うことを考えて、ECSでのデプロイを目指す。</p>
+<ol class="simple">
+<li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub">IntelliJとGithubを連携</a></p></li>
+<li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit">GithubとCodeCommitのミラーリング</a></p></li>
 <li><p>DockerFileの作成</p></li>
-<li><p>Pipelineの作成</p></li>
+<li><p>ECRの設定</p></li>
 <li><p>buildspec.ymlの作成</p></li>
-</ul>
+<li><p>CodeBuildの設定</p></li>
+<li><p>ECSの設定</p></li>
+<li><p>Pipelineの作成(Deployまで)</p></li>
+</ol>
+<section id="dockerfile">
+<h3><span class="section-number">4.2.1. </span>Dockerfileの作成<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h3>
+<p>javaの環境構築済みのコンテナを起動し、githubからspringプロジェクトをcloneして、コンテナを起動する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Docker Imageとしてadoptopenjdk11を使用</span>
+<span class="n">FROM</span> <span class="n">adoptopenjdk</span><span class="p">:</span><span class="mi">11</span><span class="o">-</span><span class="n">jdk</span><span class="o">-</span><span class="n">hotspot</span>
+
+<span class="c1"># git などのインストール</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span> <span class="o">&amp;&amp;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> \
+       <span class="n">wget</span> <span class="n">tar</span> <span class="n">iproute2</span> <span class="n">git</span>
+
+<span class="c1"># mavenのインストール</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">maven</span>
+
+<span class="c1"># PJのコピー</span>
+<span class="n">RUN</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="p">[</span><span class="n">YOUR_GITHUB_URL</span><span class="p">]</span>
+
+<span class="c1"># プロジェクトのビルド</span>
+<span class="n">RUN</span> <span class="n">mvn</span> <span class="n">install</span> <span class="o">-</span><span class="n">DskipTests</span><span class="o">=</span><span class="n">true</span> <span class="o">-</span><span class="n">f</span> <span class="o">/</span><span class="n">sqs_consumer</span><span class="o">/</span><span class="n">pom</span><span class="o">.</span><span class="n">xml</span>
+
+<span class="c1"># タイムゾーンの変更</span>
+<span class="n">RUN</span> <span class="n">ln</span> <span class="o">-</span><span class="n">sf</span>  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">zoneinfo</span><span class="o">/</span><span class="n">Asia</span><span class="o">/</span><span class="n">Tokyo</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">localtime</span>
+
+<span class="c1"># コンテナのポート解放</span>
+<span class="n">EXPOSE</span> <span class="mi">8080</span>
+
+<span class="c1"># Javaの実行</span>
+<span class="n">CMD</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">sqs_consumer</span><span class="o">/</span><span class="n">target</span><span class="o">/</span><span class="n">sqs_consumer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+</div>
+<p>試しに以下のコマンドでカレントディレクトリのDockerfileを利用したdocker imageが作成されるか確認する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">docker</span> <span class="n">built</span> <span class="o">-</span><span class="n">t</span> <span class="p">[</span><span class="n">YOUR_IMAGE_TAG</span><span class="p">]</span> <span class="o">.</span>
+</pre></div>
+</div>
 </section>
+<section id="ecr">
+<h3><span class="section-number">4.2.2. </span>ECRの設定<a class="headerlink" href="#ecr" title="この見出しへのパーマリンク">¶</a></h3>
+<p>パブリックで、ECRを作成しておく。</p>
+</section>
+<section id="buildspec-yml">
+<h3><span class="section-number">4.2.3. </span>Buildspec.ymlの作成<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>codeBuildで作成したDockerFileを利用してDockerImageを作成し、そのDocker ImageをECRへpushするように設定する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region ap-northeast-1)
+      - AWS_ACCOUNT_ID=$(echo ${CODEBUILD_BUILD_ARN} | cut -f 5 -d :)
+      - REPOSITORY_URL=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/ma-fujishiroms-sqs-consumer
+      - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION} | cut -c 1-7)
+
+  build:
+    commands:
+      - echo Building the Docker image on `date`
+      - docker build --no-cache -t ma-fujishiroms-sqs-consumer:${IMAGE_TAG} .
+      - docker tag ma-fujishiroms-sqs-consumer:${IMAGE_TAG} ${REPOSITORY_URL}:${IMAGE_TAG}
+  post_build:
+    commands:
+      - echo Pushing the Docker image on `date`
+      - docker push ${REPOSITORY_URL}:${IMAGE_TAG}
+      - printf &#39;[{&quot;name&quot;:&quot;MA-fujishiroms-container-sqs-consumer&quot;,&quot;imageUri&quot;:&quot;%s&quot;}]&#39; $REPOSITORY_URL:$IMAGE_TAG &gt; imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
+</pre></div>
+</div>
+</section>
+<section id="codebuild">
+<h3><span class="section-number">4.2.4. </span>CodeBuildの設定<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CodeBuildを設定することで、buildspec.ymlが実行され、gitlabにコミットすると、Docker ImageがECRにPushされるようになる。</p>
+<p>CodeBuildのコンソールからビルドプロジェクトを作成開始</p>
+<ul class="simple">
+<li><p>PJ名の入力
+<img alt="../_images/sqs_consumer_codebuild1.png" src="../_images/sqs_consumer_codebuild1.png" /></p></li>
+<li><p>ソースはCodeCommitのmainブランチ（ここのルートのbuildspecを見る）
+<img alt="../_images/sqs_consumer_codebuild2.png" src="../_images/sqs_consumer_codebuild2.png" /></p></li>
+<li><p>環境を設定する</p></li>
+<li><p>dockerを利用する場合は特権付与にチェックを入れる</p></li>
+<li><p>サービスロールは新規で作成するが、後ほどECRへの権限を付与する
+<img alt="../_images/sqs_consumer_codebuild3.png" src="../_images/sqs_consumer_codebuild3.png" /></p></li>
+<li><p>buidspec.ymlがルートディレクトリにある場合はデフォルトでOK
+<img alt="../_images/sqs_consumer_codebuild4.png" src="../_images/sqs_consumer_codebuild4.png" /></p></li>
+<li><p>IAM Roleは新規作成した後に<code class="docutils literal notranslate"><span class="pre">AmazonEC2ContainerRegistryPowerUser</span></code>を付与する</p></li>
+</ul>
+<p><img alt="../_images/sqs_consumer_codebuild5.png" src="../_images/sqs_consumer_codebuild5.png" /></p>
+<p>この時点でCodeBuildまでのCodePipelineを作成すると、ECRへのpushが行われる</p>
+<p><img alt="../_images/codepipeline-sqs-consumer-build.png" src="../_images/codepipeline-sqs-consumer-build.png" /></p>
+<p><img alt="../_images/ecr-sqs-consumer.png" src="../_images/ecr-sqs-consumer.png" /></p>
+</section>
+<section id="ecs">
+<h3><span class="section-number">4.2.5. </span>ECSの設定<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h3>
 </section>
 <section id="id14">
-<h1><span class="section-number">5. </span>SQSの本格実装(Java編)<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h1>
+<h3><span class="section-number">4.2.6. </span>CodeDeployの設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+</section>
+<section id="id15">
+<h1><span class="section-number">5. </span>SQSの本格実装(Java編)<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="producer">
 <h2><span class="section-number">5.1. </span>Producerの改善<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
@@ -595,13 +743,22 @@
 <li><a class="reference internal" href="#id12">4. SQSの開発環境構築</a><ul>
 <li><a class="reference internal" href="#producercicd">4.1. ProducerのCICD</a><ul>
 <li><a class="reference internal" href="#codedeploy">4.1.1. CodeDeployの準備</a></li>
-<li><a class="reference internal" href="#id13">4.1.2. </a></li>
+<li><a class="reference internal" href="#id13">4.1.2. CodeDeployの設定</a></li>
+<li><a class="reference internal" href="#codepipeline">4.1.3. CodePipelineの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#consumercicd">4.2. ConsumerのCICD</a></li>
+<li><a class="reference internal" href="#consumercicd">4.2. ConsumerのCICD</a><ul>
+<li><a class="reference internal" href="#dockerfile">4.2.1. Dockerfileの作成</a></li>
+<li><a class="reference internal" href="#ecr">4.2.2. ECRの設定</a></li>
+<li><a class="reference internal" href="#buildspec-yml">4.2.3. Buildspec.ymlの作成</a></li>
+<li><a class="reference internal" href="#codebuild">4.2.4. CodeBuildの設定</a></li>
+<li><a class="reference internal" href="#ecs">4.2.5. ECSの設定</a></li>
+<li><a class="reference internal" href="#id14">4.2.6. CodeDeployの設定</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">5. SQSの本格実装(Java編)</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#id15">5. SQSの本格実装(Java編)</a><ul>
 <li><a class="reference internal" href="#producer">5.1. Producerの改善</a></li>
 <li><a class="reference internal" href="#consumer">5.2. Consumerの改善</a></li>
 </ul>
