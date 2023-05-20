@@ -275,18 +275,19 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>メモ</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>このソースコードは、AWS SQS（Simple Queue Service）クライアントを構成するための Spring Boot 設定ファイルです。
-
-@Configurationアノテーションは、Spring Framework にこのクラスが設定クラスであることを伝えます。
-
-@Beanアノテーションは、メソッドがSpring DI（Dependency Injection）コンテナによって管理されるBeanを作成することを示します。 amazonSQSClient() メソッドは、AmazonSQS クライアントを生成するために使用されます。
-
-AmazonSQSClientBuilder クラスの defaultClient() メソッドは、既定の設定を使用して AmazonSQS クライアントのインスタンスを作成します。 AmazonSQS クライアントは、AWS SQS とやり取りするための様々なメソッドを提供します。
-
-この設定ファイルは、AmazonSQS クライアントを Spring DI コンテナに登録することによって、MessageSender クラスに注入されます。これにより、MessageSender クラスは、amazonSQSClient フィールドを使用して AWS SQS とやり取りできます。
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>&#64;configurationにより、設定クラスであることを宣言</p>
+<ul>
+<li><p>設定クラスではSpringがDIするためのBeanの定義を行う</p></li>
+</ul>
+</li>
+<li><p>&#64;Beanにより、メソッドがDIコンテナによって管理させるBeanを作成することを宣言</p>
+<ul>
+<li><p>AmazonSQSClient()メソッドにより、SQSのクライアントを生成する</p></li>
+<li><p>defaultClient() メソッドは、既定の設定を使用して AmazonSQS クライアントのインスタンスを作成します。</p></li>
+</ul>
+</li>
+</ul>
 </section>
 <section id="messagesender">
 <h3><span class="section-number">3.3.2. </span>MessageSender<a class="headerlink" href="#messagesender" title="この見出しへのパーマリンク">¶</a></h3>
@@ -472,8 +473,47 @@ AmazonSQSClientBuilder クラスの defaultClient() メソッドは、既定の�
 </section>
 </section>
 </section>
-<section id="sqs-ecs">
-<h1><span class="section-number">4. </span>SQSへの実装(ECS編)<a class="headerlink" href="#sqs-ecs" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id12">
+<h1><span class="section-number">4. </span>SQSの開発環境構築<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="producercicd">
+<h2><span class="section-number">4.1. </span>ProducerのCICD<a class="headerlink" href="#producercicd" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Producer側はバッチで処理を流すので、CodeDeployでEC2上にjarファイルをデプロイする</p>
+<ol class="simple">
+<li><p>IntelliJとGithubを連携</p></li>
+<li><p>GithubとCodeCommitのミラーリング</p></li>
+<li><p>CodeDeoloyの準備</p></li>
+<li><p>CodeDeployの設定</p></li>
+<li><p>CodePipelineの作成</p></li>
+</ol>
+<section id="codedeploy">
+<h3><span class="section-number">4.1.1. </span>CodeDeployの準備<a class="headerlink" href="#codedeploy" title="この見出しへのパーマリンク">¶</a></h3>
+<p>appspec.ymlをJava PJのルートディレクトリに配置する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">version</span><span class="p">:</span> <span class="mf">0.0</span>
+<span class="n">os</span><span class="p">:</span> <span class="n">linux</span>
+<span class="n">files</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">source</span><span class="p">:</span> <span class="o">/</span><span class="n">target</span><span class="o">/</span><span class="n">sqs_producer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">destination</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ec2</span><span class="o">-</span><span class="n">users</span>
+</pre></div>
+</div>
+<p>EC2上で以下を実行</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">ruby</span>
+<span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">aws</span><span class="o">-</span><span class="n">cli</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">aws</span><span class="o">-</span><span class="n">codedeploy</span><span class="o">-</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">s3</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">latest</span><span class="o">/</span><span class="n">install</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">./</span><span class="n">install</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">install</span> <span class="n">auto</span>
+</pre></div>
+</div>
+<p>また、EC2に付与されているIAMRoleに<code class="docutils literal notranslate"><span class="pre">AmazonEC2RoleforAWSCodeDeploy</span></code>のポリシーを追加</p>
+<p>CodeDeployに利用するためのIAM Roleを作成する</p>
+<p><img alt="../_images/coddedeploy_role.jpeg" src="../_images/coddedeploy_role.jpeg" /></p>
+</section>
+<section id="id13">
+<h3><span class="section-number">4.1.2. </span><a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+<section id="consumercicd">
+<h2><span class="section-number">4.2. </span>ConsumerのCICD<a class="headerlink" href="#consumercicd" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>IntelliJとgithub連携</p></li>
 <li><p>ECSの設定</p></li>
@@ -482,8 +522,9 @@ AmazonSQSClientBuilder クラスの defaultClient() メソッドは、既定の�
 <li><p>buildspec.ymlの作成</p></li>
 </ul>
 </section>
-<section id="id12">
-<h1><span class="section-number">5. </span>SQSの実装(Java編)<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h1>
+</section>
+<section id="id14">
+<h1><span class="section-number">5. </span>SQSの本格実装(Java編)<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="producer">
 <h2><span class="section-number">5.1. </span>Producerの改善<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
@@ -551,8 +592,16 @@ AmazonSQSClientBuilder クラスの defaultClient() メソッドは、既定の�
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sqs-ecs">4. SQSへの実装(ECS編)</a></li>
-<li><a class="reference internal" href="#id12">5. SQSの実装(Java編)</a><ul>
+<li><a class="reference internal" href="#id12">4. SQSの開発環境構築</a><ul>
+<li><a class="reference internal" href="#producercicd">4.1. ProducerのCICD</a><ul>
+<li><a class="reference internal" href="#codedeploy">4.1.1. CodeDeployの準備</a></li>
+<li><a class="reference internal" href="#id13">4.1.2. </a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#consumercicd">4.2. ConsumerのCICD</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">5. SQSの本格実装(Java編)</a><ul>
 <li><a class="reference internal" href="#producer">5.1. Producerの改善</a></li>
 <li><a class="reference internal" href="#consumer">5.2. Consumerの改善</a></li>
 </ul>

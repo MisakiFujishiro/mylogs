@@ -100,17 +100,21 @@
     - [IntelliJに慣れる](https://misakifujishiro.github.io/mylogs/Java/intelliJ.html)【完了】
     - SQSについてJavaのコードで送受信【完了】
     - SQSについてメトリクスを取得【完了】
+    - IntelliJをgitlabと連携＋codecommitとミラーリング【完了】
+    - ProducerのPipeline作成（EC2に自動でデプロイ）【完了】
 ---
+    - ConsumerのDockerコンテナ化
     - SQSのConsumerをECS上で実装
-    - Producerのアプリ改修(まとめてメッセージを送信する)
-    - Consumerの改修（常時起動でポーリングする）
-    - オートスケーリングを設定して挙動を確認する
+    - ConsumerのPipeline作成（ECSに自動でデプロイ
 
 
 ### 6月上旬
 - テーマ深掘り
     - 発表資料のイントロにドラフトを作成して整理してみる
 - 実装
+    - Producerのアプリ改修(まとめてメッセージを送信する)
+    - Consumerの改修（常時起動でポーリングする）
+    - オートスケーリングを設定して挙動を確認する
     - MSKについてJavaのコードで送受信
     - MSKについてメトリクスを取得
 

@@ -46,6 +46,7 @@ CodeCommmitのページから、レポジトリを作成する。
 ### githubのミラーリング
 githubの変更を検知して、CodeCommitに反映されていることを確認する。
 #### SSHキーの場合
+githubではHTTPS認証の方法があまり情報がないので、SSHキーによるミラーリングを行う。
 
 実施項目は以下
 1. SSHキーをローカルPCで作成
@@ -56,6 +57,7 @@ githubの変更を検知して、CodeCommitに反映されていることを確�
 詳細は、[別ページ](https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit)
 
 #### HTTPS認証の場合
+gitlabの場合はHTTPSの認証が簡単なので、こちらを推奨する
 
 実施項目は以下
 1. codecommitへのpull pushの権限を持つIAMユーザーを作成

@@ -265,6 +265,7 @@ pom.xml
 
 ### config
 src/main/javaの配下にconfigのディレクトリを作成して、`sqsConfig`を作成する
+
 ```
 package com.msa.aws.sqs.sqs_producer.config;
 
@@ -281,19 +282,12 @@ public class sqsConfig {
     }
 }
 ```
+- @configurationにより、設定クラスであることを宣言
+    - 設定クラスではSpringがDIするためのBeanの定義を行う
+- @Beanにより、メソッドがDIコンテナによって管理させるBeanを作成することを宣言
+    - AmazonSQSClient()メソッドにより、SQSのクライアントを生成する
+    - defaultClient() メソッドは、既定の設定を使用して AmazonSQS クライアントのインスタンスを作成します。
 
-メモ
-```
-このソースコードは、AWS SQS（Simple Queue Service）クライアントを構成するための Spring Boot 設定ファイルです。
-
-@Configurationアノテーションは、Spring Framework にこのクラスが設定クラスであることを伝えます。
-
-@Beanアノテーションは、メソッドがSpring DI（Dependency Injection）コンテナによって管理されるBeanを作成することを示します。 amazonSQSClient() メソッドは、AmazonSQS クライアントを生成するために使用されます。
-
-AmazonSQSClientBuilder クラスの defaultClient() メソッドは、既定の設定を使用して AmazonSQS クライアントのインスタンスを作成します。 AmazonSQS クライアントは、AWS SQS とやり取りするための様々なメソッドを提供します。
-
-この設定ファイルは、AmazonSQS クライアントを Spring DI コンテナに登録することによって、MessageSender クラスに注入されます。これにより、MessageSender クラスは、amazonSQSClient フィールドを使用して AWS SQS とやり取りできます。
-```
 
 ### MessageSender
 ```
@@ -484,8 +478,48 @@ CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側で�
 
 
 
+# SQSの開発環境構築
+## ProducerのCICD
+Producer側はバッチで処理を流すので、CodeDeployでEC2上にjarファイルをデプロイする
+1. IntelliJとGithubを連携
+2. GithubとCodeCommitのミラーリング
+3. CodeDeoloyの準備
+3. CodeDeployの設定
+4. CodePipelineの作成
 
-# SQSへの実装(ECS編)
+### CodeDeployの準備
+appspec.ymlをJava PJのルートディレクトリに配置する
+```
+version: 0.0
+os: linux
+files:
+  - source: /target/sqs_producer-0.0.1-SNAPSHOT.jar
+    destination: /home/ec2-users
+```
+
+
+EC2上で以下を実行
+```
+sudo yum -y update
+sudo yum install -y ruby
+sudo yum install -y aws-cli
+wget https://aws-codedeploy-ap-northeast-1.s3.ap-northeast-1.amazonaws.com/latest/install
+chmod +x ./install
+sudo ./install auto
+```
+
+
+また、EC2に付与されているIAMRoleに`AmazonEC2RoleforAWSCodeDeploy`のポリシーを追加
+
+CodeDeployに利用するためのIAM Roleを作成する
+
+![](img/coddedeploy_role.jpeg)
+
+### 
+
+
+
+## ConsumerのCICD
 - IntelliJとgithub連携
 - ECSの設定
 - DockerFileの作成
@@ -495,7 +529,7 @@ CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側で�
 
 
 
-# SQSの実装(Java編)
+# SQSの本格実装(Java編)
 ## Producerの改善
 - ハードコーディングした、数字分メッセージを発出する
 - 引数で数字を受け取って、数字分メッセージを発出する

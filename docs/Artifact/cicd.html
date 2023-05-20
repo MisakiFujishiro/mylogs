@@ -103,6 +103,7 @@ git commit -m &quot;first commit&quot;</p>
 <p>githubの変更を検知して、CodeCommitに反映されていることを確認する。</p>
 <section id="ssh">
 <h4><span class="section-number">2.2.2.1. </span>SSHキーの場合<a class="headerlink" href="#ssh" title="この見出しへのパーマリンク">¶</a></h4>
+<p>githubではHTTPS認証の方法があまり情報がないので、SSHキーによるミラーリングを行う。</p>
 <p>実施項目は以下</p>
 <ol class="simple">
 <li><p>SSHキーをローカルPCで作成</p></li>
@@ -114,6 +115,7 @@ git commit -m &quot;first commit&quot;</p>
 </section>
 <section id="https">
 <h4><span class="section-number">2.2.2.2. </span>HTTPS認証の場合<a class="headerlink" href="#https" title="この見出しへのパーマリンク">¶</a></h4>
+<p>gitlabの場合はHTTPSの認証が簡単なので、こちらを推奨する</p>
 <p>実施項目は以下</p>
 <ol class="simple">
 <li><p>codecommitへのpull pushの権限を持つIAMユーザーを作成</p></li>

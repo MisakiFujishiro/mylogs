@@ -199,14 +199,15 @@
 <li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/Java/intelliJ.html">IntelliJに慣れる</a>【完了】</p></li>
 <li><p>SQSについてJavaのコードで送受信【完了】</p></li>
 <li><p>SQSについてメトリクスを取得【完了】</p></li>
+<li><p>IntelliJをgitlabと連携＋codecommitとミラーリング【完了】</p></li>
+<li><p>ProducerのPipeline作成（EC2に自動でデプロイ）【完了】</p></li>
 </ul>
 </li>
 </ul>
 <hr class="docutils" />
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- SQSのConsumerをECS上で実装
-- Producerのアプリ改修(まとめてメッセージを送信する)
-- Consumerの改修（常時起動でポーリングする）
-- オートスケーリングを設定して挙動を確認する
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- ConsumerのDockerコンテナ化
+- SQSのConsumerをECS上で実装
+- ConsumerのPipeline作成（ECSに自動でデプロイ
 </pre></div>
 </div>
 </section>
@@ -220,6 +221,9 @@
 </li>
 <li><p>実装</p>
 <ul>
+<li><p>Producerのアプリ改修(まとめてメッセージを送信する)</p></li>
+<li><p>Consumerの改修（常時起動でポーリングする）</p></li>
+<li><p>オートスケーリングを設定して挙動を確認する</p></li>
 <li><p>MSKについてJavaのコードで送受信</p></li>
 <li><p>MSKについてメトリクスを取得</p></li>
 </ul>

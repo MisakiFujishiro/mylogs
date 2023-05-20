@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>4. java spring &#8212; my_sphinx  ドキュメント</title>
+    <title>5. java spring &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="5. チュートリアル" href="tutorial.html" />
-    <link rel="prev" title="2. Javaとは" href="java_env.html" /> 
+    <link rel="next" title="6. チュートリアル" href="tutorial.html" />
+    <link rel="prev" title="3. Javaとは" href="java_env.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="tutorial.html" title="5. チュートリアル"
+          <a href="tutorial.html" title="6. チュートリアル"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="java_env.html" title="2. Javaとは"
+          <a href="java_env.html" title="3. Javaとは"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>java spring</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>java spring</a></li> 
       </ul>
     </div>  
 
@@ -46,37 +46,37 @@
           <div class="body" role="main">
             
   <section id="java-spring">
-<h1><span class="section-number">4. </span>java spring<a class="headerlink" href="#java-spring" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">5. </span>java spring<a class="headerlink" href="#java-spring" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="java">
-<h2><span class="section-number">4.1. </span>javaの学習目標<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.1. </span>javaの学習目標<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h2>
 <p>プロジェクト作る。必要なライブラリを準備する。実装していく。このプロセスを理解することができれば、どのようなAPPの全体設計であろうと実装することができていく。
 最初に何をすれば良いのかという雛形を理解していくことがファーストステップとしての学習目標になるはず。</p>
 </section>
 <section id="mvc">
-<h2><span class="section-number">4.2. </span>MVCとは<a class="headerlink" href="#mvc" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.2. </span>MVCとは<a class="headerlink" href="#mvc" title="この見出しへのパーマリンク">¶</a></h2>
 <p>アプリケーションフレームワークの一つ。アプリケーションの処理を Model/View/Controllerの３つに分ける。<br />ユーザーに提供するUI部分とデータを処理・操作するバックエンド部分に分ける</p>
 <p><img alt="../_images/spfing_mvc.png" src="../_images/spfing_mvc.png" /></p>
 <section id="model">
-<h3><span class="section-number">4.2.1. </span>Model<a class="headerlink" href="#model" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.2.1. </span>Model<a class="headerlink" href="#model" title="この見出しへのパーマリンク">¶</a></h3>
 <p>データやDBへのアクセスなどを担う</p>
 <p>DBから取得したデータをアプリで扱いやすい変換する処理も担う。</p>
 </section>
 <section id="view">
-<h3><span class="section-number">4.2.2. </span>View<a class="headerlink" href="#view" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.2.2. </span>View<a class="headerlink" href="#view" title="この見出しへのパーマリンク">¶</a></h3>
 <p>クライアントからの入力の受付やクライアントへの出力などを担う</p>
 <p>レイアウトやボタン操作なども担い、WebブラウザにHTMLを返す。
 MVCではThyeleafを利用して、テンプレートとデータを組み合わせてHTMLを生成する。</p>
 </section>
 <section id="controller">
-<h3><span class="section-number">4.2.3. </span>Controller<a class="headerlink" href="#controller" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.2.3. </span>Controller<a class="headerlink" href="#controller" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ModelとViewをつなぐ。</p>
 <p>Viewが受け取るクライアントからの入力をModelへ渡して処理を行い、Viewへ処理内容を連携する。</p>
 </section>
 </section>
 <section id="id1">
-<h2><span class="section-number">4.3. </span>レイヤ構造<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.3. </span>レイヤ構造<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id2">
-<h3><span class="section-number">4.3.1. </span>アプリケーション層<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.3.1. </span>アプリケーション層<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ControllerとViewを作成する。</p>
 <ul class="simple">
 <li><p>Controllerでは、pathとメソッドの紐付け、viewとやり取りするためにmodelへのAttributeの追加などを記述。</p></li>
@@ -84,45 +84,45 @@ MVCではThyeleafを利用して、テンプレートとデータを組み合わ
 </ul>
 </section>
 <section id="id3">
-<h3><span class="section-number">4.3.2. </span>ドメイン層<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.3.2. </span>ドメイン層<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="service">
-<h4><span class="section-number">4.3.2.1. </span>Service<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.3.2.1. </span>Service<a class="headerlink" href="#service" title="この見出しへのパーマリンク">¶</a></h4>
 <p>処理の開始と終了までで、一つのトランザクション単位であることを目安とする</p>
 </section>
 <section id="repository">
-<h4><span class="section-number">4.3.2.2. </span>Repository<a class="headerlink" href="#repository" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.3.2.2. </span>Repository<a class="headerlink" href="#repository" title="この見出しへのパーマリンク">¶</a></h4>
 <p>DBにアクセスするものをRepositoryとしてまとめている。
 ドメイン層では、Interfaceだけを定義して、実態はインフラストラクチャ層のImplで実装する。
 どのようにデータアクセスしているかは隠蔽されている。</p>
 </section>
 </section>
 <section id="id4">
-<h3><span class="section-number">4.3.3. </span>インフラストラクチャ層<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.3.3. </span>インフラストラクチャ層<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="repository-implement">
-<h4><span class="section-number">4.3.3.1. </span>Repository Implement<a class="headerlink" href="#repository-implement" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.3.3.1. </span>Repository Implement<a class="headerlink" href="#repository-implement" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Domain Objectのライフサイクル管理を行う。</p>
 </section>
 </section>
 </section>
 <section id="spring">
-<h2><span class="section-number">4.4. </span>Springとは<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.4. </span>Springとは<a class="headerlink" href="#spring" title="この見出しへのパーマリンク">¶</a></h2>
 <p>MVCの考え方からSpring MVCという考え方が生まれる。
 SpringMVCはライブラリなどが多くて、扱いが難しかった。
 SpringMVCを使いやすくしたフレームワークとしてSpringBootが生まれた。</p>
 </section>
 <section id="di">
-<h2><span class="section-number">4.5. </span>DI（依存性の注入とは）<a class="headerlink" href="#di" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.5. </span>DI（依存性の注入とは）<a class="headerlink" href="#di" title="この見出しへのパーマリンク">¶</a></h2>
 <p>依存性の注入とは、分解して具体的に言語化すると</p>
 <p>依存性＝必要なインスタンス</p>
 <p>注入＝自動的代入</p>
 <p>すなわち、依存しているメソッド間のインスタンスのやり取りをコンテナが担うことで、依存性を下げてあげますよという考え方。</p>
 <section id="id5">
-<h3><span class="section-number">4.5.1. </span>Springのコンテナ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.5.1. </span>Springのコンテナ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Springではコンテナを持っている。コンテナとは、Javaのインスタンスの入れ物である。
 コンテナで管理されるインスタンスをBeanと呼ぶ<br />コンテナはDispacherServletの中で管理されている。</p>
 <p><img alt="../_images/knowledge_java_container.png" src="../_images/knowledge_java_container.png" /></p>
 <section id="bean">
-<h4><span class="section-number">4.5.1.1. </span>Beanの定義方法<a class="headerlink" href="#bean" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.5.1.1. </span>Beanの定義方法<a class="headerlink" href="#bean" title="この見出しへのパーマリンク">¶</a></h4>
 <p>コンテナに対して、自分はコンテナに管理してほしいインスタンスですと教える方法が４つあり、２つが主流。</p>
 <ol class="simple">
 <li><p>★Component-scan★</p></li>
@@ -131,7 +131,7 @@ SpringMVCを使いやすくしたフレームワークとしてSpringBootが生�
 <li><p>XML</p></li>
 </ol>
 <section id="id6">
-<h5><span class="section-number">4.5.1.1.1. </span>コンポーネントスキャン<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">5.5.1.1.1. </span>コンポーネントスキャン<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h5>
 <p>メソッド側で、僕はBeanになりたいですと立候補しておくイメージ。</p>
 <p>対象となっているパッケージから＠Componentが付いたクラスを探す。
 見つけたら、インスタンス化して、Beanとしてコンテナに保存する</p>
@@ -156,7 +156,7 @@ SpringMVCを使いやすくしたフレームワークとしてSpringBootが生�
 </div>
 </section>
 <section id="java-config">
-<h5><span class="section-number">4.5.1.1.2. </span>Java Config<a class="headerlink" href="#java-config" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">5.5.1.1.2. </span>Java Config<a class="headerlink" href="#java-config" title="この見出しへのパーマリンク">¶</a></h5>
 <p>Java Configという集会所を作っておいて、そこにBeanになりたい人にきてもらうイメージ</p>
 <p>Java Configクラスを作成して、JavaConfigのなかで、&#64;Beanをつけてメソッドを作成すると、戻り値がBeanになる。
 以下の例だと、返り値がBeanとなる</p>
@@ -172,7 +172,7 @@ SpringMVCを使いやすくしたフレームワークとしてSpringBootが生�
 </section>
 </section>
 <section id="id7">
-<h4><span class="section-number">4.5.1.2. </span>コンテナの作成とBeanの取得方法<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.5.1.2. </span>コンテナの作成とBeanの取得方法<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Java Configを指定して、コンテナを作成する。 コンテナはApplicationContextとして作成される。</p>
 <p>Beanの取得はインスタンスの型を指定してgetBeanメソッドで取得</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">コンテナ作成</span>
@@ -185,7 +185,7 @@ SpringMVCを使いやすくしたフレームワークとしてSpringBootが生�
 </section>
 </section>
 <section id="spring-bootjavaconfig">
-<h3><span class="section-number">4.5.2. </span>Spring BootにおけるJavaConfig<a class="headerlink" href="#spring-bootjavaconfig" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.5.2. </span>Spring BootにおけるJavaConfig<a class="headerlink" href="#spring-bootjavaconfig" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SpringBootにおいては<code class="docutils literal notranslate"><span class="pre">&#64;SpringBootApplication</span></code>があるクラスがJavaConfigとなる。</p>
 <p>&#64;SpringBootApplicationは以下３つのアノテーションの役割を担う</p>
 <ul class="simple">
@@ -196,10 +196,10 @@ SpringMVCを使いやすくしたフレームワークとしてSpringBootが生�
 <p>明示的にbaseComponentが指定されていないので、&#64;SpringBootApplicationのパッケージがbasePackeageとなる</p>
 <p><img alt="../_images/knowlege_spring_container.png" src="../_images/knowlege_spring_container.png" /></p>
 <section id="id8">
-<h4><span class="section-number">4.5.2.1. </span>コンテナの機能<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.5.2.1. </span>コンテナの機能<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h4>
 <p>コンテナの主な機能は３つDI、スコープ定義、プロキシ作成</p>
 <section id="id9">
-<h5><span class="section-number">4.5.2.1.1. </span>コンテナの機能①DI（依存性の注入）<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">5.5.2.1.1. </span>コンテナの機能①DI（依存性の注入）<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h5>
 <p>objectAにobjectBが必要な時、objectAはobjectBに依存している状態である。
 objectAの内部で、objectBをnewすると、objectBのメンテナンスや差し替えが大変になる。
 ここで、依存性の注入（必要なインスタンスの自動的代入）をすることにより、object同士の結合が疎になるので、メンテナンスがしやすくなる。</p>
@@ -213,7 +213,7 @@ objectAの内部で、objectBをnewすると、objectBのメンテナンスや�
 </ol>
 </section>
 <section id="id10">
-<h5><span class="section-number">4.5.2.1.2. </span>コンテナの機能②スコープの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">5.5.2.1.2. </span>コンテナの機能②スコープの定義<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h5>
 <p>スコープとはコンテナが管理するBeanの有効範囲である。 基本的に、Beanは使いまわされることが前提のSingletonで生成される。</p>
 <ul class="simple">
 <li><p>Singleton:インスタンスは１つで使いまわされる</p></li>
@@ -229,7 +229,7 @@ objectAの内部で、objectBをnewすると、objectBのメンテナンスや�
 </div>
 </section>
 <section id="id11">
-<h5><span class="section-number">4.5.2.1.3. </span>コンテナの機能③プロキシの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h5>
+<h5><span class="section-number">5.5.2.1.3. </span>コンテナの機能③プロキシの作成<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h5>
 <p>Beanを作成するときに元々のメソッドからインスタンスを作成して、それをそのままBeanにするのではなくて、Wrapしてから必要機能を追加したBeanをプロキシと呼ぶ。</p>
 <p>AOPを実現するためにも利用されている技術。</p>
 </section>
@@ -237,7 +237,7 @@ objectAの内部で、objectBをnewすると、objectBのメンテナンスや�
 </section>
 </section>
 <section id="aop-aspect-oriented-programming">
-<h2><span class="section-number">4.6. </span>AOP（Aspect Oriented Programming）とは<a class="headerlink" href="#aop-aspect-oriented-programming" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.6. </span>AOP（Aspect Oriented Programming）とは<a class="headerlink" href="#aop-aspect-oriented-programming" title="この見出しへのパーマリンク">¶</a></h2>
 <p>本来の処理の前後に割り込み処理を行う。</p>
 <ul class="simple">
 <li><p>トランザクションの開始</p></li>
@@ -246,7 +246,7 @@ objectAの内部で、objectBをnewすると、objectBのメンテナンスや�
 </ul>
 <p>割り込めるのは開始・終了（正常・異常）・両方のいづれか</p>
 <section id="aop">
-<h3><span class="section-number">4.6.1. </span>AOPの書き方<a class="headerlink" href="#aop" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.6.1. </span>AOPの書き方<a class="headerlink" href="#aop" title="この見出しへのパーマリンク">¶</a></h3>
 <p>JavaConfigクラスに&#64;EnableAspectJAutoProxyを書く必要があるが、springは書かなくてもデフォルトでONになっている。</p>
 <p>割り込みしたい処理の書き方は&#64;Aspectをつける</p>
 <p><img alt="../_images/knowledge_aop_procced.png" src="../_images/knowledge_aop_procced.png" /></p>
@@ -255,10 +255,10 @@ objectAの内部で、objectBをnewすると、objectBのメンテナンスや�
 </section>
 </section>
 <section id="pom">
-<h2><span class="section-number">4.7. </span>pomとは<a class="headerlink" href="#pom" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.7. </span>pomとは<a class="headerlink" href="#pom" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Project Object Modelの略<br />プロジェクトのビルド内容を設定するファイル</p>
 <section id="id12">
-<h3><span class="section-number">4.7.1. </span>基本設定項目<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.7.1. </span>基本設定項目<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ルートノードで、POMのバージョン指定や読み込み、XMLスキーマの指定</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">project</span> <span class="n">xmlns</span><span class="o">=</span><span class="s2">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
         <span class="n">xmlns</span><span class="p">:</span><span class="n">xsi</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
@@ -286,7 +286,7 @@ objectAの内部で、objectBをnewすると、objectBのメンテナンスや�
 </div>
 </section>
 <section id="id13">
-<h3><span class="section-number">4.7.2. </span>依存するライブラリの設定項目<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.7.2. </span>依存するライブラリの設定項目<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <p>このプログラムがどのプログラムに依存しているかの記述を行う</p>
 <p>javaには多くのライブラリが存在している（aws、github連携やjsonを扱うものなど）<br />これらのライブラリはさらに他の別のライブラリを利用しており、これらの管理は非常に面倒。<br />これを一括で管理してくれるのがmaven君であり、maven君に利用したいライブラリの情報を渡すための窓口がpom.xml</p>
 <p>pom.xmlのdependencyで利用したいライブラリを設定しておくとmaven君は必要なライブラリ全てをリポジトリからDLしてくれる。
@@ -305,51 +305,51 @@ mavenで作成したソースをコンパイするすると、jarファイルが
 </section>
 </section>
 <section id="id14">
-<h2><span class="section-number">4.8. </span>アノテーション整理<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.8. </span>アノテーション整理<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Springが認識しているアノテーションを付与したパッケージ君はDIコンテナに入れられて使えるようになる。</p>
 <section id="springbootapplication">
-<h3><span class="section-number">4.8.1. </span>&#64;SpringBootApplication<a class="headerlink" href="#springbootapplication" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.8.1. </span>&#64;SpringBootApplication<a class="headerlink" href="#springbootapplication" title="この見出しへのパーマリンク">¶</a></h3>
 <p>最初に実行されるコマンド。このアノテーションと同階層以下のパッケージについてスキャンされる
 スキャンした中で、&#64;Configurationがついているものを設定クラスとして認識する。</p>
 </section>
 <section id="id15">
-<h3><span class="section-number">4.8.2. </span>&#64;Controller<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.8.2. </span>&#64;Controller<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
 <p>SpringBootにおいてControllerのクラスであることを認識させる</p>
 <section id="requestmappng">
-<h4><span class="section-number">4.8.2.1. </span>&#64;RequestMappng<a class="headerlink" href="#requestmappng" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.8.2.1. </span>&#64;RequestMappng<a class="headerlink" href="#requestmappng" title="この見出しへのパーマリンク">¶</a></h4>
 <p>クライアントからのリクエストに対して、メソッドなどの対応付ができる<br /><code class="docutils literal notranslate"><span class="pre">return</span></code>で返却されるStringはViewResolverでファイル名に変換されてクライアントに返却される。</p>
 </section>
 </section>
 <section id="id16">
-<h3><span class="section-number">4.8.3. </span>&#64;Service<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.8.3. </span>&#64;Service<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ServiceImplに記述する。Serviceであることを認識させる。
 DIの対象(bean)となり、DIコンテナに登録される</p>
 </section>
 <section id="id17">
-<h3><span class="section-number">4.8.4. </span>&#64;Repository<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.8.4. </span>&#64;Repository<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>RepositoryImplに記述する。 Repositoryであることを認識させる。</p>
 </section>
 <section id="override">
-<h3><span class="section-number">4.8.5. </span>&#64;Override<a class="headerlink" href="#override" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.8.5. </span>&#64;Override<a class="headerlink" href="#override" title="この見出しへのパーマリンク">¶</a></h3>
 <p>親クラスのメソッドをオーバーライドするときに記述する。
 オーバーライドするつもりでできていない。していないつもりでしていたというミスを防げる。</p>
 </section>
 <section id="inject-autowired">
-<h3><span class="section-number">4.8.6. </span>&#64;inject &#64;Autowired<a class="headerlink" href="#inject-autowired" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.8.6. </span>&#64;inject &#64;Autowired<a class="headerlink" href="#inject-autowired" title="この見出しへのパーマリンク">¶</a></h3>
 <p>DIするためのメンション。Beanをコンテナから呼び出す</p>
 </section>
 <section id="transactional">
-<h3><span class="section-number">4.8.7. </span>&#64;Transactional<a class="headerlink" href="#transactional" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.8.7. </span>&#64;Transactional<a class="headerlink" href="#transactional" title="この見出しへのパーマリンク">¶</a></h3>
 <p>トランザクション管理が行われる。
 メソッド開始時と正常終了時にコミットが行われ、例外時にはロールバックされる。</p>
 </section>
 </section>
 <section id="id18">
-<h2><span class="section-number">4.9. </span>技統本レクチャー<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.9. </span>技統本レクチャー<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="aws">
-<h3><span class="section-number">4.9.1. </span>20221118　AWSで作るマイクロサービスアーキテクチャ<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.9.1. </span>20221118　AWSで作るマイクロサービスアーキテクチャ<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="springsecurity">
-<h4><span class="section-number">4.9.1.1. </span>SpringSecurity<a class="headerlink" href="#springsecurity" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.9.1.1. </span>SpringSecurity<a class="headerlink" href="#springsecurity" title="この見出しへのパーマリンク">¶</a></h4>
 <p>HandsONを試すとSpiringSecurityでログインとログアウトするだけのページが作成することができる。
 Appのなかに、認証認可の仕組みを組み込むことができる。
 OICDの認証認可も設定だけでできる！ただし設定項目は多い・・・
@@ -376,7 +376,7 @@ SuccessHandlerはログインが成功した時の挙動</p>
 </section>
 </section>
 <section id="references">
-<h2><span class="section-number">4.10. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.10. </span>References<a class="headerlink" href="#references" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.youtube.com/watch?v=LGtdpsmMfvI">DIとAOPの神動画</a></p></li>
 <li><p><a class="reference external" href="https://terasolunaorg.github.io/guideline/5.5.1.RELEASE/ja/Overview/ApplicationLayering.html">アプリケーションのレイヤと役割</a></p></li>
@@ -397,79 +397,79 @@ SuccessHandlerはログインが成功した時の挙動</p>
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">4. java spring</a><ul>
-<li><a class="reference internal" href="#java">4.1. javaの学習目標</a></li>
-<li><a class="reference internal" href="#mvc">4.2. MVCとは</a><ul>
-<li><a class="reference internal" href="#model">4.2.1. Model</a></li>
-<li><a class="reference internal" href="#view">4.2.2. View</a></li>
-<li><a class="reference internal" href="#controller">4.2.3. Controller</a></li>
+<li><a class="reference internal" href="#">5. java spring</a><ul>
+<li><a class="reference internal" href="#java">5.1. javaの学習目標</a></li>
+<li><a class="reference internal" href="#mvc">5.2. MVCとは</a><ul>
+<li><a class="reference internal" href="#model">5.2.1. Model</a></li>
+<li><a class="reference internal" href="#view">5.2.2. View</a></li>
+<li><a class="reference internal" href="#controller">5.2.3. Controller</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1">4.3. レイヤ構造</a><ul>
-<li><a class="reference internal" href="#id2">4.3.1. アプリケーション層</a></li>
-<li><a class="reference internal" href="#id3">4.3.2. ドメイン層</a><ul>
-<li><a class="reference internal" href="#service">4.3.2.1. Service</a></li>
-<li><a class="reference internal" href="#repository">4.3.2.2. Repository</a></li>
+<li><a class="reference internal" href="#id1">5.3. レイヤ構造</a><ul>
+<li><a class="reference internal" href="#id2">5.3.1. アプリケーション層</a></li>
+<li><a class="reference internal" href="#id3">5.3.2. ドメイン層</a><ul>
+<li><a class="reference internal" href="#service">5.3.2.1. Service</a></li>
+<li><a class="reference internal" href="#repository">5.3.2.2. Repository</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">4.3.3. インフラストラクチャ層</a><ul>
-<li><a class="reference internal" href="#repository-implement">4.3.3.1. Repository Implement</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#spring">4.4. Springとは</a></li>
-<li><a class="reference internal" href="#di">4.5. DI（依存性の注入とは）</a><ul>
-<li><a class="reference internal" href="#id5">4.5.1. Springのコンテナ</a><ul>
-<li><a class="reference internal" href="#bean">4.5.1.1. Beanの定義方法</a><ul>
-<li><a class="reference internal" href="#id6">4.5.1.1.1. コンポーネントスキャン</a></li>
-<li><a class="reference internal" href="#java-config">4.5.1.1.2. Java Config</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id7">4.5.1.2. コンテナの作成とBeanの取得方法</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#spring-bootjavaconfig">4.5.2. Spring BootにおけるJavaConfig</a><ul>
-<li><a class="reference internal" href="#id8">4.5.2.1. コンテナの機能</a><ul>
-<li><a class="reference internal" href="#id9">4.5.2.1.1. コンテナの機能①DI（依存性の注入）</a></li>
-<li><a class="reference internal" href="#id10">4.5.2.1.2. コンテナの機能②スコープの定義</a></li>
-<li><a class="reference internal" href="#id11">4.5.2.1.3. コンテナの機能③プロキシの作成</a></li>
+<li><a class="reference internal" href="#id4">5.3.3. インフラストラクチャ層</a><ul>
+<li><a class="reference internal" href="#repository-implement">5.3.3.1. Repository Implement</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#spring">5.4. Springとは</a></li>
+<li><a class="reference internal" href="#di">5.5. DI（依存性の注入とは）</a><ul>
+<li><a class="reference internal" href="#id5">5.5.1. Springのコンテナ</a><ul>
+<li><a class="reference internal" href="#bean">5.5.1.1. Beanの定義方法</a><ul>
+<li><a class="reference internal" href="#id6">5.5.1.1.1. コンポーネントスキャン</a></li>
+<li><a class="reference internal" href="#java-config">5.5.1.1.2. Java Config</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aop-aspect-oriented-programming">4.6. AOP（Aspect Oriented Programming）とは</a><ul>
-<li><a class="reference internal" href="#aop">4.6.1. AOPの書き方</a></li>
+<li><a class="reference internal" href="#id7">5.5.1.2. コンテナの作成とBeanの取得方法</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#pom">4.7. pomとは</a><ul>
-<li><a class="reference internal" href="#id12">4.7.1. 基本設定項目</a></li>
-<li><a class="reference internal" href="#id13">4.7.2. 依存するライブラリの設定項目</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id14">4.8. アノテーション整理</a><ul>
-<li><a class="reference internal" href="#springbootapplication">4.8.1. &#64;SpringBootApplication</a></li>
-<li><a class="reference internal" href="#id15">4.8.2. &#64;Controller</a><ul>
-<li><a class="reference internal" href="#requestmappng">4.8.2.1. &#64;RequestMappng</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id16">4.8.3. &#64;Service</a></li>
-<li><a class="reference internal" href="#id17">4.8.4. &#64;Repository</a></li>
-<li><a class="reference internal" href="#override">4.8.5. &#64;Override</a></li>
-<li><a class="reference internal" href="#inject-autowired">4.8.6. &#64;inject &#64;Autowired</a></li>
-<li><a class="reference internal" href="#transactional">4.8.7. &#64;Transactional</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id18">4.9. 技統本レクチャー</a><ul>
-<li><a class="reference internal" href="#aws">4.9.1. 20221118　AWSで作るマイクロサービスアーキテクチャ</a><ul>
-<li><a class="reference internal" href="#springsecurity">4.9.1.1. SpringSecurity</a></li>
+<li><a class="reference internal" href="#spring-bootjavaconfig">5.5.2. Spring BootにおけるJavaConfig</a><ul>
+<li><a class="reference internal" href="#id8">5.5.2.1. コンテナの機能</a><ul>
+<li><a class="reference internal" href="#id9">5.5.2.1.1. コンテナの機能①DI（依存性の注入）</a></li>
+<li><a class="reference internal" href="#id10">5.5.2.1.2. コンテナの機能②スコープの定義</a></li>
+<li><a class="reference internal" href="#id11">5.5.2.1.3. コンテナの機能③プロキシの作成</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#references">4.10. References</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#aop-aspect-oriented-programming">5.6. AOP（Aspect Oriented Programming）とは</a><ul>
+<li><a class="reference internal" href="#aop">5.6.1. AOPの書き方</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pom">5.7. pomとは</a><ul>
+<li><a class="reference internal" href="#id12">5.7.1. 基本設定項目</a></li>
+<li><a class="reference internal" href="#id13">5.7.2. 依存するライブラリの設定項目</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">5.8. アノテーション整理</a><ul>
+<li><a class="reference internal" href="#springbootapplication">5.8.1. &#64;SpringBootApplication</a></li>
+<li><a class="reference internal" href="#id15">5.8.2. &#64;Controller</a><ul>
+<li><a class="reference internal" href="#requestmappng">5.8.2.1. &#64;RequestMappng</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id16">5.8.3. &#64;Service</a></li>
+<li><a class="reference internal" href="#id17">5.8.4. &#64;Repository</a></li>
+<li><a class="reference internal" href="#override">5.8.5. &#64;Override</a></li>
+<li><a class="reference internal" href="#inject-autowired">5.8.6. &#64;inject &#64;Autowired</a></li>
+<li><a class="reference internal" href="#transactional">5.8.7. &#64;Transactional</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id18">5.9. 技統本レクチャー</a><ul>
+<li><a class="reference internal" href="#aws">5.9.1. 20221118　AWSで作るマイクロサービスアーキテクチャ</a><ul>
+<li><a class="reference internal" href="#springsecurity">5.9.1.1. SpringSecurity</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">5.10. References</a></li>
 </ul>
 </li>
 </ul>
@@ -478,12 +478,12 @@ SuccessHandlerはログインが成功した時の挙動</p>
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="java_env.html"
-                          title="前の章へ"><span class="section-number">2. </span>Javaとは</a></p>
+                          title="前の章へ"><span class="section-number">3. </span>Javaとは</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="tutorial.html"
-                          title="次の章へ"><span class="section-number">5. </span>チュートリアル</a></p>
+                          title="次の章へ"><span class="section-number">6. </span>チュートリアル</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -513,13 +513,13 @@ SuccessHandlerはログインが成功した時の挙動</p>
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="tutorial.html" title="5. チュートリアル"
+          <a href="tutorial.html" title="6. チュートリアル"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="java_env.html" title="2. Javaとは"
+          <a href="java_env.html" title="3. Javaとは"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>java spring</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">5. </span>java spring</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

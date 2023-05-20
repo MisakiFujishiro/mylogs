@@ -147,7 +147,6 @@ public class HelloWorldApplication {
 
 ```
 
-
 何も指定せずに実行すると、デフォルトでdevが有効となっているのでdevの設定ファイルによりHello Devとなる。明示的にprdを利用するとHello Prdとなる。指定方法は以下のセクション
 
 
@@ -160,4 +159,28 @@ java -jar -Dspring.profiles.active=prd XXXX.jar
 上記を実行することで
 - devの場合はlocalhost:port8080にHello Devと表示される
 - prdの場合はlocalhost:port8081にHello Prdと表示される
+
+
+## IntelliJとgithubの連携
+IntelliJとGithubアカウントとの連携は、[参考サイト](https://kj-tech.net/intellij-github/)に従えば設定できる。
+
+
+IntelliJ側で作成したPJをgithubにあげる方法
+- github側でリポジトリを作成
+- IntelliJ側のターミナルでgit init
+```
+git init
+```
+- git commitまで実施
+```
+git add .
+git commit -m "Initial Commit"
+```
+- リモートブランチの設定
+```
+git remote add origin https://github.com/your-name/project-name.git
+```
+- ローカルのリポジトリをpushするときは、IntelliJのGUIからやるとうまくいく
+
+![](img/intelliJ_github.png)
 

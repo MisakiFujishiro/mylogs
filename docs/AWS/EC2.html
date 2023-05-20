@@ -51,26 +51,35 @@
 <h2><span class="section-number">4.1. </span>インスタンスメタデータ<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">169.254.169.254</span></code>→<code class="docutils literal notranslate"><span class="pre">10.100.100</span></code>と<code class="docutils literal notranslate"><span class="pre">111.111.10</span></code>にアクセスするとEC2のホスト名などにアクセスすることができる。</p>
 </section>
-<section id="iam">
-<h2><span class="section-number">4.2. </span>IAM関連<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id2">
-<h3><span class="section-number">4.2.1. </span>インスタンスプロファイル<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">4.2. </span>接続方法<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<p>EC2のコンソールからEC2のインスタンスを選択して、接続を押下するとEC2 Instance ConnectからEC2インスタンスに接続することができる。</p>
+<p>前提条件として</p>
+<ul class="simple">
+<li><p>パブリックのIPが付与されている（自動orEIP)</p></li>
+<li><p>セキュリティグループで<a class="reference external" href="https://kacfg.com/ec2-amazon-linux/">特定のIP</a>についてSSHが許可されている（IP：3.112.23.0/29）</p></li>
+</ul>
+</section>
+<section id="iam">
+<h2><span class="section-number">4.3. </span>IAM関連<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id3">
+<h3><span class="section-number">4.3.1. </span>インスタンスプロファイル<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
 <p>普段コンソール上からEC2にIAMロールを結びづけているが、内部的にはEC2とIAMロールを直接結びづけることはできない。
 実態としては<code class="docutils literal notranslate"><span class="pre">インスタンスプロファイル</span></code>経由でIAMロールを結びづけている。</p>
 <p><img alt="../_images/ec2_instance_profile.png" src="../_images/ec2_instance_profile.png" /></p>
 <p><a class="reference external" href="https://qiita.com/sakai00kou/items/a4b96dcfa6bb3e656cd9">ポリシーロールの整理</a>この記事が全体を整理しているので、IAMと合わせてドキュメントに落とし込みたい。</p>
 </section>
 </section>
-<section id="id3">
-<h2><span class="section-number">4.3. </span>EC2フリート<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id4">
+<h2><span class="section-number">4.4. </span>EC2フリート<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <p>通常のインスタンス群に設定するよりも柔軟な拡張性が担保される</p>
 </section>
-<section id="id4">
-<h2><span class="section-number">4.4. </span>スポットフリート<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id5">
+<h2><span class="section-number">4.5. </span>スポットフリート<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
 <p>スポットインスタンスのセットで、ニーズに合うスポットキャパシティプールを作成する</p>
 </section>
-<section id="id5">
-<h2><span class="section-number">4.5. </span>EC2プレイスメントグループ<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id6">
+<h2><span class="section-number">4.6. </span>EC2プレイスメントグループ<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
 <p>インスタンスのトラフィックを高速化するグルーーぷ</p>
 </section>
 </section>
@@ -87,13 +96,14 @@
     <ul>
 <li><a class="reference internal" href="#">4. EC2</a><ul>
 <li><a class="reference internal" href="#id1">4.1. インスタンスメタデータ</a></li>
-<li><a class="reference internal" href="#iam">4.2. IAM関連</a><ul>
-<li><a class="reference internal" href="#id2">4.2.1. インスタンスプロファイル</a></li>
+<li><a class="reference internal" href="#id2">4.2. 接続方法</a></li>
+<li><a class="reference internal" href="#iam">4.3. IAM関連</a><ul>
+<li><a class="reference internal" href="#id3">4.3.1. インスタンスプロファイル</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id3">4.3. EC2フリート</a></li>
-<li><a class="reference internal" href="#id4">4.4. スポットフリート</a></li>
-<li><a class="reference internal" href="#id5">4.5. EC2プレイスメントグループ</a></li>
+<li><a class="reference internal" href="#id4">4.4. EC2フリート</a></li>
+<li><a class="reference internal" href="#id5">4.5. スポットフリート</a></li>
+<li><a class="reference internal" href="#id6">4.6. EC2プレイスメントグループ</a></li>
 </ul>
 </li>
 </ul>
