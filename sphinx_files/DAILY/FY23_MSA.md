@@ -103,9 +103,11 @@
     - IntelliJをgitlabと連携＋codecommitとミラーリング【完了】
     - ProducerのPipeline作成（EC2に自動でデプロイ）【完了】
     - ConsumerのDockerコンテナ化【完了】
+    - SQSのConsumerをECS上で実装【完了】
+        - バッチ処理になっているので、うまく動かない修正は必要
+    - ConsumerのPipeline作成（ECSに自動でデプロイ【完了】
+
 ---
-    - SQSのConsumerをECS上で実装
-    - ConsumerのPipeline作成（ECSに自動でデプロイ
 
 
 ### 6月上旬
@@ -150,18 +152,16 @@
 - 資料の最終調整・発表練習
 
 
-## 悩み事
+## 相談事項
 ### 5月
-開発中のSQSについてJavaからアクセスしてみようとしているが、どのように開発するのが早いのか
-- IntelliJで開発
-- jarファイルに固める
-- EC2にアップロードして実行
+- SQSの検証環境について
+    - Pipelineまで作成したので、コンパイルして、pushすれば、EC2上にデプロイまでしてくれるので、それを実行している
+    - ローカル環境ではクレデンシャルの未設定でエラーになってしまう。
+    - クレデンシャルはなるべく払い出したくないので、どうすれば良い？
+```
+Exception in thread "main" com.amazonaws.SdkClientException: Unable to load AWS credentials from any provider in the chain: [EnvironmentVariableCredentialsProvider: Unable to load AWS credentials from environment variables (AWS_ACCESS_KEY_ID (or AWS_ACCESS_KEY) and AWS_SECRET_KEY (or AWS_SECRET_ACCESS_KEY)), SystemPropertiesCredentialsProvider: Unable to load AWS credentials from Java system properties (aws.accessKeyId and aws.secretKey), WebIdentityTokenCredentialsProvider: To use assume role profiles the aws-java-sdk-sts module must be on the class path., com.amazonaws.auth.profile.ProfileCredentialsProvider@12eedfee: Unable to load credentials into profile [default]: AWS Access Key ID is not specified., com.amazonaws.auth.EC2ContainerCredentialsProviderWrapper@574a89e2: The requested metadata is not found at http://169.254.169.254/latest/meta-data/iam/security-credentials/]
+```
 
-他のパターン①
-- IntelliJで開発
-- gitにpush
-- Pipelineを作成してECS上へのデプロイを自動化
-
-他のパターン②
-- SQSのACLを修正して、WorkSpacesからアクセス可能にする
-- IntelliJで実行したらすぐに検証可能
+- 選択肢
+    - [ローカルスタック](https://itneko.com/localstack-sns-sqs/)で模擬的なSQSを構築する
+    - 処理前にCognitoで一時認証を取得する

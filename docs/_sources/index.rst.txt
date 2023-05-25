@@ -17,9 +17,6 @@ DAILY
 
 
 
-
-
-
 AWS Services(AWSサービスの概要)
 ====================================
 
@@ -148,13 +145,3 @@ Sphinx
    Sphinx/quickStart
    Sphinx/githubPages
 
-
-
-資格
-==================
-
-.. toctree::
-   :maxdepth: 1
-   :numbered:
-
-   certification/DVA

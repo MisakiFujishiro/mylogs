@@ -202,15 +202,17 @@
 <li><p>IntelliJをgitlabと連携＋codecommitとミラーリング【完了】</p></li>
 <li><p>ProducerのPipeline作成（EC2に自動でデプロイ）【完了】</p></li>
 <li><p>ConsumerのDockerコンテナ化【完了】</p></li>
+<li><p>SQSのConsumerをECS上で実装【完了】</p>
+<ul>
+<li><p>バッチ処理になっているので、うまく動かない修正は必要</p></li>
+</ul>
+</li>
+<li><p>ConsumerのPipeline作成（ECSに自動でデプロイ【完了】</p></li>
 </ul>
 </li>
 </ul>
-<hr class="docutils" />
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- SQSのConsumerをECS上で実装
-- ConsumerのPipeline作成（ECSに自動でデプロイ
-</pre></div>
-</div>
 </section>
+<hr class="docutils" />
 <section id="id9">
 <h3><span class="section-number">2.3.4. </span>6月上旬<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
@@ -300,25 +302,28 @@
 </section>
 </section>
 <section id="id16">
-<h2><span class="section-number">2.4. </span>悩み事<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">2.4. </span>相談事項<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id17">
 <h3><span class="section-number">2.4.1. </span>5月<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
-<p>開発中のSQSについてJavaからアクセスしてみようとしているが、どのように開発するのが早いのか</p>
 <ul class="simple">
-<li><p>IntelliJで開発</p></li>
-<li><p>jarファイルに固める</p></li>
-<li><p>EC2にアップロードして実行</p></li>
+<li><p>SQSの検証環境について</p>
+<ul>
+<li><p>Pipelineまで作成したので、コンパイルして、pushすれば、EC2上にデプロイまでしてくれるので、それを実行している</p></li>
+<li><p>ローカル環境ではクレデンシャルの未設定でエラーになってしまう。</p></li>
+<li><p>クレデンシャルはなるべく払い出したくないので、どうすれば良い？</p></li>
 </ul>
-<p>他のパターン①</p>
-<ul class="simple">
-<li><p>IntelliJで開発</p></li>
-<li><p>gitにpush</p></li>
-<li><p>Pipelineを作成してECS上へのデプロイを自動化</p></li>
+</li>
 </ul>
-<p>他のパターン②</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">Exception</span> <span class="ow">in</span> <span class="n">thread</span> <span class="s2">&quot;main&quot;</span> <span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">SdkClientException</span><span class="p">:</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">load</span> <span class="n">AWS</span> <span class="n">credentials</span> <span class="kn">from</span> <span class="nn">any</span> <span class="n">provider</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">chain</span><span class="p">:</span> <span class="p">[</span><span class="n">EnvironmentVariableCredentialsProvider</span><span class="p">:</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">load</span> <span class="n">AWS</span> <span class="n">credentials</span> <span class="kn">from</span> <span class="nn">environment</span> <span class="n">variables</span> <span class="p">(</span><span class="n">AWS_ACCESS_KEY_ID</span> <span class="p">(</span><span class="ow">or</span> <span class="n">AWS_ACCESS_KEY</span><span class="p">)</span> <span class="ow">and</span> <span class="n">AWS_SECRET_KEY</span> <span class="p">(</span><span class="ow">or</span> <span class="n">AWS_SECRET_ACCESS_KEY</span><span class="p">)),</span> <span class="n">SystemPropertiesCredentialsProvider</span><span class="p">:</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">load</span> <span class="n">AWS</span> <span class="n">credentials</span> <span class="kn">from</span> <span class="nn">Java</span> <span class="n">system</span> <span class="n">properties</span> <span class="p">(</span><span class="n">aws</span><span class="o">.</span><span class="n">accessKeyId</span> <span class="ow">and</span> <span class="n">aws</span><span class="o">.</span><span class="n">secretKey</span><span class="p">),</span> <span class="n">WebIdentityTokenCredentialsProvider</span><span class="p">:</span> <span class="n">To</span> <span class="n">use</span> <span class="n">assume</span> <span class="n">role</span> <span class="n">profiles</span> <span class="n">the</span> <span class="n">aws</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="n">sts</span> <span class="n">module</span> <span class="n">must</span> <span class="n">be</span> <span class="n">on</span> <span class="n">the</span> <span class="k">class</span> <span class="nc">path</span><span class="o">.</span><span class="p">,</span> <span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">ProfileCredentialsProvider</span><span class="o">@</span><span class="mi">12</span><span class="n">eedfee</span><span class="p">:</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">load</span> <span class="n">credentials</span> <span class="n">into</span> <span class="n">profile</span> <span class="p">[</span><span class="n">default</span><span class="p">]:</span> <span class="n">AWS</span> <span class="n">Access</span> <span class="n">Key</span> <span class="n">ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span><span class="o">.</span><span class="p">,</span> <span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">EC2ContainerCredentialsProviderWrapper</span><span class="o">@</span><span class="mi">574</span><span class="n">a89e2</span><span class="p">:</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">found</span> <span class="n">at</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">169.254.169.254</span><span class="o">/</span><span class="n">latest</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">iam</span><span class="o">/</span><span class="n">security</span><span class="o">-</span><span class="n">credentials</span><span class="o">/</span><span class="p">]</span>
+</pre></div>
+</div>
 <ul class="simple">
-<li><p>SQSのACLを修正して、WorkSpacesからアクセス可能にする</p></li>
-<li><p>IntelliJで実行したらすぐに検証可能</p></li>
+<li><p>選択肢</p>
+<ul>
+<li><p><a class="reference external" href="https://itneko.com/localstack-sns-sqs/">ローカルスタック</a>で模擬的なSQSを構築する</p></li>
+<li><p>処理前にCognitoで一時認証を取得する</p></li>
+</ul>
+</li>
 </ul>
 </section>
 </section>
@@ -354,7 +359,7 @@
 <li><a class="reference internal" href="#id15">2.3.10. 9月上旬</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">2.4. 悩み事</a><ul>
+<li><a class="reference internal" href="#id16">2.4. 相談事項</a><ul>
 <li><a class="reference internal" href="#id17">2.4.1. 5月</a></li>
 </ul>
 </li>

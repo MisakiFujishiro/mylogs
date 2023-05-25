@@ -665,14 +665,28 @@ artifacts:
 </section>
 <section id="ecs">
 <h3><span class="section-number">4.2.5. </span>ECSの設定<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
 <section id="id14">
-<h3><span class="section-number">4.2.6. </span>CodeDeployの設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-</section>
+<h4><span class="section-number">4.2.5.1. </span>タスク定義の設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<p><img alt="../_images/ecs-taskdefinition1.png" src="../_images/ecs-taskdefinition1.png" /></p>
+<p><img alt="../_images/ecs-taskdefinition1.png" src="../_images/ecs-taskdefinition1.png" /></p>
 </section>
 <section id="id15">
-<h1><span class="section-number">5. </span>SQSの本格実装(Java編)<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h1>
+<h4><span class="section-number">4.2.5.2. </span>サービスの設定<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<p><img alt="../_images/ecs-service_1.png" src="../_images/ecs-service_1.png" />
+<img alt="../_images/ecs-service_2.png" src="../_images/ecs-service_2.png" />
+<img alt="../_images/ecs-service_3.png" src="../_images/ecs-service_3.png" />
+<img alt="../_images/ecs-service_4.png" src="../_images/ecs-service_4.png" /></p>
+</section>
+</section>
+<section id="id16">
+<h3><span class="section-number">4.2.6. </span>CodeDeployの設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p><img alt="../_images/codebuild-artifact.png" src="../_images/codebuild-artifact.png" /></p>
+<p><img alt="../_images/codedeploy-sqs-consumer.png" src="../_images/codedeploy-sqs-consumer.png" /></p>
+</section>
+</section>
+</section>
+<section id="id17">
+<h1><span class="section-number">5. </span>SQSの本格実装(Java編)<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="producer">
 <h2><span class="section-number">5.1. </span>Producerの改善<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
@@ -752,13 +766,17 @@ artifacts:
 <li><a class="reference internal" href="#ecr">4.2.2. ECRの設定</a></li>
 <li><a class="reference internal" href="#buildspec-yml">4.2.3. Buildspec.ymlの作成</a></li>
 <li><a class="reference internal" href="#codebuild">4.2.4. CodeBuildの設定</a></li>
-<li><a class="reference internal" href="#ecs">4.2.5. ECSの設定</a></li>
-<li><a class="reference internal" href="#id14">4.2.6. CodeDeployの設定</a></li>
+<li><a class="reference internal" href="#ecs">4.2.5. ECSの設定</a><ul>
+<li><a class="reference internal" href="#id14">4.2.5.1. タスク定義の設定</a></li>
+<li><a class="reference internal" href="#id15">4.2.5.2. サービスの設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id16">4.2.6. CodeDeployの設定</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id15">5. SQSの本格実装(Java編)</a><ul>
+<li><a class="reference internal" href="#id17">5. SQSの本格実装(Java編)</a><ul>
 <li><a class="reference internal" href="#producer">5.1. Producerの改善</a></li>
 <li><a class="reference internal" href="#consumer">5.2. Consumerの改善</a></li>
 </ul>

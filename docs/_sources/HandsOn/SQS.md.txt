@@ -663,12 +663,29 @@ CodeBuildのコンソールからビルドプロジェクトを作成開始
 
 ![](img/ecr-sqs-consumer.png)
 
+
+
 ### ECSの設定
+#### タスク定義の設定
+![](img/ecs-taskdefinition1.png)
+
+![](img/ecs-taskdefinition1.png)
+
+
+
+#### サービスの設定
+
+![](img/ecs-service_1.png)
+![](img/ecs-service_2.png)
+![](img/ecs-service_3.png)
+![](img/ecs-service_4.png)
 
 
 ### CodeDeployの設定
 
+![](img/codebuild-artifact.png)
 
+![](img/codedeploy-sqs-consumer.png)
 
 # SQSの本格実装(Java編)
 ## Producerの改善
