@@ -21,7 +21,7 @@ AWS Services(AWSサービスの概要)
 ====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    AWS/AWS
@@ -49,7 +49,7 @@ Hands On（実装方法の整理）
 ====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    HandsOn/cloudformaiton_CICD
@@ -69,7 +69,7 @@ Hands On（実装方法の整理）
 ====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    Artifact/ecs

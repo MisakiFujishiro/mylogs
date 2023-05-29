@@ -296,7 +296,12 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 具体的なIDプロバイダとしてはGoogle ,Amazon ,Facebook ,Apple ,SAML, OpenIDConnectプロバイダが挙げられる。</p>
 </section>
 <section id="id20">
-<h4><span class="section-number">3.4.1.4. </span>ユーザプールの定義<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.4.1.4. </span>アプリケーションの設定<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h4>
+<p>Cognitoに問い合わせが来るクライアントを事前に定義しておく。
+結果として、クライアントIDが払い出される。</p>
+</section>
+<section id="id21">
+<h4><span class="section-number">3.4.1.5. </span>ユーザプールの定義<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
 <p>認証フローを定義する必要があるが、モバイルで実行されるアプリケーションかサーバーサイドのWebアプリケーション化で設定内容が異なる。</p>
 <ul class="simple">
 <li><p>ALLOW_ADMIN_USER_PASSWORD_AUTH<br />CLIやSDKを使って管理やユーザーとして認証処理する場合のオプション。
@@ -325,8 +330,8 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 <li><p>クライアントが所望のサービスにアクセスする</p></li>
 </ol>
 <p><img alt="../_images/cognito_idp.png" src="../_images/cognito_idp.png" /></p>
-<section id="id21">
-<h4><span class="section-number">3.4.2.1. </span>認証されていないゲストユーザー<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id22">
+<h4><span class="section-number">3.4.2.1. </span>認証されていないゲストユーザー<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h4>
 <p>付与する認可情報はユーザーに応じたルール設定などが可能であり、認証されていないユーザーに対しても権限付与のルール設定ができるので、ゲストユーザーに対する権限付与を行うことも可能</p>
 <p>認証に関わるところなのでユーザープールで設定すると勘違いしやすいが、
 ゲストユーザー（未認証）と認証して、IDプール側で認可情報を与えたあげる処理をする</p>
@@ -358,8 +363,8 @@ Cognitoで認証してクライアント側にTokenを付与することで、Co
 <p>前提として、SSLを有効化するためには、通信を行うサーバーに対してSSL/TLSサーバー証明書を発行準備する必要がある。
 SSLが有効化されていることでHTTPSの通信が可能となる。</p>
 <p>ACMを利用することで、証明書の更新やデプロイを自動化することができる。</p>
-<section id="id22">
-<h3><span class="section-number">3.6.1. </span>対象サービス<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h3><span class="section-number">3.6.1. </span>対象サービス<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
 <p>配置となるAWSのサービスは以下</p>
 <ul class="simple">
 <li><p>ELB</p></li>
@@ -367,8 +372,8 @@ SSLが有効化されていることでHTTPSの通信が可能となる。</p>
 <li><p>API Gateway</p></li>
 </ul>
 </section>
-<section id="id23">
-<h3><span class="section-number">3.6.2. </span>証明書の発行元<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id24">
+<h3><span class="section-number">3.6.2. </span>証明書の発行元<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <p>公的機関が発行するパブリック証明書と、自前の認証局で発行するプライベート証明書がある。</p>
 <p>パブリック証明書は、接続の安全性を保証するために利用され、不特定多数の人がアクセスするWebサイトなどで利用する。</p>
 </section>
@@ -380,8 +385,8 @@ SSLが有効化されていることでHTTPSの通信が可能となる。</p>
 <li><p>証明書のデプロイ：AWSサービスに証明書を配備する</p></li>
 </ul>
 </section>
-<section id="id24">
-<h3><span class="section-number">3.6.4. </span>ACMが利用できないリージョン<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id25">
+<h3><span class="section-number">3.6.4. </span>ACMが利用できないリージョン<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
 <p>ACMが利用できないリージョンで、証明書をインポートしたい場合には、ACMの代わりにIAMを利用する。</p>
 </section>
 </section>
@@ -392,8 +397,8 @@ SSLが有効化されていることでHTTPSの通信が可能となる。</p>
 <p><img alt="../_images/waf_image.png" src="../_images/waf_image.png" /></p>
 <p>CloufFrontやALB、APIGWに対してルールを設定して、特定のIPからのアクセスを拒否したりすることができる。</p>
 <p><img alt="../_images/waf.png" src="../_images/waf.png" /></p>
-<section id="id25">
-<h3><span class="section-number">3.7.1. </span>WAFのルール設定<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id26">
+<h3><span class="section-number">3.7.1. </span>WAFのルール設定<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h3>
 <p>WAFで定義するルールはACL（Access Control List）として設定を行う</p>
 <ul class="simple">
 <li><p>Rule<br />通信内容を確認して、不正なアクセスを防ぐためのルールセット<br />以下のようにカスタムすることも、AWSが準備しているマネージドのものもある</p>
@@ -508,11 +513,12 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 <li><a class="reference internal" href="#id17">3.4.1.1. ユースケース</a></li>
 <li><a class="reference internal" href="#id18">3.4.1.2. 具体的な利用方法</a></li>
 <li><a class="reference internal" href="#id19">3.4.1.3. ユーザープールとアプリケーションの統合</a></li>
-<li><a class="reference internal" href="#id20">3.4.1.4. ユーザプールの定義</a></li>
+<li><a class="reference internal" href="#id20">3.4.1.4. アプリケーションの設定</a></li>
+<li><a class="reference internal" href="#id21">3.4.1.5. ユーザプールの定義</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id">3.4.2. IDプール</a><ul>
-<li><a class="reference internal" href="#id21">3.4.2.1. 認証されていないゲストユーザー</a></li>
+<li><a class="reference internal" href="#id22">3.4.2.1. 認証されていないゲストユーザー</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#jwt">3.4.3. JWT</a></li>
@@ -521,14 +527,14 @@ KMSで暗号化して保存できるので、セキュアに管理すること�
 </li>
 <li><a class="reference internal" href="#aws-sso">3.5. AWS SSO</a></li>
 <li><a class="reference internal" href="#acm-aws-certificate-manager">3.6. ACM(AWS Certificate Manager)</a><ul>
-<li><a class="reference internal" href="#id22">3.6.1. 対象サービス</a></li>
-<li><a class="reference internal" href="#id23">3.6.2. 証明書の発行元</a></li>
+<li><a class="reference internal" href="#id23">3.6.1. 対象サービス</a></li>
+<li><a class="reference internal" href="#id24">3.6.2. 証明書の発行元</a></li>
 <li><a class="reference internal" href="#acm">3.6.3. ACMの役割</a></li>
-<li><a class="reference internal" href="#id24">3.6.4. ACMが利用できないリージョン</a></li>
+<li><a class="reference internal" href="#id25">3.6.4. ACMが利用できないリージョン</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#waf">3.7. WAF</a><ul>
-<li><a class="reference internal" href="#id25">3.7.1. WAFのルール設定</a></li>
+<li><a class="reference internal" href="#id26">3.7.1. WAFのルール設定</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#shield">3.8. Shield</a></li>

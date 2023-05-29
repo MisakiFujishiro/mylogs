@@ -116,7 +116,7 @@
 <p>得られる属性値のうち、キューの設定値を表すものは以下</p>
 <ul class="simple">
 <li><p>VisibilityTimeout<br />可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）</p></li>
-<li><p>DelaySeconds<br />遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）</p></li>
+<li><p>DelaySeconds<br />遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）<br />この遅延時間はキュー全体に対して適用される。</p></li>
 <li><p>ReceiveMessageWaitTimeSeconds<br />メッセージがポーリングされる際の最大待機時間</p></li>
 <li><p>MessageRetentionPeriod<br />メッセージが保管される期間</p></li>
 </ul>
@@ -317,6 +317,8 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>ここで指定している<code class="docutils literal notranslate"><span class="pre">withDelaySeconds</span></code>はメッセージに対する遅延時間。
+SQSのコンソール画面から設定した、<code class="docutils literal notranslate"><span class="pre">DelaySeconds</span></code>はキュー全体に対する遅延時間。</p>
 </section>
 <section id="main">
 <h3><span class="section-number">3.3.3. </span>main<a class="headerlink" href="#main" title="この見出しへのパーマリンク">¶</a></h3>
@@ -404,8 +406,27 @@
 </pre></div>
 </div>
 </section>
+<section id="frontend">
+<h3><span class="section-number">3.4.3. </span>frontend<a class="headerlink" href="#frontend" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ECSに載せるための動作確認用とhelthcheck用に文字列を返すControllerを作成しておく</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="p">;</span>
+
+<span class="nd">@RestController</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">frontendController</span> <span class="p">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;/sqs-consumer&quot;</span><span class="p">,</span> <span class="n">produces</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">frontend</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello sqs-consumer!&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
 <section id="id9">
-<h3><span class="section-number">3.4.3. </span>main<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.4.4. </span>main<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="p">;</span>
 
 <span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="p">;</span>
@@ -562,8 +583,8 @@
 <p><img alt="../_images/codepipeline_sqs_producer_overview.png" src="../_images/codepipeline_sqs_producer_overview.png" /></p>
 </section>
 </section>
-<section id="consumercicd">
-<h2><span class="section-number">4.2. </span>ConsumerのCICD<a class="headerlink" href="#consumercicd" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="consumerecscicd">
+<h2><span class="section-number">4.2. </span>ConsumerのECSデプロイとCICD<a class="headerlink" href="#consumerecscicd" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Consumerは最終的にオートスケーリングを行うことを考えて、ECSでのデプロイを目指す。</p>
 <ol class="simple">
 <li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub">IntelliJとGithubを連携</a></p></li>
@@ -661,27 +682,60 @@ artifacts:
 <p><img alt="../_images/sqs_consumer_codebuild5.png" src="../_images/sqs_consumer_codebuild5.png" /></p>
 <p>この時点でCodeBuildまでのCodePipelineを作成すると、ECRへのpushが行われる</p>
 <p><img alt="../_images/codepipeline-sqs-consumer-build.png" src="../_images/codepipeline-sqs-consumer-build.png" /></p>
+<p>buildspecで設定した通り、イメージタグにIDが振られている(Latestにならない)</p>
 <p><img alt="../_images/ecr-sqs-consumer.png" src="../_images/ecr-sqs-consumer.png" /></p>
 </section>
 <section id="ecs">
 <h3><span class="section-number">4.2.5. </span>ECSの設定<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id14">
 <h4><span class="section-number">4.2.5.1. </span>タスク定義の設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<p>ECRを設定する。
+今回はFargateで設定するため、ネットワークモードがawsvpcになっており、ホストポートを設定しない。</p>
 <p><img alt="../_images/ecs-taskdefinition1.png" src="../_images/ecs-taskdefinition1.png" /></p>
-<p><img alt="../_images/ecs-taskdefinition1.png" src="../_images/ecs-taskdefinition1.png" /></p>
+<p><img alt="../_images/ecs-taskdefinition2.png" src="../_images/ecs-taskdefinition2.png" /></p>
+<p>ここで、設定したタスクロールにはSQSへのアクセス権限を付与しておく</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Sid&quot;</span><span class="p">:</span> <span class="s2">&quot;VisualEditor0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;sqs:DeleteMessage&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sqs:ReceiveMessage&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sqs:SendMessage&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:sqs:ap-northeast-1:[アカウントID]:[SQS_NAME]&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="id15">
 <h4><span class="section-number">4.2.5.2. </span>サービスの設定<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
-<p><img alt="../_images/ecs-service_1.png" src="../_images/ecs-service_1.png" />
-<img alt="../_images/ecs-service_2.png" src="../_images/ecs-service_2.png" />
-<img alt="../_images/ecs-service_3.png" src="../_images/ecs-service_3.png" />
-<img alt="../_images/ecs-service_4.png" src="../_images/ecs-service_4.png" /></p>
+<p>今回はFargateで作成するので起動タイプをFargateとする。
+作成したタスク定義を指定することで、起動時のコンテナの設定を行う。</p>
+<p><img alt="../_images/sqs-consumer-ecs-service-setting1.png" src="../_images/sqs-consumer-ecs-service-setting1.png" /></p>
+<p>ネットワークモードとして、VPCやサブネットを選択する。
+設定するセキュリティグループの注意点として、コンテナポートに接続できるように設定を行う。（今回は8080にアクセスできるようにインバウンドルールを修正しておく）</p>
+<p><img alt="../_images/sqs-consumer-ecs-service-setting2.png" src="../_images/sqs-consumer-ecs-service-setting2.png" /></p>
+<p>ロードバランサーの設定はサービスを作成する際にしか設定できない点に注意。</p>
+<p>事前に作成したALBを指定して、ロードバランス用のコンテナとして、TGの作成などをこの場で設定することができる。
+こちらで設定すれば、TGの作成およびTGとALBの紐付けを行うことができる。</p>
+<p><img alt="../_images/sqs-consumer-ecs-service-setting3.png" src="../_images/sqs-consumer-ecs-service-setting3.png" /></p>
 </section>
 </section>
 <section id="id16">
 <h3><span class="section-number">4.2.6. </span>CodeDeployの設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p>CodePipelineを修正し、Deployステージを設定する。</p>
+<p>まず、Code Buildのステージで出力アーティファクトを追加する。</p>
 <p><img alt="../_images/codebuild-artifact.png" src="../_images/codebuild-artifact.png" /></p>
+<p>次に、Deployステージを追加し、入力アーティファクトにBuildの出力ステージを追加し、対象となるクラスターやサービス名を指定する。</p>
+<p>この設定を行うことで、gitlabの修正から、ECRへのpush、ECSのデプロイを自動化することができる。</p>
 <p><img alt="../_images/codedeploy-sqs-consumer.png" src="../_images/codedeploy-sqs-consumer.png" /></p>
+<p><img alt="../_images/sqs-consumer-pipiline-all.png" src="../_images/sqs-consumer-pipiline-all.png" /></p>
+<p>無事ECSが起動できたら、ALBのDNSの後ろに<code class="docutils literal notranslate"><span class="pre">/sqs-consumer</span></code>でアクセスして文字列が表示されるか確認する。</p>
 </section>
 </section>
 </section>
@@ -689,10 +743,6 @@ artifacts:
 <h1><span class="section-number">5. </span>SQSの本格実装(Java編)<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="producer">
 <h2><span class="section-number">5.1. </span>Producerの改善<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
-<ul class="simple">
-<li><p>ハードコーディングした、数字分メッセージを発出する</p></li>
-<li><p>引数で数字を受け取って、数字分メッセージを発出する</p></li>
-</ul>
 </section>
 <section id="consumer">
 <h2><span class="section-number">5.2. </span>Consumerの改善<a class="headerlink" href="#consumer" title="この見出しへのパーマリンク">¶</a></h2>
@@ -743,7 +793,8 @@ artifacts:
 <li><a class="reference internal" href="#java-consumer">3.4. Javaのプログラム作成（Consumer</a><ul>
 <li><a class="reference internal" href="#id8">3.4.1. Config</a></li>
 <li><a class="reference internal" href="#messagereceiver">3.4.2. MessageReceiver</a></li>
-<li><a class="reference internal" href="#id9">3.4.3. main</a></li>
+<li><a class="reference internal" href="#frontend">3.4.3. frontend</a></li>
+<li><a class="reference internal" href="#id9">3.4.4. main</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id10">3.5. EC2からの実行</a><ul>
@@ -761,7 +812,7 @@ artifacts:
 <li><a class="reference internal" href="#codepipeline">4.1.3. CodePipelineの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#consumercicd">4.2. ConsumerのCICD</a><ul>
+<li><a class="reference internal" href="#consumerecscicd">4.2. ConsumerのECSデプロイとCICD</a><ul>
 <li><a class="reference internal" href="#dockerfile">4.2.1. Dockerfileの作成</a></li>
 <li><a class="reference internal" href="#ecr">4.2.2. ECRの設定</a></li>
 <li><a class="reference internal" href="#buildspec-yml">4.2.3. Buildspec.ymlの作成</a></li>

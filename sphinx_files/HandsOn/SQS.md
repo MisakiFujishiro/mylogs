@@ -73,7 +73,8 @@ $ aws sqs get-queue-attributes --attribute-names All --queue-url https://sqs.ap-
 - VisibilityTimeout  
     可視性タイムアウト（他のConsumerにメッセージが見えるようになるまでの時間）
 - DelaySeconds  
-    遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）
+    遅延時間（受信してから、Consumerがメッセージが見えるようになるまでの時間）  
+    この遅延時間はキュー全体に対して適用される。
 - ReceiveMessageWaitTimeSeconds     
     メッセージがポーリングされる際の最大待機時間
 - MessageRetentionPeriod  
@@ -318,6 +319,9 @@ public class MessageSender {
 
 ```
 
+ここで指定している`withDelaySeconds`はメッセージに対する遅延時間。
+SQSのコンソール画面から設定した、`DelaySeconds`はキュー全体に対する遅延時間。
+
 
 ### main
 ```
@@ -404,6 +408,24 @@ public class MessageReceiver {
 
 ```
 
+### frontend
+ECSに載せるための動作確認用とhelthcheck用に文字列を返すControllerを作成しておく
+```
+package com.msa.aws.sqs.sqs_consumer;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class frontendController {
+
+    @RequestMapping(value="/sqs-consumer", produces = "text/plain")
+    public String frontend(){
+        return "Hello sqs-consumer!";
+    }
+}
+
+```
 
 ### main
 ```
@@ -558,7 +580,7 @@ Roleを作成する際にCodeDeployを選択する
 
 
 
-## ConsumerのCICD
+## ConsumerのECSデプロイとCICD
 Consumerは最終的にオートスケーリングを行うことを考えて、ECSでのデプロイを目指す。
 1. [IntelliJとGithubを連携](https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub)
 2. [GithubとCodeCommitのミラーリング](https://misakifujishiro.github.io/mylogs/AWS/CodeSeries.html#code-commit)
@@ -661,36 +683,82 @@ CodeBuildのコンソールからビルドプロジェクトを作成開始
 
 ![](img/codepipeline-sqs-consumer-build.png)
 
+buildspecで設定した通り、イメージタグにIDが振られている(Latestにならない)
+
 ![](img/ecr-sqs-consumer.png)
 
 
 
 ### ECSの設定
 #### タスク定義の設定
-![](img/ecs-taskdefinition1.png)
+ECRを設定する。
+今回はFargateで設定するため、ネットワークモードがawsvpcになっており、ホストポートを設定しない。
 
 ![](img/ecs-taskdefinition1.png)
 
+![](img/ecs-taskdefinition2.png)
+
+ここで、設定したタスクロールにはSQSへのアクセス権限を付与しておく
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "sqs:DeleteMessage",
+                "sqs:ReceiveMessage",
+                "sqs:SendMessage"
+            ],
+            "Resource": "arn:aws:sqs:ap-northeast-1:[アカウントID]:[SQS_NAME]"
+        }
+    ]
+}
+
+```
 
 
 #### サービスの設定
+今回はFargateで作成するので起動タイプをFargateとする。
+作成したタスク定義を指定することで、起動時のコンテナの設定を行う。
 
-![](img/ecs-service_1.png)
-![](img/ecs-service_2.png)
-![](img/ecs-service_3.png)
-![](img/ecs-service_4.png)
+![](img/sqs-consumer-ecs-service-setting1.png)
+
+ネットワークモードとして、VPCやサブネットを選択する。
+設定するセキュリティグループの注意点として、コンテナポートに接続できるように設定を行う。（今回は8080にアクセスできるようにインバウンドルールを修正しておく）
+
+![](img/sqs-consumer-ecs-service-setting2.png)
+
+ロードバランサーの設定はサービスを作成する際にしか設定できない点に注意。
+
+事前に作成したALBを指定して、ロードバランス用のコンテナとして、TGの作成などをこの場で設定することができる。
+こちらで設定すれば、TGの作成およびTGとALBの紐付けを行うことができる。
+
+![](img/sqs-consumer-ecs-service-setting3.png)
 
 
 ### CodeDeployの設定
+CodePipelineを修正し、Deployステージを設定する。
+
+まず、Code Buildのステージで出力アーティファクトを追加する。
 
 ![](img/codebuild-artifact.png)
 
+
+次に、Deployステージを追加し、入力アーティファクトにBuildの出力ステージを追加し、対象となるクラスターやサービス名を指定する。
+
+この設定を行うことで、gitlabの修正から、ECRへのpush、ECSのデプロイを自動化することができる。
+
 ![](img/codedeploy-sqs-consumer.png)
+
+![](img/sqs-consumer-pipiline-all.png)
+
+無事ECSが起動できたら、ALBのDNSの後ろに`/sqs-consumer`でアクセスして文字列が表示されるか確認する。
+
 
 # SQSの本格実装(Java編)
 ## Producerの改善
-- ハードコーディングした、数字分メッセージを発出する
-- 引数で数字を受け取って、数字分メッセージを発出する
 
 ## Consumerの改善
 - 常時起動するようにする
