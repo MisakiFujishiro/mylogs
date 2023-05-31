@@ -66,9 +66,9 @@ github>Setting>Secrets>Actions>New repository secrets
 
 
 - githubとgitcommitを紐づける  
-対象のリポジトリのフォルダのルートから`.github/workflow/main.yml`を作成する。
+対象のリポジトリのフォルダのルートから`.github/workflows/main.yml`を作成する。
 ローカルのリポジトリからgithubにPushしても良いし、github側で設定してmainにコミットしても良い
-github>Actions>New Work Flow>set up a workflow
+github>Actions>New Work Flow>set up a workflows
 
 main.ymlは以下の設定をする。
 ```
