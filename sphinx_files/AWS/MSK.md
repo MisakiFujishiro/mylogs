@@ -1,5 +1,5 @@
 # MSK:Managed Streaming for Kafka
-MSKはフルマネージドで可用性が高くセキュアなApache Kafka サービス  
+MSKはApache Kafkaを利用してストリーミングデータを処理するアプリケーションをの構築を可能とする、フルマネージドで可用性が高くセキュアなApache Kafka サービス  
 以下のメリットがある。
 - OSSのKafkaのAPIが利用可能
 - BrokerやZookeeperインフラがマネージドで提供されている
@@ -149,7 +149,13 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 
 
 
+#### DLTについて
+上記のoffsetによるkafka→Consumerの再送はConsumer側がトラブルなどでダウンしてしまった時のエラーハンドリング
 
+一方でメッセージにトラブルがあり、処理できない場合はDLTを利用する。
+SQSではマネージドなキューのためコンソール画面などからDLTの設定を行うことができた。具体的には、移動先のDLTとメッセージが読み込まれた回数を設定すると、限度の読み込み回数を超えた場合に自動でDLTに移動された。
+
+MSKでは、明示的にConsumerのソースコードの中に再実行の設定とエラーハンドリングとしてDLTへのメッセージ移動の処理を書く必要がある。再実行とDLTへの移動が完了したら、元のキューに対しては処理完了のコミットを行うことで処理自体としては正常終了したものとして扱う。
 
 
 
@@ -260,7 +266,7 @@ MSKでは、自動で作成したクラスターに対する接続はエンド�
 - ブローカーサイズの拡張:今後可能になる
 
 ![](img/msk_scaling.png)
-
+[詳細は公式°キュtメント参照](https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/msk-configuration-properties.html)
 
 
 

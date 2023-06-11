@@ -47,7 +47,7 @@
             
   <section id="msk-managed-streaming-for-kafka">
 <h1><span class="section-number">17. </span>MSK:Managed Streaming for Kafka<a class="headerlink" href="#msk-managed-streaming-for-kafka" title="この見出しへのパーマリンク">¶</a></h1>
-<p>MSKはフルマネージドで可用性が高くセキュアなApache Kafka サービス<br />以下のメリットがある。</p>
+<p>MSKはApache Kafkaを利用してストリーミングデータを処理するアプリケーションをの構築を可能とする、フルマネージドで可用性が高くセキュアなApache Kafka サービス<br />以下のメリットがある。</p>
 <ul class="simple">
 <li><p>OSSのKafkaのAPIが利用可能</p></li>
 <li><p>BrokerやZookeeperインフラがマネージドで提供されている</p></li>
@@ -170,6 +170,13 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 </ol>
 <p><img alt="../_images/msk_consume_fail.png" src="../_images/msk_consume_fail.png" /></p>
 </section>
+<section id="dlt">
+<h4><span class="section-number">17.1.2.7. </span>DLTについて<a class="headerlink" href="#dlt" title="この見出しへのパーマリンク">¶</a></h4>
+<p>上記のoffsetによるkafka→Consumerの再送はConsumer側がトラブルなどでダウンしてしまった時のエラーハンドリング</p>
+<p>一方でメッセージにトラブルがあり、処理できない場合はDLTを利用する。
+SQSではマネージドなキューのためコンソール画面などからDLTの設定を行うことができた。具体的には、移動先のDLTとメッセージが読み込まれた回数を設定すると、限度の読み込み回数を超えた場合に自動でDLTに移動された。</p>
+<p>MSKでは、明示的にConsumerのソースコードの中に再実行の設定とエラーハンドリングとしてDLTへのメッセージ移動の処理を書く必要がある。再実行とDLTへの移動が完了したら、元のキューに対しては処理完了のコミットを行うことで処理自体としては正常終了したものとして扱う。</p>
+</section>
 </section>
 </section>
 <section id="msk">
@@ -255,7 +262,8 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 <li><p>ブローカー数の拡張:AZあたりのブローカを増やせる</p></li>
 <li><p>ブローカーサイズの拡張:今後可能になる</p></li>
 </ul>
-<p><img alt="../_images/msk_scaling.png" src="../_images/msk_scaling.png" /></p>
+<p><img alt="../_images/msk_scaling.png" src="../_images/msk_scaling.png" />
+<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/msk-configuration-properties.html">詳細は公式°キュtメント参照</a></p>
 </section>
 </section>
 <section id="id12">
@@ -407,6 +415,7 @@ ProducerからMessageを受け取る際に、Partitionerによって、どのよ
 </ul>
 </li>
 <li><a class="reference internal" href="#brokerconsumer">17.1.2.6. Broker→Consumerの受信プロセス</a></li>
+<li><a class="reference internal" href="#dlt">17.1.2.7. DLTについて</a></li>
 </ul>
 </li>
 </ul>

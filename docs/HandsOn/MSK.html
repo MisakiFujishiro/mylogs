@@ -128,7 +128,6 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>ロールを作成して、一般的なユースケースで EC2を選択した上で、先ほどのロールに対しても追加する。</p>
 </section>
 <section id="id2">
 <h3><span class="section-number">6.2.2. </span>EC2インスタンスの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
@@ -142,9 +141,9 @@
 <p>まず、セキュリティグループを修正するためVPCのコンソール画面からセキュリティグループの画面に移動する。</p>
 <ul class="simple">
 <li><p>MSK側のSG<br />インバウンドルールを編集して<code class="docutils literal notranslate"><span class="pre">EC2のSG</span></code>からのすべてのトラフィックについて許可する。</p></li>
-<li><p>EC2側のSG<br />SSHの許可をする。ポート22に対して0.0.0.0/0で許可する。</p></li>
+<li><p>EC2側のSG<br />SSHの許可をする。ポート22に対してMyIPか3.112.23.0/29(AWSコンソールからの接続用)で許可する。</p></li>
 </ul>
-<p>次に、IAMロールを付与するためにEC2のコンソールからIAM Roleの付与を思う。</p>
+<p>次に、EC2のコンソールから先ほど作成したIAM Roleの付与をする。</p>
 </section>
 </section>
 <section id="id3">
@@ -179,8 +178,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">kafka</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">producer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">broker</span><span class="o">-</span><span class="nb">list</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">producer</span><span class="o">.</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span>
 </pre></div>
 </div>
-<p>コンソールが出力されるのでメッセージを記入
-<img alt="../_images/msk_producer.png" src="../_images/msk_producer.png" /></p>
+<p>コンソールが出力されるのでメッセージを記入</p>
+<p><img alt="../_images/msk_producer.png" src="../_images/msk_producer.png" /></p>
 </section>
 <section id="id5">
 <h2><span class="section-number">6.5. </span>メッセージの受信<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
@@ -191,15 +190,47 @@
 </div>
 <p><img alt="../_images/msk_consumer.png" src="../_images/msk_consumer.png" /></p>
 </section>
-<section id="dlt">
-<h2><span class="section-number">6.6. </span>DLTの設定<a class="headerlink" href="#dlt" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id6">
+<h2><span class="section-number">6.6. </span>その他操作<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Topic一覧表示</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="p">[</span><span class="n">ZookeeperServerString</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Topicの削除</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">delete</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="p">[</span><span class="n">ZookeeperServerString</span><span class="p">]</span> <span class="o">--</span><span class="n">topic</span> <span class="p">[</span><span class="n">TopicName</span><span class="p">]</span>
+</pre></div>
+</div>
 </section>
 </section>
-<section id="msk-lambda">
-<h1><span class="section-number">7. </span>MSKのチュートリアル実装(Lambda編)<a class="headerlink" href="#msk-lambda" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="msk">
+<h1><span class="section-number">7. </span>MSKの開発環境の構築<a class="headerlink" href="#msk" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="producercicd">
+<h2><span class="section-number">7.1. </span>ProducerのCICD<a class="headerlink" href="#producercicd" title="この見出しへのパーマリンク">¶</a></h2>
+<p>基本的には<a class="reference external" href="https://misakifujishiro.github.io/mylogs/HandsOn/SQS.html#id12">SQSのProducer</a>と同様</p>
+<ul class="simple">
+<li><p>appspec.ymlのjarファイル名をmskに変更するのを忘れない。</p></li>
+</ul>
+</section>
+<section id="consumercicd">
+<h2><span class="section-number">7.2. </span>ConsumerのCICD<a class="headerlink" href="#consumercicd" title="この見出しへのパーマリンク">¶</a></h2>
+<p>基本的には<a class="reference external" href="https://misakifujishiro.github.io/mylogs/HandsOn/SQS.html#id12">SQSのConsumer</a>と同様</p>
+<ul class="simple">
+<li><p>Spring側でapplication.ymlを作成してportを8081に変更する</p></li>
+<li><p>DockerFileをmskに変えて、Portも8081とする</p></li>
+</ul>
+</section>
 </section>
 <section id="msk-java">
 <h1><span class="section-number">8. </span>MSKのチュートリアル実装(Java編)<a class="headerlink" href="#msk-java" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="producer">
+<h2><span class="section-number">8.1. </span>Producerの設定<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
+<p>まずは、kafkaの接続先情報をapplicaiton.ymlに設定する。<br />kafkaの接続情報はMSKのコンソール画面から、確認する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
+  <span class="n">kafka</span><span class="p">:</span>
+    <span class="n">bootstrap</span><span class="o">-</span><span class="n">servers</span><span class="p">:</span> <span class="n">your_bootstrap_servers</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -222,11 +253,18 @@
 <li><a class="reference internal" href="#id3">6.3. トピックの作り方</a></li>
 <li><a class="reference internal" href="#id4">6.4. メッセージの送信</a></li>
 <li><a class="reference internal" href="#id5">6.5. メッセージの受信</a></li>
-<li><a class="reference internal" href="#dlt">6.6. DLTの設定</a></li>
+<li><a class="reference internal" href="#id6">6.6. その他操作</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#msk-lambda">7. MSKのチュートリアル実装(Lambda編)</a></li>
-<li><a class="reference internal" href="#msk-java">8. MSKのチュートリアル実装(Java編)</a></li>
+<li><a class="reference internal" href="#msk">7. MSKの開発環境の構築</a><ul>
+<li><a class="reference internal" href="#producercicd">7.1. ProducerのCICD</a></li>
+<li><a class="reference internal" href="#consumercicd">7.2. ConsumerのCICD</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#msk-java">8. MSKのチュートリアル実装(Java編)</a><ul>
+<li><a class="reference internal" href="#producer">8.1. Producerの設定</a></li>
+</ul>
+</li>
 </ul>
 
   </div>

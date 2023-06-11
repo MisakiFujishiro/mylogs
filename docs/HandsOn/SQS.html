@@ -638,11 +638,14 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 <h3><span class="section-number">4.2.3. </span>Buildspec.ymlの作成<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
 <p>codeBuildで作成したDockerFileを利用してDockerImageを作成し、そのDocker ImageをECRへpushするように設定する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>version: 0.2
+
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --no-include-email --region ap-northeast-1)
+      - echo ${DOCKER_USER}
+      - echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
       - AWS_ACCOUNT_ID=$(echo ${CODEBUILD_BUILD_ARN} | cut -f 5 -d :)
       - REPOSITORY_URL=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/ma-fujishiroms-sqs-consumer
       - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION} | cut -c 1-7)
@@ -661,22 +664,33 @@ artifacts:
   files: imagedefinitions.json
 </pre></div>
 </div>
+<p>Dockerを利用する際に、AWSで共通のアカウントを利用している関係で、<a class="reference external" href="https://dev.classmethod.jp/articles/codebuild-has-to-use-dockerhub-login-to-avoid-ip-gacha/">ログイン回数の制限</a>が発生してエラーが発生する可能性がある。</p>
+<p>そのために、pre buildでdockerへのログインを行う。<br />以下のCodeBuildを作成する際にbuildステージで環境変数にDOCKER_USERとDOCKER_PASSを登録しておく。</p>
+<p><img alt="../_images/sqs_codebuild_env.png" src="../_images/sqs_codebuild_env.png" /></p>
 </section>
 <section id="codebuild">
 <h3><span class="section-number">4.2.4. </span>CodeBuildの設定<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CodeBuildを設定することで、buildspec.ymlが実行され、gitlabにコミットすると、Docker ImageがECRにPushされるようになる。</p>
 <p>CodeBuildのコンソールからビルドプロジェクトを作成開始</p>
 <ul class="simple">
-<li><p>PJ名の入力
-<img alt="../_images/sqs_consumer_codebuild1.png" src="../_images/sqs_consumer_codebuild1.png" /></p></li>
-<li><p>ソースはCodeCommitのmainブランチ（ここのルートのbuildspecを見る）
-<img alt="../_images/sqs_consumer_codebuild2.png" src="../_images/sqs_consumer_codebuild2.png" /></p></li>
+<li><p>PJ名の入力</p></li>
+</ul>
+<p><img alt="../_images/sqs_consumer_codebuild1.png" src="../_images/sqs_consumer_codebuild1.png" /></p>
+<ul class="simple">
+<li><p>ソースはCodeCommitのmainブランチ（ここのルートのbuildspecを見る）</p></li>
+</ul>
+<p><img alt="../_images/sqs_consumer_codebuild2.png" src="../_images/sqs_consumer_codebuild2.png" /></p>
+<ul class="simple">
 <li><p>環境を設定する</p></li>
 <li><p>dockerを利用する場合は特権付与にチェックを入れる</p></li>
-<li><p>サービスロールは新規で作成するが、後ほどECRへの権限を付与する
-<img alt="../_images/sqs_consumer_codebuild3.png" src="../_images/sqs_consumer_codebuild3.png" /></p></li>
-<li><p>buidspec.ymlがルートディレクトリにある場合はデフォルトでOK
-<img alt="../_images/sqs_consumer_codebuild4.png" src="../_images/sqs_consumer_codebuild4.png" /></p></li>
+<li><p>サービスロールは新規で作成するが、後ほどECRへの権限を付与する</p></li>
+</ul>
+<p><img alt="../_images/sqs_consumer_codebuild3.png" src="../_images/sqs_consumer_codebuild3.png" /></p>
+<ul class="simple">
+<li><p>buidspec.ymlがルートディレクトリにある場合はデフォルトでOK</p></li>
+</ul>
+<p><img alt="../_images/sqs_consumer_codebuild4.png" src="../_images/sqs_consumer_codebuild4.png" /></p>
+<ul class="simple">
 <li><p>IAM Roleは新規作成した後に<code class="docutils literal notranslate"><span class="pre">AmazonEC2ContainerRegistryPowerUser</span></code>を付与する</p></li>
 </ul>
 <p><img alt="../_images/sqs_consumer_codebuild5.png" src="../_images/sqs_consumer_codebuild5.png" /></p>
@@ -687,13 +701,13 @@ artifacts:
 </section>
 <section id="ecs">
 <h3><span class="section-number">4.2.5. </span>ECSの設定<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h3>
-<section id="id14">
-<h4><span class="section-number">4.2.5.1. </span>タスク定義の設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
-<p>ECRを設定する。
-今回はFargateで設定するため、ネットワークモードがawsvpcになっており、ホストポートを設定しない。</p>
-<p><img alt="../_images/ecs-taskdefinition1.png" src="../_images/ecs-taskdefinition1.png" /></p>
-<p><img alt="../_images/ecs-taskdefinition2.png" src="../_images/ecs-taskdefinition2.png" /></p>
-<p>ここで、設定したタスクロールにはSQSへのアクセス権限を付与しておく</p>
+<section id="iam">
+<h4><span class="section-number">4.2.5.1. </span>タスクのIAM準備<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
+<p>事前に付与するIAM Roleを作成しておく。以下を付与する</p>
+<ul class="simple">
+<li><p>AmazonECSTaskExecutionRolePolicy</p></li>
+<li><p>タスクがアクセスするリソースへの許可<br />sqsやmskにアクセスするので、それに必要なポリシーを付与する（EC2で作成したpolicyと同じもので良い</p></li>
+</ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
@@ -712,8 +726,14 @@ artifacts:
 </pre></div>
 </div>
 </section>
+<section id="id14">
+<h4><span class="section-number">4.2.5.2. </span>タスク定義の設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<p>今回はFargateで設定するため、ネットワークモードがawsvpcになっており、ホストポートを設定しない。</p>
+<p><img alt="../_images/ecs-taskdefinition1.png" src="../_images/ecs-taskdefinition1.png" /></p>
+<p><img alt="../_images/ecs-taskdefinition2.png" src="../_images/ecs-taskdefinition2.png" /></p>
+</section>
 <section id="id15">
-<h4><span class="section-number">4.2.5.2. </span>サービスの設定<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">4.2.5.3. </span>サービスの設定<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
 <p>今回はFargateで作成するので起動タイプをFargateとする。
 作成したタスク定義を指定することで、起動時のコンテナの設定を行う。</p>
 <p><img alt="../_images/sqs-consumer-ecs-service-setting1.png" src="../_images/sqs-consumer-ecs-service-setting1.png" /></p>
@@ -721,7 +741,8 @@ artifacts:
 設定するセキュリティグループの注意点として、コンテナポートに接続できるように設定を行う。（今回は8080にアクセスできるようにインバウンドルールを修正しておく）</p>
 <p><img alt="../_images/sqs-consumer-ecs-service-setting2.png" src="../_images/sqs-consumer-ecs-service-setting2.png" /></p>
 <p>ロードバランサーの設定はサービスを作成する際にしか設定できない点に注意。</p>
-<p>事前に作成したALBを指定して、ロードバランス用のコンテナとして、TGの作成などをこの場で設定することができる。
+<p>今回は動作確認用に事前に作成したALBを指定する。
+ロードバランス用のコンテナとして、TGの作成などをこの場で設定することができる。
 こちらで設定すれば、TGの作成およびTGとALBの紐付けを行うことができる。</p>
 <p><img alt="../_images/sqs-consumer-ecs-service-setting3.png" src="../_images/sqs-consumer-ecs-service-setting3.png" /></p>
 </section>
@@ -818,8 +839,9 @@ artifacts:
 <li><a class="reference internal" href="#buildspec-yml">4.2.3. Buildspec.ymlの作成</a></li>
 <li><a class="reference internal" href="#codebuild">4.2.4. CodeBuildの設定</a></li>
 <li><a class="reference internal" href="#ecs">4.2.5. ECSの設定</a><ul>
-<li><a class="reference internal" href="#id14">4.2.5.1. タスク定義の設定</a></li>
-<li><a class="reference internal" href="#id15">4.2.5.2. サービスの設定</a></li>
+<li><a class="reference internal" href="#iam">4.2.5.1. タスクのIAM準備</a></li>
+<li><a class="reference internal" href="#id14">4.2.5.2. タスク定義の設定</a></li>
+<li><a class="reference internal" href="#id15">4.2.5.3. サービスの設定</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id16">4.2.6. CodeDeployの設定</a></li>

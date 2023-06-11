@@ -633,13 +633,17 @@ sudo docker built -t [YOUR_IMAGE_TAG] .
 
 ### Buildspec.ymlの作成
 codeBuildで作成したDockerFileを利用してDockerImageを作成し、そのDocker ImageをECRへpushするように設定する
+
 ```
 version: 0.2
+
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --no-include-email --region ap-northeast-1)
+      - echo ${DOCKER_USER}
+      - echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
       - AWS_ACCOUNT_ID=$(echo ${CODEBUILD_BUILD_ARN} | cut -f 5 -d :)
       - REPOSITORY_URL=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/ma-fujishiroms-sqs-consumer
       - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION} | cut -c 1-7)
@@ -658,19 +662,32 @@ artifacts:
   files: imagedefinitions.json
 ```
 
+Dockerを利用する際に、AWSで共通のアカウントを利用している関係で、[ログイン回数の制限](https://dev.classmethod.jp/articles/codebuild-has-to-use-dockerhub-login-to-avoid-ip-gacha/)が発生してエラーが発生する可能性がある。
+
+そのために、pre buildでdockerへのログインを行う。  
+以下のCodeBuildを作成する際にbuildステージで環境変数にDOCKER_USERとDOCKER_PASSを登録しておく。
+
+![](img/sqs_codebuild_env.png)
+
 ### CodeBuildの設定
 CodeBuildを設定することで、buildspec.ymlが実行され、gitlabにコミットすると、Docker ImageがECRにPushされるようになる。
 
 CodeBuildのコンソールからビルドプロジェクトを作成開始
 - PJ名の入力
+
 ![](img/sqs_consumer_codebuild1.png)
+
 - ソースはCodeCommitのmainブランチ（ここのルートのbuildspecを見る）
+
 ![](img/sqs_consumer_codebuild2.png)
+
 - 環境を設定する
 - dockerを利用する場合は特権付与にチェックを入れる
 - サービスロールは新規で作成するが、後ほどECRへの権限を付与する
+
 ![](img/sqs_consumer_codebuild3.png)
 - buidspec.ymlがルートディレクトリにある場合はデフォルトでOK
+
 ![](img/sqs_consumer_codebuild4.png)
 
 
@@ -690,15 +707,11 @@ buildspecで設定した通り、イメージタグにIDが振られている(La
 
 
 ### ECSの設定
-#### タスク定義の設定
-ECRを設定する。
-今回はFargateで設定するため、ネットワークモードがawsvpcになっており、ホストポートを設定しない。
-
-![](img/ecs-taskdefinition1.png)
-
-![](img/ecs-taskdefinition2.png)
-
-ここで、設定したタスクロールにはSQSへのアクセス権限を付与しておく
+#### タスクのIAM準備
+事前に付与するIAM Roleを作成しておく。以下を付与する
+- AmazonECSTaskExecutionRolePolicy
+- タスクがアクセスするリソースへの許可  
+    sqsやmskにアクセスするので、それに必要なポリシーを付与する（EC2で作成したpolicyと同じもので良い
 ```
 {
     "Version": "2012-10-17",
@@ -718,6 +731,14 @@ ECRを設定する。
 
 ```
 
+#### タスク定義の設定
+今回はFargateで設定するため、ネットワークモードがawsvpcになっており、ホストポートを設定しない。
+
+![](img/ecs-taskdefinition1.png)
+
+![](img/ecs-taskdefinition2.png)
+
+
 
 #### サービスの設定
 今回はFargateで作成するので起動タイプをFargateとする。
@@ -732,7 +753,8 @@ ECRを設定する。
 
 ロードバランサーの設定はサービスを作成する際にしか設定できない点に注意。
 
-事前に作成したALBを指定して、ロードバランス用のコンテナとして、TGの作成などをこの場で設定することができる。
+今回は動作確認用に事前に作成したALBを指定する。
+ロードバランス用のコンテナとして、TGの作成などをこの場で設定することができる。
 こちらで設定すれば、TGの作成およびTGとALBの紐付けを行うことができる。
 
 ![](img/sqs-consumer-ecs-service-setting3.png)

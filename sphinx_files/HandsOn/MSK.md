@@ -95,10 +95,6 @@ EC2に付与するMSKにアクセスすることができるポリシー及び�
 }
 ```
 
-ロールを作成して、一般的なユースケースで EC2を選択した上で、先ほどのロールに対しても追加する。
-
-
-
 ### EC2インスタンスの作成
 MSKのクライアントをEC2で作成する。
 簡単のためにMSKと同じVPC上にEC2を作成する。
@@ -115,11 +111,11 @@ MSKのクライアントをEC2で作成する。
 
 まず、セキュリティグループを修正するためVPCのコンソール画面からセキュリティグループの画面に移動する。  
 - MSK側のSG  
-インバウンドルールを編集して`EC2のSG`からのすべてのトラフィックについて許可する。
+    インバウンドルールを編集して`EC2のSG`からのすべてのトラフィックについて許可する。
 - EC2側のSG  
-SSHの許可をする。ポート22に対して0.0.0.0/0で許可する。
+    SSHの許可をする。ポート22に対してMyIPか3.112.23.0/29(AWSコンソールからの接続用)で許可する。
 
-次に、IAMロールを付与するためにEC2のコンソールからIAM Roleの付与を思う。
+次に、EC2のコンソールから先ほど作成したIAM Roleの付与をする。
 
 
 ## トピックの作り方
@@ -154,6 +150,7 @@ bin/kafka-topics.sh --create --bootstrap-server BootstrapServerString --command-
 <path-to-your-kafka-installation>/bin/kafka-console-producer.sh --broker-list BootstrapServerString --producer.config bin/client.properties --topic MSKTutorialTopic
 ```
 コンソールが出力されるのでメッセージを記入
+
 ![](img/msk_producer.png)
 
 ## メッセージの受信
@@ -166,11 +163,39 @@ bin/kafka-topics.sh --create --bootstrap-server BootstrapServerString --command-
 
 ![](img/msk_consumer.png)
 
+## その他操作
+Topic一覧表示
+```
+bin/kafka-topics.sh --list --zookeeper [ZookeeperServerString]
+```
 
-## DLTの設定
+Topicの削除
+```
+bin/kafka-topics.sh --delete --zookeeper [ZookeeperServerString] --topic [TopicName]
+```
+
+
+# MSKの開発環境の構築
+## ProducerのCICD
+基本的には[SQSのProducer](https://misakifujishiro.github.io/mylogs/HandsOn/SQS.html#id12)と同様
+
+- appspec.ymlのjarファイル名をmskに変更するのを忘れない。
+
+## ConsumerのCICD
+基本的には[SQSのConsumer](https://misakifujishiro.github.io/mylogs/HandsOn/SQS.html#id12)と同様
+
+- Spring側でapplication.ymlを作成してportを8081に変更する
+- DockerFileをmskに変えて、Portも8081とする
 
 
 
 
-# MSKのチュートリアル実装(Lambda編)
 # MSKのチュートリアル実装(Java編)
+## Producerの設定
+まずは、kafkaの接続先情報をapplicaiton.ymlに設定する。  
+kafkaの接続情報はMSKのコンソール画面から、確認する
+```
+spring:
+  kafka:
+    bootstrap-servers: your_bootstrap_servers
+```

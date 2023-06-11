@@ -65,8 +65,14 @@
 <li><p>結合度：非同期通信は密結合ではなく、疎結合を実現する</p></li>
 </ul>
 </section>
+<section id="msa">
+<h2><span class="section-number">4.2. </span>MSAにおける通信<a class="headerlink" href="#msa" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/whitepapers/latest/microservices-on-aws/orchestration-and-state-management.html">AWSでのMSAの実装</a></p></li>
+</ul>
+</section>
 <section id="id3">
-<h2><span class="section-number">4.2. </span>キューの必要性：柔軟性のあるアプリケーション<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.3. </span>キューの必要性：柔軟性のあるアプリケーション<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>柔軟性とは</p>
 <blockquote>
 <div><p>ビジネス要求に対するサービスの変更のしやすさ</p>
@@ -91,7 +97,7 @@
 <p>キューなどのコネクターを利用した疎結合な呼び出しが重要<br />繋ぐコンポーネントが柔軟性あるアプリケーションを可能にする</p>
 </section>
 <section id="id4">
-<h2><span class="section-number">4.3. </span>アプリケーションをつなぐ方式<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.4. </span>アプリケーションをつなぐ方式<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <p>アプリケーションをつなぐ方式は以下の4つの問いにを踏まえて整理する</p>
 <ul class="simple">
 <li><p>送信するデータの種類は何か<br />ストリーミング/メッセージングの検討</p></li>
@@ -101,19 +107,19 @@
 </ul>
 <p><img alt="../_images/queue_patterns.png" src="../_images/queue_patterns.png" /></p>
 <section id="id5">
-<h3><span class="section-number">4.3.1. </span>ストリーミング/メッセージングの検討<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.4.1. </span>ストリーミング/メッセージングの検討<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■ストリーミング<br />一連のデータを送り続け、データの順序性に意味があって、まとめて処理する</p>
 <p>■メッセージング<br />単発で完結する要求や応答をやり取りする</p>
 <p><img alt="../_images/queue_stream_message.png" src="../_images/queue_stream_message.png" /></p>
 </section>
 <section id="id6">
-<h3><span class="section-number">4.3.2. </span>同期/非同期の検討<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.4.2. </span>同期/非同期の検討<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■同期<br />ProducerがConsumerの処理の完了を待つ方式</p>
 <p>■非同期<br />ProducerがConsumerの処理を待たない方式</p>
 <p><img alt="../_images/queue_sync_async.png" src="../_images/queue_sync_async.png" /></p>
 </section>
 <section id="push-pull">
-<h3><span class="section-number">4.3.3. </span>push/pull方式の検討<a class="headerlink" href="#push-pull" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.4.3. </span>push/pull方式の検討<a class="headerlink" href="#push-pull" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■push方式<br />Producerがメッセージを送りつける</p>
 <p>■Pull方式
 Consumerがメッセージを取得しにいく</p>
@@ -122,18 +128,18 @@ Consumerがメッセージを取得しにいく</p>
 <p><img alt="../_images/queue_connector.png" src="../_images/queue_connector.png" /></p>
 </section>
 <section id="p2p-publish-subscribe">
-<h3><span class="section-number">4.3.4. </span>P2P publish/subscribe方式の検討<a class="headerlink" href="#p2p-publish-subscribe" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.4.4. </span>P2P publish/subscribe方式の検討<a class="headerlink" href="#p2p-publish-subscribe" title="この見出しへのパーマリンク">¶</a></h3>
 <p>■P2P<br />メッセージとConsumerが一対一で対応する<br />すなわち、1つのメッセージを1つのConsumerが処理する。</p>
 <p>■Publish/Subscribe方式<br />1つのメッセージを複数のConsumerが受信する方式<br />1つのリクエストで複数の処理を並列して実施したい場合に有用</p>
 <p><img alt="../_images/queue_pub_sub.png" src="../_images/queue_pub_sub.png" /></p>
 </section>
 </section>
 <section id="aws">
-<h2><span class="section-number">4.4. </span>関連するAWSサービスとその比較<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">4.5. </span>関連するAWSサービスとその比較<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h2>
 <p>アプリケーションの連携をサポートする主要なAWSマネージドサービスには以下が挙げられる</p>
 <p><img alt="../_images/queue_aws_service.png" src="../_images/queue_aws_service.png" /></p>
 <section id="id7">
-<h3><span class="section-number">4.4.1. </span>ストリーミングデータを扱いたい場合<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.5.1. </span>ストリーミングデータを扱いたい場合<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の３つのサービスが対象</p>
 <ul class="simple">
 <li><p>Amazon kinesis<br />テキストから動画までのストリーミングデータを扱うことが可能</p></li>
@@ -144,7 +150,7 @@ WebSockerをサポート</p></li>
 <p><img alt="../_images/queue_streaming.png" src="../_images/queue_streaming.png" /></p>
 </section>
 <section id="id8">
-<h3><span class="section-number">4.4.2. </span>メッセージングデータを扱いたい場合<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">4.5.2. </span>メッセージングデータを扱いたい場合<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>以下の３つのサービスが対象</p>
 <ul class="simple">
 <li><p>Amazon SNS</p></li>
@@ -168,7 +174,7 @@ WebSockerをサポート</p></li>
 </ul>
 <p><img alt="../_images/queue_flowchart.png" src="../_images/queue_flowchart.png" /></p>
 <section id="amazon-mq">
-<h4><span class="section-number">4.4.2.1. </span>Amazon MQ<a class="headerlink" href="#amazon-mq" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">4.5.2.1. </span>Amazon MQ<a class="headerlink" href="#amazon-mq" title="この見出しへのパーマリンク">¶</a></h4>
 <p>１番の特徴は、オンプレミスで既にキューシステムを利用しているアプリケーションからAmazon MQへの移行が比較的容易に可能な点。</p>
 <p>SNSやSQSはクラウドネイティブなサービスであり、連携するアプリケーションとしても、クラウドネイティブなアプリを想定している。
 そのため、オンプレミスなどトラディショナルなアプリとの連携を考える時に、アプリケーション側に改修が必要になる課題があった。</p>
@@ -205,18 +211,19 @@ WebSockerをサポート</p></li>
     <ul>
 <li><a class="reference internal" href="#">4. キューシステム</a><ul>
 <li><a class="reference internal" href="#id2">4.1. 同期通信と非同期通信</a></li>
-<li><a class="reference internal" href="#id3">4.2. キューの必要性：柔軟性のあるアプリケーション</a></li>
-<li><a class="reference internal" href="#id4">4.3. アプリケーションをつなぐ方式</a><ul>
-<li><a class="reference internal" href="#id5">4.3.1. ストリーミング/メッセージングの検討</a></li>
-<li><a class="reference internal" href="#id6">4.3.2. 同期/非同期の検討</a></li>
-<li><a class="reference internal" href="#push-pull">4.3.3. push/pull方式の検討</a></li>
-<li><a class="reference internal" href="#p2p-publish-subscribe">4.3.4. P2P publish/subscribe方式の検討</a></li>
+<li><a class="reference internal" href="#msa">4.2. MSAにおける通信</a></li>
+<li><a class="reference internal" href="#id3">4.3. キューの必要性：柔軟性のあるアプリケーション</a></li>
+<li><a class="reference internal" href="#id4">4.4. アプリケーションをつなぐ方式</a><ul>
+<li><a class="reference internal" href="#id5">4.4.1. ストリーミング/メッセージングの検討</a></li>
+<li><a class="reference internal" href="#id6">4.4.2. 同期/非同期の検討</a></li>
+<li><a class="reference internal" href="#push-pull">4.4.3. push/pull方式の検討</a></li>
+<li><a class="reference internal" href="#p2p-publish-subscribe">4.4.4. P2P publish/subscribe方式の検討</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aws">4.4. 関連するAWSサービスとその比較</a><ul>
-<li><a class="reference internal" href="#id7">4.4.1. ストリーミングデータを扱いたい場合</a></li>
-<li><a class="reference internal" href="#id8">4.4.2. メッセージングデータを扱いたい場合</a><ul>
-<li><a class="reference internal" href="#amazon-mq">4.4.2.1. Amazon MQ</a></li>
+<li><a class="reference internal" href="#aws">4.5. 関連するAWSサービスとその比較</a><ul>
+<li><a class="reference internal" href="#id7">4.5.1. ストリーミングデータを扱いたい場合</a></li>
+<li><a class="reference internal" href="#id8">4.5.2. メッセージングデータを扱いたい場合</a><ul>
+<li><a class="reference internal" href="#amazon-mq">4.5.2.1. Amazon MQ</a></li>
 </ul>
 </li>
 </ul>

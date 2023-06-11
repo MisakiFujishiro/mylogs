@@ -16,7 +16,8 @@
 - 結合度：非同期通信は密結合ではなく、疎結合を実現する
 
 
-
+## MSAにおける通信
+- [AWSでのMSAの実装](https://docs.aws.amazon.com/ja_jp/whitepapers/latest/microservices-on-aws/orchestration-and-state-management.html)
 
 ## キューの必要性：柔軟性のあるアプリケーション
 柔軟性とは
