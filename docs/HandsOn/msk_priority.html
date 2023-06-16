@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>10. MSKにおけるメッセージの優先順位について &#8212; my_sphinx  ドキュメント</title>
+    <title>9. MSKにおけるメッセージの優先順位について &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="11. Lambdaの利用方法" href="lambda.html" />
-    <link rel="prev" title="9. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" /> 
+    <link rel="next" title="10. Lambdaの利用方法" href="lambda.html" />
+    <link rel="prev" title="8. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="lambda.html" title="11. Lambdaの利用方法"
+          <a href="lambda.html" title="10. Lambdaの利用方法"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="cognito_authentication.html" title="9. Cognitoで認証をして、AWSのリソースにアクセスする"
+          <a href="cognito_authentication.html" title="8. Cognitoで認証をして、AWSのリソースにアクセスする"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>MSKにおけるメッセージの優先順位について</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>MSKにおけるメッセージの優先順位について</a></li> 
       </ul>
     </div>  
 
@@ -46,11 +46,11 @@
           <div class="body" role="main">
             
   <section id="msk">
-<h1><span class="section-number">10. </span>MSKにおけるメッセージの優先順位について<a class="headerlink" href="#msk" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">9. </span>MSKにおけるメッセージの優先順位について<a class="headerlink" href="#msk" title="この見出しへのパーマリンク">¶</a></h1>
 <p>kafkaに送信されたメッセージに対して、優先順位をつけて優先度の高いメッセージを優先して処理させたい。</p>
 <p>Apache kafkaは公式にはそのような機能を提供していないので、いくつかの実装例を調査</p>
 <section id="id1">
-<h2><span class="section-number">10.1. </span>優先度付きのトピックを作成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">9.1. </span>優先度付きのトピックを作成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://www.web-dev-qa-db-ja.com/ja/apache-kafka/kafka%E3%81%AF%E3%83%88%E3%83%94%E3%83%83%E3%82%AF%E3%81%BE%E3%81%9F%E3%81%AF%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E3%81%AE%E5%84%AA%E5%85%88%E5%BA%A6%E3%82%92%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%81%8B%EF%BC%9F/1053263533/">Kafkaはトピックまたはメッセージの優先度をサポートしていますか？</a></p>
 <p>■手順</p>
 <ol class="simple">
@@ -65,7 +65,7 @@
 </ol>
 </section>
 <section id="id2">
-<h2><span class="section-number">10.2. </span>パーティションキーの利用<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">9.2. </span>パーティションキーの利用<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Producer側でパーティションキーを設定し、特定のパーティションにメッセージを送付するように設定を行う。
 Consumer側でもパーティションキーに従って、特定のパーティションにメッセージを読み込むように設定を行う。</p>
 <ul class="simple">
@@ -79,7 +79,7 @@ Consumer側でもパーティションキーに従って、特定のパーティ
 <p>■懸念点<br />AutoScalingとどうやって整合性をとるか<br />Topicは共通だが、Consumer側は優先度高い用と低いようを作成するように見える</p>
 </section>
 <section id="id3">
-<h2><span class="section-number">10.3. </span>メッセージの中に優先度のキーを追加<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">9.3. </span>メッセージの中に優先度のキーを追加<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Topicを共通として、Producer側でメッセージに対して優先度を付与する<br />Producer側では、送信するメッセージの中にkey-valueとしてpriorityを一つ追加する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;priority&quot;</span><span class="p">:</span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
@@ -92,12 +92,12 @@ Consumer側でもパーティションキーに従って、特定のパーティ
 <p>■懸念点<br />チーム内にConsumer側の優先度に応じた、処理のソートまで実装できる能力があるか。<br />現在は、1つ1つメッセージを拾っている実装だと理解しているがまとめてpartition内のデータを取得して、優先度順に並び替える必要がある<br />（1つづつなのかまとめてやっているのかから調査）<br />offsetについても順番が入れ替わるので、優先度が高いメッセージのoffsetよりも小さいoffsetのデータが正しく処理されるか確認する必要がある。</p>
 </section>
 <section id="kafka">
-<h2><span class="section-number">10.4. </span>kafkaストリームの利用<a class="headerlink" href="#kafka" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">9.4. </span>kafkaストリームの利用<a class="headerlink" href="#kafka" title="この見出しへのパーマリンク">¶</a></h2>
 <p><a class="reference external" href="https://kafka.apache.org/documentation/streams/">Kafka Streams</a><br />Kafka Streams はKafka内に格納されているデータの処理と解析のためのクライアントライブラリです。
 とのことで、優先度についても使い込めばできるのかもしれないが、一旦は調査していない。</p>
 </section>
 <section id="schema-registry">
-<h2><span class="section-number">10.5. </span>schema Registryの利用<a class="headerlink" href="#schema-registry" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">9.5. </span>schema Registryの利用<a class="headerlink" href="#schema-registry" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Schema Registry(スキーマ レジストリ)とは、メッセージングシステム「Apache Kafka」ベースのストリームデータ基盤「Confluent Platform」の1コンポーネントです。一元的なスキーマ管理機能を提供します。
 スキーマ管理に対して一元管理されたシリアライズ機構を提供します。</p>
 <p>とのことで、シリアライズ機構を提供してくれるそうなので、こちらも可能性がある。
@@ -106,12 +106,12 @@ Consumer側でもパーティションキーに従って、特定のパーティ
 <p>■懸念点<br />やっぱり学習コストがかかりそう。
 また、単純に外部にスキーマを持たせて問い合わせという方式だと処理時間が追加でかかりそうな印象。<br />結局Consumer側で優先順位順に処理するロジックがあれば、わざわざschema Resitryは不要では？</p>
 <section id="id4">
-<h3><span class="section-number">10.5.1. </span>動作検証するなら<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">9.5.1. </span>動作検証するなら<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://qiita.com/tomotagwork/items/5e456400197457cc4291">Schema Registry簡易テスト</a></p>
 </section>
 </section>
 <section id="decaton">
-<h2><span class="section-number">10.6. </span>Decatonの利用<a class="headerlink" href="#decaton" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">9.6. </span>Decatonの利用<a class="headerlink" href="#decaton" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Lineのライブラリっぽい。ドキュメント量も少なそうなので、一旦調査していない。</p>
 <p>■懸念点</p>
 </section>
@@ -127,16 +127,16 @@ Consumer側でもパーティションキーに従って、特定のパーティ
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">10. MSKにおけるメッセージの優先順位について</a><ul>
-<li><a class="reference internal" href="#id1">10.1. 優先度付きのトピックを作成</a></li>
-<li><a class="reference internal" href="#id2">10.2. パーティションキーの利用</a></li>
-<li><a class="reference internal" href="#id3">10.3. メッセージの中に優先度のキーを追加</a></li>
-<li><a class="reference internal" href="#kafka">10.4. kafkaストリームの利用</a></li>
-<li><a class="reference internal" href="#schema-registry">10.5. schema Registryの利用</a><ul>
-<li><a class="reference internal" href="#id4">10.5.1. 動作検証するなら</a></li>
+<li><a class="reference internal" href="#">9. MSKにおけるメッセージの優先順位について</a><ul>
+<li><a class="reference internal" href="#id1">9.1. 優先度付きのトピックを作成</a></li>
+<li><a class="reference internal" href="#id2">9.2. パーティションキーの利用</a></li>
+<li><a class="reference internal" href="#id3">9.3. メッセージの中に優先度のキーを追加</a></li>
+<li><a class="reference internal" href="#kafka">9.4. kafkaストリームの利用</a></li>
+<li><a class="reference internal" href="#schema-registry">9.5. schema Registryの利用</a><ul>
+<li><a class="reference internal" href="#id4">9.5.1. 動作検証するなら</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#decaton">10.6. Decatonの利用</a></li>
+<li><a class="reference internal" href="#decaton">9.6. Decatonの利用</a></li>
 </ul>
 </li>
 </ul>
@@ -145,12 +145,12 @@ Consumer側でもパーティションキーに従って、特定のパーティ
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="cognito_authentication.html"
-                          title="前の章へ"><span class="section-number">9. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
+                          title="前の章へ"><span class="section-number">8. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="lambda.html"
-                          title="次の章へ"><span class="section-number">11. </span>Lambdaの利用方法</a></p>
+                          title="次の章へ"><span class="section-number">10. </span>Lambdaの利用方法</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -180,13 +180,13 @@ Consumer側でもパーティションキーに従って、特定のパーティ
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="lambda.html" title="11. Lambdaの利用方法"
+          <a href="lambda.html" title="10. Lambdaの利用方法"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="cognito_authentication.html" title="9. Cognitoで認証をして、AWSのリソースにアクセスする"
+          <a href="cognito_authentication.html" title="8. Cognitoで認証をして、AWSのリソースにアクセスする"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">10. </span>MSKにおけるメッセージの優先順位について</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">9. </span>MSKにおけるメッセージの優先順位について</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

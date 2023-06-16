@@ -33,13 +33,13 @@
 - 報告資料のイントロ部分作成・中間報告【完了】
 - 実装
     - SQSのjavaでの実装【完了】
-    - MSKのjavaでの実装【完了】
+    - SQSの詳細設定調整【完了】
+    - SQSCloudWatchのメトリクス確認とアラームの設定
 
 ■7月  
 - 実装
-    - SQSとMSKの詳細設定調整
-    - CloudWatchのメトリクス確認とアラームの設定
     - SQSのオートスケーリング検証
+    - MSKのjavaでの実装
     - MSKのオートスケーリング検証
 - オートスケーリングの検証結果について整理
 
@@ -103,48 +103,45 @@
     - [IntelliJに慣れる](https://misakifujishiro.github.io/mylogs/Java/intelliJ.html)【完了】
     - SQSについてJavaのコードで送受信【完了】
     - SQSについてメトリクスを取得【完了】
-    - IntelliJをgitlabと連携＋codecommitとミラーリング【完了】
-    - ProducerのPipeline作成（EC2に自動でデプロイ）【完了】
-    - ConsumerのDockerコンテナ化【完了】
-    - SQSのConsumerをECS上で実装【完了】
-        - バッチ処理になっているので、うまく動かない修正は必要→6月に対おいいう
-    - ConsumerのPipeline作成（ECSに自動でデプロイ【完了】
----
+    - SQSとMSKのJava開発環境のCICD構築【完了】
+        - SQSとMSKのProducerのPipeline作成（EC2に自動でデプロイ）【完了】
+        - SQSとMSKのConsumerのPipeline作成（ECSに自動でデプロイ【完了】
+            - ConsumerのDockerコンテナ化【完了】
+            - SQSのConsumerをECS上で実装【完了】
+
 
 
 ### 6月上旬
 - テーマ深掘り
     - 発表資料のイントロにドラフトを作成して整理してみる【完了】
 - 実装
-    - MSKについてJavaのコードで送受信【完了】
-    - Producerのアプリ改修(まとめてメッセージを送信する)【完了】
-    - Consumerの改修（常時起動でポーリングする）
-    - オートスケーリングを設定して挙動を確認する
+    - SQSの開発
+        - SQSのProducerのアプリ改修(まとめてメッセージを送信する)【完了】
+        - SQSのConsumerをECS上で実装【完了】
 
 ### 6月下旬
 - テーマ深掘り
-    - ドラフトを受けての追加調査ドラフト、オートスケーリングの結果を少し加えて23日の中間報告
+    - 最終報告のドラフトも検討【完了】
+    - 最終報告資料でも使えるくらいの資料にブラッシュアップ【完了】
+    ---
 - 実装
-    - SQSのConsumerをECS上で実装
-    - オートスケーリングを設定して挙動を確認する
-    - 標準キューとFIFOキューの比較をする
+    - Consumerの改修（常時起動でポーリングする）
+    - SQSオートスケーリングを設定して挙動を確認する
 
 ### 7月上旬
 - 実装
+    - MSKについてJavaのコードで送受信
     - MSKについてJavaのコードで送受信（Producerはバッチなので作り切る→EC2上でOK）
     - MSKのConsumerをECS上で実装
     - オートスケーリングを設定して挙動を確認する
-    - [塾長の実装](https://github.com/debugroom/sample-spring-cloud-stream)
 ### 7月下旬
 - テーマ深掘り
     - MSKの結果を踏まえて、多重処理に関する整理
 - 実装
-    - SQS優先度の実装
-    - MSK優先度の実装
+    - SQS.fifoについて[クラスメソッド](https://dev.classmethod.jp/articles/sqs-new-fifo/#toc-16)
 ### 8月上旬
 - テーマ深掘り
-    - 優先度に関して、結果を整理
-    - SQS.fifoについて[クラスメソッド](https://dev.classmethod.jp/articles/sqs-new-fifo/#toc-16)
+    - FIFOキューの実装比較
     
 ### 8月下旬
 - バッファ or さらなる深掘り

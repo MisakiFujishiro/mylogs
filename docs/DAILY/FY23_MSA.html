@@ -92,7 +92,8 @@
 <li><p>実装</p>
 <ul>
 <li><p>SQSのjavaでの実装【完了】</p></li>
-<li><p>MSKのjavaでの実装【完了】</p></li>
+<li><p>SQSの詳細設定調整【完了】</p></li>
+<li><p>SQSCloudWatchのメトリクス確認とアラームの設定</p></li>
 </ul>
 </li>
 </ul>
@@ -100,9 +101,8 @@
 <ul class="simple">
 <li><p>実装</p>
 <ul>
-<li><p>SQSとMSKの詳細設定調整</p></li>
-<li><p>CloudWatchのメトリクス確認とアラームの設定</p></li>
 <li><p>SQSのオートスケーリング検証</p></li>
+<li><p>MSKのjavaでの実装</p></li>
 <li><p>MSKのオートスケーリング検証</p></li>
 </ul>
 </li>
@@ -201,20 +201,21 @@
 <li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/Java/intelliJ.html">IntelliJに慣れる</a>【完了】</p></li>
 <li><p>SQSについてJavaのコードで送受信【完了】</p></li>
 <li><p>SQSについてメトリクスを取得【完了】</p></li>
-<li><p>IntelliJをgitlabと連携＋codecommitとミラーリング【完了】</p></li>
-<li><p>ProducerのPipeline作成（EC2に自動でデプロイ）【完了】</p></li>
-<li><p>ConsumerのDockerコンテナ化【完了】</p></li>
-<li><p>SQSのConsumerをECS上で実装【完了】</p>
+<li><p>SQSとMSKのJava開発環境のCICD構築【完了】</p>
 <ul>
-<li><p>バッチ処理になっているので、うまく動かない修正は必要→6月に対おいいう</p></li>
+<li><p>SQSとMSKのProducerのPipeline作成（EC2に自動でデプロイ）【完了】</p></li>
+<li><p>SQSとMSKのConsumerのPipeline作成（ECSに自動でデプロイ【完了】</p>
+<ul>
+<li><p>ConsumerのDockerコンテナ化【完了】</p></li>
+<li><p>SQSのConsumerをECS上で実装【完了】</p></li>
 </ul>
 </li>
-<li><p>ConsumerのPipeline作成（ECSに自動でデプロイ【完了】</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </section>
-<hr class="docutils" />
 <section id="id9">
 <h3><span class="section-number">2.3.4. </span>6月上旬<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
@@ -225,27 +226,30 @@
 </li>
 <li><p>実装</p>
 <ul>
-<li><p>MSKについてJavaのコードで送受信【完了】</p></li>
-<li><p>Producerのアプリ改修(まとめてメッセージを送信する)【完了】</p></li>
-<li><p>Consumerの改修（常時起動でポーリングする）</p></li>
-<li><p>オートスケーリングを設定して挙動を確認する</p></li>
+<li><p>SQSの開発</p>
+<ul>
+<li><p>SQSのProducerのアプリ改修(まとめてメッセージを送信する)【完了】</p></li>
+<li><p>SQSのConsumerをECS上で実装【完了】</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </section>
 <section id="id10">
 <h3><span class="section-number">2.3.5. </span>6月下旬<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
-<ul class="simple">
-<li><p>テーマ深掘り</p>
 <ul>
-<li><p>ドラフトを受けての追加調査ドラフト、オートスケーリングの結果を少し加えて23日の中間報告</p></li>
+<li><p>テーマ深掘り</p>
+<ul class="simple">
+<li><p>最終報告のドラフトも検討【完了】</p></li>
+<li><p>最終報告資料でも使えるくらいの資料にブラッシュアップ【完了】</p></li>
 </ul>
 </li>
+<hr class="docutils" />
 <li><p>実装</p>
-<ul>
-<li><p>SQSのConsumerをECS上で実装</p></li>
-<li><p>オートスケーリングを設定して挙動を確認する</p></li>
-<li><p>標準キューとFIFOキューの比較をする</p></li>
+<ul class="simple">
+<li><p>Consumerの改修（常時起動でポーリングする）</p></li>
+<li><p>SQSオートスケーリングを設定して挙動を確認する</p></li>
 </ul>
 </li>
 </ul>
@@ -255,10 +259,10 @@
 <ul class="simple">
 <li><p>実装</p>
 <ul>
+<li><p>MSKについてJavaのコードで送受信</p></li>
 <li><p>MSKについてJavaのコードで送受信（Producerはバッチなので作り切る→EC2上でOK）</p></li>
 <li><p>MSKのConsumerをECS上で実装</p></li>
 <li><p>オートスケーリングを設定して挙動を確認する</p></li>
-<li><p><a class="reference external" href="https://github.com/debugroom/sample-spring-cloud-stream">塾長の実装</a></p></li>
 </ul>
 </li>
 </ul>
@@ -273,8 +277,7 @@
 </li>
 <li><p>実装</p>
 <ul>
-<li><p>SQS優先度の実装</p></li>
-<li><p>MSK優先度の実装</p></li>
+<li><p>SQS.fifoについて<a class="reference external" href="https://dev.classmethod.jp/articles/sqs-new-fifo/#toc-16">クラスメソッド</a></p></li>
 </ul>
 </li>
 </ul>
@@ -284,8 +287,7 @@
 <ul class="simple">
 <li><p>テーマ深掘り</p>
 <ul>
-<li><p>優先度に関して、結果を整理</p></li>
-<li><p>SQS.fifoについて<a class="reference external" href="https://dev.classmethod.jp/articles/sqs-new-fifo/#toc-16">クラスメソッド</a></p></li>
+<li><p>FIFOキューの実装比較</p></li>
 </ul>
 </li>
 </ul>

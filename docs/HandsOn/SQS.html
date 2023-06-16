@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
+    <link rel="next" title="5. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
     <link rel="prev" title="1. CodePipelineを利用してCFNのCICD環境を作成する" href="cloudformaiton_CICD.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="5. MSKのチュートリアル実装(CLI編)"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
@@ -346,14 +346,11 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 <h2><span class="section-number">3.4. </span>Javaのプログラム作成（Consumer<a class="headerlink" href="#java-consumer" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id8">
 <h3><span class="section-number">3.4.1. </span>Config<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="o">.</span><span class="n">config</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQS</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQSClientBuilder</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="p">;</span>
-
-<span class="nd">@Configuration</span>
+<p>&#64;Configurationがついているクラスなので、設定クラスとしてSpringに認識される。<br />この設定クラスは以下で、&#64;Beanを付与することで、対象クラスの返り値オブジェクトがSpringフレームワークの管理下に置かれることになる。</p>
+<p>AmaozonSQSClientBuilderを利用して、SQSのデフォルトのクライアントインスタンスを作成している。
+一旦デフォルト値を使用して、SQSのクライアントに対して、認証情報やリージョンの情報を渡している。
+メッセージに関する詳細なやりとりに関しては別で実装する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Configuration</span>
 <span class="n">public</span> <span class="k">class</span> <span class="nc">sqsConfig</span> <span class="p">{</span>
     <span class="nd">@Bean</span>
     <span class="n">public</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">(){</span>
@@ -760,20 +757,6 @@ artifacts:
 </section>
 </section>
 </section>
-<section id="id17">
-<h1><span class="section-number">5. </span>SQSの本格実装(Java編)<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h1>
-<section id="producer">
-<h2><span class="section-number">5.1. </span>Producerの改善<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="consumer">
-<h2><span class="section-number">5.2. </span>Consumerの改善<a class="headerlink" href="#consumer" title="この見出しへのパーマリンク">¶</a></h2>
-<ul class="simple">
-<li><p>常時起動するようにする</p></li>
-<li><p>受け取った数字分待機するようにする</p></li>
-<li><p>メトリクスの挙動を確認する</p></li>
-</ul>
-</section>
-</section>
 
 
             <div class="clearer"></div>
@@ -849,11 +832,6 @@ artifacts:
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">5. SQSの本格実装(Java編)</a><ul>
-<li><a class="reference internal" href="#producer">5.1. Producerの改善</a></li>
-<li><a class="reference internal" href="#consumer">5.2. Consumerの改善</a></li>
-</ul>
-</li>
 </ul>
 
   </div>
@@ -865,7 +843,7 @@ artifacts:
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="次の章へ"><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)</a></p>
+                          title="次の章へ"><span class="section-number">5. </span>MSKのチュートリアル実装(CLI編)</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -895,7 +873,7 @@ artifacts:
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="5. MSKのチュートリアル実装(CLI編)"
              >次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"

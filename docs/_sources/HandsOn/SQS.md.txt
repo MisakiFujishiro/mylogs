@@ -347,14 +347,14 @@ public class SqsProducerApplication {
 
 ## Javaのプログラム作成（Consumer
 ### Config
+@Configurationがついているクラスなので、設定クラスとしてSpringに認識される。  
+この設定クラスは以下で、@Beanを付与することで、対象クラスの返り値オブジェクトがSpringフレームワークの管理下に置かれることになる。
+
+AmaozonSQSClientBuilderを利用して、SQSのデフォルトのクライアントインスタンスを作成している。
+一旦デフォルト値を使用して、SQSのクライアントに対して、認証情報やリージョンの情報を渡している。
+メッセージに関する詳細なやりとりに関しては別で実装する。
+
 ```
-package com.msa.aws.sqs.sqs_consumer.config;
-
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 @Configuration
 public class sqsConfig {
     @Bean
@@ -362,7 +362,6 @@ public class sqsConfig {
         return AmazonSQSClientBuilder.defaultClient();
     }
 }
-
 ```
 
 ### MessageReceiver
@@ -777,14 +776,4 @@ CodePipelineを修正し、Deployステージを設定する。
 ![](img/sqs-consumer-pipiline-all.png)
 
 無事ECSが起動できたら、ALBのDNSの後ろに`/sqs-consumer`でアクセスして文字列が表示されるか確認する。
-
-
-# SQSの本格実装(Java編)
-## Producerの改善
-
-## Consumerの改善
-- 常時起動するようにする
-- 受け取った数字分待機するようにする
-- メトリクスの挙動を確認する
-
 
