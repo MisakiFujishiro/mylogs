@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="5. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
+    <link rel="next" title="6. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
     <link rel="prev" title="1. CodePipelineを利用してCFNのCICD環境を作成する" href="cloudformaiton_CICD.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="5. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
@@ -212,19 +212,10 @@
 </section>
 </section>
 </section>
-<section id="sqs-java">
-<h1><span class="section-number">3. </span>SQSのチュートリアル実装(Java編)<a class="headerlink" href="#sqs-java" title="この見出しへのパーマリンク">¶</a></h1>
-<p>参考サイト</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.stsd.co.jp/dev-blog/send_and_receive_amazon_sqs_messages_from_java.html">JavaからAmazon SQSのメッセージ送受信を行う</a></p></li>
-<li><p><a class="reference external" href="https://weblabo.oscasierra.net/aws-sqs-tutorial-java-1/">JavaでAmazon SQSのメッセージを送受信するチュートリアル</a></p></li>
-</ul>
 <section id="sqs">
-<h2><span class="section-number">3.1. </span>SQSの作成<a class="headerlink" href="#sqs" title="この見出しへのパーマリンク">¶</a></h2>
-<p>SQSは別資料で作成した標準キューを再利用する</p>
-</section>
-<section id="ec2">
-<h2><span class="section-number">3.2. </span>EC2の作成<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h2>
+<h1><span class="section-number">3. </span>SQSの開発環境構築<a class="headerlink" href="#sqs" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="producerec2">
+<h2><span class="section-number">3.1. </span>ProducerのEC2の作成<a class="headerlink" href="#producerec2" title="この見出しへのパーマリンク">¶</a></h2>
 <p>基本的にはデフォルトでEC2を作成。</p>
 <p>IAMについては以下のポリシーを持つIAMポリシーを作成しておき付与する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -245,256 +236,8 @@
 </pre></div>
 </div>
 </section>
-<section id="java-producer">
-<h2><span class="section-number">3.3. </span>Javaのプログラム作成（Producer<a class="headerlink" href="#java-producer" title="この見出しへのパーマリンク">¶</a></h2>
-<p>JavaからSQSへのアクセスには、AWS公式のライブラリ<code class="docutils literal notranslate"><span class="pre">aws-java-sdk-sqs</span></code>を利用することとする。pomに以下を追加する。</p>
-<p>pom.xml</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">aws</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="n">sqs</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">1.12.116</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<section id="config">
-<h3><span class="section-number">3.3.1. </span>config<a class="headerlink" href="#config" title="この見出しへのパーマリンク">¶</a></h3>
-<p>src/main/javaの配下にconfigのディレクトリを作成して、<code class="docutils literal notranslate"><span class="pre">sqsConfig</span></code>を作成する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_producer</span><span class="o">.</span><span class="n">config</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQS</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQSClientBuilder</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="p">;</span>
-
-<span class="nd">@Configuration</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">sqsConfig</span> <span class="p">{</span>
-    <span class="nd">@Bean</span>
-    <span class="n">public</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">(){</span>
-        <span class="k">return</span> <span class="n">AmazonSQSClientBuilder</span><span class="o">.</span><span class="n">defaultClient</span><span class="p">();</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>&#64;configurationにより、設定クラスであることを宣言</p>
-<ul>
-<li><p>設定クラスではSpringがDIするためのBeanの定義を行う</p></li>
-</ul>
-</li>
-<li><p>&#64;Beanにより、メソッドがDIコンテナによって管理させるBeanを作成することを宣言</p>
-<ul>
-<li><p>AmazonSQSClient()メソッドにより、SQSのクライアントを生成する</p></li>
-<li><p>defaultClient() メソッドは、既定の設定を使用して AmazonSQS クライアントのインスタンスを作成します。</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="messagesender">
-<h3><span class="section-number">3.3.2. </span>MessageSender<a class="headerlink" href="#messagesender" title="この見出しへのパーマリンク">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_producer</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQS</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.model.SendMessageRequest</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="p">;</span>
-
-<span class="nd">@Component</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">MessageSender</span> <span class="p">{</span>
-    <span class="nd">@Autowired</span>
-    <span class="n">private</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">;</span>
-
-    <span class="n">public</span> <span class="n">void</span> <span class="n">sendMessage</span><span class="p">(){</span>
-        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard&quot;</span><span class="p">;</span>
-
-        <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;hello SQS!! FROM JAVA&quot;</span><span class="p">;</span>
-
-        <span class="n">SendMessageRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="n">new</span> <span class="n">SendMessageRequest</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">withQueueUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">withMessageBody</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">withDelaySeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-        <span class="n">amazonSQSClient</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>ここで指定している<code class="docutils literal notranslate"><span class="pre">withDelaySeconds</span></code>はメッセージに対する遅延時間。
-SQSのコンソール画面から設定した、<code class="docutils literal notranslate"><span class="pre">DelaySeconds</span></code>はキュー全体に対する遅延時間。</p>
-</section>
-<section id="main">
-<h3><span class="section-number">3.3.3. </span>main<a class="headerlink" href="#main" title="この見出しへのパーマリンク">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_producer</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContext</span><span class="p">;</span>
-
-<span class="nd">@SpringBootApplication</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">SqsProducerApplication</span> <span class="p">{</span>
-
-    <span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">SpringApplication</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SqsProducerApplication</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
-        <span class="n">MessageSender</span> <span class="n">sender</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getBean</span><span class="p">(</span><span class="n">MessageSender</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
-        <span class="n">sender</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">();</span>
-    <span class="p">}</span>
-
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="java-consumer">
-<h2><span class="section-number">3.4. </span>Javaのプログラム作成（Consumer<a class="headerlink" href="#java-consumer" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id8">
-<h3><span class="section-number">3.4.1. </span>Config<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
-<p>&#64;Configurationがついているクラスなので、設定クラスとしてSpringに認識される。<br />この設定クラスは以下で、&#64;Beanを付与することで、対象クラスの返り値オブジェクトがSpringフレームワークの管理下に置かれることになる。</p>
-<p>AmaozonSQSClientBuilderを利用して、SQSのデフォルトのクライアントインスタンスを作成している。
-一旦デフォルト値を使用して、SQSのクライアントに対して、認証情報やリージョンの情報を渡している。
-メッセージに関する詳細なやりとりに関しては別で実装する。</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Configuration</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">sqsConfig</span> <span class="p">{</span>
-    <span class="nd">@Bean</span>
-    <span class="n">public</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">(){</span>
-        <span class="k">return</span> <span class="n">AmazonSQSClientBuilder</span><span class="o">.</span><span class="n">defaultClient</span><span class="p">();</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="messagereceiver">
-<h3><span class="section-number">3.4.2. </span>MessageReceiver<a class="headerlink" href="#messagereceiver" title="この見出しへのパーマリンク">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQS</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.model.Message</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.model.ReceiveMessageRequest</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.model.ReceiveMessageResult</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="p">;</span>
-
-<span class="nd">@Component</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">MessageReceiver</span> <span class="p">{</span>
-    <span class="nd">@Autowired</span>
-    <span class="n">private</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">;</span>
-
-
-    <span class="n">public</span> <span class="n">void</span> <span class="n">receiveMessage</span><span class="p">(){</span>
-    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard&quot;</span><span class="p">;</span>
-
-    <span class="n">ReceiveMessageRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ReceiveMessageRequest</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">withQueueUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">withWaitTimeSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">withMaxNumberOfMessages</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-
-    <span class="n">ReceiveMessageResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">amazonSQSClient</span><span class="o">.</span><span class="n">receiveMessage</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-
-    <span class="k">for</span> <span class="p">(</span><span class="n">Message</span> <span class="n">msg</span> <span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">getMessages</span><span class="p">())</span> <span class="p">{</span>
-        <span class="o">//</span> <span class="n">受信したメッセージの情報を表示</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="o">+</span><span class="n">msg</span><span class="o">.</span><span class="n">getMessageId</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s2">&quot;  Message ID     : &quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">getMessageId</span><span class="p">());</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s2">&quot;  Receipt Handle : &quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">getReceiptHandle</span><span class="p">());</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s2">&quot;  Message Body   : &quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">getBody</span><span class="p">());</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">();</span>
-
-        <span class="o">//</span> <span class="n">受信したメッセージを削除</span>
-        <span class="n">amazonSQSClient</span><span class="o">.</span><span class="n">deleteMessage</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">getReceiptHandle</span><span class="p">());</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="frontend">
-<h3><span class="section-number">3.4.3. </span>frontend<a class="headerlink" href="#frontend" title="この見出しへのパーマリンク">¶</a></h3>
-<p>ECSに載せるための動作確認用とhelthcheck用に文字列を返すControllerを作成しておく</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="p">;</span>
-
-<span class="nd">@RestController</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">frontendController</span> <span class="p">{</span>
-
-    <span class="nd">@RequestMapping</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;/sqs-consumer&quot;</span><span class="p">,</span> <span class="n">produces</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
-    <span class="n">public</span> <span class="n">String</span> <span class="n">frontend</span><span class="p">(){</span>
-        <span class="k">return</span> <span class="s2">&quot;Hello sqs-consumer!&quot;</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="id9">
-<h3><span class="section-number">3.4.4. </span>main<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="p">;</span>
-
-<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContext</span><span class="p">;</span>
-
-<span class="nd">@SpringBootApplication</span>
-<span class="n">public</span> <span class="k">class</span> <span class="nc">SqsConsumerApplication</span> <span class="p">{</span>
-
-	<span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">SpringApplication</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SqsConsumerApplication</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
-		<span class="n">MessageReceiver</span> <span class="n">receiver</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getBean</span><span class="p">(</span><span class="n">MessageReceiver</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
-		<span class="n">receiver</span><span class="o">.</span><span class="n">receiveMessage</span><span class="p">();</span>
-
-	<span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="id10">
-<h2><span class="section-number">3.5. </span>EC2からの実行<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="jar">
-<h3><span class="section-number">3.5.1. </span>jarファイルを移動させる<a class="headerlink" href="#jar" title="この見出しへのパーマリンク">¶</a></h3>
-<ul class="simple">
-<li><p>キーペアのコピー</p>
-<ul>
-<li><p>作成した、キーペアをworkspacesにコピーしておく（ファイルのコピーはできないので、テキストベースでコピーする。</p></li>
-</ul>
-</li>
-<li><p>権限付与</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chmod</span> <span class="mi">600</span> <span class="n">XXXX</span><span class="o">.</span><span class="n">pem</span> 
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>ファイルコピーコマンド実行</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;EC2秘密鍵&#39;</span> <span class="s1">&#39;ローカルの転送したいファイル&#39;</span> <span class="s1">&#39;EC2ユーザー名@IPアドレス:ファイル配置先 </span>
-
-<span class="n">EX</span><span class="p">)</span><span class="n">scp</span> <span class="o">-</span><span class="n">i</span> <span class="o">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">XXX</span><span class="o">.</span><span class="n">pem</span> <span class="n">TEST</span><span class="o">.</span><span class="n">txt</span> <span class="n">ec2</span><span class="o">-</span><span class="n">user</span><span class="o">@</span><span class="mf">12.34.567.890</span><span class="p">:</span><span class="o">/</span><span class="n">home</span><span class="o">/</span>
-</pre></div>
-</div>
-</section>
-<section id="java">
-<h3><span class="section-number">3.5.2. </span>javaのインストール<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h3>
-<p>EC2にjavaをインストールして、jarファイルを実行する</p>
-<p>javaのインストール</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="n">java</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="n">amazon</span><span class="o">-</span><span class="n">corretto</span>
-</pre></div>
-</div>
-<p>実行</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">XXX</span><span class="o">.</span><span class="n">jar</span>
-</pre></div>
-</div>
-</section>
-<section id="id11">
-<h3><span class="section-number">3.5.3. </span>結果<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Producer側のjarファイルを実行</p>
-<p><img alt="../_images/sqs_tutorial_producer.png" src="../_images/sqs_tutorial_producer.png" /></p>
-<p>Consumer側のjarファイルを実行すると、メッセージを取得することができる</p>
-<p><img alt="../_images/sqs_tutorial_consumer.png" src="../_images/sqs_tutorial_consumer.png" /></p>
-<p>CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側ではメッセージを削除するので、Produceした分増えた後、Consumeした分減る</p>
-<p><img alt="../_images/sqs_tutorial_metrix.png" src="../_images/sqs_tutorial_metrix.png" /></p>
-</section>
-</section>
-</section>
-<section id="id12">
-<h1><span class="section-number">4. </span>SQSの開発環境構築<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="producercicd">
-<h2><span class="section-number">4.1. </span>ProducerのCICD<a class="headerlink" href="#producercicd" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">3.2. </span>ProducerのCICD<a class="headerlink" href="#producercicd" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Producer側はバッチで処理を流すので、CodeDeployでEC2上にjarファイルをデプロイする</p>
 <ol class="simple">
 <li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub">IntelliJとGithubを連携</a></p></li>
@@ -504,7 +247,7 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 <li><p>CodePipelineの作成</p></li>
 </ol>
 <section id="codedeploy">
-<h3><span class="section-number">4.1.1. </span>CodeDeployの準備<a class="headerlink" href="#codedeploy" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.2.1. </span>CodeDeployの準備<a class="headerlink" href="#codedeploy" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>appspec.ymlをJava PJのルートディレクトリに配置する</p></li>
 </ul>
@@ -538,8 +281,8 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 </ul>
 <p><img alt="../_images/coddedeploy_role.jpeg" src="../_images/coddedeploy_role.jpeg" /></p>
 </section>
-<section id="id13">
-<h3><span class="section-number">4.1.2. </span>CodeDeployの設定<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id8">
+<h3><span class="section-number">3.2.2. </span>CodeDeployの設定<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Code Deployのコンソール画面&gt;アプリケーション&gt;アプリケーションの作成</p>
 <ul>
@@ -564,7 +307,7 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 </ul>
 </section>
 <section id="codepipeline">
-<h3><span class="section-number">4.1.3. </span>CodePipelineの作成<a class="headerlink" href="#codepipeline" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.2.3. </span>CodePipelineの作成<a class="headerlink" href="#codepipeline" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>Pipelineの作成</p>
 <ul>
@@ -581,7 +324,7 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 </section>
 </section>
 <section id="consumerecscicd">
-<h2><span class="section-number">4.2. </span>ConsumerのECSデプロイとCICD<a class="headerlink" href="#consumerecscicd" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">3.3. </span>ConsumerのECSデプロイとCICD<a class="headerlink" href="#consumerecscicd" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Consumerは最終的にオートスケーリングを行うことを考えて、ECSでのデプロイを目指す。</p>
 <ol class="simple">
 <li><p><a class="reference external" href="https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub">IntelliJとGithubを連携</a></p></li>
@@ -594,7 +337,7 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 <li><p>Pipelineの作成(Deployまで)</p></li>
 </ol>
 <section id="dockerfile">
-<h3><span class="section-number">4.2.1. </span>Dockerfileの作成<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.3.1. </span>Dockerfileの作成<a class="headerlink" href="#dockerfile" title="この見出しへのパーマリンク">¶</a></h3>
 <p>javaの環境構築済みのコンテナを起動し、githubからspringプロジェクトをcloneして、コンテナを起動する。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Docker Imageとしてadoptopenjdk11を使用</span>
 <span class="n">FROM</span> <span class="n">adoptopenjdk</span><span class="p">:</span><span class="mi">11</span><span class="o">-</span><span class="n">jdk</span><span class="o">-</span><span class="n">hotspot</span>
@@ -628,11 +371,11 @@ SQSのコンソール画面から設定した、<code class="docutils literal no
 </div>
 </section>
 <section id="ecr">
-<h3><span class="section-number">4.2.2. </span>ECRの設定<a class="headerlink" href="#ecr" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.3.2. </span>ECRの設定<a class="headerlink" href="#ecr" title="この見出しへのパーマリンク">¶</a></h3>
 <p>パブリックで、ECRを作成しておく。</p>
 </section>
 <section id="buildspec-yml">
-<h3><span class="section-number">4.2.3. </span>Buildspec.ymlの作成<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.3.3. </span>Buildspec.ymlの作成<a class="headerlink" href="#buildspec-yml" title="この見出しへのパーマリンク">¶</a></h3>
 <p>codeBuildで作成したDockerFileを利用してDockerImageを作成し、そのDocker ImageをECRへpushするように設定する</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>version: 0.2
 
@@ -666,7 +409,7 @@ artifacts:
 <p><img alt="../_images/sqs_codebuild_env.png" src="../_images/sqs_codebuild_env.png" /></p>
 </section>
 <section id="codebuild">
-<h3><span class="section-number">4.2.4. </span>CodeBuildの設定<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.3.4. </span>CodeBuildの設定<a class="headerlink" href="#codebuild" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CodeBuildを設定することで、buildspec.ymlが実行され、gitlabにコミットすると、Docker ImageがECRにPushされるようになる。</p>
 <p>CodeBuildのコンソールからビルドプロジェクトを作成開始</p>
 <ul class="simple">
@@ -697,9 +440,9 @@ artifacts:
 <p><img alt="../_images/ecr-sqs-consumer.png" src="../_images/ecr-sqs-consumer.png" /></p>
 </section>
 <section id="ecs">
-<h3><span class="section-number">4.2.5. </span>ECSの設定<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">3.3.5. </span>ECSの設定<a class="headerlink" href="#ecs" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="iam">
-<h4><span class="section-number">4.2.5.1. </span>タスクのIAM準備<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">3.3.5.1. </span>タスクのIAM準備<a class="headerlink" href="#iam" title="この見出しへのパーマリンク">¶</a></h4>
 <p>事前に付与するIAM Roleを作成しておく。以下を付与する</p>
 <ul class="simple">
 <li><p>AmazonECSTaskExecutionRolePolicy</p></li>
@@ -723,14 +466,14 @@ artifacts:
 </pre></div>
 </div>
 </section>
-<section id="id14">
-<h4><span class="section-number">4.2.5.2. </span>タスク定義の設定<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id9">
+<h4><span class="section-number">3.3.5.2. </span>タスク定義の設定<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h4>
 <p>今回はFargateで設定するため、ネットワークモードがawsvpcになっており、ホストポートを設定しない。</p>
 <p><img alt="../_images/ecs-taskdefinition1.png" src="../_images/ecs-taskdefinition1.png" /></p>
 <p><img alt="../_images/ecs-taskdefinition2.png" src="../_images/ecs-taskdefinition2.png" /></p>
 </section>
-<section id="id15">
-<h4><span class="section-number">4.2.5.3. </span>サービスの設定<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id10">
+<h4><span class="section-number">3.3.5.3. </span>サービスの設定<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h4>
 <p>今回はFargateで作成するので起動タイプをFargateとする。
 作成したタスク定義を指定することで、起動時のコンテナの設定を行う。</p>
 <p><img alt="../_images/sqs-consumer-ecs-service-setting1.png" src="../_images/sqs-consumer-ecs-service-setting1.png" /></p>
@@ -744,8 +487,8 @@ artifacts:
 <p><img alt="../_images/sqs-consumer-ecs-service-setting3.png" src="../_images/sqs-consumer-ecs-service-setting3.png" /></p>
 </section>
 </section>
-<section id="id16">
-<h3><span class="section-number">4.2.6. </span>CodeDeployの設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">3.3.6. </span>CodeDeployの設定<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CodePipelineを修正し、Deployステージを設定する。</p>
 <p>まず、Code Buildのステージで出力アーティファクトを追加する。</p>
 <p><img alt="../_images/codebuild-artifact.png" src="../_images/codebuild-artifact.png" /></p>
@@ -754,6 +497,536 @@ artifacts:
 <p><img alt="../_images/codedeploy-sqs-consumer.png" src="../_images/codedeploy-sqs-consumer.png" /></p>
 <p><img alt="../_images/sqs-consumer-pipiline-all.png" src="../_images/sqs-consumer-pipiline-all.png" /></p>
 <p>無事ECSが起動できたら、ALBのDNSの後ろに<code class="docutils literal notranslate"><span class="pre">/sqs-consumer</span></code>でアクセスして文字列が表示されるか確認する。</p>
+</section>
+</section>
+</section>
+<section id="sqs-java">
+<h1><span class="section-number">4. </span>SQSのチュートリアル実装(Java編)<a class="headerlink" href="#sqs-java" title="この見出しへのパーマリンク">¶</a></h1>
+<p>参考サイト</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.stsd.co.jp/dev-blog/send_and_receive_amazon_sqs_messages_from_java.html">JavaからAmazon SQSのメッセージ送受信を行う</a></p></li>
+<li><p><a class="reference external" href="https://weblabo.oscasierra.net/aws-sqs-tutorial-java-1/">JavaでAmazon SQSのメッセージを送受信するチュートリアル</a></p></li>
+</ul>
+<section id="id12">
+<h2><span class="section-number">4.1. </span>SQSの作成<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SQSは前資料で作成した標準キューを再利用する</p>
+</section>
+<section id="java-producer">
+<h2><span class="section-number">4.2. </span>Javaのプログラム作成（Producer<a class="headerlink" href="#java-producer" title="この見出しへのパーマリンク">¶</a></h2>
+<p>JavaからSQSへのアクセスには、AWS公式のライブラリ<code class="docutils literal notranslate"><span class="pre">aws-java-sdk-sqs</span></code>を利用することとする。pomに以下を追加する。</p>
+<p>pom.xml</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">aws</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="n">sqs</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">1.12.116</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<section id="config">
+<h3><span class="section-number">4.2.1. </span>config<a class="headerlink" href="#config" title="この見出しへのパーマリンク">¶</a></h3>
+<p>src/main/javaにconfigのディレクトリを作成して、<code class="docutils literal notranslate"><span class="pre">sqsConfig</span></code>を作成する</p>
+<ul class="simple">
+<li><p>&#64;configurationクラスの宣言<br />設定クラスであることを宣言し、SpringにConfigクラスと認識させる。このクラスの配下では&#64;Beanを付与することで対象クラスの返り値のオブジェクトをSpringの管理下に置かれ、他のクラスからはAmazonSQSクライアントを新規作成するのではなく、このAmazonSQSを呼び出すことで利用することができる。<br />今回はSQSクライアントというサードパーティのメソッドで作成されるオブジェクトを管理したいので設定クラスで定義する。</p></li>
+<li><p>AmaozonSQSClientBuilder<br />SQSのデフォルトのクライアントインスタンスを作成している。<br />一旦デフォルト値を使用して、SQSのクライアントに対して、認証情報やリージョンの情報を渡している。メッセージに関する詳細なやりとりに関しては別で実装する。</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_producer</span><span class="o">.</span><span class="n">config</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQS</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQSClientBuilder</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="p">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">sqsConfig</span> <span class="p">{</span>
+    <span class="nd">@Bean</span>
+    <span class="n">public</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="n">AmazonSQSClientBuilder</span><span class="o">.</span><span class="n">defaultClient</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="messagesender">
+<h3><span class="section-number">4.2.2. </span>MessageSender<a class="headerlink" href="#messagesender" title="この見出しへのパーマリンク">¶</a></h3>
+<p>src/main/javaにMessageSenderクラスを作成する<br />このクラスでは、SQSへメッセージを送信するメソッドを定義する。</p>
+<ul class="simple">
+<li><p>&#64;Componentクラスの宣言<br />今回は、自分で作成するクラスを他のクラスでも呼び出し、依存性の注入を行いたいので&#64;componentで宣言する。</p></li>
+<li><p>&#64;Autowiredによる依存性注入<br />&#64;Autowiredを利用して、設定クラスで宣言したSQSClientを呼び出している。</p></li>
+<li><p>メッセージ送信メソッド</p>
+<ul>
+<li><p>メッセージ詳細<br />ランダムに数字を生成して、文字列に変換している</p></li>
+<li><p>SQSのメッセージ送信リクエストを作成</p>
+<ul>
+<li><p>withDelaySecondsは、送信してからConsumerが見えるようになるまでの時間でメッセージごとに設定可能</p></li>
+</ul>
+</li>
+<li><p>SQSのコンソール画面から設定した、<code class="docutils literal notranslate"><span class="pre">DelaySeconds</span></code>はキュー全体に対する遅延時間。</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_producer</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.AmazonSQS</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.sqs.model.SendMessageRequest</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="p">;</span>
+
+<span class="nd">@Component</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">MessageSender</span> <span class="p">{</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="n">private</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">sendMessage</span><span class="p">(){</span>
+        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard&quot;</span><span class="p">;</span>
+
+        <span class="o">//</span> <span class="n">送信するデータの作成</span>
+        <span class="n">Random</span> <span class="n">rand</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Random</span><span class="p">();</span>
+        <span class="nb">int</span> <span class="n">num</span> <span class="o">=</span> <span class="n">rand</span><span class="o">.</span><span class="n">nextInt</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="p">;</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+        <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">num</span><span class="p">);</span>
+
+        <span class="n">SendMessageRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="n">new</span> <span class="n">SendMessageRequest</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">withQueueUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">withMessageBody</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">withDelaySeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+        <span class="n">amazonSQSClient</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="main">
+<h3><span class="section-number">4.2.3. </span>main<a class="headerlink" href="#main" title="この見出しへのパーマリンク">¶</a></h3>
+<p>src/main/javaにSqsProducerApplicationクラスを作成する<br />このクラスは、Appのmainクラスであり、jarファイルを実行するとこのクラスのmainが実行される。</p>
+<p>処理としては、数字を引数を受け取って、その数だけSQSにメッセージを送信する。引数がなければ10回メッセージを送信する。</p>
+<ul class="simple">
+<li><p>&#64;SpringBootApplication<br />プロジェクト内のクラスを読み込んで、アプリケーションの設定やBeanの設定をする。これによりSpringはDIを行うことができ、各種設定済みのインスタンスを利用することができる</p></li>
+<li><p>ApplicationContext<br />Spring Applicationが実行され、contextの中にBeanなどで定義されたインスタンスが格納される。</p></li>
+<li><p>context.getBean(MessageSender.class)<br />contextの中にあるBeanをとりだす。MessageSenderは&#64;Componentで定義されているのでcontext内にBeanガ注入されている。</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package com.msa.aws.sqs.sqs_producer;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+//実行時に各種のアノテーションを読み込んで、DIする
+@SpringBootApplication
+public class SqsProducerApplication {
+    //java実行時に最初に呼び出される
+    public static void main(String[] args) {
+        int executionCount = 10;
+
+        if (args.length&gt;0){
+            executionCount = Integer.parseInt(args[0]);
+        }
+        // SQSProducerApplicationの呼び出されることで@SpringBootApplicationにより作成されたBeanなどがcontextに格納される
+        ApplicationContext context = SpringApplication.run(SqsProducerApplication.class, args);
+        for (int i = 0; i &lt; executionCount; i++){
+            //context内部に管理されているBeanをよびだしている
+            MessageSender sender = context.getBean(MessageSender.class);
+            sender.sendMessage();
+        }
+    }
+
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="ec2">
+<h2><span class="section-number">4.3. </span>EC2からの実行<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="jar">
+<h3><span class="section-number">4.3.1. </span>jarファイルを移動させる<a class="headerlink" href="#jar" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>キーペアのコピー</p>
+<ul>
+<li><p>作成した、キーペアをworkspacesにコピーしておく（ファイルのコピーはできないので、テキストベースでコピーする。</p></li>
+</ul>
+</li>
+<li><p>権限付与</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chmod</span> <span class="mi">600</span> <span class="n">XXXX</span><span class="o">.</span><span class="n">pem</span> 
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>ファイルコピーコマンド実行</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;EC2秘密鍵&#39;</span> <span class="s1">&#39;ローカルの転送したいファイル&#39;</span> <span class="s1">&#39;EC2ユーザー名@IPアドレス:ファイル配置先 </span>
+
+<span class="n">EX</span><span class="p">)</span><span class="n">scp</span> <span class="o">-</span><span class="n">i</span> <span class="o">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">XXX</span><span class="o">.</span><span class="n">pem</span> <span class="n">TEST</span><span class="o">.</span><span class="n">txt</span> <span class="n">ec2</span><span class="o">-</span><span class="n">user</span><span class="o">@</span><span class="mf">12.34.567.890</span><span class="p">:</span><span class="o">/</span><span class="n">home</span><span class="o">/</span>
+</pre></div>
+</div>
+</section>
+<section id="java">
+<h3><span class="section-number">4.3.2. </span>javaのインストール<a class="headerlink" href="#java" title="この見出しへのパーマリンク">¶</a></h3>
+<p>EC2にjavaをインストールして、jarファイルを実行する</p>
+<p>javaのインストール</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="n">java</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="n">amazon</span><span class="o">-</span><span class="n">corretto</span>
+</pre></div>
+</div>
+<p>実行</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">XXX</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h3><span class="section-number">4.3.3. </span>結果<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producer側のjarファイルを実行</p>
+<p><img alt="../_images/sqs_tutorial_producer.png" src="../_images/sqs_tutorial_producer.png" /></p>
+<p>Consumer側のjarファイルを実行すると、メッセージを取得することができる</p>
+<p><img alt="../_images/sqs_tutorial_consumer.png" src="../_images/sqs_tutorial_consumer.png" /></p>
+<p>CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側ではメッセージを削除するので、Produceした分増えた後、Consumeした分減る</p>
+<p><img alt="../_images/sqs_tutorial_metrix.png" src="../_images/sqs_tutorial_metrix.png" /></p>
+</section>
+</section>
+<section id="java-consumer">
+<h2><span class="section-number">4.4. </span>Javaのプログラム作成（Consumer<a class="headerlink" href="#java-consumer" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id14">
+<h3><span class="section-number">4.4.1. </span>Config<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producerと同様の設定を行うが、今回は、非同期で、メッセージを処理するため、Asyncのクライアントを作成する</p>
+<ul class="simple">
+<li><p>amazonSQSAsyncClient<br />非同期でsqsからのメッセージを受信して、処理するメソッド</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Configuration</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">sqsConfig</span> <span class="p">{</span>
+    <span class="nd">@Bean</span>
+    <span class="n">public</span> <span class="n">AmazonSQSAsync</span> <span class="n">amazonSQSAsyncClient</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="n">AmazonSQSAsyncClientBuilder</span><span class="o">.</span><span class="n">defaultClient</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="frontend">
+<h3><span class="section-number">4.4.2. </span>frontend<a class="headerlink" href="#frontend" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ECSに載せるための動作確認用とhelthcheck用に文字列を返すページを準備したい。その為のControllerを作成しておく</p>
+<ul class="simple">
+<li><p>&#64;RestController<br />クラスレベルで用いられる。対象クラスがRESTful Webサービスのコントローラーであることを示す。このクラスが付与されているとSpringによってBean管理されて、HTTPリクエストを処理する</p></li>
+<li><p>&#64;RequestMapping<br />メソッドレベルで用いられる。指定したパスへのリクエストをfrontend()で処理する。</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="p">;</span>
+
+<span class="nd">@RestController</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">frontendController</span> <span class="p">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;/sqs-consumer&quot;</span><span class="p">,</span> <span class="n">produces</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">frontend</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello sqs-consumer!&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="messagereceiver">
+<h3><span class="section-number">4.4.3. </span>MessageReceiver<a class="headerlink" href="#messagereceiver" title="この見出しへのパーマリンク">¶</a></h3>
+<p>SQSからメッセージを受信して、処理するクラス。</p>
+<ul class="simple">
+<li><p>MessageReceiver<br />Configクラスで設定したamazonSQSAsyncClientのインスタンスを取得</p></li>
+<li><p>ReceiveMessageRequest<br />リクエストの設定。受信数やロングポーリングの時間などを設定</p></li>
+<li><p>sqsAsyncClient.receiveMessage<br />非同期でメッセージを受信してメッセージをリストで返却</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package com.msa.aws.sqs.sqs_consumer;
+
+import com.amazonaws.services.sqs.AmazonSQSAsync;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+@Component
+public class MessageReceiver implements Runnable {
+
+    private static final String QUEUE_URL = &quot;https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard&quot;;
+    private static final int MAX_NUMBER_OF_MESSAGES = 10; // 一度に受信する最大メッセージ数
+    private static final int WAIT_TIME_SECONDS = 20; // メッセージがない場合のロングポーリング待機時間
+    private final AmazonSQSAsync sqsAsyncClient;
+
+    @Autowired
+    public MessageReceiver(AmazonSQSAsync sqsAsyncClient) {
+        this.sqsAsyncClient = sqsAsyncClient;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            // 受信用のリクエスト作成
+            final ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(QUEUE_URL)
+                    .withMaxNumberOfMessages(MAX_NUMBER_OF_MESSAGES)
+                    .withWaitTimeSeconds(WAIT_TIME_SECONDS);
+
+            // 受信リクエストの設定を入力としてSQSからメッセージを受信
+            final List&lt;Message&gt; messages = sqsAsyncClient.receiveMessage(receiveMessageRequest).getMessages();
+
+
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;);
+            for (final Message message : messages) {
+                System.out.println(&quot;======================================================= start =======================================================&quot; );
+
+                //処理開始時間の表示
+                LocalDateTime now_bf = LocalDateTime.now();
+                System.out.println(&quot;Received Time: &quot; + formatter.format(now_bf));
+
+                //メッセージ内容の表示
+                System.out.println(&quot;Message&quot;);
+                System.out.println(&quot;Body:          &quot; + message.getBody());
+                //メッセージの処理（今回は待機するだけ）
+                int waitTime = Integer.parseInt(message.getBody()) * 1000;
+                System.out.println(&quot;wait time: &quot; + waitTime);
+                waitInMilliseconds(waitTime);
+                //メッセージの削除
+                sqsAsyncClient.deleteMessage(QUEUE_URL, message.getReceiptHandle());
+
+                //処理完了時間の表示
+                LocalDateTime now_af = LocalDateTime.now();
+                System.out.println(&quot;Processed Time: &quot; + formatter.format(now_af));
+                System.out.println(&quot;======================================================= end =======================================================&quot; );
+
+            }
+        }
+    }
+
+
+    //数字を受け取って、その時間待機するためのメソッド
+    private void waitInMilliseconds(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="id15">
+<h3><span class="section-number">4.4.4. </span>main<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<p>このクラスは、Appのmainクラスであり、jarファイルを実行するとこのクラスのmainが実行される。</p>
+<ul class="simple">
+<li><p>implements CommandLineRunner<br />このインターフェースを実装すると、Spring Bootアプリケーションが起動した直後にrunメソッドが呼び出されます。</p></li>
+<li><p>&#64;Autowired<br />MessageReciverをDIしている</p></li>
+<li><p>Thread messageReceiverThread = new Thread(messageReceiver);<br />MessageReciverで定義されているrunが実行される</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">msa</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">sqs</span><span class="o">.</span><span class="n">sqs_consumer</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.CommandLineRunner</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="p">;</span>
+
+<span class="nd">@SpringBootApplication</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">SqsConsumerApplication</span> <span class="n">implements</span> <span class="n">CommandLineRunner</span> <span class="p">{</span>
+
+	<span class="n">private</span> <span class="n">final</span> <span class="n">MessageReceiver</span> <span class="n">messageReceiver</span><span class="p">;</span>
+
+	<span class="nd">@Autowired</span>
+	<span class="n">public</span> <span class="n">SqsConsumerApplication</span><span class="p">(</span><span class="n">MessageReceiver</span> <span class="n">messageReceiver</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">this</span><span class="o">.</span><span class="n">messageReceiver</span> <span class="o">=</span> <span class="n">messageReceiver</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">SpringApplication</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SqsConsumerApplication</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="nd">@Override</span>
+	<span class="n">public</span> <span class="n">void</span> <span class="n">run</span><span class="p">(</span><span class="n">String</span><span class="o">...</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">Thread</span> <span class="n">messageReceiverThread</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Thread</span><span class="p">(</span><span class="n">messageReceiver</span><span class="p">);</span>
+		<span class="n">messageReceiverThread</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="id16">
+<h1><span class="section-number">5. </span>SQSのオートスケーリング設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id17">
+<h2><span class="section-number">5.1. </span>基本方針<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p>監視</p>
+<ul>
+<li><p>CloudWatchアラームを設定して、処理できるキューの数(ApproximateNumberOfMessagesVisible)を監視する。</p></li>
+<li><p>スケールアウト用の監視とスケールイン用の監視を作成</p></li>
+</ul>
+</li>
+<li><p>オートスケール</p>
+<ul>
+<li><p>キューが少しでも溜まったら、台数を8件に変更する。</p></li>
+<li><p>キューのメッセージ数が5分連続で0になったらスケールインする</p></li>
+</ul>
+</li>
+<li><p>確認項目</p>
+<ul>
+<li><p>メトリクスのログを確認して、減り方が一定であることを確認（漸減しない）</p></li>
+<li><p>1000件全てが正しく処理されているか確認</p></li>
+<li><p>オートスケールした各コンテナのログを確認して重複処理していないか確認</p></li>
+<li><p>オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id18">
+<h2><span class="section-number">5.2. </span>監視設定<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<p>以下の手順でスケールアウトとスケールインのメトリクスを作成</p>
+<ul class="simple">
+<li><p>CloudWatchAlarmsからアラームの作成</p>
+<ul>
+<li><p>MA-fujishiroms-sqs-alarms-scaleOUT</p></li>
+<li><p>MA-fujishiroms-sqs-alarms-scaleIN</p></li>
+</ul>
+</li>
+<li><p>メトリクスとしてSQS&gt;キューイングメトリクス&gt;ApproximateNumberOfMessagesVisibleを選択</p></li>
+<li><p>各種設定を行う</p>
+<ul>
+<li><p>統計：最大（メトリクスとして収集するデータをどの集計値にするか）</p></li>
+<li><p>期間：1分（詳細メトリクスの設定をしない場合は1分が最短）</p></li>
+<li><p>閾値の種類：静的（異常検出はMLによって異常値を検出する）</p></li>
+<li><p>アラームを実行するポイント：メトリクスが何回閾値を超えたらアラームを出すか</p>
+<ul>
+<li><p>スケールアウト：10以上となったデータが一回でもあればアラーム</p></li>
+<li><p>スケールイン：0以下となったデータが5分連続したらアラーム</p></li>
+</ul>
+</li>
+<li><p>アクションの設定は一旦設定なしでOK</p></li>
+</ul>
+</li>
+</ul>
+<p><img alt="../_images/sqs_alarms_scaleout.png" src="../_images/sqs_alarms_scaleout.png" /></p>
+<p><img alt="../_images/sqs_alarms_scalein.png" src="../_images/sqs_alarms_scalein.png" /></p>
+</section>
+<section id="id19">
+<h2><span class="section-number">5.3. </span>オートスケール設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ECSのサービスからオートスケーリングの設定を行う。サービスを選択し、更新</p>
+<ul class="simple">
+<li><p>スケールアウトとスケールインのポリシーを設定する</p>
+<ul>
+<li><p>MA-fujishiroms-sqs-consumer-scaleOUT-policy</p></li>
+<li><p>MA-fujishiroms-sqs-consumer-scaleIN-policy</p></li>
+</ul>
+</li>
+<li><p>サービスのAuto Scalingから最小数と最大数を設定</p>
+<ul>
+<li><p>最大数：10</p></li>
+<li><p>最小数：1</p></li>
+</ul>
+</li>
+<li><p>スケーリングポリシー</p>
+<ul>
+<li><p>ポリシータイプ：ステップスケーリング</p></li>
+<li><p>CloudWatchアラーム名：事前作成したもの</p></li>
+<li><p>アクション:スケール<em>アウト</em></p>
+<ul>
+<li><p>アクション：add</p></li>
+<li><p>値：10</p></li>
+<li><p>タイプ：タスク</p></li>
+<li><p>下限：10(どの値でスケールアウトさせるか)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>アクション:スケール<em>イン</em>
+- アクション：Remove
+- 値：10
+- タイプ：タスク
+- 上限：0(どの値でスケールインさせるか)</p></li>
+</ul>
+<p><img alt="../_images/sqs_autoscaling_scaleout.png" src="../_images/sqs_autoscaling_scaleout.png" /></p>
+<p><img alt="../_images/sqs_autoscaling_scalein.png" src="../_images/sqs_autoscaling_scalein.png" /></p>
+</section>
+<section id="id20">
+<h2><span class="section-number">5.4. </span>検証結果<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id21">
+<h3><span class="section-number">5.4.1. </span>オートスケールの挙動<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>producerで1000件のデータをSQSへ送信</p></li>
+<li><p>スケールアウトについては、アラートはうまく発出されて、スケールアウトも動作した。
+（ただし、8台しか立ち上がらないので一旦最大数を8に変更）</p></li>
+<li><p>スケールインに関しても5分間連続で値が閾値を超えることでアラートが発出され、スケールインも実施された。</p></li>
+</ul>
+<p><img alt="../_images/sqs_scaleout_alart.png" src="../_images/sqs_scaleout_alart.png" /></p>
+</section>
+<section id="id22">
+<h3><span class="section-number">5.4.2. </span>ログの分析<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>メトリクスのログを確認して、減り方が一定であることを確認（漸減しない）</p>
+<ul>
+<li><p>上記のスケールアウトのメトリクスを見ても、処理の最後の方でも漸減していない。そのため、特定のコンテナだけが処理をして、他のコンテナがメッセージを受け取っていないようには見えない。</p></li>
+</ul>
+</li>
+<li><p>1000件全てが正しく処理されているか確認</p>
+<ul>
+<li><p>ログを確認して、処理終了のログを集計したところ1000件は全て処理されている。</p></li>
+</ul>
+</li>
+<li><p>オートスケールした各コンテナのログを確認して重複処理していないか確認</p>
+<ul>
+<li><p>処理完了の件数を確認したところ1000件だったため、重複して処理しているものはない。</p></li>
+<li><p>SQSの公式ドキュメントでは最低一回の補償なので、二回行われる可能性もある</p></li>
+</ul>
+</li>
+<li><p>オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認</p>
+<ul>
+<li><p>ログから書くコンテナの処理件数と最後の処理の終了時刻を取得</p></li>
+<li><p>コンテナ５が件数多いものの、終了日時はずれていない。</p></li>
+<li><p>コンテナ5に入った処理が軽かっただけと推察。この辺りは処理時間を長くして動作確認したい。</p>
+<ul>
+<li><p>コンテナ１：118件処理・4:30:23</p></li>
+<li><p>コンテナ２：110件処理・4:30:16</p></li>
+<li><p>コンテナ３：120件処理・4:30:39</p></li>
+<li><p>コンテナ４：122件処理・4:30:35</p></li>
+<li><p>コンテナ５：167件処理・4:30:40</p></li>
+<li><p>コンテナ６：120件処理・4:30:46</p></li>
+<li><p>コンテナ７：113件処理・4:30:10</p></li>
+<li><p>コンテナ８：130件処理・4:30:29</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<section id="id23">
+<h4><span class="section-number">5.4.2.1. </span>トラブルシューティング<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p>1000件全てが正しく処理されているか確認【解決】</p>
+<ul>
+<li><p>なぜか、ログが918件しかない</p></li>
+<li><p>キューの中身もDLTの中身も確認したが、中身は残っていない</p></li>
+<li><p>Consumer側を0件にしてみて、処理させてみる？1000件貯まるかのチェック</p>
+<ul>
+<li><p>EC2のSQS Consumerが起動していた！！！！</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>なぜかスケールインがうまく動作しない。【解決】</p>
+<ul>
+<li><p>0件以下でスケールイン0件以上でスケールアウトに変更して、スケールアウトとスケールインの間を無くしたら動いた（前はメトリクスが10以上ならスケールアウト、0以下ならスケールインみたいな設定にしていた）</p></li>
+</ul>
+</li>
+<li><p>オートスケールした各コンテナのログを確認して重複処理していないか確認【解決】</p>
+<ul>
+<li><p>重複している処理があるものの、スケールイン中のコンテナが拾ってしまった様子。</p></li>
+<li><p>削除しなければ可視性タイムアウトが終了して、他のコンテナが拾ってくれたことを確認できた。</p></li>
+</ul>
+</li>
+<li><p>オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認【解決】</p>
+<ul>
+<li><p>コンテナの数が8件ではなくて、15件あって、非常にわかり辛いので、スケールアウトのルールをN台にするという設定ではなくて、N大追加するというものに変更</p></li>
+<li><p>この設定のおかげというよりは、なかなか立ち上がらないから２回スケールアウトの命令が実施された？</p></li>
+</ul>
+</li>
+<li><p>課題として、10台までスケールアウトして欲しいのに、8台までしか立ち上がらなかった。【未解決】</p></li>
+</ul>
+<p><img alt="../_images/sqs_scaleout_8.png" src="../_images/sqs_scaleout_8.png" /></p>
+</section>
 </section>
 </section>
 </section>
@@ -785,49 +1058,63 @@ artifacts:
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sqs-java">3. SQSのチュートリアル実装(Java編)</a><ul>
-<li><a class="reference internal" href="#sqs">3.1. SQSの作成</a></li>
-<li><a class="reference internal" href="#ec2">3.2. EC2の作成</a></li>
-<li><a class="reference internal" href="#java-producer">3.3. Javaのプログラム作成（Producer</a><ul>
-<li><a class="reference internal" href="#config">3.3.1. config</a></li>
-<li><a class="reference internal" href="#messagesender">3.3.2. MessageSender</a></li>
-<li><a class="reference internal" href="#main">3.3.3. main</a></li>
+<li><a class="reference internal" href="#sqs">3. SQSの開発環境構築</a><ul>
+<li><a class="reference internal" href="#producerec2">3.1. ProducerのEC2の作成</a></li>
+<li><a class="reference internal" href="#producercicd">3.2. ProducerのCICD</a><ul>
+<li><a class="reference internal" href="#codedeploy">3.2.1. CodeDeployの準備</a></li>
+<li><a class="reference internal" href="#id8">3.2.2. CodeDeployの設定</a></li>
+<li><a class="reference internal" href="#codepipeline">3.2.3. CodePipelineの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#java-consumer">3.4. Javaのプログラム作成（Consumer</a><ul>
-<li><a class="reference internal" href="#id8">3.4.1. Config</a></li>
-<li><a class="reference internal" href="#messagereceiver">3.4.2. MessageReceiver</a></li>
-<li><a class="reference internal" href="#frontend">3.4.3. frontend</a></li>
-<li><a class="reference internal" href="#id9">3.4.4. main</a></li>
+<li><a class="reference internal" href="#consumerecscicd">3.3. ConsumerのECSデプロイとCICD</a><ul>
+<li><a class="reference internal" href="#dockerfile">3.3.1. Dockerfileの作成</a></li>
+<li><a class="reference internal" href="#ecr">3.3.2. ECRの設定</a></li>
+<li><a class="reference internal" href="#buildspec-yml">3.3.3. Buildspec.ymlの作成</a></li>
+<li><a class="reference internal" href="#codebuild">3.3.4. CodeBuildの設定</a></li>
+<li><a class="reference internal" href="#ecs">3.3.5. ECSの設定</a><ul>
+<li><a class="reference internal" href="#iam">3.3.5.1. タスクのIAM準備</a></li>
+<li><a class="reference internal" href="#id9">3.3.5.2. タスク定義の設定</a></li>
+<li><a class="reference internal" href="#id10">3.3.5.3. サービスの設定</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id10">3.5. EC2からの実行</a><ul>
-<li><a class="reference internal" href="#jar">3.5.1. jarファイルを移動させる</a></li>
-<li><a class="reference internal" href="#java">3.5.2. javaのインストール</a></li>
-<li><a class="reference internal" href="#id11">3.5.3. 結果</a></li>
+<li><a class="reference internal" href="#id11">3.3.6. CodeDeployの設定</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">4. SQSの開発環境構築</a><ul>
-<li><a class="reference internal" href="#producercicd">4.1. ProducerのCICD</a><ul>
-<li><a class="reference internal" href="#codedeploy">4.1.1. CodeDeployの準備</a></li>
-<li><a class="reference internal" href="#id13">4.1.2. CodeDeployの設定</a></li>
-<li><a class="reference internal" href="#codepipeline">4.1.3. CodePipelineの作成</a></li>
+<li><a class="reference internal" href="#sqs-java">4. SQSのチュートリアル実装(Java編)</a><ul>
+<li><a class="reference internal" href="#id12">4.1. SQSの作成</a></li>
+<li><a class="reference internal" href="#java-producer">4.2. Javaのプログラム作成（Producer</a><ul>
+<li><a class="reference internal" href="#config">4.2.1. config</a></li>
+<li><a class="reference internal" href="#messagesender">4.2.2. MessageSender</a></li>
+<li><a class="reference internal" href="#main">4.2.3. main</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#consumerecscicd">4.2. ConsumerのECSデプロイとCICD</a><ul>
-<li><a class="reference internal" href="#dockerfile">4.2.1. Dockerfileの作成</a></li>
-<li><a class="reference internal" href="#ecr">4.2.2. ECRの設定</a></li>
-<li><a class="reference internal" href="#buildspec-yml">4.2.3. Buildspec.ymlの作成</a></li>
-<li><a class="reference internal" href="#codebuild">4.2.4. CodeBuildの設定</a></li>
-<li><a class="reference internal" href="#ecs">4.2.5. ECSの設定</a><ul>
-<li><a class="reference internal" href="#iam">4.2.5.1. タスクのIAM準備</a></li>
-<li><a class="reference internal" href="#id14">4.2.5.2. タスク定義の設定</a></li>
-<li><a class="reference internal" href="#id15">4.2.5.3. サービスの設定</a></li>
+<li><a class="reference internal" href="#ec2">4.3. EC2からの実行</a><ul>
+<li><a class="reference internal" href="#jar">4.3.1. jarファイルを移動させる</a></li>
+<li><a class="reference internal" href="#java">4.3.2. javaのインストール</a></li>
+<li><a class="reference internal" href="#id13">4.3.3. 結果</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">4.2.6. CodeDeployの設定</a></li>
+<li><a class="reference internal" href="#java-consumer">4.4. Javaのプログラム作成（Consumer</a><ul>
+<li><a class="reference internal" href="#id14">4.4.1. Config</a></li>
+<li><a class="reference internal" href="#frontend">4.4.2. frontend</a></li>
+<li><a class="reference internal" href="#messagereceiver">4.4.3. MessageReceiver</a></li>
+<li><a class="reference internal" href="#id15">4.4.4. main</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id16">5. SQSのオートスケーリング設定</a><ul>
+<li><a class="reference internal" href="#id17">5.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id18">5.2. 監視設定</a></li>
+<li><a class="reference internal" href="#id19">5.3. オートスケール設定</a></li>
+<li><a class="reference internal" href="#id20">5.4. 検証結果</a><ul>
+<li><a class="reference internal" href="#id21">5.4.1. オートスケールの挙動</a></li>
+<li><a class="reference internal" href="#id22">5.4.2. ログの分析</a><ul>
+<li><a class="reference internal" href="#id23">5.4.2.1. トラブルシューティング</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -843,7 +1130,7 @@ artifacts:
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="次の章へ"><span class="section-number">5. </span>MSKのチュートリアル実装(CLI編)</a></p>
+                          title="次の章へ"><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -873,7 +1160,7 @@ artifacts:
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="5. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
              >次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"

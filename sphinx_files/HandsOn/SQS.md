@@ -219,17 +219,15 @@ $ aws sqs delete-message --queue-url "https://sqs.ap-northeast-1.amazonaws.com/[
 
 
 
-# SQSのチュートリアル実装(Java編)
-参考サイト
-- [JavaからAmazon SQSのメッセージ送受信を行う](https://www.stsd.co.jp/dev-blog/send_and_receive_amazon_sqs_messages_from_java.html)
-- [JavaでAmazon SQSのメッセージを送受信するチュートリアル](https://weblabo.oscasierra.net/aws-sqs-tutorial-java-1/)
 
 
-## SQSの作成
-SQSは別資料で作成した標準キューを再利用する
 
 
-## EC2の作成
+
+
+# SQSの開発環境構築
+
+## ProducerのEC2の作成
 基本的にはデフォルトでEC2を作成。
 
 IAMについては以下のポリシーを持つIAMポリシーを作成しておき付与する
@@ -252,254 +250,6 @@ IAMについては以下のポリシーを持つIAMポリシーを作成して�
 
 ```
 
-## Javaのプログラム作成（Producer
-JavaからSQSへのアクセスには、AWS公式のライブラリ`aws-java-sdk-sqs`を利用することとする。pomに以下を追加する。
-
-pom.xml
-```
-<dependency>
-  <groupId>com.amazonaws</groupId>
-  <artifactId>aws-java-sdk-sqs</artifactId>
-  <version>1.12.116</version>
-</dependency>
-```
-
-### config
-src/main/javaの配下にconfigのディレクトリを作成して、`sqsConfig`を作成する
-
-```
-package com.msa.aws.sqs.sqs_producer.config;
-
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class sqsConfig {
-    @Bean
-    public AmazonSQS amazonSQSClient(){
-        return AmazonSQSClientBuilder.defaultClient();
-    }
-}
-```
-- @configurationにより、設定クラスであることを宣言
-    - 設定クラスではSpringがDIするためのBeanの定義を行う
-- @Beanにより、メソッドがDIコンテナによって管理させるBeanを作成することを宣言
-    - AmazonSQSClient()メソッドにより、SQSのクライアントを生成する
-    - defaultClient() メソッドは、既定の設定を使用して AmazonSQS クライアントのインスタンスを作成します。
-
-
-### MessageSender
-```
-package com.msa.aws.sqs.sqs_producer;
-
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.model.SendMessageRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-@Component
-public class MessageSender {
-    @Autowired
-    private AmazonSQS amazonSQSClient;
-
-    public void sendMessage(){
-        String url = "https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard";
-
-        String message = "hello SQS!! FROM JAVA";
-
-        SendMessageRequest request = new SendMessageRequest()
-                .withQueueUrl(url)
-                .withMessageBody(message)
-                .withDelaySeconds(5);
-        amazonSQSClient.sendMessage(request);
-    }
-}
-
-```
-
-ここで指定している`withDelaySeconds`はメッセージに対する遅延時間。
-SQSのコンソール画面から設定した、`DelaySeconds`はキュー全体に対する遅延時間。
-
-
-### main
-```
-package com.msa.aws.sqs.sqs_producer;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-
-@SpringBootApplication
-public class SqsProducerApplication {
-
-    public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(SqsProducerApplication.class, args);
-        MessageSender sender = context.getBean(MessageSender.class);
-        sender.sendMessage();
-    }
-
-}
-
-```
-
-
-## Javaのプログラム作成（Consumer
-### Config
-@Configurationがついているクラスなので、設定クラスとしてSpringに認識される。  
-この設定クラスは以下で、@Beanを付与することで、対象クラスの返り値オブジェクトがSpringフレームワークの管理下に置かれることになる。
-
-AmaozonSQSClientBuilderを利用して、SQSのデフォルトのクライアントインスタンスを作成している。
-一旦デフォルト値を使用して、SQSのクライアントに対して、認証情報やリージョンの情報を渡している。
-メッセージに関する詳細なやりとりに関しては別で実装する。
-
-```
-@Configuration
-public class sqsConfig {
-    @Bean
-    public AmazonSQS amazonSQSClient(){
-        return AmazonSQSClientBuilder.defaultClient();
-    }
-}
-```
-
-### MessageReceiver
-```
-package com.msa.aws.sqs.sqs_consumer;
-
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.model.Message;
-import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
-import com.amazonaws.services.sqs.model.ReceiveMessageResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-@Component
-public class MessageReceiver {
-    @Autowired
-    private AmazonSQS amazonSQSClient;
-
-
-    public void receiveMessage(){
-    String url = "https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard";
-
-    ReceiveMessageRequest request = new ReceiveMessageRequest()
-                .withQueueUrl(url)
-                .withWaitTimeSeconds(5)
-                .withMaxNumberOfMessages(5);
-
-    ReceiveMessageResult result = amazonSQSClient.receiveMessage(request);
-
-    for (Message msg : result.getMessages()) {
-        // 受信したメッセージの情報を表示
-        System.out.println("["+msg.getMessageId()+"]");
-        System.out.println("  Message ID     : " + msg.getMessageId());
-        System.out.println("  Receipt Handle : " + msg.getReceiptHandle());
-        System.out.println("  Message Body   : " + msg.getBody());
-        System.out.println();
-
-        // 受信したメッセージを削除
-        amazonSQSClient.deleteMessage(url, msg.getReceiptHandle());
-        }
-    }
-}
-
-```
-
-### frontend
-ECSに載せるための動作確認用とhelthcheck用に文字列を返すControllerを作成しておく
-```
-package com.msa.aws.sqs.sqs_consumer;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class frontendController {
-
-    @RequestMapping(value="/sqs-consumer", produces = "text/plain")
-    public String frontend(){
-        return "Hello sqs-consumer!";
-    }
-}
-
-```
-
-### main
-```
-package com.msa.aws.sqs.sqs_consumer;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-
-@SpringBootApplication
-public class SqsConsumerApplication {
-
-	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(SqsConsumerApplication.class, args);
-		MessageReceiver receiver = context.getBean(MessageReceiver.class);
-		receiver.receiveMessage();
-
-	}
-}
-
-```
-
-
-
-## EC2からの実行
-### jarファイルを移動させる
-- キーペアのコピー
-    - 作成した、キーペアをworkspacesにコピーしておく（ファイルのコピーはできないので、テキストベースでコピーする。
-
-- 権限付与
-```
-chmod 600 XXXX.pem 
-```
-
-- ファイルコピーコマンド実行
-```
-scp -i 'EC2秘密鍵' 'ローカルの転送したいファイル' 'EC2ユーザー名@IPアドレス:ファイル配置先 
-
-EX)scp -i .ssh/XXX.pem TEST.txt ec2-user@12.34.567.890:/home/
-```
-
-
-### javaのインストール
-EC2にjavaをインストールして、jarファイルを実行する
-
-javaのインストール
-```
-sudo yum install java-11-amazon-corretto
-```
-
-実行
-```
-java -jar XXX.jar
-```
-
-### 結果
-Producer側のjarファイルを実行
-
-![](img/sqs_tutorial_producer.png)
-
-Consumer側のjarファイルを実行すると、メッセージを取得することができる
-
-![](img/sqs_tutorial_consumer.png)
-
-CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側ではメッセージを削除するので、Produceした分増えた後、Consumeした分減る
-
-![](img/sqs_tutorial_metrix.png)
-
-
-
-
-
-
-
-# SQSの開発環境構築
 ## ProducerのCICD
 Producer側はバッチで処理を流すので、CodeDeployでEC2上にjarファイルをデプロイする
 1. [IntelliJとGithubを連携](https://misakifujishiro.github.io/mylogs/Java/intelliJ.html#intellijgithub)
@@ -507,6 +257,7 @@ Producer側はバッチで処理を流すので、CodeDeployでEC2上にjarフ�
 3. CodeDeoloyの準備
 3. CodeDeployの設定
 4. CodePipelineの作成
+
 
 ### CodeDeployの準備
 - appspec.ymlをJava PJのルートディレクトリに配置する
@@ -573,6 +324,8 @@ Roleを作成する際にCodeDeployを選択する
 - デプロイステージは事前に作成したCodeDeploy
 
 ![](img/codepipeline_sqs_producer_overview.png)
+
+
 
 
 
@@ -776,4 +529,533 @@ CodePipelineを修正し、Deployステージを設定する。
 ![](img/sqs-consumer-pipiline-all.png)
 
 無事ECSが起動できたら、ALBのDNSの後ろに`/sqs-consumer`でアクセスして文字列が表示されるか確認する。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# SQSのチュートリアル実装(Java編)
+参考サイト
+- [JavaからAmazon SQSのメッセージ送受信を行う](https://www.stsd.co.jp/dev-blog/send_and_receive_amazon_sqs_messages_from_java.html)
+- [JavaでAmazon SQSのメッセージを送受信するチュートリアル](https://weblabo.oscasierra.net/aws-sqs-tutorial-java-1/)
+
+
+## SQSの作成
+SQSは前資料で作成した標準キューを再利用する
+
+
+## Javaのプログラム作成（Producer
+JavaからSQSへのアクセスには、AWS公式のライブラリ`aws-java-sdk-sqs`を利用することとする。pomに以下を追加する。
+
+pom.xml
+```
+<dependency>
+  <groupId>com.amazonaws</groupId>
+  <artifactId>aws-java-sdk-sqs</artifactId>
+  <version>1.12.116</version>
+</dependency>
+```
+
+### config
+src/main/javaにconfigのディレクトリを作成して、`sqsConfig`を作成する
+
+- @configurationクラスの宣言  
+設定クラスであることを宣言し、SpringにConfigクラスと認識させる。このクラスの配下では@Beanを付与することで対象クラスの返り値のオブジェクトをSpringの管理下に置かれ、他のクラスからはAmazonSQSクライアントを新規作成するのではなく、このAmazonSQSを呼び出すことで利用することができる。  
+今回はSQSクライアントというサードパーティのメソッドで作成されるオブジェクトを管理したいので設定クラスで定義する。
+
+- AmaozonSQSClientBuilder  
+SQSのデフォルトのクライアントインスタンスを作成している。  
+一旦デフォルト値を使用して、SQSのクライアントに対して、認証情報やリージョンの情報を渡している。メッセージに関する詳細なやりとりに関しては別で実装する。
+```
+package com.msa.aws.sqs.sqs_producer.config;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class sqsConfig {
+    @Bean
+    public AmazonSQS amazonSQSClient(){
+        return AmazonSQSClientBuilder.defaultClient();
+    }
+}
+```
+
+
+
+
+
+### MessageSender
+src/main/javaにMessageSenderクラスを作成する  
+このクラスでは、SQSへメッセージを送信するメソッドを定義する。
+
+- @Componentクラスの宣言  
+今回は、自分で作成するクラスを他のクラスでも呼び出し、依存性の注入を行いたいので@componentで宣言する。
+
+- @Autowiredによる依存性注入  
+@Autowiredを利用して、設定クラスで宣言したSQSClientを呼び出している。
+
+- メッセージ送信メソッド  
+    - メッセージ詳細  
+    ランダムに数字を生成して、文字列に変換している
+    - SQSのメッセージ送信リクエストを作成
+        - withDelaySecondsは、送信してからConsumerが見えるようになるまでの時間でメッセージごとに設定可能
+    - SQSのコンソール画面から設定した、`DelaySeconds`はキュー全体に対する遅延時間。
+
+
+```
+package com.msa.aws.sqs.sqs_producer;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MessageSender {
+
+    @Autowired
+    private AmazonSQS amazonSQSClient;
+
+    public void sendMessage(){
+        String url = "https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard";
+
+        // 送信するデータの作成
+        Random rand = new Random();
+        int num = rand.nextInt(10) ;
+        num = num+1;
+        String message = String.valueOf(num);
+
+        SendMessageRequest request = new SendMessageRequest()
+                .withQueueUrl(url)
+                .withMessageBody(message)
+                .withDelaySeconds(5);
+        amazonSQSClient.sendMessage(request);
+    }
+}
+
+```
+
+
+### main
+src/main/javaにSqsProducerApplicationクラスを作成する  
+このクラスは、Appのmainクラスであり、jarファイルを実行するとこのクラスのmainが実行される。
+
+処理としては、数字を引数を受け取って、その数だけSQSにメッセージを送信する。引数がなければ10回メッセージを送信する。
+
+- @SpringBootApplication  
+    プロジェクト内のクラスを読み込んで、アプリケーションの設定やBeanの設定をする。これによりSpringはDIを行うことができ、各種設定済みのインスタンスを利用することができる
+- ApplicationContext  
+    Spring Applicationが実行され、contextの中にBeanなどで定義されたインスタンスが格納される。
+- context.getBean(MessageSender.class)  
+    contextの中にあるBeanをとりだす。MessageSenderは@Componentで定義されているのでcontext内にBeanガ注入されている。
+```
+package com.msa.aws.sqs.sqs_producer;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+//実行時に各種のアノテーションを読み込んで、DIする
+@SpringBootApplication
+public class SqsProducerApplication {
+    //java実行時に最初に呼び出される
+    public static void main(String[] args) {
+        int executionCount = 10;
+
+        if (args.length>0){
+            executionCount = Integer.parseInt(args[0]);
+        }
+        // SQSProducerApplicationの呼び出されることで@SpringBootApplicationにより作成されたBeanなどがcontextに格納される
+        ApplicationContext context = SpringApplication.run(SqsProducerApplication.class, args);
+        for (int i = 0; i < executionCount; i++){
+            //context内部に管理されているBeanをよびだしている
+            MessageSender sender = context.getBean(MessageSender.class);
+            sender.sendMessage();
+        }
+    }
+
+}
+```
+
+## EC2からの実行
+### jarファイルを移動させる
+- キーペアのコピー
+    - 作成した、キーペアをworkspacesにコピーしておく（ファイルのコピーはできないので、テキストベースでコピーする。
+
+- 権限付与
+```
+chmod 600 XXXX.pem 
+```
+
+- ファイルコピーコマンド実行
+```
+scp -i 'EC2秘密鍵' 'ローカルの転送したいファイル' 'EC2ユーザー名@IPアドレス:ファイル配置先 
+
+EX)scp -i .ssh/XXX.pem TEST.txt ec2-user@12.34.567.890:/home/
+```
+
+
+### javaのインストール
+EC2にjavaをインストールして、jarファイルを実行する
+
+javaのインストール
+```
+sudo yum install java-11-amazon-corretto
+```
+
+実行
+```
+java -jar XXX.jar
+```
+
+### 結果
+Producer側のjarファイルを実行
+
+![](img/sqs_tutorial_producer.png)
+
+Consumer側のjarファイルを実行すると、メッセージを取得することができる
+
+![](img/sqs_tutorial_consumer.png)
+
+CloudWatchでApproximateNumberOfMessagesVisibleを確認するとConsumer側ではメッセージを削除するので、Produceした分増えた後、Consumeした分減る
+
+![](img/sqs_tutorial_metrix.png)
+
+
+
+
+
+
+
+
+
+
+
+## Javaのプログラム作成（Consumer
+### Config
+Producerと同様の設定を行うが、今回は、非同期で、メッセージを処理するため、Asyncのクライアントを作成する  
+- amazonSQSAsyncClient  
+    非同期でsqsからのメッセージを受信して、処理するメソッド
+```
+@Configuration
+public class sqsConfig {
+    @Bean
+    public AmazonSQSAsync amazonSQSAsyncClient(){
+        return AmazonSQSAsyncClientBuilder.defaultClient();
+    }
+}
+```
+
+### frontend
+ECSに載せるための動作確認用とhelthcheck用に文字列を返すページを準備したい。その為のControllerを作成しておく
+
+- @RestController  
+    クラスレベルで用いられる。対象クラスがRESTful Webサービスのコントローラーであることを示す。このクラスが付与されているとSpringによってBean管理されて、HTTPリクエストを処理する
+- @RequestMapping  
+    メソッドレベルで用いられる。指定したパスへのリクエストをfrontend()で処理する。
+```
+package com.msa.aws.sqs.sqs_consumer;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class frontendController {
+
+    @RequestMapping(value="/sqs-consumer", produces = "text/plain")
+    public String frontend(){
+        return "Hello sqs-consumer!";
+    }
+}
+```
+
+
+
+### MessageReceiver
+SQSからメッセージを受信して、処理するクラス。
+- MessageReceiver  
+    Configクラスで設定したamazonSQSAsyncClientのインスタンスを取得
+- ReceiveMessageRequest  
+    リクエストの設定。受信数やロングポーリングの時間などを設定
+- sqsAsyncClient.receiveMessage  
+    非同期でメッセージを受信してメッセージをリストで返却
+
+
+```
+package com.msa.aws.sqs.sqs_consumer;
+
+import com.amazonaws.services.sqs.AmazonSQSAsync;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+@Component
+public class MessageReceiver implements Runnable {
+
+    private static final String QUEUE_URL = "https://sqs.ap-northeast-1.amazonaws.com/626394096352/MA-fujishiroms-sqs-standard";
+    private static final int MAX_NUMBER_OF_MESSAGES = 10; // 一度に受信する最大メッセージ数
+    private static final int WAIT_TIME_SECONDS = 20; // メッセージがない場合のロングポーリング待機時間
+    private final AmazonSQSAsync sqsAsyncClient;
+
+    @Autowired
+    public MessageReceiver(AmazonSQSAsync sqsAsyncClient) {
+        this.sqsAsyncClient = sqsAsyncClient;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            // 受信用のリクエスト作成
+            final ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(QUEUE_URL)
+                    .withMaxNumberOfMessages(MAX_NUMBER_OF_MESSAGES)
+                    .withWaitTimeSeconds(WAIT_TIME_SECONDS);
+
+            // 受信リクエストの設定を入力としてSQSからメッセージを受信
+            final List<Message> messages = sqsAsyncClient.receiveMessage(receiveMessageRequest).getMessages();
+
+
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            for (final Message message : messages) {
+                System.out.println("======================================================= start =======================================================" );
+
+                //処理開始時間の表示
+                LocalDateTime now_bf = LocalDateTime.now();
+                System.out.println("Received Time: " + formatter.format(now_bf));
+
+                //メッセージ内容の表示
+                System.out.println("Message");
+                System.out.println("Body:          " + message.getBody());
+                //メッセージの処理（今回は待機するだけ）
+                int waitTime = Integer.parseInt(message.getBody()) * 1000;
+                System.out.println("wait time: " + waitTime);
+                waitInMilliseconds(waitTime);
+                //メッセージの削除
+                sqsAsyncClient.deleteMessage(QUEUE_URL, message.getReceiptHandle());
+
+                //処理完了時間の表示
+                LocalDateTime now_af = LocalDateTime.now();
+                System.out.println("Processed Time: " + formatter.format(now_af));
+                System.out.println("======================================================= end =======================================================" );
+
+            }
+        }
+    }
+
+
+    //数字を受け取って、その時間待機するためのメソッド
+    private void waitInMilliseconds(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+### main
+このクラスは、Appのmainクラスであり、jarファイルを実行するとこのクラスのmainが実行される。
+
+- implements CommandLineRunner  
+    このインターフェースを実装すると、Spring Bootアプリケーションが起動した直後にrunメソッドが呼び出されます。
+- @Autowired  
+    MessageReciverをDIしている
+- Thread messageReceiverThread = new Thread(messageReceiver);  
+    MessageReciverで定義されているrunが実行される
+
+```
+package com.msa.aws.sqs.sqs_consumer;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SqsConsumerApplication implements CommandLineRunner {
+
+	private final MessageReceiver messageReceiver;
+
+	@Autowired
+	public SqsConsumerApplication(MessageReceiver messageReceiver) {
+		this.messageReceiver = messageReceiver;
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(SqsConsumerApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) {
+		Thread messageReceiverThread = new Thread(messageReceiver);
+		messageReceiverThread.start();
+	}
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# SQSのオートスケーリング設定
+## 基本方針
+- 監視
+    - CloudWatchアラームを設定して、処理できるキューの数(ApproximateNumberOfMessagesVisible)を監視する。
+    - スケールアウト用の監視とスケールイン用の監視を作成
+- オートスケール
+    - キューが少しでも溜まったら、台数を8件に変更する。
+    - キューのメッセージ数が5分連続で0になったらスケールインする
+- 確認項目
+    - メトリクスのログを確認して、減り方が一定であることを確認（漸減しない）
+    - 1000件全てが正しく処理されているか確認
+    - オートスケールした各コンテナのログを確認して重複処理していないか確認
+    - オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認
+
+
+## 監視設定
+以下の手順でスケールアウトとスケールインのメトリクスを作成
+- CloudWatchAlarmsからアラームの作成
+    - MA-fujishiroms-sqs-alarms-scaleOUT	
+    - MA-fujishiroms-sqs-alarms-scaleIN	
+- メトリクスとしてSQS>キューイングメトリクス>ApproximateNumberOfMessagesVisibleを選択
+- 各種設定を行う
+    - 統計：最大（メトリクスとして収集するデータをどの集計値にするか）
+    - 期間：1分（詳細メトリクスの設定をしない場合は1分が最短）
+    - 閾値の種類：静的（異常検出はMLによって異常値を検出する）
+    - アラームを実行するポイント：メトリクスが何回閾値を超えたらアラームを出すか
+        - スケールアウト：10以上となったデータが一回でもあればアラーム
+        - スケールイン：0以下となったデータが5分連続したらアラーム
+    - アクションの設定は一旦設定なしでOK
+
+![](img/sqs_alarms_scaleout.png)
+
+![](img/sqs_alarms_scalein.png)
+
+
+
+
+
+## オートスケール設定
+ECSのサービスからオートスケーリングの設定を行う。サービスを選択し、更新
+- スケールアウトとスケールインのポリシーを設定する
+    - MA-fujishiroms-sqs-consumer-scaleOUT-policy
+    - MA-fujishiroms-sqs-consumer-scaleIN-policy
+- サービスのAuto Scalingから最小数と最大数を設定
+    - 最大数：10
+    - 最小数：1
+- スケーリングポリシー
+    - ポリシータイプ：ステップスケーリング
+    - CloudWatchアラーム名：事前作成したもの
+    - アクション:スケール*アウト*
+        - アクション：add
+        - 値：10
+        - タイプ：タスク
+        - 下限：10(どの値でスケールアウトさせるか)
+- アクション:スケール*イン*
+        - アクション：Remove
+        - 値：10
+        - タイプ：タスク
+        - 上限：0(どの値でスケールインさせるか)
+
+
+![](img/sqs_autoscaling_scaleout.png)
+
+![](img/sqs_autoscaling_scalein.png)
+
+
+
+
+
+## 検証結果
+### オートスケールの挙動
+- producerで1000件のデータをSQSへ送信
+- スケールアウトについては、アラートはうまく発出されて、スケールアウトも動作した。
+（ただし、8台しか立ち上がらないので一旦最大数を8に変更）
+- スケールインに関しても5分間連続で値が閾値を超えることでアラートが発出され、スケールインも実施された。
+
+![](img/sqs_scaleout_alart.png)
+
+
+### ログの分析
+- メトリクスのログを確認して、減り方が一定であることを確認（漸減しない）  
+    - 上記のスケールアウトのメトリクスを見ても、処理の最後の方でも漸減していない。そのため、特定のコンテナだけが処理をして、他のコンテナがメッセージを受け取っていないようには見えない。
+
+- 1000件全てが正しく処理されているか確認  
+    - ログを確認して、処理終了のログを集計したところ1000件は全て処理されている。
+- オートスケールした各コンテナのログを確認して重複処理していないか確認
+    - 処理完了の件数を確認したところ1000件だったため、重複して処理しているものはない。
+    - SQSの公式ドキュメントでは最低一回の補償なので、二回行われる可能性もある
+- オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認
+    - ログから書くコンテナの処理件数と最後の処理の終了時刻を取得
+    - コンテナ５が件数多いものの、終了日時はずれていない。
+    - コンテナ5に入った処理が軽かっただけと推察。この辺りは処理時間を長くして動作確認したい。
+        - コンテナ１：118件処理・4:30:23
+        - コンテナ２：110件処理・4:30:16
+        - コンテナ３：120件処理・4:30:39
+        - コンテナ４：122件処理・4:30:35
+        - コンテナ５：167件処理・4:30:40
+        - コンテナ６：120件処理・4:30:46
+        - コンテナ７：113件処理・4:30:10
+        - コンテナ８：130件処理・4:30:29
+
+
+
+
+
+#### トラブルシューティング
+- 1000件全てが正しく処理されているか確認【解決】
+    - なぜか、ログが918件しかない
+    - キューの中身もDLTの中身も確認したが、中身は残っていない
+    - Consumer側を0件にしてみて、処理させてみる？1000件貯まるかのチェック
+        - EC2のSQS Consumerが起動していた！！！！
+- なぜかスケールインがうまく動作しない。【解決】
+    - 0件以下でスケールイン0件以上でスケールアウトに変更して、スケールアウトとスケールインの間を無くしたら動いた（前はメトリクスが10以上ならスケールアウト、0以下ならスケールインみたいな設定にしていた）
+- オートスケールした各コンテナのログを確認して重複処理していないか確認【解決】
+    - 重複している処理があるものの、スケールイン中のコンテナが拾ってしまった様子。  
+    - 削除しなければ可視性タイムアウトが終了して、他のコンテナが拾ってくれたことを確認できた。
+- オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認【解決】
+    - コンテナの数が8件ではなくて、15件あって、非常にわかり辛いので、スケールアウトのルールをN台にするという設定ではなくて、N大追加するというものに変更
+    - この設定のおかげというよりは、なかなか立ち上がらないから２回スケールアウトの命令が実施された？
+- 課題として、10台までスケールアウトして欲しいのに、8台までしか立ち上がらなかった。【未解決】
+
+![](img/sqs_scaleout_8.png)
 

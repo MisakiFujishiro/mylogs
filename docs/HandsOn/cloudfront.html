@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>14. CloudFront &#8212; my_sphinx  ドキュメント</title>
+    <title>15. CloudFront &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="15. WAFの設定" href="waf.html" />
-    <link rel="prev" title="13. LambdaとS3・AIなどのAWSサービスの連携" href="s3_event.html" /> 
+    <link rel="next" title="16. WAFの設定" href="waf.html" />
+    <link rel="prev" title="14. LambdaとS3・AIなどのAWSサービスの連携" href="s3_event.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="waf.html" title="15. WAFの設定"
+          <a href="waf.html" title="16. WAFの設定"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="s3_event.html" title="13. LambdaとS3・AIなどのAWSサービスの連携"
+          <a href="s3_event.html" title="14. LambdaとS3・AIなどのAWSサービスの連携"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">14. </span>CloudFront</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">15. </span>CloudFront</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,9 @@
           <div class="body" role="main">
             
   <section id="cloudfront">
-<h1><span class="section-number">14. </span>CloudFront<a class="headerlink" href="#cloudfront" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">15. </span>CloudFront<a class="headerlink" href="#cloudfront" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="id1">
-<h2><span class="section-number">14.1. </span>CloudFrontの設定項目<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">15.1. </span>CloudFrontの設定項目<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Cloud Frontにいては、設定項目が多い。大きくは以下の3箇所の設定が必要</p>
 <ul class="simple">
 <li><p>Distribution:Cloud Frontを指し示すもの</p></li>
@@ -58,23 +58,23 @@
 <p><img alt="../_images/cloudfront_overview1.png" src="../_images/cloudfront_overview1.png" /></p>
 </section>
 <section id="id2">
-<h2><span class="section-number">14.2. </span>静的コンテンツのホスティングと配信<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">15.2. </span>静的コンテンツのホスティングと配信<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="s3">
-<h3><span class="section-number">14.2.1. </span>S3の設定<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.2.1. </span>S3の設定<a class="headerlink" href="#s3" title="この見出しへのパーマリンク">¶</a></h3>
 <ol class="simple">
 <li><p>バケットを作成する<br />設定については、特に変更せず、デフォルトでOK</p></li>
 <li><p>ファイルのアップロード<br />事前に準備した静的コンテンツをS3にアップロードする</p></li>
 </ol>
 </section>
 <section id="clouf-front">
-<h3><span class="section-number">14.2.2. </span>Clouf Frontの設定<a class="headerlink" href="#clouf-front" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.2.2. </span>Clouf Frontの設定<a class="headerlink" href="#clouf-front" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="distribution">
-<h4><span class="section-number">14.2.2.1. </span>Distributionの作成<a class="headerlink" href="#distribution" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.2.1. </span>Distributionの作成<a class="headerlink" href="#distribution" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Cloud Frontの画面からディストリビューションの作成を押下</p>
 <p><img alt="../_images/cloudfront_make.png" src="../_images/cloudfront_make.png" /></p>
 </section>
 <section id="origin">
-<h4><span class="section-number">14.2.2.2. </span>Originの設定<a class="headerlink" href="#origin" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.2.2. </span>Originの設定<a class="headerlink" href="#origin" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>先ほど作成したS3-Buckerをオリジンとして設定</p></li>
 <li><p>バケットへのアクセスはOAI(Origin Access Identity)を利用して新しいOAIを作成</p></li>
@@ -82,7 +82,7 @@
 <p><img alt="../_images/cloudfront_origin_setting.png" src="../_images/cloudfront_origin_setting.png" /></p>
 </section>
 <section id="behavior-cachingdisabled">
-<h4><span class="section-number">14.2.2.3. </span>Behaviorの設定(CachingDisabled)<a class="headerlink" href="#behavior-cachingdisabled" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.2.3. </span>Behaviorの設定(CachingDisabled)<a class="headerlink" href="#behavior-cachingdisabled" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>HTTPSのみを許可したいので<code class="docutils literal notranslate"><span class="pre">Redirect</span> <span class="pre">HTTP</span> <span class="pre">to</span> <span class="pre">HTTPS</span></code>を選択</p></li>
 <li><p>キャッシュポリシーに<code class="docutils literal notranslate"><span class="pre">CachingDisabled</span></code>を選択(キャッシュをしない設定)</p></li>
@@ -90,7 +90,7 @@
 <p><img alt="../_images/cloudfront_behavior_setting.png" src="../_images/cloudfront_behavior_setting.png" /></p>
 </section>
 <section id="id3">
-<h4><span class="section-number">14.2.2.4. </span>Distributionの設定<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.2.4. </span>Distributionの設定<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
 <li><p>カスタムドメイン設定やカスタムSSL証明書の設定ができるが今回はしない</p></li>
 <li><p>デフォルトルートとして、S3のルートにあるindex.htmlを指定</p></li>
@@ -98,7 +98,7 @@
 <p><img alt="../_images/cloudfront_distribution_setting.png" src="../_images/cloudfront_distribution_setting.png" /></p>
 </section>
 <section id="id4">
-<h4><span class="section-number">14.2.2.5. </span>動作確認(キャッシュをしていない)<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.2.5. </span>動作確認(キャッシュをしていない)<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h4>
 <p>作成されたCloudFrontのディストリビューションドメイン名</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">xxxxxx</span><span class="o">.</span><span class="n">cloudfront</span><span class="o">.</span><span class="n">net</span>
 </pre></div>
@@ -110,12 +110,12 @@
 </section>
 </section>
 <section id="behavior-cache">
-<h3><span class="section-number">14.2.3. </span>Behaviorのポリシー設定(Cache)<a class="headerlink" href="#behavior-cache" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.2.3. </span>Behaviorのポリシー設定(Cache)<a class="headerlink" href="#behavior-cache" title="この見出しへのパーマリンク">¶</a></h3>
 <p>CloudFrontのコンソール画面のナビゲーションペインから<code class="docutils literal notranslate"><span class="pre">ポリシー</span></code>を選択すると、AWSのマネージドポリシーが表示される。</p>
 <p>先ほど選択した、CachingDisabledはTTLが全て0となっているのでCloudFrontでキャッシュをしない設定となっていた。</p>
 <p><img alt="../_images/cloudffront_cachindg_disabled.png" src="../_images/cloudffront_cachindg_disabled.png" /></p>
 <section id="cache-policy">
-<h4><span class="section-number">14.2.3.1. </span>Cache Policyの作成<a class="headerlink" href="#cache-policy" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.3.1. </span>Cache Policyの作成<a class="headerlink" href="#cache-policy" title="この見出しへのパーマリンク">¶</a></h4>
 <p>新たにカスタムポリシーを作成する。ポリシーの作成を押下して以下の項目を設定していく</p>
 <ul class="simple">
 <li><p>名前</p></li>
@@ -125,7 +125,7 @@
 <p><img alt="../_images/cloudfront_custom_policy.png" src="../_images/cloudfront_custom_policy.png" /></p>
 </section>
 <section id="id5">
-<h4><span class="section-number">14.2.3.2. </span>ビヘイビアで別のパスを作成<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.3.2. </span>ビヘイビアで別のパスを作成<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ディストリビューションを選択して、ビヘイビアのタブから新しいパスを作成するためにビヘイビアの作成を押下</p>
 <p>前回同様にビヘイビアの設定をしていく</p>
 <ul class="simple">
@@ -138,7 +138,7 @@
 <p><img alt="../_images/cloudfront_policy_setting.png" src="../_images/cloudfront_policy_setting.png" /></p>
 </section>
 <section id="id6">
-<h4><span class="section-number">14.2.3.3. </span>動作確認（キャッシュをしている）<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">15.2.3.3. </span>動作確認（キャッシュをしている）<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h4>
 <p>レスポンスヘッダーの<code class="docutils literal notranslate"><span class="pre">x-cache</span></code>を確認するとCloudfrontのキャッシュを取得したかを確認できる。</p>
 <p>また処理時間に関しても、短くなっている</p>
 <p><img alt="../_images/cloudfront_cache_check.png" src="../_images/cloudfront_cache_check.png" /></p>
@@ -146,9 +146,9 @@
 </section>
 </section>
 <section id="id7">
-<h2><span class="section-number">14.3. </span>動的コンテンツのホスティングと配信<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">15.3. </span>動的コンテンツのホスティングと配信<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id8">
-<h3><span class="section-number">14.3.1. </span>動的コンテンツの作成<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.3.1. </span>動的コンテンツの作成<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>LambdaとAPI GWを利用して、ユーザーが投げてきた文字列を英訳するAPIを作成</p>
 <ul class="simple">
 <li><p>リソースは<code class="docutils literal notranslate"><span class="pre">api</span></code></p></li>
@@ -156,7 +156,7 @@
 </ul>
 </section>
 <section id="origin-request-policy">
-<h3><span class="section-number">14.3.2. </span>Origin Request Policyの作成<a class="headerlink" href="#origin-request-policy" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.3.2. </span>Origin Request Policyの作成<a class="headerlink" href="#origin-request-policy" title="この見出しへのパーマリンク">¶</a></h3>
 <p>動的コンテンツを扱う場合の注意点として、CloudFrontはリクエストからの情報をフィルタリングして、オリジンに情報を渡すため、明示的に渡すことを指定した情報しか渡さない。
 なので、クエリパラメータについて明示的に渡す設定を追加する必要がある。</p>
 <p>CloudFrontのポリシーから、Origin Request Policyを選択</p>
@@ -165,7 +165,7 @@
 <p><img alt="../_images/cloudfront_origin_request_policy1.png" src="../_images/cloudfront_origin_request_policy1.png" /></p>
 </section>
 <section id="cloud-frontapi-gw">
-<h3><span class="section-number">14.3.3. </span>Cloud FrontとAPI GWの接続<a class="headerlink" href="#cloud-frontapi-gw" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">15.3.3. </span>Cloud FrontとAPI GWの接続<a class="headerlink" href="#cloud-frontapi-gw" title="この見出しへのパーマリンク">¶</a></h3>
 <p>Cloud Frontのディストリビューションで、オリジンを作成する<br />オリジンドメインにAPI GWのURLを入力する</p>
 <p><img alt="../_images/cloudfront_make_origin.png" src="../_images/cloudfront_make_origin.png" /></p>
 <p>次に、ビヘイビアを作成する</p>
@@ -188,30 +188,30 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">14. CloudFront</a><ul>
-<li><a class="reference internal" href="#id1">14.1. CloudFrontの設定項目</a></li>
-<li><a class="reference internal" href="#id2">14.2. 静的コンテンツのホスティングと配信</a><ul>
-<li><a class="reference internal" href="#s3">14.2.1. S3の設定</a></li>
-<li><a class="reference internal" href="#clouf-front">14.2.2. Clouf Frontの設定</a><ul>
-<li><a class="reference internal" href="#distribution">14.2.2.1. Distributionの作成</a></li>
-<li><a class="reference internal" href="#origin">14.2.2.2. Originの設定</a></li>
-<li><a class="reference internal" href="#behavior-cachingdisabled">14.2.2.3. Behaviorの設定(CachingDisabled)</a></li>
-<li><a class="reference internal" href="#id3">14.2.2.4. Distributionの設定</a></li>
-<li><a class="reference internal" href="#id4">14.2.2.5. 動作確認(キャッシュをしていない)</a></li>
+<li><a class="reference internal" href="#">15. CloudFront</a><ul>
+<li><a class="reference internal" href="#id1">15.1. CloudFrontの設定項目</a></li>
+<li><a class="reference internal" href="#id2">15.2. 静的コンテンツのホスティングと配信</a><ul>
+<li><a class="reference internal" href="#s3">15.2.1. S3の設定</a></li>
+<li><a class="reference internal" href="#clouf-front">15.2.2. Clouf Frontの設定</a><ul>
+<li><a class="reference internal" href="#distribution">15.2.2.1. Distributionの作成</a></li>
+<li><a class="reference internal" href="#origin">15.2.2.2. Originの設定</a></li>
+<li><a class="reference internal" href="#behavior-cachingdisabled">15.2.2.3. Behaviorの設定(CachingDisabled)</a></li>
+<li><a class="reference internal" href="#id3">15.2.2.4. Distributionの設定</a></li>
+<li><a class="reference internal" href="#id4">15.2.2.5. 動作確認(キャッシュをしていない)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#behavior-cache">14.2.3. Behaviorのポリシー設定(Cache)</a><ul>
-<li><a class="reference internal" href="#cache-policy">14.2.3.1. Cache Policyの作成</a></li>
-<li><a class="reference internal" href="#id5">14.2.3.2. ビヘイビアで別のパスを作成</a></li>
-<li><a class="reference internal" href="#id6">14.2.3.3. 動作確認（キャッシュをしている）</a></li>
+<li><a class="reference internal" href="#behavior-cache">15.2.3. Behaviorのポリシー設定(Cache)</a><ul>
+<li><a class="reference internal" href="#cache-policy">15.2.3.1. Cache Policyの作成</a></li>
+<li><a class="reference internal" href="#id5">15.2.3.2. ビヘイビアで別のパスを作成</a></li>
+<li><a class="reference internal" href="#id6">15.2.3.3. 動作確認（キャッシュをしている）</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id7">14.3. 動的コンテンツのホスティングと配信</a><ul>
-<li><a class="reference internal" href="#id8">14.3.1. 動的コンテンツの作成</a></li>
-<li><a class="reference internal" href="#origin-request-policy">14.3.2. Origin Request Policyの作成</a></li>
-<li><a class="reference internal" href="#cloud-frontapi-gw">14.3.3. Cloud FrontとAPI GWの接続</a></li>
+<li><a class="reference internal" href="#id7">15.3. 動的コンテンツのホスティングと配信</a><ul>
+<li><a class="reference internal" href="#id8">15.3.1. 動的コンテンツの作成</a></li>
+<li><a class="reference internal" href="#origin-request-policy">15.3.2. Origin Request Policyの作成</a></li>
+<li><a class="reference internal" href="#cloud-frontapi-gw">15.3.3. Cloud FrontとAPI GWの接続</a></li>
 </ul>
 </li>
 </ul>
@@ -222,12 +222,12 @@
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="s3_event.html"
-                          title="前の章へ"><span class="section-number">13. </span>LambdaとS3・AIなどのAWSサービスの連携</a></p>
+                          title="前の章へ"><span class="section-number">14. </span>LambdaとS3・AIなどのAWSサービスの連携</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="waf.html"
-                          title="次の章へ"><span class="section-number">15. </span>WAFの設定</a></p>
+                          title="次の章へ"><span class="section-number">16. </span>WAFの設定</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -257,13 +257,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="waf.html" title="15. WAFの設定"
+          <a href="waf.html" title="16. WAFの設定"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="s3_event.html" title="13. LambdaとS3・AIなどのAWSサービスの連携"
+          <a href="s3_event.html" title="14. LambdaとS3・AIなどのAWSサービスの連携"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">14. </span>CloudFront</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">15. </span>CloudFront</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
