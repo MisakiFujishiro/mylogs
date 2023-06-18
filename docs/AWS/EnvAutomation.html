@@ -109,13 +109,20 @@
 CFNでは、<code class="docutils literal notranslate"><span class="pre">Condition</span></code>を利用することによって、実行時に指定されたパラメータに応じて条件を変更し、作成する設定値や実行対象をコントロールすることができる。</p>
 <p>環境ごとに作成するか否かの条件分岐を行う際には<code class="docutils literal notranslate"><span class="pre">Condistion</span></code>を利用する。</p>
 <ul class="simple">
-<li><p>Parametersセクションで評価するデータを入力する→valueを定義</p></li>
-<li><p>Conditionsセクションで条件の論理名と真偽判定→true/falseを定義</p></li>
+<li><p>Parametersセクションで評価するデータを入力する→valueを定義</p>
+<ul>
+<li><p>今回の例ではISProductionがTrueかFalseかを評価している</p></li>
+<li><p>!Equals [!Ref Env, &quot;prod&quot;]はEnvという変数の中身が&quot;prod&quot;と同じか評価</p></li>
+</ul>
+</li>
+<li><p>Conditionsセクションで条件の論理名と真偽判定→true/falseを定義</p>
+<ul>
+<li><p>ConditionセクションがTrueなら、このリソースが実行される</p></li>
+</ul>
+</li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Conditions:
   IsProduction: !Equals [!Ref Env, &quot;production&quot;]
-  IsEC2Role: !Not [!Equals [!Ref EC2Role, &quot;&quot;]]
-  IsPublic: !Equals [!Ref Scope, &quot;public&quot;]
 </pre></div>
 </div>
 <ul class="simple">
@@ -175,10 +182,66 @@ Resources:
 <p>テンプレートを分割した上でで親子関係を構成することができる。
 クロススタックリファレンスとの違いとしては、親が実行される場合、子スタックも必ず実行される点である。<br />※クロススタックリファレンスは、参照できるようにしておくところまでで、ネステッドスタックは親から子供がよばれるところまで宣言</p>
 <p>環境に依存しない子テンプレートを作成しておき、環境情報をもつ親テンプレートから子テンプレートを呼び出すことで、再利用性を高めることができる。</p>
-<p>プログラミング言語のように親関数から引数を渡して、子関数が実行され、返り値を親関数で利用するイメージ。子スタックの出力したリソースを親スタックで参照する場合は<code class="docutils literal notranslate"><span class="pre">!GetAtt</span></code>を利用する。</p>
 <p><img alt="../_images/cfn_nest.png" src="../_images/cfn_nest.png" /></p>
-<p><a class="reference external" href="https://qiita.com/sakai00kou/items/553aba6cc924aff3c9b8">CloudFormationをゼロから勉強する</a>
-こちらを参考にすると理解が深まる</p>
+<p>子スタックは、再利用性のあるテンプレートファイルを作成する。<br />親スタックは、</p>
+<ul class="simple">
+<li><p>最初にすべのてスタックで必要なパラメータを外部から受け取る。</p></li>
+<li><p>次に、実行したいスタックの設定を行う（AWS::CloudFormation::Stack)</p></li>
+<li><p>次に、実行するスタックのテンプレートへのパスや必要なパラメタを渡す</p></li>
+<li><p>別スタックのアウトプットが必要な場合も、子スタックでOutputsしておけば親スタックに返却されているので、!GetAttとして参照かのう</p></li>
+<li><p>ネステッドスタックにおける依存関係はCFN側で自動で解消してくれるため、ルートスタックに全て記載しておけば良い</p></li>
+</ul>
+<p>例えば、以下のようなルートスタックを用意すると、NestedStack１とNestedStack2が実行される。<br />また、NestedStack1で出力されるパラメータはルートスタックに帰ってきているので、!GetAttで取得してNestedStack2に渡してあげる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Parameters:
+  ParameterA:
+    Type: String
+  ParameterB:
+    Type: String
+  ParameterC:
+    Type: String
+  ParameterD:
+    Type: String
+
+Resources:
+  NestedStack1:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: s3://mybucket/nestedStack1.yaml
+      Parameters:
+        ParameterA: !Ref ParameterA
+        ParameterB: !Ref ParameterB
+
+  NestedStack2:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: s3://mybucket/nestedStack2.yaml
+      Parameters:
+        ParameterC: !Ref ParameterC
+        ParameterD: !Ref ParameterD
+        BucketName: !GetAtt NestedStack1.Outputs.MyBucketName
+</pre></div>
+</div>
+<p>NestedStack1では、OutPutsセクションでMyBucketNameが定義されているので、親スタックに、パラメータが返却されている。そのため、親スタックで、ImportしなくてもGetAttとしてNestedStack1.Outputs.MyBucketNameを参照することができている。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Parameters:
+  ParameterA:
+    Type: String
+  ParameterB:
+    Type: String
+
+Resources:
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub &quot;${ParameterA}-${ParameterB}&quot;
+
+Outputs:
+  MyBucketName:
+    Value: !Ref MyBucket
+    Description: The name of the created bucket
+</pre></div>
+</div>
+<p>なお、ネステッドスタックにおいて、ExportやImportの利用は推奨されていない。
+これは、Export Valueを使用した場合の値は前リージョンで一位になる必要があるため、同じエクスポート名を持つ別酢タックをデプロイできないため、ネステッドスタックの再利用性が損なわれてしまうためである。</p>
 </section>
 <section id="id11">
 <h4><span class="section-number">13.1.4.2. </span>クロススタックリファレンス<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h4>

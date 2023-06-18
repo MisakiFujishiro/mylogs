@@ -30,6 +30,7 @@ Well-Architectedであるという柱の中に「運用上の優秀性」があ�
 
 
 
+
 ### 基本動作
 #### テンプレートとスタック
 JSONやYMLでテンプレートを作成することができ、CloudFormationによってリソースが作成される。
@@ -64,12 +65,13 @@ CFNでは、`Condition`を利用することによって、実行時に指定さ
 
 環境ごとに作成するか否かの条件分岐を行う際には`Condistion`を利用する。
 - Parametersセクションで評価するデータを入力する→valueを定義
+  - 今回の例ではISProductionがTrueかFalseかを評価している
+  - !Equals [!Ref Env, "prod"]はEnvという変数の中身が"prod"と同じか評価
 - Conditionsセクションで条件の論理名と真偽判定→true/falseを定義
+  - ConditionセクションがTrueなら、このリソースが実行される
 ```
 Conditions:
   IsProduction: !Equals [!Ref Env, "production"]
-  IsEC2Role: !Not [!Equals [!Ref EC2Role, ""]]
-  IsPublic: !Equals [!Ref Scope, "public"]
 ```
 - Resourcesセクションで確認するConditionと作成するリソース情報を定義
 ```
@@ -135,13 +137,74 @@ CFNでは、テンプレート分割として、`ネステッドスタック`や
 
 環境に依存しない子テンプレートを作成しておき、環境情報をもつ親テンプレートから子テンプレートを呼び出すことで、再利用性を高めることができる。
 
-プログラミング言語のように親関数から引数を渡して、子関数が実行され、返り値を親関数で利用するイメージ。子スタックの出力したリソースを親スタックで参照する場合は`!GetAtt`を利用する。
-
 ![](img/cfn_nest.png)
 
+子スタックは、再利用性のあるテンプレートファイルを作成する。  
+親スタックは、
+- 最初にすべのてスタックで必要なパラメータを外部から受け取る。  
+- 次に、実行したいスタックの設定を行う（AWS::CloudFormation::Stack)
+- 次に、実行するスタックのテンプレートへのパスや必要なパラメタを渡す
+- 別スタックのアウトプットが必要な場合も、子スタックでOutputsしておけば親スタックに返却されているので、!GetAttとして参照かのう
+- ネステッドスタックにおける依存関係はCFN側で自動で解消してくれるため、ルートスタックに全て記載しておけば良い
 
-[CloudFormationをゼロから勉強する](https://qiita.com/sakai00kou/items/553aba6cc924aff3c9b8)
-こちらを参考にすると理解が深まる
+
+例えば、以下のようなルートスタックを用意すると、NestedStack１とNestedStack2が実行される。  
+また、NestedStack1で出力されるパラメータはルートスタックに帰ってきているので、!GetAttで取得してNestedStack2に渡してあげる。
+
+```
+Parameters:
+  ParameterA:
+    Type: String
+  ParameterB:
+    Type: String
+  ParameterC:
+    Type: String
+  ParameterD:
+    Type: String
+
+Resources:
+  NestedStack1:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: s3://mybucket/nestedStack1.yaml
+      Parameters:
+        ParameterA: !Ref ParameterA
+        ParameterB: !Ref ParameterB
+
+  NestedStack2:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: s3://mybucket/nestedStack2.yaml
+      Parameters:
+        ParameterC: !Ref ParameterC
+        ParameterD: !Ref ParameterD
+        BucketName: !GetAtt NestedStack1.Outputs.MyBucketName
+```
+
+NestedStack1では、OutPutsセクションでMyBucketNameが定義されているので、親スタックに、パラメータが返却されている。そのため、親スタックで、ImportしなくてもGetAttとしてNestedStack1.Outputs.MyBucketNameを参照することができている。
+
+```
+Parameters:
+  ParameterA:
+    Type: String
+  ParameterB:
+    Type: String
+
+Resources:
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ParameterA}-${ParameterB}"
+
+Outputs:
+  MyBucketName:
+    Value: !Ref MyBucket
+    Description: The name of the created bucket
+```
+
+なお、ネステッドスタックにおいて、ExportやImportの利用は推奨されていない。
+これは、Export Valueを使用した場合の値は前リージョンで一位になる必要があるため、同じエクスポート名を持つ別酢タックをデプロイできないため、ネステッドスタックの再利用性が損なわれてしまうためである。
+
 
 
 #### クロススタックリファレンス
