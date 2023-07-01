@@ -126,6 +126,8 @@
 - 実装
     - Consumerの改修（常時起動でポーリングする）【完了】
     - SQSオートスケーリングを設定して挙動を確認する【完了】
+    - SQSの課題解決【完了】
+    - SQSのメッセージグループID実装【完了】
 
 ### 7月上旬
 - 実装
@@ -133,33 +135,23 @@
     - MSKについてJavaのコードで送受信（Producerはバッチなので作り切る→EC2上でOK）
     - MSKのConsumerをECS上で実装
     - オートスケーリングを設定して挙動を確認する
+
 ### 7月下旬
-- テーマ深掘り
-    - MSKの結果を踏まえて、多重処理に関する整理
 - 実装
-    - SQS.fifoについて[クラスメソッド](https://dev.classmethod.jp/articles/sqs-new-fifo/#toc-16)
+    - SQSのFIFOキューを利用した場合の動作確認
+
 ### 8月上旬
 - テーマ深掘り
     - FIFOキューの実装比較
-    
-### 8月下旬
-- バッファ or さらなる深掘り
+- 資料作成
 
+### 8月下旬
+- 実装
+    - バッファ or さらなる深掘り
+- 資料詰め
+    - 発表練習
 
 ### 9月上旬
 - 資料の最終調整・発表練習
 
 
-## 相談事項
-### 検証について
-- SQSの検証環境について
-    - Pipelineまで作成したので、コンパイルして、pushすれば、EC2上にデプロイまでしてくれるので、それを実行している
-    - ローカル環境ではクレデンシャルの未設定でエラーになってしまう。
-    - クレデンシャルはなるべく払い出したくないので、どうすれば良い？
-```
-Exception in thread "main" com.amazonaws.SdkClientException: Unable to load AWS credentials from any provider in the chain: [EnvironmentVariableCredentialsProvider: Unable to load AWS credentials from environment variables (AWS_ACCESS_KEY_ID (or AWS_ACCESS_KEY) and AWS_SECRET_KEY (or AWS_SECRET_ACCESS_KEY)), SystemPropertiesCredentialsProvider: Unable to load AWS credentials from Java system properties (aws.accessKeyId and aws.secretKey), WebIdentityTokenCredentialsProvider: To use assume role profiles the aws-java-sdk-sts module must be on the class path., com.amazonaws.auth.profile.ProfileCredentialsProvider@12eedfee: Unable to load credentials into profile [default]: AWS Access Key ID is not specified., com.amazonaws.auth.EC2ContainerCredentialsProviderWrapper@574a89e2: The requested metadata is not found at http://169.254.169.254/latest/meta-data/iam/security-credentials/]
-```
-
-- 選択肢
-    - [ローカルスタック](https://itneko.com/localstack-sns-sqs/)で模擬的なSQSを構築する
-    - 処理前にCognitoで一時認証を取得する

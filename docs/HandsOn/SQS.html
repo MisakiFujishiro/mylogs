@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
+    <link rel="next" title="7. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
     <link rel="prev" title="1. CodePipelineを利用してCFNのCICD環境を作成する" href="cloudformaiton_CICD.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="7. MSKのチュートリアル実装(CLI編)"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
@@ -138,7 +138,7 @@
 <p>CLIから作成する場合は、<code class="docutils literal notranslate"><span class="pre">RedrivePolicy</span></code>をオプションとして指定することで作成することができるが、詳細は<a class="reference external" href="https://docs.aws.amazon.com/cli/latest/reference/sqs/create-queue.html">公式ドキュメント</a>を参照されたい。</p>
 <p>コンソール画面からは、キューを作成や更新する際に指定することができる。注意点として、DLQは送信元のキューと同じキュータイプ（標準・FIFO）を設定する必要がある。</p>
 <p><img alt="../_images/sqs_dlq_setting.png" src="../_images/sqs_dlq_setting.png" /></p>
-<p>最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。</p>
+<p>最大受信数に設定した回数、キューが失敗した場合にDLQに送信される。</p>
 </section>
 <section id="id2">
 <h2><span class="section-number">2.3. </span>メッセージの送受信方法<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
@@ -846,11 +846,99 @@ public class MessageReceiver implements Runnable {
 </div>
 </section>
 </section>
-</section>
+<section id="fifo">
+<h2><span class="section-number">4.5. </span>FIFOキューを利用するための改修<a class="headerlink" href="#fifo" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id16">
-<h1><span class="section-number">5. </span>SQSのオートスケーリング設定<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h1>
+<h3><span class="section-number">4.5.1. </span>方針<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<p>FIFOキューを利用するためには、Producer側で宛先を変更してfifoキューに送信する必要がある。
+また、FIFOキューを利用するためにはメッセージグループIDが必須であり、メッセージ重複IDを任意で設定することができるので、この対応お行なう。</p>
+<p>Consumerはポーリングするキューを変更すれば良い。</p>
+</section>
 <section id="id17">
-<h2><span class="section-number">5.1. </span>基本方針<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">4.5.2. </span>開発方針<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Producer側はapplication.yamlでキューのURLを準備しておき、実行時に利用するyamlファイルを変更することで宛先を変更する。また、ソースコード内部でキュー名からfifoキューか否かを判断して、メッセージグループIDなどの設定有無を決定する。</p>
+<p>Consumer側はポーリングするキューを変更するために、application.yamlを準備して、DockerFileの実行コマンドを変更する。
+Consumeするキューを変更したい場合は、DocokerFIleを変更してリリースし直す必要がある点に注意</p>
+</section>
+<section id="id18">
+<h3><span class="section-number">4.5.3. </span>FIFOキューの作成<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<p>注意点としてはfifoキューは名前の最後を.fifoとする</p>
+<p><img alt="../_images/sqs_fifo_setting1.png" src="../_images/sqs_fifo_setting1.png" />
+<img alt="../_images/sqs_fifo_setting2.png" src="../_images/sqs_fifo_setting2.png" />
+<img alt="../_images/sqs_fifo_setting3.png" src="../_images/sqs_fifo_setting3.png" />
+<img alt="../_images/sqs_fifo_setting4.png" src="../_images/sqs_fifo_setting4.png" /></p>
+</section>
+<section id="producer">
+<h3><span class="section-number">4.5.4. </span>Producerの修正<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h3>
+<p>application-standard.ymlとapplication-fifo.yamlを作成する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span><span class="p">:</span>
+  <span class="n">sqs</span><span class="p">:</span>
+    <span class="n">url</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">sqs</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="p">[</span><span class="n">AccountID</span><span class="p">]</span><span class="o">/</span><span class="n">MA</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">sqs</span><span class="o">-</span><span class="n">standard</span>
+</pre></div>
+</div>
+<p>Message SenderのURLをapplication.ymlから受け取るように変更する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Component</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">MessageSender</span> <span class="p">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="n">private</span> <span class="n">AmazonSQS</span> <span class="n">amazonSQSClient</span><span class="p">;</span>
+
+    <span class="nd">@Value</span><span class="p">(</span><span class="s2">&quot;$</span><span class="si">{aws.sqs.url}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">private</span> <span class="n">String</span> <span class="n">url</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>なお、このままパッケージングしようとすると、{aws.sqs.url}を解決することができないので、testクラスでstandardを利用するように設定するか、デフォルトのapplication.ymlを作成するか対策が必要</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@SpringBootTest</span>
+<span class="nd">@ActiveProfiles</span><span class="p">(</span><span class="s2">&quot;standard&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SqsProducerApplicationTests</span> <span class="p">{</span>
+</pre></div>
+</div>
+<p>メッセージ送信する際に、キューの名前を確認して、fifoキューならメッセージグループIDやメッセージ重複IDを指定するようにする。
+以下の実装では、UUIDを利用して、すべて異なるメッセージグループIDを発行するように変更。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">メッセージ送信</span>
+<span class="n">SendMessageRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="n">new</span> <span class="n">SendMessageRequest</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">withQueueUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">withMessageBody</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">withDelaySeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">endsWith</span><span class="p">(</span><span class="s2">&quot;.fifo&quot;</span><span class="p">)){</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">withMessageGroupId</span><span class="p">(</span><span class="n">UUID</span><span class="o">.</span><span class="n">randomUUID</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">())</span>
+            <span class="o">.</span><span class="n">withMessageDeduplicationId</span><span class="p">(</span><span class="n">UUID</span><span class="o">.</span><span class="n">randomUUID</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>あとは、実行する際にapplication.ymlの指定をすれば標準キューとFIFOキューへ送信を変更できる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### 標準キュー</span>
+<span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">sqs_producer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span> <span class="mi">10</span> <span class="o">--</span><span class="n">spring</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">active</span><span class="o">=</span><span class="n">standard</span>
+
+<span class="c1">### FIFOキュー</span>
+<span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">sqs_producer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span> <span class="mi">10</span> <span class="o">--</span><span class="n">spring</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">active</span><span class="o">=</span><span class="n">fifo</span>
+</pre></div>
+</div>
+</section>
+<section id="consumer">
+<h3><span class="section-number">4.5.5. </span>Consumerの修正<a class="headerlink" href="#consumer" title="この見出しへのパーマリンク">¶</a></h3>
+<p>送信側のSQSのURLをapplication-{xxx}.ymlに記述して、クラス側で受け取るように変更</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Component</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">MessageReceiver</span> <span class="n">implements</span> <span class="n">Runnable</span> <span class="p">{</span>
+
+    <span class="nd">@Value</span><span class="p">(</span><span class="s2">&quot;$</span><span class="si">{aws.sqs.url}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">private</span> <span class="n">String</span> <span class="n">QUEUE_URL</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>DockerFIleを変更して、どちらのECSにするかを設定する。
+毎回デプロイが必要な点に注意</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Javaの実行</span>
+<span class="n">CMD</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">sqs_consumer</span><span class="o">/</span><span class="n">target</span><span class="o">/</span><span class="n">sqs_consumer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span> <span class="o">--</span><span class="n">spring</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">active</span><span class="o">=</span><span class="n">standard</span>
+</pre></div>
+</div>
+<p>合わせて、オートスケーリングの検証も行いたい場合は、FIFOキューを監視するアラートを作成し、ECSのサービスの設定で利用するアラートをFIFOキューのものに変更する必要がある点に注意</p>
+</section>
+</section>
+</section>
+<section id="id19">
+<h1><span class="section-number">5. </span>SQSのオートスケーリング設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id20">
+<h2><span class="section-number">5.1. </span>基本方針<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>監視</p>
 <ul>
@@ -874,8 +962,8 @@ public class MessageReceiver implements Runnable {
 </li>
 </ul>
 </section>
-<section id="id18">
-<h2><span class="section-number">5.2. </span>監視設定<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id21">
+<h2><span class="section-number">5.2. </span>監視設定<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h2>
 <p>以下の手順でスケールアウトとスケールインのメトリクスを作成</p>
 <ul class="simple">
 <li><p>CloudWatchAlarmsからアラームの作成</p>
@@ -903,8 +991,8 @@ public class MessageReceiver implements Runnable {
 <p><img alt="../_images/sqs_alarms_scaleout.png" src="../_images/sqs_alarms_scaleout.png" /></p>
 <p><img alt="../_images/sqs_alarms_scalein.png" src="../_images/sqs_alarms_scalein.png" /></p>
 </section>
-<section id="id19">
-<h2><span class="section-number">5.3. </span>オートスケール設定<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id22">
+<h2><span class="section-number">5.3. </span>オートスケール設定<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h2>
 <p>ECSのサービスからオートスケーリングの設定を行う。サービスを選択し、更新</p>
 <ul class="simple">
 <li><p>スケールアウトとスケールインのポリシーを設定する</p>
@@ -942,10 +1030,10 @@ public class MessageReceiver implements Runnable {
 <p><img alt="../_images/sqs_autoscaling_scaleout.png" src="../_images/sqs_autoscaling_scaleout.png" /></p>
 <p><img alt="../_images/sqs_autoscaling_scalein.png" src="../_images/sqs_autoscaling_scalein.png" /></p>
 </section>
-<section id="id20">
-<h2><span class="section-number">5.4. </span>検証結果<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="id21">
-<h3><span class="section-number">5.4.1. </span>オートスケールの挙動<a class="headerlink" href="#id21" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id23">
+<h2><span class="section-number">5.4. </span>検証結果<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id24">
+<h3><span class="section-number">5.4.1. </span>オートスケールの挙動<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>producerで1000件のデータをSQSへ送信</p></li>
 <li><p>スケールアウトについては、アラートはうまく発出されて、スケールアウトも動作した。
@@ -954,8 +1042,8 @@ public class MessageReceiver implements Runnable {
 </ul>
 <p><img alt="../_images/sqs_scaleout_alart.png" src="../_images/sqs_scaleout_alart.png" /></p>
 </section>
-<section id="id22">
-<h3><span class="section-number">5.4.2. </span>ログの分析<a class="headerlink" href="#id22" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id25">
+<h3><span class="section-number">5.4.2. </span>ログの分析<a class="headerlink" href="#id25" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>メトリクスのログを確認して、減り方が一定であることを確認（漸減しない）</p>
 <ul>
@@ -992,41 +1080,97 @@ public class MessageReceiver implements Runnable {
 </ul>
 </li>
 </ul>
-<section id="id23">
-<h4><span class="section-number">5.4.2.1. </span>トラブルシューティング<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h4>
-<ul class="simple">
-<li><p>1000件全てが正しく処理されているか確認【解決】</p>
-<ul>
-<li><p>なぜか、ログが918件しかない</p></li>
-<li><p>キューの中身もDLTの中身も確認したが、中身は残っていない</p></li>
-<li><p>Consumer側を0件にしてみて、処理させてみる？1000件貯まるかのチェック</p>
-<ul>
-<li><p>EC2のSQS Consumerが起動していた！！！！</p></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>なぜかスケールインがうまく動作しない。【解決】</p>
-<ul>
-<li><p>0件以下でスケールイン0件以上でスケールアウトに変更して、スケールアウトとスケールインの間を無くしたら動いた（前はメトリクスが10以上ならスケールアウト、0以下ならスケールインみたいな設定にしていた）</p></li>
-</ul>
-</li>
-<li><p>オートスケールした各コンテナのログを確認して重複処理していないか確認【解決】</p>
-<ul>
-<li><p>重複している処理があるものの、スケールイン中のコンテナが拾ってしまった様子。</p></li>
-<li><p>削除しなければ可視性タイムアウトが終了して、他のコンテナが拾ってくれたことを確認できた。</p></li>
-</ul>
-</li>
-<li><p>オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認【解決】</p>
-<ul>
-<li><p>コンテナの数が8件ではなくて、15件あって、非常にわかり辛いので、スケールアウトのルールをN台にするという設定ではなくて、N大追加するというものに変更</p></li>
-<li><p>この設定のおかげというよりは、なかなか立ち上がらないから２回スケールアウトの命令が実施された？</p></li>
-</ul>
-</li>
-<li><p>課題として、10台までスケールアウトして欲しいのに、8台までしか立ち上がらなかった。【未解決】</p></li>
-</ul>
-<p><img alt="../_images/sqs_scaleout_8.png" src="../_images/sqs_scaleout_8.png" /></p>
 </section>
+</section>
+<section id="id26">
+<h2><span class="section-number">5.5. </span>FIFOキューでの検証<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h2>
+<p>メッセージグループIDを全て異なるものと同じものにして検証してみる</p>
+</section>
+<section id="id">
+<h2><span class="section-number">5.6. </span>メッセージグループIDをすべて異なるものにした場合<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h2>
+<p>すべて異なるメッセージグループIDにした場合は、100件の状態が長くなった。
+スケールアウトが完了するまでは、削除しないのか？そうなると可視性タイムアウトの時間も考えないといけない。ログと照らし合わせて調査したい。。。</p>
+<p>ただ、処理が始まればすぐ処理される。</p>
+<p><img alt="../_images/sqs_fifo_alart_multi_message_id.png" src="../_images/sqs_fifo_alart_multi_message_id.png" /></p>
+<p>複数のConsumerが協調して処理している</p>
+<p><img alt="../_images/sqs_fifo_log_multi_message_id.png" src="../_images/sqs_fifo_log_multi_message_id.png" /></p>
+</section>
+<section id="id27">
+<h2><span class="section-number">5.7. </span>メッセージグループIDを同じものにした場合<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h2>
+<p>すべて同じメッセージグループIDにした場合は、やはり一定の間、同じような値のままになった。また、Message Grou IDが同じ場合は、同時に複数のConsumerがConsumeすることができないようで、すべて同じメッセージグループIDと比較して処理速度が遅くなった。これはkafkaよりもひどい現象で、オートスケール下にも関わらず、１台分のConsumerしか処理していない。</p>
+<p><img alt="../_images/sqs_fifo_alart_samei_message_id.png" src="../_images/sqs_fifo_alart_samei_message_id.png" /></p>
+<p>ログを確認してみても、同じタイミングでConsumerが処理するのではなくシリアルにConsumerが処理するような動きになっている。</p>
+<p><img alt="../_images/sqs_fifo_log_same_message_id.png" src="../_images/sqs_fifo_log_same_message_id.png" /></p>
+</section>
+</section>
+<section id="id28">
+<h1><span class="section-number">6. </span>トラブルシューティング<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id29">
+<h2><span class="section-number">6.1. </span>オートスケールが8台しか起動しない問題の確認<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id30">
+<h3><span class="section-number">6.1.1. </span>アラート確認<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ApproximateNumerOfMessageVisibleを正しく設定できている。
+統計情報も期間も正しい。</p>
+<p><img alt="../_images/sqs_alarmsetting-1.png" src="../_images/sqs_alarmsetting-1.png" /></p>
+<p>条件も閾値の種別も、1以上のメッセージの蓄積を検知して、アラートがなるように設定されている。</p>
+<p><img alt="../_images/sqs_alarmsetting-2.png" src="../_images/sqs_alarmsetting-2.png" /></p>
+<p>メッセージを送信した際も、正しくメトリクスが増加しているのを確認</p>
+<p><img alt="../_images/sqs_alarm_10.png" src="../_images/sqs_alarm_10.png" /></p>
+</section>
+<section id="id31">
+<h3><span class="section-number">6.1.2. </span>オートスケーリング設定確認<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h3>
+<p>タスクの最大数を10に設定し、アラームの設定や追加のアクションとしても1台の常時起動に加えて、9台追加起動の設定をしている</p>
+<p><img alt="../_images/sqs_autoscaling-setting.png" src="../_images/sqs_autoscaling-setting.png" /></p>
+</section>
+<section id="id32">
+<h3><span class="section-number">6.1.3. </span>10台の実行確認<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
+<p>やはり、8台起動となってしまう。</p>
+<p><img alt="../_images/sqs_scaleout_10.png" src="../_images/sqs_scaleout_10.png" /></p>
+</section>
+<section id="id33">
+<h3><span class="section-number">6.1.4. </span>分析<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ヘルスチェックがうまくいっていないのでは？と思い、TGを確認したが8台は全てOKで、残りの２台はNGと出ていないので、立ち上がってすらいない。
+この表を見てIPが怪しいのでは？と思い始める。</p>
+<p><img alt="../_images/sqs_scaleout_10_tg.png" src="../_images/sqs_scaleout_10_tg.png" /></p>
+<p>タスクがどのように立ち上がっているかのログがあるので確認したところ、２台のコンテナを立ち上げようとしては失敗していることを確認</p>
+<p><img alt="../_images/sqs_scaling_log.png" src="../_images/sqs_scaling_log.png" /></p>
+<p>このインスタンスのログが観れるので確認したところ、原因判明。
+なんと、IPアドレスが足りないとのこと</p>
+<p><img alt="../_images/sqs_autoscaling_reason.png" src="../_images/sqs_autoscaling_reason.png" /></p>
+<p>確認したところ、利用しているサブネットはpublicの２つのサブネットで(xx.xx.xx.xx/28)で、利用できるIPは16個*2で32個</p>
+<p>ただし、以下の5つのIPはAWSにそれぞれのサブネットで予約されているので残りは22個</p>
+<ul class="simple">
+<li><p>ネットワークアドレス（xx.xx.xx.0）</p></li>
+<li><p>VPCルーターのためのアドレス（xx.xx.xx.1）</p></li>
+<li><p>DNS解決のためのアドレス（xx.xx.xx.2）</p></li>
+<li><p>AWSによる将来の使用のためのアドレス（xx.xx.xx.3）</p></li>
+<li><p>ブロードキャストアドレス（xx.xx.xx.15）</p></li>
+</ul>
+<p>以下のリソースが11つのIPを利用</p>
+<ul class="simple">
+<li><p>MSK用のProducer EC2 1台</p></li>
+<li><p>SQS用のProducer EC2 1台</p></li>
+<li><p>停止中のEC2 3台</p></li>
+<li><p>MSK用のConsumer Fargate 1台</p></li>
+<li><p>NatGW 1台</p></li>
+<li><p>public用のALB(それぞれのサブネットでIPを利用) 1台</p></li>
+<li><p>MSKのブローカー２台</p></li>
+</ul>
+<p>残りは11個あるはずだが、8台しか起動しないというとは、3個意識していないサービスがIPを利用しているようだが、確認することはできていない。いずれにしてもIP数は気をつけなくてはいけない。</p>
+<p>停止中のEC2を一台削除して9台になるか確認し、9件になることが確認できた</p>
+<p><img alt="../_images/sqs_autoscaling_9.png" src="../_images/sqs_autoscaling_9.png" /></p>
+</section>
+<section id="aws">
+<h3><span class="section-number">6.1.5. </span>AWSの不具合？あんまり好ましくない挙動発見<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h3>
+<p>上記のIPの問題で、10台のスケールアウトを設定していて、8台しか立ち上がらない状態になっている場合、残りの２台を立ち続けようとして、スケールアウトのアラートが停止し、スケールインのアラートが発砲されても、スケールインが作動しない。</p>
+<ol class="simple">
+<li><p>スケールアウトルール起動</p></li>
+<li><p>2台立ち上がらないので、サービスの立ち上げを実施し続ける</p></li>
+<li><p>SQSのメッセージ処理が終了するのでスケールアウトのアラート停止</p></li>
+<li><p>スケールインのアラート発砲</p></li>
+<li><p>ECSはスケールアウトが完了していないのでスケールアウトを続けようとする</p></li>
+</ol>
+<p><img alt="../_images/sqs_autoscaling_error.png" src="../_images/sqs_autoscaling_error.png" /></p>
 </section>
 </section>
 </section>
@@ -1103,18 +1247,37 @@ public class MessageReceiver implements Runnable {
 <li><a class="reference internal" href="#id15">4.4.4. main</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#fifo">4.5. FIFOキューを利用するための改修</a><ul>
+<li><a class="reference internal" href="#id16">4.5.1. 方針</a></li>
+<li><a class="reference internal" href="#id17">4.5.2. 開発方針</a></li>
+<li><a class="reference internal" href="#id18">4.5.3. FIFOキューの作成</a></li>
+<li><a class="reference internal" href="#producer">4.5.4. Producerの修正</a></li>
+<li><a class="reference internal" href="#consumer">4.5.5. Consumerの修正</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">5. SQSのオートスケーリング設定</a><ul>
-<li><a class="reference internal" href="#id17">5.1. 基本方針</a></li>
-<li><a class="reference internal" href="#id18">5.2. 監視設定</a></li>
-<li><a class="reference internal" href="#id19">5.3. オートスケール設定</a></li>
-<li><a class="reference internal" href="#id20">5.4. 検証結果</a><ul>
-<li><a class="reference internal" href="#id21">5.4.1. オートスケールの挙動</a></li>
-<li><a class="reference internal" href="#id22">5.4.2. ログの分析</a><ul>
-<li><a class="reference internal" href="#id23">5.4.2.1. トラブルシューティング</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id19">5. SQSのオートスケーリング設定</a><ul>
+<li><a class="reference internal" href="#id20">5.1. 基本方針</a></li>
+<li><a class="reference internal" href="#id21">5.2. 監視設定</a></li>
+<li><a class="reference internal" href="#id22">5.3. オートスケール設定</a></li>
+<li><a class="reference internal" href="#id23">5.4. 検証結果</a><ul>
+<li><a class="reference internal" href="#id24">5.4.1. オートスケールの挙動</a></li>
+<li><a class="reference internal" href="#id25">5.4.2. ログの分析</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id26">5.5. FIFOキューでの検証</a></li>
+<li><a class="reference internal" href="#id">5.6. メッセージグループIDをすべて異なるものにした場合</a></li>
+<li><a class="reference internal" href="#id27">5.7. メッセージグループIDを同じものにした場合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id28">6. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id29">6.1. オートスケールが8台しか起動しない問題の確認</a><ul>
+<li><a class="reference internal" href="#id30">6.1.1. アラート確認</a></li>
+<li><a class="reference internal" href="#id31">6.1.2. オートスケーリング設定確認</a></li>
+<li><a class="reference internal" href="#id32">6.1.3. 10台の実行確認</a></li>
+<li><a class="reference internal" href="#id33">6.1.4. 分析</a></li>
+<li><a class="reference internal" href="#aws">6.1.5. AWSの不具合？あんまり好ましくない挙動発見</a></li>
 </ul>
 </li>
 </ul>
@@ -1130,7 +1293,7 @@ public class MessageReceiver implements Runnable {
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="次の章へ"><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)</a></p>
+                          title="次の章へ"><span class="section-number">7. </span>MSKのチュートリアル実装(CLI編)</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -1160,7 +1323,7 @@ public class MessageReceiver implements Runnable {
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="7. MSKのチュートリアル実装(CLI編)"
              >次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"

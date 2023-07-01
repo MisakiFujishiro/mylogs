@@ -107,7 +107,7 @@ CLIから作成する場合は、`RedrivePolicy`をオプションとして指�
 ![](img/sqs_dlq_setting.png)
 
 
-最大受信数に設定した回数、、キューが失敗した場合にDLQに送信される。
+最大受信数に設定した回数、キューが失敗した場合にDLQに送信される。
 
 
 
@@ -925,11 +925,102 @@ public class SqsConsumerApplication implements CommandLineRunner {
 
 
 
+## FIFOキューを利用するための改修
+### 方針
+FIFOキューを利用するためには、Producer側で宛先を変更してfifoキューに送信する必要がある。
+また、FIFOキューを利用するためにはメッセージグループIDが必須であり、メッセージ重複IDを任意で設定することができるので、この対応お行なう。
+
+Consumerはポーリングするキューを変更すれば良い。
+
+### 開発方針
+Producer側はapplication.yamlでキューのURLを準備しておき、実行時に利用するyamlファイルを変更することで宛先を変更する。また、ソースコード内部でキュー名からfifoキューか否かを判断して、メッセージグループIDなどの設定有無を決定する。
+
+Consumer側はポーリングするキューを変更するために、application.yamlを準備して、DockerFileの実行コマンドを変更する。
+Consumeするキューを変更したい場合は、DocokerFIleを変更してリリースし直す必要がある点に注意
+
+### FIFOキューの作成
+注意点としてはfifoキューは名前の最後を.fifoとする
+
+![](img/sqs_fifo_setting1.png)
+![](img/sqs_fifo_setting2.png)
+![](img/sqs_fifo_setting3.png)
+![](img/sqs_fifo_setting4.png)
+
+### Producerの修正
+application-standard.ymlとapplication-fifo.yamlを作成する
+```
+aws:
+  sqs:
+    url: https://sqs.ap-northeast-1.amazonaws.com/[AccountID]/MA-fujishiroms-sqs-standard
+```
+
+Message SenderのURLをapplication.ymlから受け取るように変更する
+```
+@Component
+public class MessageSender {
+    @Autowired
+    private AmazonSQS amazonSQSClient;
+
+    @Value("${aws.sqs.url}")
+    private String url;
+
+```
+
+なお、このままパッケージングしようとすると、{aws.sqs.url}を解決することができないので、testクラスでstandardを利用するように設定するか、デフォルトのapplication.ymlを作成するか対策が必要
+
+```
+@SpringBootTest
+@ActiveProfiles("standard")
+class SqsProducerApplicationTests {
+```
+
+メッセージ送信する際に、キューの名前を確認して、fifoキューならメッセージグループIDやメッセージ重複IDを指定するようにする。
+以下の実装では、UUIDを利用して、すべて異なるメッセージグループIDを発行するように変更。
+
+```
+// メッセージ送信
+SendMessageRequest request = new SendMessageRequest()
+        .withQueueUrl(url)
+        .withMessageBody(message)
+        .withDelaySeconds(5);
+
+if (url.endsWith(".fifo")){
+    request.withMessageGroupId(UUID.randomUUID().toString())
+            .withMessageDeduplicationId(UUID.randomUUID().toString());
+}
+```
+
+あとは、実行する際にapplication.ymlの指定をすれば標準キューとFIFOキューへ送信を変更できる
+```
+### 標準キュー
+java -jar sqs_producer-0.0.1-SNAPSHOT.jar 10 --spring.profiles.active=standard
+
+### FIFOキュー
+java -jar sqs_producer-0.0.1-SNAPSHOT.jar 10 --spring.profiles.active=fifo
+
+```
+
+
+### Consumerの修正
+送信側のSQSのURLをapplication-{xxx}.ymlに記述して、クラス側で受け取るように変更
+```
+@Component
+public class MessageReceiver implements Runnable {
+
+    @Value("${aws.sqs.url}")
+    private String QUEUE_URL;
+```
 
 
 
+DockerFIleを変更して、どちらのECSにするかを設定する。
+毎回デプロイが必要な点に注意
+```
+# Javaの実行
+CMD java -jar sqs_consumer/target/sqs_consumer-0.0.1-SNAPSHOT.jar --spring.profiles.active=standard
+```
 
-
+合わせて、オートスケーリングの検証も行いたい場合は、FIFOキューを監視するアラートを作成し、ECSのサービスの設定で利用するアラートをFIFOキューのものに変更する必要がある点に注意
 
 
 
@@ -1039,23 +1130,114 @@ ECSのサービスからオートスケーリングの設定を行う。サー�
 
 
 
+## FIFOキューでの検証
+メッセージグループIDを全て異なるものと同じものにして検証してみる
+
+## メッセージグループIDをすべて異なるものにした場合
+すべて異なるメッセージグループIDにした場合は、100件の状態が長くなった。
+スケールアウトが完了するまでは、削除しないのか？そうなると可視性タイムアウトの時間も考えないといけない。ログと照らし合わせて調査したい。。。
+
+ただ、処理が始まればすぐ処理される。
 
 
-#### トラブルシューティング
-- 1000件全てが正しく処理されているか確認【解決】
-    - なぜか、ログが918件しかない
-    - キューの中身もDLTの中身も確認したが、中身は残っていない
-    - Consumer側を0件にしてみて、処理させてみる？1000件貯まるかのチェック
-        - EC2のSQS Consumerが起動していた！！！！
-- なぜかスケールインがうまく動作しない。【解決】
-    - 0件以下でスケールイン0件以上でスケールアウトに変更して、スケールアウトとスケールインの間を無くしたら動いた（前はメトリクスが10以上ならスケールアウト、0以下ならスケールインみたいな設定にしていた）
-- オートスケールした各コンテナのログを確認して重複処理していないか確認【解決】
-    - 重複している処理があるものの、スケールイン中のコンテナが拾ってしまった様子。  
-    - 削除しなければ可視性タイムアウトが終了して、他のコンテナが拾ってくれたことを確認できた。
-- オートスケールした各コンテナのログを確認して最後の処理について処理タイミングが同じか確認【解決】
-    - コンテナの数が8件ではなくて、15件あって、非常にわかり辛いので、スケールアウトのルールをN台にするという設定ではなくて、N大追加するというものに変更
-    - この設定のおかげというよりは、なかなか立ち上がらないから２回スケールアウトの命令が実施された？
-- 課題として、10台までスケールアウトして欲しいのに、8台までしか立ち上がらなかった。【未解決】
+![](img/sqs_fifo_alart_multi_message_id.png)
 
-![](img/sqs_scaleout_8.png)
+複数のConsumerが協調して処理している
+
+![](img/sqs_fifo_log_multi_message_id.png)
+
+## メッセージグループIDを同じものにした場合
+すべて同じメッセージグループIDにした場合は、やはり一定の間、同じような値のままになった。また、Message Grou IDが同じ場合は、同時に複数のConsumerがConsumeすることができないようで、すべて同じメッセージグループIDと比較して処理速度が遅くなった。これはkafkaよりもひどい現象で、オートスケール下にも関わらず、１台分のConsumerしか処理していない。
+
+
+![](img/sqs_fifo_alart_samei_message_id.png)
+
+
+ログを確認してみても、同じタイミングでConsumerが処理するのではなくシリアルにConsumerが処理するような動きになっている。
+
+![](img/sqs_fifo_log_same_message_id.png)
+
+
+
+
+# トラブルシューティング
+## オートスケールが8台しか起動しない問題の確認
+#### アラート確認
+ApproximateNumerOfMessageVisibleを正しく設定できている。
+統計情報も期間も正しい。
+
+![](img/sqs_alarmsetting-1.png)
+
+条件も閾値の種別も、1以上のメッセージの蓄積を検知して、アラートがなるように設定されている。
+
+![](img/sqs_alarmsetting-2.png)
+
+メッセージを送信した際も、正しくメトリクスが増加しているのを確認
+
+![](img/sqs_alarm_10.png)
+
+
+
+#### オートスケーリング設定確認
+タスクの最大数を10に設定し、アラームの設定や追加のアクションとしても1台の常時起動に加えて、9台追加起動の設定をしている
+
+![](img/sqs_autoscaling-setting.png)
+
+
+#### 10台の実行確認
+やはり、8台起動となってしまう。
+
+![](img/sqs_scaleout_10.png)
+
+
+#### 分析
+ヘルスチェックがうまくいっていないのでは？と思い、TGを確認したが8台は全てOKで、残りの２台はNGと出ていないので、立ち上がってすらいない。
+この表を見てIPが怪しいのでは？と思い始める。
+
+![](img/sqs_scaleout_10_tg.png)
+
+タスクがどのように立ち上がっているかのログがあるので確認したところ、２台のコンテナを立ち上げようとしては失敗していることを確認
+
+![](img/sqs_scaling_log.png)
+
+このインスタンスのログが観れるので確認したところ、原因判明。
+なんと、IPアドレスが足りないとのこと
+
+![](img/sqs_autoscaling_reason.png)
+
+確認したところ、利用しているサブネットはpublicの２つのサブネットで(xx.xx.xx.xx/28)で、利用できるIPは16個*2で32個
+
+ただし、以下の5つのIPはAWSにそれぞれのサブネットで予約されているので残りは22個
+- ネットワークアドレス（xx.xx.xx.0）
+- VPCルーターのためのアドレス（xx.xx.xx.1）
+- DNS解決のためのアドレス（xx.xx.xx.2）
+- AWSによる将来の使用のためのアドレス（xx.xx.xx.3）
+- ブロードキャストアドレス（xx.xx.xx.15）
+
+以下のリソースが11つのIPを利用
+- MSK用のProducer EC2 1台
+- SQS用のProducer EC2 1台
+- 停止中のEC2 3台
+- MSK用のConsumer Fargate 1台
+- NatGW 1台
+- public用のALB(それぞれのサブネットでIPを利用) 1台
+- MSKのブローカー２台
+
+残りは11個あるはずだが、8台しか起動しないというとは、3個意識していないサービスがIPを利用しているようだが、確認することはできていない。いずれにしてもIP数は気をつけなくてはいけない。
+
+停止中のEC2を一台削除して9台になるか確認し、9件になることが確認できた
+
+![](img/sqs_autoscaling_9.png)
+
+
+#### AWSの不具合？あんまり好ましくない挙動発見
+上記のIPの問題で、10台のスケールアウトを設定していて、8台しか立ち上がらない状態になっている場合、残りの２台を立ち続けようとして、スケールアウトのアラートが停止し、スケールインのアラートが発砲されても、スケールインが作動しない。
+
+1. スケールアウトルール起動
+2. 2台立ち上がらないので、サービスの立ち上げを実施し続ける
+3. SQSのメッセージ処理が終了するのでスケールアウトのアラート停止
+4. スケールインのアラート発砲
+5. ECSはスケールアウトが完了していないのでスケールアウトを続けようとする
+
+![](img/sqs_autoscaling_error.png)
 

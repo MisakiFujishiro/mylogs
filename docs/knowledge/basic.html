@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="5. 環境構築系の基礎知識" href="environment.html" />
+    <link rel="next" title="6. 環境構築系の基礎知識" href="environment.html" />
     <link rel="prev" title="1. Agileの基本" href="../Agile/agile.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="environment.html" title="5. 環境構築系の基礎知識"
+          <a href="environment.html" title="6. 環境構築系の基礎知識"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="../Agile/agile.html" title="1. Agileの基本"
@@ -57,8 +57,8 @@
 <section id="id4">
 <h3><span class="section-number">1.1.2. </span>要件と設計と仕様について<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
 <p>要件は利用者が欲しいと思っていること</p>
-<p>仕様は、外部と関わる部分の「こうなるはず」という完成図</p>
-<p>設計や、どうやって作るのかを定義するもの</p>
+<p>仕様は、外部と関わる部分の「こうなるはず」という完成図（実装非依存）</p>
+<p>設計や、どうやって作るのかを定義するもの（実装に紐づくもの）</p>
 <p>なので、仕様を満たすために設計をするという形になる。</p>
 </section>
 </section>
@@ -149,6 +149,19 @@
 <p>スロークエリログ (Slow query log) は、MySQL で出力できるログの種類の1つです。 SQL の実行時間が指定した時間よりもかかってしまった SQL を全て出力することができます。 これにより、アプリケーション構築時や本番運用時にパフォーマンスのボトルネックとなっている SQL を発見するのに大いに役に立ちます。</p>
 </section>
 </section>
+<section id="ddd">
+<h1><span class="section-number">5. </span>DDD<a class="headerlink" href="#ddd" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id13">
+<h2><span class="section-number">5.1. </span>なぜDDD<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ドメインがビジネスの根幹なので、最終的に動くプログラムの価値に直結する。だから大事</p>
+</section>
+<section id="id14">
+<h2><span class="section-number">5.2. </span>DDDって何<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Eric Evansという人が公開した開発でうまくいったもの。
+DDDはあくまで、ある成功パターンに過ぎないので、案件パターンに合わせて似たような結論に至っていることもある。</p>
+<p>GRASPとかデザインパターンとか責務駆動設計とかの知識を踏まえた上でそれらをうまくいったものを整理したのがDDD</p>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -195,6 +208,11 @@
 <li><a class="reference internal" href="#id12">4.1. スロークエリ</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#ddd">5. DDD</a><ul>
+<li><a class="reference internal" href="#id13">5.1. なぜDDD</a></li>
+<li><a class="reference internal" href="#id14">5.2. DDDって何</a></li>
+</ul>
+</li>
 </ul>
 
   </div>
@@ -206,7 +224,7 @@
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="environment.html"
-                          title="次の章へ"><span class="section-number">5. </span>環境構築系の基礎知識</a></p>
+                          title="次の章へ"><span class="section-number">6. </span>環境構築系の基礎知識</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -236,7 +254,7 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="environment.html" title="5. 環境構築系の基礎知識"
+          <a href="environment.html" title="6. 環境構築系の基礎知識"
              >次へ</a> |</li>
         <li class="right" >
           <a href="../Agile/agile.html" title="1. Agileの基本"
