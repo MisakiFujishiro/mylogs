@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>7. MSKのチュートリアル実装(CLI編) &#8212; my_sphinx  ドキュメント</title>
+    <title>6. MSKのチュートリアル実装(CLI編) &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="10. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" />
+    <link rel="next" title="9. Cognitoで認証をして、AWSのリソースにアクセスする" href="cognito_authentication.html" />
     <link rel="prev" title="2. SQSのチュートリアル実装(CLI編)" href="SQS.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="cognito_authentication.html" title="10. Cognitoで認証をして、AWSのリソースにアクセスする"
+          <a href="cognito_authentication.html" title="9. Cognitoで認証をして、AWSのリソースにアクセスする"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="SQS.html" title="2. SQSのチュートリアル実装(CLI編)"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>MSKのチュートリアル実装(CLI編)</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)</a></li> 
       </ul>
     </div>  
 
@@ -46,7 +46,7 @@
           <div class="body" role="main">
             
   <section id="msk-cli">
-<h1><span class="section-number">7. </span>MSKのチュートリアル実装(CLI編)<a class="headerlink" href="#msk-cli" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)<a class="headerlink" href="#msk-cli" title="この見出しへのパーマリンク">¶</a></h1>
 <p>MSKを利用したメッセージの送受信を行うために、MSKのクラスターを作成する。
 その後、クラスターに対してキュートなるトピックを作成する。
 最後に、EC2上からCLIを利用して、メッセージの送受信を行う。</p>
@@ -54,7 +54,7 @@
 <li><p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/getting-started.html">クラスターの作り方</a></p></li>
 </ul>
 <section id="id1">
-<h2><span class="section-number">7.1. </span>クラスターの作り方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.1. </span>クラスターの作り方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
 <p>基本的にMSKはマネージドなkafkaのクラスターを提供するサービスである。
 そのため、kafkaのトピック作成やメッセージの送受信、メッセージの中身の確認といった部分のサポートは提供されていない。</p>
 <p>MSKのコンソールからクラスターを作成を選択。カスタムを選択する</p>
@@ -71,17 +71,17 @@
 <p><img alt="../_images/msk_cluster_setting6.png" src="../_images/msk_cluster_setting6.png" /></p>
 <p>セキュリティの設定を行う。一旦はIAMベースでのセキュリティやメッセージの暗号化について設定しておく</p>
 <p><img alt="../_images/msk_cluster_setting7.png" src="../_images/msk_cluster_setting7.png" /></p>
-<p>モニタリングの設定をする前にロググループを設定しておく
-<img alt="../_images/msk_cluster_setting8.png" src="../_images/msk_cluster_setting8.png" /></p>
+<p>モニタリングの設定をする前にロググループを設定しておく</p>
+<p><img alt="../_images/msk_cluster_setting8.png" src="../_images/msk_cluster_setting8.png" /></p>
 <p>作成したロググループを使って、ログの出力を行う。ログのレベルはDEFAULTでOK</p>
 <p><img alt="../_images/msk_cluster_setting9.png" src="../_images/msk_cluster_setting9.png" /></p>
-<p>作成後に変更できる項目などの一覧は以下
-<img alt="../_images/msk_cluster_setting1.png" src="../_images/msk_cluster_setting1.png" /></p>
+<p>作成後に変更できる項目などの一覧は以下</p>
+<p><img alt="../_images/msk_cluster_setting1.png" src="../_images/msk_cluster_setting1.png" /></p>
 </section>
 <section id="ec2">
-<h2><span class="section-number">7.2. </span>EC2の作成<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.2. </span>EC2の作成<a class="headerlink" href="#ec2" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="iam-role">
-<h3><span class="section-number">7.2.1. </span>IAM Roleの作成<a class="headerlink" href="#iam-role" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">6.2.1. </span>IAM Roleの作成<a class="headerlink" href="#iam-role" title="この見出しへのパーマリンク">¶</a></h3>
 <p>EC2に付与するMSKにアクセスすることができるポリシー及びロールを作成する</p>
 <p>ポリシーを作成して、以下のポリシーに対して3点変更する</p>
 <ul class="simple">
@@ -130,7 +130,7 @@
 </div>
 </section>
 <section id="id2">
-<h3><span class="section-number">7.2.2. </span>EC2インスタンスの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">6.2.2. </span>EC2インスタンスの作成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKのクライアントをEC2で作成する。
 簡単のためにMSKと同じVPC上にEC2を作成する。</p>
 <p>名前とインスタンスの設定はデフォルト</p>
@@ -147,7 +147,7 @@
 </section>
 </section>
 <section id="id3">
-<h2><span class="section-number">7.3. </span>トピックの作り方<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.3. </span>トピックの作り方<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
 <p>EC2からインスタンスを選択して、接続する。</p>
 <p>javaのインストール</p>
 <blockquote>
@@ -168,13 +168,20 @@
 <span class="n">sasl</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">class</span><span class="o">=</span><span class="n">software</span><span class="o">.</span><span class="n">amazon</span><span class="o">.</span><span class="n">msk</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">iam</span><span class="o">.</span><span class="n">IAMClientCallbackHandler</span>
 </pre></div>
 </div>
+<p>これらの設定の詳細を解説しておくと</p>
+<ul class="simple">
+<li><p>security.protocol=SASL_SSL<br />クライアントとKafkaサーバー間の通信プロトコルを設定している（SASLを使用したSSLを指定）</p></li>
+<li><p>sasl.mechanism=AWS_MSK_IAM<br />SASL認証をどの方法を利用するかで、MSKのIAM認証を利用</p></li>
+<li><p>sasl.jaas.config=software.amazon.msk.auth.iam.IAMLoginModule required;<br />JAAS(Java Authentication and Authorization Service)の設定で、IAMを利用することを指定</p></li>
+<li><p>sasl.client.callback.handler.class=software.amazon.msk.auth.iam.IAMClientCallbackHandler<br />Callbackに関する設定</p></li>
+</ul>
 <p>以下を実行するとTopicが作成される</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">2</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">1</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span>
 </pre></div>
 </div>
 </section>
 <section id="id4">
-<h2><span class="section-number">7.4. </span>メッセージの送信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.4. </span>メッセージの送信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">kafka</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">producer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">broker</span><span class="o">-</span><span class="nb">list</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">producer</span><span class="o">.</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span>
 </pre></div>
 </div>
@@ -182,7 +189,7 @@
 <p><img alt="../_images/msk_producer.png" src="../_images/msk_producer.png" /></p>
 </section>
 <section id="id5">
-<h2><span class="section-number">7.5. </span>メッセージの受信<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.5. </span>メッセージの受信<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
 <p>別のEC2を起動し、javaやkafkaのインストールをする。</p>
 <p>以下のコマンドを実行すると、producerで送信されたメッセージが受信できる。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">kafka</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">consumer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">consumer</span><span class="o">.</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span> <span class="o">--</span><span class="n">from</span><span class="o">-</span><span class="n">beginning</span>
@@ -191,7 +198,7 @@
 <p><img alt="../_images/msk_consumer.png" src="../_images/msk_consumer.png" /></p>
 </section>
 <section id="id6">
-<h2><span class="section-number">7.6. </span>その他操作<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">6.6. </span>その他操作<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
 <p>Topic一覧表示</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="p">[</span><span class="n">ZookeeperServerString</span><span class="p">]</span>
 </pre></div>
@@ -203,16 +210,14 @@
 </section>
 </section>
 <section id="msk">
-<h1><span class="section-number">8. </span>MSKの開発環境の構築<a class="headerlink" href="#msk" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">7. </span>MSKの開発環境の構築<a class="headerlink" href="#msk" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="producercicd">
-<h2><span class="section-number">8.1. </span>ProducerのCICD<a class="headerlink" href="#producercicd" title="この見出しへのパーマリンク">¶</a></h2>
-<p>基本的には<a class="reference external" href="https://misakifujishiro.github.io/mylogs/HandsOn/SQS.html#id12">SQSのProducer</a>と同様</p>
-<ul class="simple">
-<li><p>appspec.ymlのjarファイル名をmskに変更するのを忘れない。</p></li>
-</ul>
+<h2><span class="section-number">7.1. </span>ProducerのCICD<a class="headerlink" href="#producercicd" title="この見出しへのパーマリンク">¶</a></h2>
+<p>MSKは依存関係などが重くなることが見込まれるので、ECS上に構築することにする。
+<a class="reference external" href="https://misakifujishiro.github.io/mylogs/HandsOn/SQS.html#id12">SQSのConsumer</a>と同様の手順で構築する</p>
 </section>
 <section id="consumercicd">
-<h2><span class="section-number">8.2. </span>ConsumerのCICD<a class="headerlink" href="#consumercicd" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">7.2. </span>ConsumerのCICD<a class="headerlink" href="#consumercicd" title="この見出しへのパーマリンク">¶</a></h2>
 <p>基本的には<a class="reference external" href="https://misakifujishiro.github.io/mylogs/HandsOn/SQS.html#id12">SQSのConsumer</a>と同様</p>
 <ul class="simple">
 <li><p>Spring側でapplication.ymlを作成してportを8081に変更する</p></li>
@@ -221,15 +226,186 @@
 </section>
 </section>
 <section id="msk-java">
-<h1><span class="section-number">9. </span>MSKのチュートリアル実装(Java編)<a class="headerlink" href="#msk-java" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">8. </span>MSKのチュートリアル実装(Java編)<a class="headerlink" href="#msk-java" title="この見出しへのパーマリンク">¶</a></h1>
 <section id="producer">
-<h2><span class="section-number">9.1. </span>Producerの設定<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
-<p>まずは、kafkaの接続先情報をapplicaiton.ymlに設定する。<br />kafkaの接続情報はMSKのコンソール画面から、確認する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
-  <span class="n">kafka</span><span class="p">:</span>
-    <span class="n">bootstrap</span><span class="o">-</span><span class="n">servers</span><span class="p">:</span> <span class="n">your_bootstrap_servers</span>
+<h2><span class="section-number">8.1. </span>Producerの設定<a class="headerlink" href="#producer" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="pom">
+<h3><span class="section-number">8.1.1. </span>pomの設定<a class="headerlink" href="#pom" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以下の依存関係を追加する</p>
+<ul class="simple">
+<li><p>kafka:kafka-clients<br />Apache KafkaのJavaクライアントライブラリで、ProducerとConsumerを設定するためには必要</p></li>
+<li><p>kafka:spring-kafka<br />SpringBootフレームワークが提供するkafkaとの統合をサポートするライブラリで、送受信を行う</p></li>
+<li><p>awssdk:kafka<br />AWS SDK for javaの一部で、MSKのクラスタに対するAPIリクエストを行うために利用される</p></li>
+<li><p>msk:aws-msk-iam-auth<br />AWS MSK IAM Java Authenticationというライブラリで、MSKへのIAM認証を実施してくれる</p></li>
+<li><p>aws-sdk-java<br />springプロジェクトがAWS JAVA SDKを利用してAWSのサービスにアクセスするための依存関係の設定</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;dependency&gt;
+    &lt;groupId&gt;software.amazon.msk&lt;/groupId&gt;
+    &lt;artifactId&gt;aws-msk-iam-auth&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;software.amazon.awssdk&lt;/groupId&gt;
+    &lt;artifactId&gt;kafka&lt;/artifactId&gt;
+    &lt;version&gt;2.20.98&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;
+    &lt;artifactId&gt;kafka-clients&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- https://mvnrepository.com/artifact/software.amazon.awssdk/aws-sdk-java --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;software.amazon.awssdk&lt;/groupId&gt;
+    &lt;artifactId&gt;aws-sdk-java&lt;/artifactId&gt;
+    &lt;version&gt;2.20.98&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;
 </pre></div>
 </div>
+</section>
+<section id="application-yml">
+<h3><span class="section-number">8.1.2. </span>application.yml<a class="headerlink" href="#application-yml" title="この見出しへのパーマリンク">¶</a></h3>
+<p>msk-producerは8082のポートを利用するため、application.yamlで以下を設定する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">server</span><span class="p">:</span>
+  <span class="n">port</span><span class="p">:</span> <span class="mi">8082</span>
+</pre></div>
+</div>
+<p>kafkaを利用するための設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの</p>
+<ul class="simple">
+<li><p>producer</p>
+<ul>
+<li><p>bootstarap-servers: ブートストラップのエンドポイントを指定する（MSKクラスタより取得）</p></li>
+<li><p>key-serializer: producerがキーを送信する際にバイトに変換するための設定</p></li>
+<li><p>value-serializer: producerが値を送信する際にバイトに変換するための設定</p></li>
+</ul>
+</li>
+<li><p>properties</p>
+<ul>
+<li><p>security.protocol: kafkaへの接続に使用するセキュリティプロトコルの設定</p></li>
+<li><p>sasl.mechanism: saslのメカニズム設定で、今回はIAMを利用するための設定が行われている</p></li>
+<li><p>sasl.jaas.config: JAASの設定で、MSKのIAMログインモジュールを利用</p></li>
+<li><p>sasl.client.callback.handler.class: SASLのコールバックを指定する</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
+  <span class="n">kafka</span><span class="p">:</span>
+    <span class="n">producer</span><span class="p">:</span>
+      <span class="n">bootstrap</span><span class="o">-</span><span class="n">servers</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">YOUR_BOOTSTRAP</span><span class="o">&gt;</span>
+      <span class="n">key</span><span class="o">-</span><span class="n">serializer</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">serialization</span><span class="o">.</span><span class="n">StringSerializer</span>
+      <span class="n">value</span><span class="o">-</span><span class="n">serializer</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">serialization</span><span class="o">.</span><span class="n">StringSerializer</span>
+    <span class="n">properties</span><span class="p">:</span>
+      <span class="n">security</span><span class="o">.</span><span class="n">protocol</span><span class="p">:</span> <span class="n">SASL_SSL</span>
+      <span class="n">sasl</span><span class="o">.</span><span class="n">mechanism</span><span class="p">:</span> <span class="n">AWS_MSK_IAM</span>
+      <span class="n">sasl</span><span class="o">.</span><span class="n">jaas</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="n">software</span><span class="o">.</span><span class="n">amazon</span><span class="o">.</span><span class="n">msk</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">iam</span><span class="o">.</span><span class="n">IAMLoginModule</span> <span class="n">required</span><span class="p">;</span>
+      <span class="n">sasl</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">class</span><span class="p">:</span> <span class="n">software</span><span class="o">.</span><span class="n">amazon</span><span class="o">.</span><span class="n">msk</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">iam</span><span class="o">.</span><span class="n">IAMClientCallbackHandler</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3><span class="section-number">8.1.3. </span>フロントエンドの作成<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>前提としてalbのパスルーティングを行う際に、<code class="docutils literal notranslate"><span class="pre">msk-producer*</span></code>というパスをルーティングするので、全てのパスはmsk-producerから始まるようにする。
+msk-producerにアクセスすると、index.htmlにリダイレクトしてindex.htmlからmessageをmskにpostするという全体像。</p>
+<p><img alt="../_images/msk_alb_rule.png" src="../_images/msk_alb_rule.png" /></p>
+<p>以下2つのフロントエンドの実装を行う。</p>
+<ul class="simple">
+<li><p>ヘルスチェック用のフロント</p></li>
+<li><p>画面を表示して、メッセージをMSKに送信するフロント</p></li>
+</ul>
+<p>■ヘルスチェック用<br />TGで設定するALBからのヘルスチェックのエンドポイントとして利用する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@RestController</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">HealthCheckController</span> <span class="p">{</span>
+    <span class="nd">@GetMapping</span><span class="p">(</span><span class="s2">&quot;/msk-producer-healthCheck&quot;</span><span class="p">)</span>
+        <span class="n">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">healthCheck</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="s2">&quot;Healthy&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><img alt="../_images/msk_tg.png" src="../_images/msk_tg.png" /></p>
+<p>■表示する画面のhtml<br />src/main/java/resourcesの配下にmsk-producer-index.htmlを作成する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;Send Message&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;/msk-producer-send&quot; method=&quot;post&quot;&gt;
+    &lt;label for=&quot;message&quot;&gt;Message:&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; id=&quot;message&quot; name=&quot;message&quot;&gt;&lt;br&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>msk-producerへのアクセスをindex.htmlにリダイレクトするためにWebConfig.javaを実装する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Configuration</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">WebConfig</span> <span class="n">implements</span> <span class="n">WebMvcConfigurer</span> <span class="p">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">addViewControllers</span><span class="p">(</span><span class="n">ViewControllerRegistry</span> <span class="n">registry</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">registry</span><span class="o">.</span><span class="n">addRedirectViewController</span><span class="p">(</span><span class="s2">&quot;/msk-producer&quot;</span><span class="p">,</span> <span class="s2">&quot;/msk-producer-index.html&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="controller">
+<h3><span class="section-number">8.1.4. </span>Controller<a class="headerlink" href="#controller" title="この見出しへのパーマリンク">¶</a></h3>
+<p>フロントエンドで受け取ったメッセージをmsk-producer-sendにpostするためのControllerクラスを作成する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@RestController</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">FrontendController</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">final</span> <span class="n">MessageSender</span> <span class="n">messageSender</span><span class="p">;</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="n">public</span> <span class="n">FrontendController</span><span class="p">(</span><span class="n">MessageSender</span> <span class="n">messageSender</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">messageSender</span> <span class="o">=</span> <span class="n">messageSender</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nd">@PostMapping</span><span class="p">(</span><span class="s2">&quot;/msk-producer-send&quot;</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">sendMessage</span><span class="p">(</span><span class="nd">@RequestParam</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">messageSender</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="s2">&quot;Message sent: &quot;</span> <span class="o">+</span> <span class="n">message</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="messagesender">
+<h3><span class="section-number">8.1.5. </span>MessageSender<a class="headerlink" href="#messagesender" title="この見出しへのパーマリンク">¶</a></h3>
+<p>メッセージを送るMessageSenderを作成する</p>
+<p>spring-kafkaで提供されているKafkaTemplateを利用して、kafkaへの送信をおこなっている</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Component</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">MessageSender</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">final</span> <span class="n">KafkaTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">kafkaTemplate</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">final</span> <span class="n">String</span> <span class="n">topic</span><span class="p">;</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="n">public</span> <span class="n">MessageSender</span><span class="p">(</span><span class="n">KafkaTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">kafkaTemplate</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">kafkaTemplate</span> <span class="o">=</span> <span class="n">kafkaTemplate</span><span class="p">;</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">topic</span> <span class="o">=</span> <span class="s2">&quot;Topic_from_java&quot;</span><span class="p">;</span> <span class="o">//</span> <span class="n">送信先のトピック名</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">sendMessage</span><span class="p">(</span><span class="n">String</span> <span class="n">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">kafkaTemplate</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="consumer">
+<h2><span class="section-number">8.2. </span>Consumerの設定<a class="headerlink" href="#consumer" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 </section>
 
@@ -243,26 +419,34 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">7. MSKのチュートリアル実装(CLI編)</a><ul>
-<li><a class="reference internal" href="#id1">7.1. クラスターの作り方</a></li>
-<li><a class="reference internal" href="#ec2">7.2. EC2の作成</a><ul>
-<li><a class="reference internal" href="#iam-role">7.2.1. IAM Roleの作成</a></li>
-<li><a class="reference internal" href="#id2">7.2.2. EC2インスタンスの作成</a></li>
+<li><a class="reference internal" href="#">6. MSKのチュートリアル実装(CLI編)</a><ul>
+<li><a class="reference internal" href="#id1">6.1. クラスターの作り方</a></li>
+<li><a class="reference internal" href="#ec2">6.2. EC2の作成</a><ul>
+<li><a class="reference internal" href="#iam-role">6.2.1. IAM Roleの作成</a></li>
+<li><a class="reference internal" href="#id2">6.2.2. EC2インスタンスの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id3">7.3. トピックの作り方</a></li>
-<li><a class="reference internal" href="#id4">7.4. メッセージの送信</a></li>
-<li><a class="reference internal" href="#id5">7.5. メッセージの受信</a></li>
-<li><a class="reference internal" href="#id6">7.6. その他操作</a></li>
+<li><a class="reference internal" href="#id3">6.3. トピックの作り方</a></li>
+<li><a class="reference internal" href="#id4">6.4. メッセージの送信</a></li>
+<li><a class="reference internal" href="#id5">6.5. メッセージの受信</a></li>
+<li><a class="reference internal" href="#id6">6.6. その他操作</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#msk">8. MSKの開発環境の構築</a><ul>
-<li><a class="reference internal" href="#producercicd">8.1. ProducerのCICD</a></li>
-<li><a class="reference internal" href="#consumercicd">8.2. ConsumerのCICD</a></li>
+<li><a class="reference internal" href="#msk">7. MSKの開発環境の構築</a><ul>
+<li><a class="reference internal" href="#producercicd">7.1. ProducerのCICD</a></li>
+<li><a class="reference internal" href="#consumercicd">7.2. ConsumerのCICD</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#msk-java">9. MSKのチュートリアル実装(Java編)</a><ul>
-<li><a class="reference internal" href="#producer">9.1. Producerの設定</a></li>
+<li><a class="reference internal" href="#msk-java">8. MSKのチュートリアル実装(Java編)</a><ul>
+<li><a class="reference internal" href="#producer">8.1. Producerの設定</a><ul>
+<li><a class="reference internal" href="#pom">8.1.1. pomの設定</a></li>
+<li><a class="reference internal" href="#application-yml">8.1.2. application.yml</a></li>
+<li><a class="reference internal" href="#id7">8.1.3. フロントエンドの作成</a></li>
+<li><a class="reference internal" href="#controller">8.1.4. Controller</a></li>
+<li><a class="reference internal" href="#messagesender">8.1.5. MessageSender</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#consumer">8.2. Consumerの設定</a></li>
 </ul>
 </li>
 </ul>
@@ -276,7 +460,7 @@
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="cognito_authentication.html"
-                          title="次の章へ"><span class="section-number">10. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
+                          title="次の章へ"><span class="section-number">9. </span>Cognitoで認証をして、AWSのリソースにアクセスする</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -306,13 +490,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="cognito_authentication.html" title="10. Cognitoで認証をして、AWSのリソースにアクセスする"
+          <a href="cognito_authentication.html" title="9. Cognitoで認証をして、AWSのリソースにアクセスする"
              >次へ</a> |</li>
         <li class="right" >
           <a href="SQS.html" title="2. SQSのチュートリアル実装(CLI編)"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">7. </span>MSKのチュートリアル実装(CLI編)</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

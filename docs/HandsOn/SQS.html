@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="7. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
+    <link rel="next" title="6. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
     <link rel="prev" title="1. CodePipelineを利用してCFNのCICD環境を作成する" href="cloudformaiton_CICD.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="7. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
@@ -1102,13 +1102,12 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <p>ログを確認してみても、同じタイミングでConsumerが処理するのではなくシリアルにConsumerが処理するような動きになっている。</p>
 <p><img alt="../_images/sqs_fifo_log_same_message_id.png" src="../_images/sqs_fifo_log_same_message_id.png" /></p>
 </section>
-</section>
 <section id="id28">
-<h1><span class="section-number">6. </span>トラブルシューティング<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h1>
+<h2><span class="section-number">5.8. </span>トラブルシューティング<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id29">
-<h2><span class="section-number">6.1. </span>オートスケールが8台しか起動しない問題の確認<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">5.8.1. </span>オートスケールが8台しか起動しない問題の確認<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h3>
 <section id="id30">
-<h3><span class="section-number">6.1.1. </span>アラート確認<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">5.8.1.1. </span>アラート確認<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ApproximateNumerOfMessageVisibleを正しく設定できている。
 統計情報も期間も正しい。</p>
 <p><img alt="../_images/sqs_alarmsetting-1.png" src="../_images/sqs_alarmsetting-1.png" /></p>
@@ -1118,17 +1117,17 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <p><img alt="../_images/sqs_alarm_10.png" src="../_images/sqs_alarm_10.png" /></p>
 </section>
 <section id="id31">
-<h3><span class="section-number">6.1.2. </span>オートスケーリング設定確認<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">5.8.1.2. </span>オートスケーリング設定確認<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h4>
 <p>タスクの最大数を10に設定し、アラームの設定や追加のアクションとしても1台の常時起動に加えて、9台追加起動の設定をしている</p>
 <p><img alt="../_images/sqs_autoscaling-setting.png" src="../_images/sqs_autoscaling-setting.png" /></p>
 </section>
 <section id="id32">
-<h3><span class="section-number">6.1.3. </span>10台の実行確認<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">5.8.1.3. </span>10台の実行確認<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h4>
 <p>やはり、8台起動となってしまう。</p>
 <p><img alt="../_images/sqs_scaleout_10.png" src="../_images/sqs_scaleout_10.png" /></p>
 </section>
 <section id="id33">
-<h3><span class="section-number">6.1.4. </span>分析<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">5.8.1.4. </span>分析<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ヘルスチェックがうまくいっていないのでは？と思い、TGを確認したが8台は全てOKで、残りの２台はNGと出ていないので、立ち上がってすらいない。
 この表を見てIPが怪しいのでは？と思い始める。</p>
 <p><img alt="../_images/sqs_scaleout_10_tg.png" src="../_images/sqs_scaleout_10_tg.png" /></p>
@@ -1161,7 +1160,7 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <p><img alt="../_images/sqs_autoscaling_9.png" src="../_images/sqs_autoscaling_9.png" /></p>
 </section>
 <section id="aws">
-<h3><span class="section-number">6.1.5. </span>AWSの不具合？あんまり好ましくない挙動発見<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">5.8.1.5. </span>AWSの不具合？あんまり好ましくない挙動発見<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h4>
 <p>上記のIPの問題で、10台のスケールアウトを設定していて、8台しか立ち上がらない状態になっている場合、残りの２台を立ち続けようとして、スケールアウトのアラートが停止し、スケールインのアラートが発砲されても、スケールインが作動しない。</p>
 <ol class="simple">
 <li><p>スケールアウトルール起動</p></li>
@@ -1171,6 +1170,7 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <li><p>ECSはスケールアウトが完了していないのでスケールアウトを続けようとする</p></li>
 </ol>
 <p><img alt="../_images/sqs_autoscaling_error.png" src="../_images/sqs_autoscaling_error.png" /></p>
+</section>
 </section>
 </section>
 </section>
@@ -1269,15 +1269,15 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <li><a class="reference internal" href="#id26">5.5. FIFOキューでの検証</a></li>
 <li><a class="reference internal" href="#id">5.6. メッセージグループIDをすべて異なるものにした場合</a></li>
 <li><a class="reference internal" href="#id27">5.7. メッセージグループIDを同じものにした場合</a></li>
+<li><a class="reference internal" href="#id28">5.8. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id29">5.8.1. オートスケールが8台しか起動しない問題の確認</a><ul>
+<li><a class="reference internal" href="#id30">5.8.1.1. アラート確認</a></li>
+<li><a class="reference internal" href="#id31">5.8.1.2. オートスケーリング設定確認</a></li>
+<li><a class="reference internal" href="#id32">5.8.1.3. 10台の実行確認</a></li>
+<li><a class="reference internal" href="#id33">5.8.1.4. 分析</a></li>
+<li><a class="reference internal" href="#aws">5.8.1.5. AWSの不具合？あんまり好ましくない挙動発見</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id28">6. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#id29">6.1. オートスケールが8台しか起動しない問題の確認</a><ul>
-<li><a class="reference internal" href="#id30">6.1.1. アラート確認</a></li>
-<li><a class="reference internal" href="#id31">6.1.2. オートスケーリング設定確認</a></li>
-<li><a class="reference internal" href="#id32">6.1.3. 10台の実行確認</a></li>
-<li><a class="reference internal" href="#id33">6.1.4. 分析</a></li>
-<li><a class="reference internal" href="#aws">6.1.5. AWSの不具合？あんまり好ましくない挙動発見</a></li>
 </ul>
 </li>
 </ul>
@@ -1293,7 +1293,7 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="次の章へ"><span class="section-number">7. </span>MSKのチュートリアル実装(CLI編)</a></p>
+                          title="次の章へ"><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -1323,7 +1323,7 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="7. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
              >次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
