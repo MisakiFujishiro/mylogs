@@ -101,7 +101,7 @@
 <ul class="simple">
 <li><p>実装</p>
 <ul>
-<li><p>SQSのオートスケーリング検証【中】</p></li>
+<li><p>SQSのオートスケーリング検証【完】</p></li>
 <li><p>MSKのjavaでの実装</p></li>
 <li><p>MSKのオートスケーリング検証</p></li>
 </ul>
@@ -112,6 +112,7 @@
 <ul class="simple">
 <li><p>実装</p>
 <ul>
+<li><p>SQSのFIFOキューについての実装</p></li>
 <li><p>オートスケーリングの結果を踏まえて深掘り</p></li>
 </ul>
 </li>
@@ -237,31 +238,30 @@
 </section>
 <section id="id10">
 <h3><span class="section-number">2.3.5. </span>6月下旬<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
-<ul>
-<li><p>テーマ深掘り</p>
 <ul class="simple">
+<li><p>テーマ深掘り</p>
+<ul>
 <li><p>最終報告のドラフトも検討【完了】</p></li>
 <li><p>最終報告資料でも使えるくらいの資料にブラッシュアップ【完了】</p></li>
 </ul>
 </li>
-<hr class="docutils" />
 <li><p>実装</p>
-<ul class="simple">
+<ul>
 <li><p>Consumerの改修（常時起動でポーリングする）【完了】</p></li>
 <li><p>SQSオートスケーリングを設定して挙動を確認する【完了】</p></li>
 <li><p>SQSの課題解決【完了】</p></li>
-<li><p>SQSのメッセージグループID実装【完了】</p></li>
 </ul>
 </li>
 </ul>
 </section>
+<hr class="docutils" />
 <section id="id11">
 <h3><span class="section-number">2.3.6. </span>7月上旬<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>実装</p>
 <ul>
 <li><p>MSKについてJavaのコードで送受信</p></li>
-<li><p>MSKについてJavaのコードで送受信（Producerはバッチなので作り切る→EC2上でOK）</p></li>
+<li><p>MSKのProducerをECS上で実装</p></li>
 <li><p>MSKのConsumerをECS上で実装</p></li>
 <li><p>オートスケーリングを設定して挙動を確認する</p></li>
 </ul>
@@ -274,6 +274,8 @@
 <li><p>実装</p>
 <ul>
 <li><p>SQSのFIFOキューを利用した場合の動作確認</p></li>
+<li><p>SQSのメッセージグループID実装</p></li>
+<li><p>動作確認</p></li>
 </ul>
 </li>
 </ul>
