@@ -104,16 +104,15 @@
 <li><p>SQSのオートスケーリング検証【完】</p></li>
 <li><p>MSKのjavaでの実装</p></li>
 <li><p>MSKのオートスケーリング検証</p></li>
+<li><p>MSKのオートスケーリング深掘り</p></li>
 </ul>
 </li>
-<li><p>オートスケーリングの検証結果について整理</p></li>
 </ul>
 <p>■8月</p>
 <ul class="simple">
 <li><p>実装</p>
 <ul>
 <li><p>SQSのFIFOキューについての実装</p></li>
-<li><p>オートスケーリングの結果を踏まえて深掘り</p></li>
 </ul>
 </li>
 <li><p>資料全体調整</p></li>
@@ -260,10 +259,10 @@
 <ul class="simple">
 <li><p>実装</p>
 <ul>
-<li><p>MSKについてJavaのコードで送受信</p></li>
-<li><p>MSKのProducerをECS上で実装</p></li>
-<li><p>MSKのConsumerをECS上で実装</p></li>
-<li><p>オートスケーリングを設定して挙動を確認する</p></li>
+<li><p>MSKについてJavaのコードで送受信【完】</p></li>
+<li><p>MSKのProducerをECS上で実装【完】</p></li>
+<li><p>MSKのConsumerをECS上で実装【完】</p></li>
+<li><p>オートスケーリングを設定【完】</p></li>
 </ul>
 </li>
 </ul>
@@ -273,9 +272,12 @@
 <ul class="simple">
 <li><p>実装</p>
 <ul>
-<li><p>SQSのFIFOキューを利用した場合の動作確認</p></li>
-<li><p>SQSのメッセージグループID実装</p></li>
-<li><p>動作確認</p></li>
+<li><p>MSKのPartitionを変更しながら動作確認</p>
+<ul>
+<li><p>partition数とconsumer数同じ</p></li>
+<li><p>partition数がconsumer数より多い</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -283,12 +285,15 @@
 <section id="id13">
 <h3><span class="section-number">2.3.8. </span>8月上旬<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
-<li><p>テーマ深掘り</p>
+<li><p>実装</p>
 <ul>
-<li><p>FIFOキューの実装比較</p></li>
+<li><p>SQSのFIFOキューを利用した場合の動作確認</p>
+<ul>
+<li><p>SQSのメッセージグループID実装</p></li>
 </ul>
 </li>
-<li><p>資料作成</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="id14">

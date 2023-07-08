@@ -259,7 +259,7 @@ server:
 ```
 
 
-kafkaを利用するための設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの
+kafkaを利用するためにapplication.yamlで以下の設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの
 - producer
     - bootstarap-servers: ブートストラップのエンドポイントを指定する（MSKクラスタより取得）
     - key-serializer: producerがキーを送信する際にバイトに変換するための設定
@@ -347,6 +347,7 @@ public class WebConfig implements WebMvcConfigurer {
 フロントエンドで受け取ったメッセージをmsk-producer-sendにpostするためのControllerクラスを作成する。
 
 ```
+
 @RestController
 public class FrontendController {
     private final MessageSender messageSender;
@@ -357,9 +358,13 @@ public class FrontendController {
     }
 
     @PostMapping("/msk-producer-send")
-    public ResponseEntity<String> sendMessage(@RequestParam("message") String message) {
-        messageSender.sendMessage(message);
-        return ResponseEntity.ok("Message sent: " + message);
+    public ResponseEntity<String> sendMessage(@RequestParam("message") int message) {
+        if (message <= 0) {
+            return ResponseEntity.badRequest().body("Invalid message value. Only positive integers are allowed.");
+        }
+
+        messageSender.sendRandomMessages(message);
+        return ResponseEntity.ok("Messages sent: " + message);
     }
 }
 
@@ -371,6 +376,7 @@ public class FrontendController {
 
 spring-kafkaで提供されているKafkaTemplateを利用して、kafkaへの送信をおこなっている
 ```
+
 @Component
 public class MessageSender {
     private final KafkaTemplate<String, String> kafkaTemplate;
@@ -385,8 +391,180 @@ public class MessageSender {
     public void sendMessage(String message) {
         kafkaTemplate.send(topic, message);
     }
+
+    public void sendRandomMessages(int num) {
+        Random rand = new Random();
+        System.out.print(num);
+        for (int i = 0; i < num; i++) {
+            int randomNum = rand.nextInt(11);
+            System.out.print(randomNum);
+            kafkaTemplate.send(topic, String.valueOf(randomNum));
+        }
+    }
 }
 ```
 
 
 ## Consumerの設定
+### application.yaml
+msk-consumerは8081のポートを利用するため、application.yamlで以下を設定する
+```
+server:
+  port: 8081
+```
+
+kafkaを利用するためにapplication.yamlで以下の設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの
+- producer
+    - group-id  
+        これはConsumer側で自身が所属するグループを指定するための値。  
+        この値を利用することで、Pub-Subモデルのメッセージキューにすることができる。
+        - 異なるグループのConsumerはそれぞれ独立して、メッセージをConsumeする。
+        - 同じグループのConsumerは、お互いにoffset情報をやり取りして、メッセージが適切に分配されることを保証する
+    - auto-offset-reset  
+        Consumerが消費者が読み込むべき最初のオフセットをどのように決定するかを指定する。
+        - earliest: 最も古いオフセットから読み込むので、全メッセージを消費することになる
+        - latest: 最新のオフセットから読み込む、Consumerが起動した時点からTopicに追加されたメッセージを消費する
+        - none: Consumerが前回消費した最後のオフセットの次から読み込むが、そのオフセットが存在しない場合、例外がスローされる
+
+- propertiesはProducerと同様
+
+```
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: group_id
+      auto-offset-reset: earliest
+    properties:
+      security.protocol: SASL_SSL
+      sasl.mechanism: AWS_MSK_IAM
+      sasl.jaas.config: software.amazon.msk.auth.iam.IAMLoginModule required;
+      sasl.client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+```
+
+### MessageReceiver
+以下のMessageReciverクラスを作成する
+- @Component  
+    Springのコンポーネントスキャンにより、自動的にコンポーネントとして検出され、springによりインスタンスが生成される
+- @KafkaLister  
+    このメソッドはTopicからのメッセージ受信するためのリスナーメソッドになる
+- ConsumerRecord  
+    kafkaから受信したメッセージ
+```
+
+@Component
+public class MessageReceiver {
+
+    @KafkaListener(topics="Topic_from_java")
+    public void receiveMessage(ConsumerRecord<String, String> record){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        System.out.println("PROCESSING START =======================================================" );
+
+        //処理開始時間の表示
+        LocalDateTime now_bf = LocalDateTime.now();
+        System.out.println("START TIME：" + formatter.format(now_bf)+" & MESSAGE key： "+record.key());
+        System.out.println("START TIME：" + formatter.format(now_bf)+" & MESSAGE Value： "+record.value());
+        System.out.println("START TIME：" + formatter.format(now_bf)+" & MESSAGE partition： "+record.partition());
+        System.out.println("START TIME：" + formatter.format(now_bf)+" & MESSAGE Offset： "+record.offset());
+
+        int waitTime = Integer.parseInt(record.value()) * 1000;
+        System.out.println("wait time: " + waitTime);
+        waitInMilliseconds(waitTime);
+
+        //処理完了時間の表示
+        LocalDateTime now_af = LocalDateTime.now();
+        System.out.println("END TIME： " + formatter.format(now_af) +" & MESSAGE ID： "+record.key());
+        System.out.println("PROCESSING END =======================================================" );
+
+    }
+    //数字を受け取って、その時間待機するためのメソッド
+    private void waitInMilliseconds(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+
+}
+
+```
+
+これだけで、メッセージを送信すると、Consumerで受信することができる。
+
+
+### 結果
+ALB_URL/msk-producerにアクセスすると以下画面が表示される。
+
+![](img/msk_producer_frontend.png)
+
+画面から数字を入力すると、Consumer側でその数だけメッセージを受け取ってシリアルに待機することを確認
+
+![](img/msk_consumer_log.png)
+
+# MSKのオートスケーリング設定
+## 基本方針
+- 監視
+    CloudWatchで`SumoffsetLag`を監視する。
+    (処理済みと未処理のoffsetの差分)
+- オートスケール
+    - キューが溜まったら、スケールアウトして8台になる
+    - 5分間連続でメッセージ数が0になったらスケールインする
+- 確認事項
+    - 件数と処理数が多い場合に、働かないConsumerが発生して、減り方が漸減する
+    - 最初はpartitionに偏りがない
+    - 後半にpartitionに偏りが発生する
+    - partition数を増やすことで、偏りが減るかを確認する
+
+## 監視設定
+メトリクスの各種設定はSQSと同様
+
+![](img/msk_sumoffsetlag.png)
+
+スケールアウトの設定
+
+![](img/msk_scaleout_alarm_setting.png)
+
+スケールインの設定
+
+![](img/msk_scalein_alarm_setting.png)
+
+
+## オートスケール設定
+基本的にはSQSの設定と同様にする。
+
+スケールアウトの設定
+
+![](img/msk_scaleout_policy.png)
+
+スケールインの設定
+
+![](img/msk_scalein_policy.png)
+
+
+## 検証結果
+
+### partitionが1でscaleoutする場合
+100件データを送信したところ、アラームが検知
+
+![](img/msk_alarm.png)
+
+
+Consumerも8台起動（IPの関係で7台起動）
+
+![](img/msk_scaleout_num.png)
+
+ただし、parttiionが1で作成されているため、分散されないで時間がかかる。  
+ログを確認してみても、partitionが0になっている
+
+![](img/msk_partition1_consumer_7_log.png)
+
+
+### partitionがscaleout台数と同じ場合
+
+
+### partitionがscaleout台数より多い場合

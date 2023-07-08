@@ -180,7 +180,55 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </section>
 </section>
 <section id="msk">
-<h2><span class="section-number">17.2. </span>MSKの価値<a class="headerlink" href="#msk" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.2. </span>MSKのメッセージ管理詳細<a class="headerlink" href="#msk" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="group-id">
+<h3><span class="section-number">17.2.1. </span>group-id<a class="headerlink" href="#group-id" title="この見出しへのパーマリンク">¶</a></h3>
+<p>MSKはPub-Subモデル（１つのメッセージに対して複数のConsumerが対応）を採用している。
+ProducerはTopicに対してメッセージを送信するだけでよいが、Consumer側で'group-id'というものを指定する。</p>
+<ul class="simple">
+<li><p>group-idが同じConsumer同士は協調して、同じメッセージを重複処理しないようにする。</p></li>
+<li><p>groupidが異なるConsumer同士は、互いに独立してメッセージを処理する（同じメッセージが異なるグループで2回処理される）</p></li>
+</ul>
+</section>
+<section id="auto-offset-rest">
+<h3><span class="section-number">17.2.2. </span>auto-offset-rest<a class="headerlink" href="#auto-offset-rest" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Consumerが起動した際に、読み込むべき最初のオフセットをどのように指定するかの設定。以下の3つの選択肢がある</p>
+<ul class="simple">
+<li><p>earliest<br />最も古いオフセットから読み込むので、全メッセージを消費することになる<br />普段は、前回のオフセットから実行されるがもし前回のオフセット情報などがない場合に関しては、一番最初から実行される</p></li>
+<li><p>latest<br />最新のオフセットを読み込む。すなわち、消費者が起動してから、追加されたメッセージを消化する</p></li>
+<li><p>none<br />Consumerが前回消費した最後のオフセットの次から読み込むが、そのオフセットが存在しない場合、例外がスローされる</p></li>
+</ul>
+</section>
+<section id="offset">
+<h3><span class="section-number">17.2.3. </span>offset情報の管理<a class="headerlink" href="#offset" title="この見出しへのパーマリンク">¶</a></h3>
+<p>基本的に各Topicは、messageの情報をもつだけで、offset情報はtopicに記録されるわけではない。</p>
+<p>offset情報は、<code class="docutils literal notranslate"><span class="pre">__consume_offsets</span></code>と呼ばれる特殊なトピックで管理され、記録は各Consumerが行うことになる。
+これによって、Consumerがダウンしたとしてもoffsetの情報などは、__consumer_offsetsに管理され、前回に読み取った位置から再開することができる</p>
+<p>従って、__consumer_offsetsには、各コンシューマーグループの各トピックの各パーティションについて最後に読み取ったオフセットを保持している。
+具体的な__consumer_offsetsの中身は以下だが、これを直接参照することはkafkaのマネージド部分に影響をあたる可能性があるので非推奨</p>
+<ul class="simple">
+<li><p>コンシューマグループID： メッセージを消費するコンシューマグループの識別子</p></li>
+<li><p>トピック名： メッセージが消費される元のトピック名</p></li>
+<li><p>パーティション番号： 上記トピックの特定のパーティション</p></li>
+<li><p>オフセット： そのコンシューマグループが次に読み込むべきメッセージの位置。具体的には、最後に読み込まれたメッセージの次のメッセージの位置を示します。</p></li>
+</ul>
+<p>MSKのメトリクスであるSumOffsetLagもこの__consuemr_offsetsを監視している。</p>
+</section>
+<section id="consumer-offsets">
+<h3><span class="section-number">17.2.4. </span>__consumer_offsetsの削除ポリシー<a class="headerlink" href="#consumer-offsets" title="この見出しへのパーマリンク">¶</a></h3>
+<p>__consumer_offsetsには、すべてのConsumer Group、トピック、パーティションの組み合わせのオフセット情報を管理するため一般的に大量のデータを保持することになる。</p>
+<p>そのため、クリーンアップポリシーを提供している。基本的にはcompactポリシーが適用されている。</p>
+<ul class="simple">
+<li><p>delete(log.retention.hours):特定の期間が経過したメッセージを自動削除する</p></li>
+<li><p>compact:各キーの最新のメッセージのみが保存され、それ以前のメッセージは削除される。</p></li>
+</ul>
+<p>また、ある特定のConsumerGroupが一定期間活動がないと、そのConsumerグループに対するオフセット情報を削除することがある。<br />これは、<code class="docutils literal notranslate"><span class="pre">offsets.retention.minutes</span></code>パラメータで設定されており、デフォルトで7日間（10080min)で設定されている。
+消費者グループがこの期間以上メッセージを消費していないと、<code class="docutils literal notranslate"><span class="pre">__consumer_offsets</span></code>トピックからコンシューマーグループの情報を削除してしまう。</p>
+<p>メッセージの消化がなかったとしても、Consumerが最新のオフセットを取得するような挙動をすれば情報が保持される可能性がある。</p>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">17.3. </span>MSKの価値<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
 <p>■kafkaの課題<br />kafkaは上記で述べてきたように非常に便利であるものの、分散メッセージ基盤であるため、環境構築において多くのサーバーに対する設定が必要となる。<br />また、稼働後もブローカーやZookeeperの運用、スケールや監視などの作業が必要となる。</p>
 <p>■MSKの価値<br />MSKではこの問題に対応しており、MSKは一言で言うと</p>
 <blockquote>
@@ -195,22 +243,22 @@ SQSではマネージドなキューのためコンソール画面などからDL
 <p><img alt="../_images/msk_image.png" src="../_images/msk_image.png" /></p>
 <p>これらを踏まえ、たとえば<a class="reference external" href="https://aws.amazon.com/jp/blogs/news/best-practices-for-running-apache-kafka-on-aws/">EC2上にKafkaを導入</a>する場合とMSKを利用する場合では以下のような差がある</p>
 <p><img alt="../_images/msk_hikaku_manual.png" src="../_images/msk_hikaku_manual.png" /></p>
-<section id="id7">
-<h3><span class="section-number">17.2.1. </span>MSKのデプロイメント<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id8">
+<h3><span class="section-number">17.3.1. </span>MSKのデプロイメント<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKでは、AZ間でブローカーを均等にデプロイすると言うベストプラクティスを自動で適用してくれる。<br />作成時に以下を設定する</p>
 <ul class="simple">
 <li><p>適用するAZ</p></li>
 <li><p>AZあたりのブローカー数</p></li>
 </ul>
 </section>
-<section id="id8">
-<h3><span class="section-number">17.2.2. </span>MSKのネットワーク<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id9">
+<h3><span class="section-number">17.3.2. </span>MSKのネットワーク<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKでは、自動で作成したクラスターに対する接続はエンドポイントが払い出されるので、そのエンドポイントに対して、クライアントから通信すれば良い。</p>
 <p>セキュリティグループはMSKクラスターで指定したセキュリティグループが適用されるが、クライアントと同じセキュリティグループにしておくと比較的簡単に通信ができるようになる。</p>
 <p><img alt="../_images/msk_network.png" src="../_images/msk_network.png" /></p>
 </section>
-<section id="id9">
-<h3><span class="section-number">17.2.3. </span>MSKのセキュリティ<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id10">
+<h3><span class="section-number">17.3.3. </span>MSKのセキュリティ<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
 <p>大きく以下の４つの機能が存在し、今回は、データの保護、クライアント認証について整理</p>
 <ul class="simple">
 <li><p>★データの保護</p></li>
@@ -240,8 +288,8 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </ol>
 <p><img alt="../_images/msk_authenticate.png" src="../_images/msk_authenticate.png" /></p>
 </section>
-<section id="id10">
-<h3><span class="section-number">17.2.4. </span>MSKによるクラスターの更新<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id11">
+<h3><span class="section-number">17.3.4. </span>MSKによるクラスターの更新<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
 <p>カスタム構成で、既存のクラスターを更新することが可能</p>
 <ol class="simple">
 <li><p>kafkaの設定ファイルを作成</p></li>
@@ -254,8 +302,8 @@ SQSではマネージドなキューのためコンソール画面などからDL
 <p>カスタム構成では以下が設定可能</p>
 <p><img alt="../_images/msk_custom_conf.png" src="../_images/msk_custom_conf.png" /></p>
 </section>
-<section id="id11">
-<h3><span class="section-number">17.2.5. </span>MSKのスケーリング<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id12">
+<h3><span class="section-number">17.3.5. </span>MSKのスケーリング<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h3>
 <p>大きく３つのスケーリングが可能</p>
 <ul class="simple">
 <li><p>ストレージの拡張:ブローカーのストレージを増やせる</p></li>
@@ -266,8 +314,8 @@ SQSではマネージドなキューのためコンソール画面などからDL
 <a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/msk-configuration-properties.html">詳細は公式°キュtメント参照</a></p>
 </section>
 </section>
-<section id="id12">
-<h2><span class="section-number">17.3. </span>MSKのメトリクス<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id13">
+<h2><span class="section-number">17.4. </span>MSKのメトリクス<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <p>MSKではAWSのCloudWatchと統合されており、メトリクスを取得可能<br />基本、拡張ブローカー、拡張トピックの3つのメトリクスレベルがあり、取得できるメトリクスについては、Amazon CloudWatchと連携して、モニタリングが可能。 詳細は<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/metrics-details.html">公式ドキュメント</a>を参照されたい。</p>
 <p>代表的なものを紹介する</p>
 <ul class="simple">
@@ -288,10 +336,10 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </ul>
 </section>
 <section id="use">
-<h2><span class="section-number">17.4. </span>USEメソッドに関連するメトリクス<a class="headerlink" href="#use" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.5. </span>USEメソッドに関連するメトリクス<a class="headerlink" href="#use" title="この見出しへのパーマリンク">¶</a></h2>
 <p>USEメソッド（利用度、飽和度、エラー数）とその他に分けて、メトリクスを紹介する。</p>
 <section id="utilization">
-<h3><span class="section-number">17.4.1. </span>Utilization(使用度)<a class="headerlink" href="#utilization" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.5.1. </span>Utilization(使用度)<a class="headerlink" href="#utilization" title="この見出しへのパーマリンク">¶</a></h3>
 <p>どれだけキューが利用されているかを確認するためのメトリクス</p>
 <ul class="simple">
 <li><p>BytesInPerSec(DEFAULT)<br />Producerから受信したメッセージのバイト数</p></li>
@@ -302,7 +350,7 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </ul>
 </section>
 <section id="satulation">
-<h3><span class="section-number">17.4.2. </span>Satulation(飽和度)<a class="headerlink" href="#satulation" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.5.2. </span>Satulation(飽和度)<a class="headerlink" href="#satulation" title="この見出しへのパーマリンク">¶</a></h3>
 <p>どれだけキューにメッセージが溜まり、システムが正しく処理を捌き切れているかを確認するためのメトリクス</p>
 <ul class="simple">
 <li><p>sumoffsetlag(DEFAULT)<br />トピックごとの処理されていないメッセージの総数</p></li>
@@ -312,15 +360,15 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </ul>
 </section>
 <section id="errors">
-<h3><span class="section-number">17.4.3. </span>Errors(エラー数)<a class="headerlink" href="#errors" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.5.3. </span>Errors(エラー数)<a class="headerlink" href="#errors" title="この見出しへのパーマリンク">¶</a></h3>
 <p>キューにおける失敗したメッセージを確認するメトリクス。</p>
 <ul class="simple">
 <li><p>NetworkRxErrors(DEFAULT)<br />ブローカーのネットワーク受信エラーの数</p></li>
 <li><p>NetworkTxDropped(DEFAULT)<br />ブローカーのネットワーク送信エラーの数。</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3><span class="section-number">17.4.4. </span>オートスケーリングに利用するメトリクス<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id14">
+<h3><span class="section-number">17.5.4. </span>オートスケーリングに利用するメトリクス<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKのメトリクスを利用する際の注意点は、各メトリクスが取得できるタイミングに幾つかのパターンがある。</p>
 <ul class="simple">
 <li><p>クラスターが ACTIVE 状態になった後</p></li>
@@ -338,10 +386,10 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </ul>
 </section>
 </section>
-<section id="id14">
-<h2><span class="section-number">17.5. </span>別サービスとの比較<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id15">
+<h2><span class="section-number">17.6. </span>別サービスとの比較<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="amazon-kinesis-data-streams">
-<h3><span class="section-number">17.5.1. </span>Amazon kinesis Data Streamsとの比較<a class="headerlink" href="#amazon-kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.6.1. </span>Amazon kinesis Data Streamsとの比較<a class="headerlink" href="#amazon-kinesis-data-streams" title="この見出しへのパーマリンク">¶</a></h3>
 <p>kinesis Data Streamsも大量のストリームをリアルタイムで収集して処理するためのデータストリーミングサービスとなっている。</p>
 <p><img alt="../_images/msk_kinesis_merit.png" src="../_images/msk_kinesis_merit.png" /></p>
 <p>■API<br />MSKは、オープンソース互換のAPIなのでKafkaのエコシステムを利用することができる。<br />一方で、kinesisはAWSが提供するAPIを利用するため、他のAWSサービスとの連携が密となっている</p>
@@ -355,10 +403,10 @@ SQSではマネージドなキューのためコンソール画面などからDL
 <p><img alt="../_images/msk_schemaRegistry.png" src="../_images/msk_schemaRegistry.png" /></p>
 </section>
 </section>
-<section id="id15">
-<h2><span class="section-number">17.6. </span>MSKの実装<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id16">
-<h3><span class="section-number">17.6.1. </span>MSKの採用<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">17.7. </span>MSKの実装<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id17">
+<h3><span class="section-number">17.7.1. </span>MSKの採用<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKを採用するか否かは以下のポイントから判断する</p>
 <ol class="simple">
 <li><p>オンプレのApache Kafkaを移行したい</p></li>
@@ -367,23 +415,23 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </ol>
 <p>上記以外の場合は、サーバーレスのメリットがあるので、Amazon Kinesis Data Streamsの利用が推奨</p>
 </section>
-<section id="id17">
-<h3><span class="section-number">17.6.2. </span>ベストプラクティス<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id18">
+<h3><span class="section-number">17.7.2. </span>ベストプラクティス<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
 <p>MSKを利用する場合は、<a class="reference external" href="https://docs.aws.amazon.com/ja_jp/msk/latest/developerguide/bestpractices.html">ベストプラクティス</a>を参考にする</p>
 <p><img alt="../_images/msk_best_practice.png" src="../_images/msk_best_practice.png" /></p>
-<section id="id18">
-<h4><span class="section-number">17.6.2.1. </span>クラスターサイズ<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id19">
+<h4><span class="section-number">17.7.2.1. </span>クラスターサイズ<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ブローカー１台あたりのパーティションの推奨数が定義されている
 <img alt="../_images/msk_partition_num.png" src="../_images/msk_partition_num.png" /></p>
 </section>
 </section>
 </section>
 <section id="msk-serverles">
-<h2><span class="section-number">17.7. </span>MSK Serverles<a class="headerlink" href="#msk-serverles" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.8. </span>MSK Serverles<a class="headerlink" href="#msk-serverles" title="この見出しへのパーマリンク">¶</a></h2>
 <p>2021年に新規発表された</p>
 </section>
-<section id="id19">
-<h2><span class="section-number">17.8. </span>参考サイト<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id20">
+<h2><span class="section-number">17.9. </span>参考サイト<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://aws.amazon.com/jp/events/aws-event-resource/archive/?cards.sort-by=item.additionalFields.SortDate&amp;cards.sort-order=desc&amp;awsf.tech-category=*all&amp;cards.q=msk&amp;cards.q_operator=AND">black belt</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/hirooka0527/items/d15e479fa2ded428834d">qiita Apache Kafkaについてまとめる</a></p></li>
@@ -420,36 +468,43 @@ SQSではマネージドなキューのためコンソール画面などからDL
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#msk">17.2. MSKの価値</a><ul>
-<li><a class="reference internal" href="#id7">17.2.1. MSKのデプロイメント</a></li>
-<li><a class="reference internal" href="#id8">17.2.2. MSKのネットワーク</a></li>
-<li><a class="reference internal" href="#id9">17.2.3. MSKのセキュリティ</a></li>
-<li><a class="reference internal" href="#id10">17.2.4. MSKによるクラスターの更新</a></li>
-<li><a class="reference internal" href="#id11">17.2.5. MSKのスケーリング</a></li>
+<li><a class="reference internal" href="#msk">17.2. MSKのメッセージ管理詳細</a><ul>
+<li><a class="reference internal" href="#group-id">17.2.1. group-id</a></li>
+<li><a class="reference internal" href="#auto-offset-rest">17.2.2. auto-offset-rest</a></li>
+<li><a class="reference internal" href="#offset">17.2.3. offset情報の管理</a></li>
+<li><a class="reference internal" href="#consumer-offsets">17.2.4. __consumer_offsetsの削除ポリシー</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">17.3. MSKのメトリクス</a></li>
-<li><a class="reference internal" href="#use">17.4. USEメソッドに関連するメトリクス</a><ul>
-<li><a class="reference internal" href="#utilization">17.4.1. Utilization(使用度)</a></li>
-<li><a class="reference internal" href="#satulation">17.4.2. Satulation(飽和度)</a></li>
-<li><a class="reference internal" href="#errors">17.4.3. Errors(エラー数)</a></li>
-<li><a class="reference internal" href="#id13">17.4.4. オートスケーリングに利用するメトリクス</a></li>
+<li><a class="reference internal" href="#id7">17.3. MSKの価値</a><ul>
+<li><a class="reference internal" href="#id8">17.3.1. MSKのデプロイメント</a></li>
+<li><a class="reference internal" href="#id9">17.3.2. MSKのネットワーク</a></li>
+<li><a class="reference internal" href="#id10">17.3.3. MSKのセキュリティ</a></li>
+<li><a class="reference internal" href="#id11">17.3.4. MSKによるクラスターの更新</a></li>
+<li><a class="reference internal" href="#id12">17.3.5. MSKのスケーリング</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">17.5. 別サービスとの比較</a><ul>
-<li><a class="reference internal" href="#amazon-kinesis-data-streams">17.5.1. Amazon kinesis Data Streamsとの比較</a></li>
+<li><a class="reference internal" href="#id13">17.4. MSKのメトリクス</a></li>
+<li><a class="reference internal" href="#use">17.5. USEメソッドに関連するメトリクス</a><ul>
+<li><a class="reference internal" href="#utilization">17.5.1. Utilization(使用度)</a></li>
+<li><a class="reference internal" href="#satulation">17.5.2. Satulation(飽和度)</a></li>
+<li><a class="reference internal" href="#errors">17.5.3. Errors(エラー数)</a></li>
+<li><a class="reference internal" href="#id14">17.5.4. オートスケーリングに利用するメトリクス</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id15">17.6. MSKの実装</a><ul>
-<li><a class="reference internal" href="#id16">17.6.1. MSKの採用</a></li>
-<li><a class="reference internal" href="#id17">17.6.2. ベストプラクティス</a><ul>
-<li><a class="reference internal" href="#id18">17.6.2.1. クラスターサイズ</a></li>
+<li><a class="reference internal" href="#id15">17.6. 別サービスとの比較</a><ul>
+<li><a class="reference internal" href="#amazon-kinesis-data-streams">17.6.1. Amazon kinesis Data Streamsとの比較</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id16">17.7. MSKの実装</a><ul>
+<li><a class="reference internal" href="#id17">17.7.1. MSKの採用</a></li>
+<li><a class="reference internal" href="#id18">17.7.2. ベストプラクティス</a><ul>
+<li><a class="reference internal" href="#id19">17.7.2.1. クラスターサイズ</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#msk-serverles">17.7. MSK Serverles</a></li>
-<li><a class="reference internal" href="#id19">17.8. 参考サイト</a></li>
+<li><a class="reference internal" href="#msk-serverles">17.8. MSK Serverles</a></li>
+<li><a class="reference internal" href="#id20">17.9. 参考サイト</a></li>
 </ul>
 </li>
 </ul>
