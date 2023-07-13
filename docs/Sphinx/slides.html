@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>GitHub Pagesでスライドを公開する &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">GitHub Pagesでスライドを公開する</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="github-pages">
+<h1>GitHub Pagesでスライドを公開する<a class="headerlink" href="#github-pages" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="reveal-js">
+<h2>reveal.jsをインストール<a class="headerlink" href="#reveal-js" title="この見出しへのパーマリンク">¶</a></h2>
+<p>任意のディレクトリを作成して移動</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">~~/</span><span class="n">github_pages_reveal</span><span class="o">/</span><span class="n">hello_reveal</span>
+</pre></div>
+</div>
+<p>以下を任意のディレクトリで実施</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hakimel</span><span class="o">/</span><span class="n">reveal</span><span class="o">.</span><span class="n">js</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>npmを利用するので、npmをインストールしていない場合はインストールする</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">node</span>
+</pre></div>
+</div>
+<p>reveal.jsのpackage.jsonを利用して、依存関係をインストールする</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">reveal</span><span class="o">.</span><span class="n">js</span> <span class="o">&amp;&amp;</span> <span class="n">npm</span> <span class="n">i</span>
+</pre></div>
+</div>
+<p>これが完了してから、サーバーを立ち上げると、サンプルスライドがlocalhost:8080で起動している</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8080</span>
+</pre></div>
+</div>
+</section>
+<section id="markdown">
+<h2>markdownを扱えるように変更する<a class="headerlink" href="#markdown" title="この見出しへのパーマリンク">¶</a></h2>
+<p>以下を実行する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="n">reveal</span><span class="o">-</span><span class="n">md</span>
+</pre></div>
+</div>
+<p>新しいディレクトリで、markdownを作成する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir ~~/github_pages_reveal/hello_reveal/md_docs
+$ cd ~~/github_pages_reveal/hello_reveal/md_docs
+</pre></div>
+</div>
+<p>このディレクトリに、markdownファイルを作成する。</p>
+<p>markdownファイルが所属しているディレクトリを対象としてスライド化を実行</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">reveal</span><span class="o">-</span><span class="n">md</span> <span class="n">md_docs</span> <span class="o">-</span><span class="n">w</span>
+</pre></div>
+</div>
+<p>ブラウザが開いて、ファイルを選択するとSlidesの状況が確認できる。</p>
+<p><img alt="../_images/reveal_images.png" src="../_images/reveal_images.png" /></p>
+<p>また、このホットリロードなので、mdファイルを編集して保存するとブラウザ側にも反映される</p>
+<p>上記の資材をHTMLの静的ファイルに出力する。これはGit HubPagesで公開するため利用する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">reveal</span><span class="o">-</span><span class="n">md</span> <span class="n">md_docs</span> <span class="o">--</span><span class="n">static</span> <span class="n">docs</span>
+</pre></div>
+</div>
+<p>最終的なフォルダ構成は以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>hello_reveal
+├── docs
+│   ├── css
+│   ├── dist
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── md_docs.html
+│   └── plugin
+├── md_docs
+│   └── md_docs.md
+└── reveal.js
+    ├── LICENSE
+    ├── README.md
+    ├── css
+    ├── demo.html
+    ├── dist
+    ├── examples
+    ├── gulpfile.js
+    ├── index.html
+    ├── js
+    ├── node_modules
+    ├── package-lock.json
+    ├── package.json
+    ├── plugin
+    └── test
+</pre></div>
+</div>
+</section>
+<section id="githubpages">
+<h2>githubPagesでの公開<a class="headerlink" href="#githubpages" title="この見出しへのパーマリンク">¶</a></h2>
+<p>まずはリポジトリを作成<br />今回は<code class="docutils literal notranslate"><span class="pre">hello_reveal</span></code>というリポジトリを作成</p>
+<p>ローカルのリポジトリで、gitの設定を行う</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~~/</span><span class="n">hello_reveal</span>
+<span class="n">git</span> <span class="n">init</span>
+<span class="n">git</span> <span class="n">add</span> <span class="o">.</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;first commit&quot;</span>
+<span class="n">git</span> <span class="n">branch</span> <span class="o">-</span><span class="n">M</span> <span class="n">main</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">origin</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">MisakiFujishiro</span><span class="o">/</span><span class="n">hello_reveal</span><span class="o">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">origin</span> <span class="n">main</span>
+</pre></div>
+</div>
+<p>次に、githubで設定を行う。<br />Settings &gt; Pages &gt; Deploy from a brach</p>
+<p><img alt="../_images/reveal_github_setting.png" src="../_images/reveal_github_setting.png" /></p>
+<p>以下のエラーが出た場合は</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">submodules</span>
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">git</span> <span class="n">submodule</span> <span class="n">sync</span> <span class="o">--</span><span class="n">recursive</span>
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">git</span> <span class="o">-</span><span class="n">c</span> <span class="n">protocol</span><span class="o">.</span><span class="n">version</span><span class="o">=</span><span class="mi">2</span> <span class="n">submodule</span> <span class="n">update</span> <span class="o">--</span><span class="n">init</span> <span class="o">--</span><span class="n">force</span> <span class="o">--</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">recursive</span>
+  <span class="n">Error</span><span class="p">:</span> <span class="n">fatal</span><span class="p">:</span> <span class="n">No</span> <span class="n">url</span> <span class="n">found</span> <span class="k">for</span> <span class="n">submodule</span> <span class="n">path</span> <span class="s1">&#39;reveal.js&#39;</span> <span class="ow">in</span> <span class="o">.</span><span class="n">gitmodules</span>
+  <span class="n">Error</span><span class="p">:</span> <span class="n">The</span> <span class="n">process</span> <span class="s1">&#39;/usr/bin/git&#39;</span> <span class="n">failed</span> <span class="k">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">128</span>
+</pre></div>
+</div>
+<p>以下の内容を<code class="docutils literal notranslate"><span class="pre">.gitmodules</span></code>という名前にして、ルートディレクトリに保存してpushする</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">submodule</span> <span class="s2">&quot;reveal.js&quot;</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">reveal</span><span class="o">.</span><span class="n">js</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hakimel</span><span class="o">/</span><span class="n">reveal</span><span class="o">.</span><span class="n">js</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</section>
+<section id="reveal-md">
+<h2>reveal-mdの基本記述方法<a class="headerlink" href="#reveal-md" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id1">
+<h3>ページ構成<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>水平方向にスライドを作成するには、---（ダッシュを3つ）を使用します。</p></li>
+<li><p>垂直方向にスライドを作成するには、----（ダッシュを4つ）を使用します。</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Slide 1</span>
+<span class="o">---</span>
+
+<span class="c1"># Slide 2</span>
+<span class="c1">## Subslide 2-1</span>
+<span class="o">----</span>
+<span class="c1">## Subslide 2-2</span>
+<span class="o">----</span>
+<span class="c1">## Subslide 2-3</span>
+<span class="o">---</span>
+
+<span class="c1"># Slide 3</span>
+<span class="o">---</span>
+
+<span class="c1"># Slide 4</span>
+</pre></div>
+</div>
+<p><img alt="../_images/reveal_slides.png" src="../_images/reveal_slides.png" /></p>
+</section>
+<section id="id2">
+<h3>図の挿入<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h3>
+<p>図を挿入する場合は、md_docsの中にファイルを置いて、参照する。</p>
+<p>フォルダ構成は以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>md_docs
+├── img
+│   └── sea.png
+└── md_docs.md
+</pre></div>
+</div>
+<p>図を並べた時のmdファイルは以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;display: flex; justify-content: space-around;&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;img/sea.png&quot;</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;width: 45%;&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;img/sea.png&quot;</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;width: 45%;&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p><img alt="../_images/reveal_add_images.png" src="../_images/reveal_add_images.png" /></p>
+</section>
+<section id="id3">
+<h3>リンク<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>markdown形式で記述すればリンクになる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Linkreference</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">yahoo</span><span class="o">.</span><span class="n">co</span><span class="o">.</span><span class="n">jp</span><span class="o">/</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>ただし、HTMLのタグの内部の場合はHTMLタグを利用する。以下は、左寄せで小さい文字でリンクを記述する場合</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;text-align: left;&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">small</span><span class="o">&gt;</span>
+    <span class="n">References</span><span class="p">:</span> <span class="n">References</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://www.yahoo.co.jp/&quot;</span><span class="o">&gt;</span><span class="n">Link</span> <span class="n">to</span> <span class="n">reference</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">small</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">GitHub Pagesでスライドを公開する</a><ul>
+<li><a class="reference internal" href="#reveal-js">reveal.jsをインストール</a></li>
+<li><a class="reference internal" href="#markdown">markdownを扱えるように変更する</a></li>
+<li><a class="reference internal" href="#githubpages">githubPagesでの公開</a></li>
+<li><a class="reference internal" href="#reveal-md">reveal-mdの基本記述方法</a><ul>
+<li><a class="reference internal" href="#id1">ページ構成</a></li>
+<li><a class="reference internal" href="#id2">図の挿入</a></li>
+<li><a class="reference internal" href="#id3">リンク</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Sphinx/slides.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">GitHub Pagesでスライドを公開する</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

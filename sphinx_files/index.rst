@@ -143,4 +143,4 @@ Sphinx
 
    Sphinx/quickStart
    Sphinx/githubPages
-
+   Sphinx/reveal
