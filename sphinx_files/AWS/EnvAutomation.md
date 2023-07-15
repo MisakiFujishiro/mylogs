@@ -105,25 +105,36 @@ CFNで作成するEC2インスタンスの構築や変更を便利する機能�
 Conditionsで条件に応じた、環境構築を行うことができる。
 さらに、Mappingsを利用することで、リージョンやユーザーの入力情報に応じて条件設定をすることができる。
 
-[AWS CloudFormationテンプレートでAWSアカウントごとにリソース作成有無を決定する](https://dev.classmethod.jp/articles/cfn-create-resources-depending-on-accounts/)
+[公式ドキュメント](https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html)の例のように、MappingsセクションでMapの名前、条件、その際のkey-valueを定義する。  
+利用する場合は!FindInMap関数を利用して、[Mapの名前、条件、キーの値]を指定して、バリューを抽出している。
+
+以下の例では、Mapは一つしかないものの、RegionMapを利用して、AWSのリージョンの条件に一致するHVM64に紐づくValueを抽出している
 
 ```
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Mappings: 
-  AccountParams:
-    "111111111111": { CreateResources: yes }
-    "222222222222": { CreateResources: yes }
-    "333333333333": { CreateResources: no  }
-Conditions: 
-  CreateResources: !Equals
-    - !FindInMap [AccountParams, !Ref "AWS::AccountId", CreateResources]
-    - yes
-Resources:
-  SNSTopic:
-    Type: AWS::SNS::Topic
-    Condition: CreateResources
-    Properties:
-      TopicName: hoge-topic
+  RegionMap: 
+    us-east-1:
+      HVM64: ami-0ff8a91507f77f867
+      HVMG2: ami-0a584ac55a7631c0c
+    us-west-1:
+      HVM64: ami-0bdb828fd58c52235
+      HVMG2: ami-066ee5fd4a9ef77f1
+    eu-west-1:
+      HVM64: ami-047bb4163c506cd98
+      HVMG2: ami-0a7c483d527806435
+    ap-northeast-1:
+      HVM64: ami-06cd52961ce9f0d85
+      HVMG2: ami-053cdd503598e4a9d
+    ap-southeast-1:
+      HVM64: ami-08569b978cc4dfa10
+      HVMG2: ami-0be9df32ae9f92309
+Resources: 
+  myEC2Instance: 
+    Type: "AWS::EC2::Instance"
+    Properties: 
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", HVM64]
+      InstanceType: m1.small
 ```
 
 

@@ -153,23 +153,32 @@ CFNでは、<code class="docutils literal notranslate"><span class="pre">Conditi
 <h4><span class="section-number">13.1.3.7. </span>Mappings<a class="headerlink" href="#mappings" title="この見出しへのパーマリンク">¶</a></h4>
 <p>Conditionsで条件に応じた、環境構築を行うことができる。
 さらに、Mappingsを利用することで、リージョンやユーザーの入力情報に応じて条件設定をすることができる。</p>
-<p><a class="reference external" href="https://dev.classmethod.jp/articles/cfn-create-resources-depending-on-accounts/">AWS CloudFormationテンプレートでAWSアカウントごとにリソース作成有無を決定する</a></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWSTemplateFormatVersion: &#39;2010-09-09&#39;
+<p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html">公式ドキュメント</a>の例のように、MappingsセクションでMapの名前、条件、その際のkey-valueを定義する。<br />利用する場合は!FindInMap関数を利用して、[Mapの名前、条件、キーの値]を指定して、バリューを抽出している。</p>
+<p>以下の例では、Mapは一つしかないものの、RegionMapを利用して、AWSのリージョンの条件に一致するHVM64に紐づくValueを抽出している</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AWSTemplateFormatVersion: &quot;2010-09-09&quot;
 Mappings: 
-  AccountParams:
-    &quot;111111111111&quot;: { CreateResources: yes }
-    &quot;222222222222&quot;: { CreateResources: yes }
-    &quot;333333333333&quot;: { CreateResources: no  }
-Conditions: 
-  CreateResources: !Equals
-    - !FindInMap [AccountParams, !Ref &quot;AWS::AccountId&quot;, CreateResources]
-    - yes
-Resources:
-  SNSTopic:
-    Type: AWS::SNS::Topic
-    Condition: CreateResources
-    Properties:
-      TopicName: hoge-topic
+  RegionMap: 
+    us-east-1:
+      HVM64: ami-0ff8a91507f77f867
+      HVMG2: ami-0a584ac55a7631c0c
+    us-west-1:
+      HVM64: ami-0bdb828fd58c52235
+      HVMG2: ami-066ee5fd4a9ef77f1
+    eu-west-1:
+      HVM64: ami-047bb4163c506cd98
+      HVMG2: ami-0a7c483d527806435
+    ap-northeast-1:
+      HVM64: ami-06cd52961ce9f0d85
+      HVMG2: ami-053cdd503598e4a9d
+    ap-southeast-1:
+      HVM64: ami-08569b978cc4dfa10
+      HVMG2: ami-0be9df32ae9f92309
+Resources: 
+  myEC2Instance: 
+    Type: &quot;AWS::EC2::Instance&quot;
+    Properties: 
+      ImageId: !FindInMap [RegionMap, !Ref &quot;AWS::Region&quot;, HVM64]
+      InstanceType: m1.small
 </pre></div>
 </div>
 </section>
