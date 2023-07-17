@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>16. WAFの設定 &#8212; my_sphinx  ドキュメント</title>
+    <title>17. WAFの設定 &#8212; my_sphinx  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="17. 静的コンテンツの公開 S3/CloudFront/ACM/Route53" href="static_contents.html" />
-    <link rel="prev" title="15. CloudFront" href="cloudfront.html" /> 
+    <link rel="next" title="18. 静的コンテンツの公開 S3/CloudFront/ACM/Route53" href="static_contents.html" />
+    <link rel="prev" title="16. CloudFront" href="cloudfront.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -30,13 +30,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="static_contents.html" title="17. 静的コンテンツの公開 S3/CloudFront/ACM/Route53"
+          <a href="static_contents.html" title="18. 静的コンテンツの公開 S3/CloudFront/ACM/Route53"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="cloudfront.html" title="15. CloudFront"
+          <a href="cloudfront.html" title="16. CloudFront"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>WAFの設定</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">17. </span>WAFの設定</a></li> 
       </ul>
     </div>  
 
@@ -46,19 +46,19 @@
           <div class="body" role="main">
             
   <section id="waf">
-<h1><span class="section-number">16. </span>WAFの設定<a class="headerlink" href="#waf" title="この見出しへのパーマリンク">¶</a></h1>
+<h1><span class="section-number">17. </span>WAFの設定<a class="headerlink" href="#waf" title="この見出しへのパーマリンク">¶</a></h1>
 <p>WAFはWebアプリケーションファイアウォール（Web Application Firewall)機能である。</p>
 <p>AWSのサービスに通信が届く前にAWS WAFがルールに従ってフィルタリングをする。</p>
 <section id="cloud-front">
-<h2><span class="section-number">16.1. </span>Cloud Frontに対して設定する<a class="headerlink" href="#cloud-front" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">17.1. </span>Cloud Frontに対して設定する<a class="headerlink" href="#cloud-front" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="acl">
-<h3><span class="section-number">16.1.1. </span>ACLの作成<a class="headerlink" href="#acl" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.1.1. </span>ACLの作成<a class="headerlink" href="#acl" title="この見出しへのパーマリンク">¶</a></h3>
 <p>WAF &amp; Shieldの画面から<code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">web</span> <span class="pre">ACL</span></code>を選択</p>
 <p>Resource TypeからAmazon CloudFront distributionsを選択し、Nameを入力して、Associated AWS resourceに対象のCloudFrontを選択</p>
 <p><img alt="../_images/waf_make_acl_1.png" src="../_images/waf_make_acl_1.png" /></p>
 </section>
 <section id="rule">
-<h3><span class="section-number">16.1.2. </span>Ruleの作成<a class="headerlink" href="#rule" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">17.1.2. </span>Ruleの作成<a class="headerlink" href="#rule" title="この見出しへのパーマリンク">¶</a></h3>
 <p>動作確認として、接続元が日本である場合に、接続を拒否するルールを設定する。</p>
 <p>Add rulesからAdd my own rules and rule groupsを選択</p>
 <p><img alt="../_images/waf_make_rule_1.png" src="../_images/waf_make_rule_1.png" /></p>
@@ -82,10 +82,10 @@
   <div>
     <h3><a href="../index.html">目次</a></h3>
     <ul>
-<li><a class="reference internal" href="#">16. WAFの設定</a><ul>
-<li><a class="reference internal" href="#cloud-front">16.1. Cloud Frontに対して設定する</a><ul>
-<li><a class="reference internal" href="#acl">16.1.1. ACLの作成</a></li>
-<li><a class="reference internal" href="#rule">16.1.2. Ruleの作成</a></li>
+<li><a class="reference internal" href="#">17. WAFの設定</a><ul>
+<li><a class="reference internal" href="#cloud-front">17.1. Cloud Frontに対して設定する</a><ul>
+<li><a class="reference internal" href="#acl">17.1.1. ACLの作成</a></li>
+<li><a class="reference internal" href="#rule">17.1.2. Ruleの作成</a></li>
 </ul>
 </li>
 </ul>
@@ -96,12 +96,12 @@
   <div>
     <h4>前のトピックへ</h4>
     <p class="topless"><a href="cloudfront.html"
-                          title="前の章へ"><span class="section-number">15. </span>CloudFront</a></p>
+                          title="前の章へ"><span class="section-number">16. </span>CloudFront</a></p>
   </div>
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="static_contents.html"
-                          title="次の章へ"><span class="section-number">17. </span>静的コンテンツの公開 S3/CloudFront/ACM/Route53</a></p>
+                          title="次の章へ"><span class="section-number">18. </span>静的コンテンツの公開 S3/CloudFront/ACM/Route53</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -131,13 +131,13 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="static_contents.html" title="17. 静的コンテンツの公開 S3/CloudFront/ACM/Route53"
+          <a href="static_contents.html" title="18. 静的コンテンツの公開 S3/CloudFront/ACM/Route53"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="cloudfront.html" title="15. CloudFront"
+          <a href="cloudfront.html" title="16. CloudFront"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><span class="section-number">16. </span>WAFの設定</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">17. </span>WAFの設定</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

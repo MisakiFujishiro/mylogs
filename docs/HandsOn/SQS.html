@@ -20,7 +20,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
+    <link rel="next" title="7. MSKのチュートリアル実装(CLI編)" href="MSK.html" />
     <link rel="prev" title="1. CodePipelineを利用してCFNのCICD環境を作成する" href="cloudformaiton_CICD.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="7. MSKのチュートリアル実装(CLI編)"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"
@@ -1031,13 +1031,12 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <p><img alt="../_images/sqs_autoscaling_scalein.png" src="../_images/sqs_autoscaling_scalein.png" /></p>
 </section>
 <section id="id23">
-<h2><span class="section-number">5.4. </span>検証結果<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.4. </span>動作確認<a class="headerlink" href="#id23" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id24">
 <h3><span class="section-number">5.4.1. </span>オートスケールの挙動<a class="headerlink" href="#id24" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>producerで1000件のデータをSQSへ送信</p></li>
-<li><p>スケールアウトについては、アラートはうまく発出されて、スケールアウトも動作した。
-（ただし、8台しか立ち上がらないので一旦最大数を8に変更）</p></li>
+<li><p>スケールアウトについては、アラートはうまく発出されて、スケールアウトも動作した。</p></li>
 <li><p>スケールインに関しても5分間連続で値が閾値を超えることでアラートが発出され、スケールインも実施された。</p></li>
 </ul>
 <p><img alt="../_images/sqs_scaleout_alart.png" src="../_images/sqs_scaleout_alart.png" /></p>
@@ -1083,31 +1082,114 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 </section>
 </section>
 <section id="id26">
-<h2><span class="section-number">5.5. </span>FIFOキューでの検証<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h2>
-<p>メッセージグループIDを全て異なるものと同じものにして検証してみる</p>
-</section>
-<section id="id">
-<h2><span class="section-number">5.6. </span>メッセージグループIDをすべて異なるものにした場合<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h2>
-<p>すべて異なるメッセージグループIDにした場合は、100件の状態が長くなった。
-スケールアウトが完了するまでは、削除しないのか？そうなると可視性タイムアウトの時間も考えないといけない。ログと照らし合わせて調査したい。。。</p>
-<p>ただ、処理が始まればすぐ処理される。</p>
-<p><img alt="../_images/sqs_fifo_alart_multi_message_id.png" src="../_images/sqs_fifo_alart_multi_message_id.png" /></p>
-<p>複数のConsumerが協調して処理している</p>
-<p><img alt="../_images/sqs_fifo_log_multi_message_id.png" src="../_images/sqs_fifo_log_multi_message_id.png" /></p>
-</section>
+<h2><span class="section-number">5.5. </span>標準キューでの検証<a class="headerlink" href="#id26" title="この見出しへのパーマリンク">¶</a></h2>
+<p>7/17 10:30~1000件投入<br />合計4971secの待ち処理になっていた(約83分で5台処理で16分)　　
+処理自体は19分で完了</p>
+<p><img alt="../_images/sqs_standard_0.png" src="../_images/sqs_standard_0.png" /></p>
+<p>標準キューのため、ベストエフォートで処理順は担保されている。
+オートスケーリングした場合は、同時にConsumerに取得されたメッセージで処理順が担保されるが、複数のConsumer間ではメッセージの順序は担保されない。</p>
+<p>動作を確認しても、複数のConsumerが協調しながら処理をしているのがわかる</p>
 <section id="id27">
-<h2><span class="section-number">5.7. </span>メッセージグループIDを同じものにした場合<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h2>
-<p>すべて同じメッセージグループIDにした場合は、やはり一定の間、同じような値のままになった。また、Message Grou IDが同じ場合は、同時に複数のConsumerがConsumeすることができないようで、すべて同じメッセージグループIDと比較して処理速度が遅くなった。これはkafkaよりもひどい現象で、オートスケール下にも関わらず、１台分のConsumerしか処理していない。</p>
-<p><img alt="../_images/sqs_fifo_alart_samei_message_id.png" src="../_images/sqs_fifo_alart_samei_message_id.png" /></p>
-<p>ログを確認してみても、同じタイミングでConsumerが処理するのではなくシリアルにConsumerが処理するような動きになっている。</p>
-<p><img alt="../_images/sqs_fifo_log_same_message_id.png" src="../_images/sqs_fifo_log_same_message_id.png" /></p>
+<h3><span class="section-number">5.5.1. </span>時系列<a class="headerlink" href="#id27" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>10:30 データ1000件投入</p></li>
+<li><p>10:30-34 常時起動のconsumer1台が処理（オートスケール中も問題なく処理）</p></li>
+</ul>
+<p><img alt="../_images/sqs_standard_5.png" src="../_images/sqs_standard_5.png" /></p>
+<ul class="simple">
+<li><p>10:34 オートスケール完了</p></li>
+</ul>
+<p><img alt="../_images/sqs_standard_2.png" src="../_images/sqs_standard_2.png" /></p>
+<ul class="simple">
+<li><p>5台のconsumer5台が処理開始（各処理がバラバラに実施）</p></li>
+</ul>
+<p><img alt="../_images/sqs_standard_6.png" src="../_images/sqs_standard_6.png" /></p>
+<p>もう少し具体的にみると異なるConsumerで異なるメッセージを同じタイミングで処理している</p>
+<p><img alt="../_images/sqs_standard_7.png" src="../_images/sqs_standard_7.png" /></p>
+</section>
 </section>
 <section id="id28">
-<h2><span class="section-number">5.8. </span>トラブルシューティング<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">5.6. </span>FIFOキューでの検証<a class="headerlink" href="#id28" title="この見出しへのパーマリンク">¶</a></h2>
+<p>メッセージグループIDを全て異なるものと同じものにして検証してみる</p>
+<section id="id">
+<h3><span class="section-number">5.6.1. </span>メッセージグループIDを同じものにした場合<a class="headerlink" href="#id" title="この見出しへのパーマリンク">¶</a></h3>
+<p>7/16 1020~1000件投入<br />合計5010secの待ち処理になっていた(約83分)　
+処理自体も1時間23分で完了</p>
+<p><img alt="../_images/sqs_fifo_alart_same_message_id.png" src="../_images/sqs_fifo_alart_same_message_id.png" /></p>
+<p>すべて同じメッセージグループIDにした場合は、想定通り同時に複数のConsumerがConsumeすることができないようで、処理速度が遅くなった。これはkafkaだとpartitionを1に設定したようなもので、オートスケールしているにも関わらず、１台分のConsumerしか処理していない。</p>
+<p>ログを確認してみても、同じタイミングでConsumerが処理するのではなくシリアルにConsumerが処理するような動きになっている。(待機が終わってから次の処理が実行されている)</p>
+<p>オートスケールしたとしても、同時に取得できる10件ごとに同じConsumerが処理して、次の10件は別のConsumerが処理しており、1台起動しているのと、効率は変わらない。</p>
+<p><img alt="../_images/sqs_fifo_log_same_message_id_2.png" src="../_images/sqs_fifo_log_same_message_id_2.png" /></p>
+<p>1分単位で処理を見てみても、同時処理していないため、効率は悪い。
+（１分でまとめているので一部協調して処理しているように見えるが実態は、重なっていない。</p>
+<p><img alt="../_images/sqs_fifo_log_same_message_id_3.png" src="../_images/sqs_fifo_log_same_message_id_3.png" /></p>
+</section>
 <section id="id29">
-<h3><span class="section-number">5.8.1. </span>オートスケールが8台しか起動しない問題の確認<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">5.6.2. </span>メッセージグループIDをすべて異なるものにした場合<a class="headerlink" href="#id29" title="この見出しへのパーマリンク">¶</a></h3>
+<p>7/16 1245~実施</p>
+<p>すべて異なるメッセージグループIDにした場合は、5台が協調して実施するため、処理が素早い。(左がグループID同じ・右がグループID異なる)。1台処理で1時間20分程度掛かっていた処理が5台処理なので、20分程度で終わる。</p>
+<p><img alt="../_images/sqs_fifo_single_vs_multi.png" src="../_images/sqs_fifo_single_vs_multi.png" /></p>
+<p>もちろんグループIDが異なるので、異なるグループID間の処理順序はFIFOキューであっても担保されない点に注意</p>
 <section id="id30">
-<h4><span class="section-number">5.8.1.1. </span>アラート確認<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">5.6.2.1. </span>時系列<a class="headerlink" href="#id30" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p>12:45 データ1000件投入<br />合計4958secの待ち処理になっていた(約82分で5台処理で15分)　　
+処理自体は20分で完了</p></li>
+<li><p>12:45-12:49 常時起動のconsumer1台が処理（オートスケール中も問題なく処理）</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_multi_message_id_4.png" src="../_images/sqs_fifo_multi_message_id_4.png" /></p>
+<ul class="simple">
+<li><p>12:49 オートスケール完了</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_multi_message_id_2.png" src="../_images/sqs_fifo_multi_message_id_2.png" /></p>
+<ul class="simple">
+<li><p>12:49 5台のconsumer5台が処理開始（各処理がバラバラに実施）</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_multi_message_id_5.png" src="../_images/sqs_fifo_multi_message_id_5.png" /></p>
+<p>分単位でまとめてみても、協調して処理していることがわかる
+<img alt="../_images/sqs_fifo_multi_message_id_6.png" src="../_images/sqs_fifo_multi_message_id_6.png" /></p>
+</section>
+</section>
+</section>
+</section>
+<section id="id31">
+<h1><span class="section-number">6. </span>メトリクスについて<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h1>
+<p>ApproximateNumberOfMessageVisibleは、consumerに左右されないはず。
+consumerを0台として、2週間放置後、1000件を投入して正しく処理されるかを確認</p>
+<section id="autoscaling">
+<h2><span class="section-number">6.1. </span>AutoScaling無し<a class="headerlink" href="#autoscaling" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p>SQS Standardキューにメッセージを投入して動作していることを確認(7/17 10:50)</p></li>
+</ul>
+<p><img alt="../_images/sqs_standard_0.png" src="../_images/sqs_standard_0.png" /></p>
+<ul class="simple">
+<li><p>fifoキューをconsumeするコンテナをデプロイすることでconsumerが0台に(7/17 11:15)</p></li>
+<li><p>同時にオートスケーリングの設定で監視するアラームを変更して、アラートのアクションを停止</p></li>
+</ul>
+<p><img alt="../_images/sqs_standard_alarm_check_1.png" src="../_images/sqs_standard_alarm_check_1.png" /></p>
+<p><img alt="../_images/sqs_standard_alarm_check_2.png" src="../_images/sqs_standard_alarm_check_2.png" /></p>
+<p>3日後にメトリクスの様子を確認(7/19 12:00)</p>
+<p>7日後にメトリクスの様子を確認(7/23 12:00)</p>
+<p>14日後にメトリクスの様子を確認(7/30 12:00)</p>
+<p>14日後にデータを投入してメトリクスが増加するか確認(7/30 14:00)</p>
+</section>
+<section id="id32">
+<h2><span class="section-number">6.2. </span>AutoScaling有り<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h2>
+<p>SQS FIFOキューにメッセージを投入して動作していることを確認(7/17 11:30)</p>
+<p><img alt="../_images/sqs_fifo_alart_check_1.png" src="../_images/sqs_fifo_alart_check_1.png" /></p>
+<p>consumerを0台にする(7/17 11:40)</p>
+<p><img alt="../_images/sqs_fifo_alart_check_2.png" src="../_images/sqs_fifo_alart_check_2.png" /></p>
+<p>3日後にメトリクスの様子を確認(7/20 12:00)</p>
+<p>7日後にメトリクスの様子を確認(7/24 12:00)</p>
+<p>14日後にメトリクスの様子を確認(7/31 12:00)</p>
+<p>14日後にデータを投入してメトリクスが増加するか、オートスケールするか確認(7/31 14:00)</p>
+</section>
+<section id="id33">
+<h2><span class="section-number">6.3. </span>トラブルシューティング<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id34">
+<h3><span class="section-number">6.3.1. </span>オートスケールが8台しか起動しない問題の確認<a class="headerlink" href="#id34" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id35">
+<h4><span class="section-number">6.3.1.1. </span>アラート確認<a class="headerlink" href="#id35" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ApproximateNumerOfMessageVisibleを正しく設定できている。
 統計情報も期間も正しい。</p>
 <p><img alt="../_images/sqs_alarmsetting-1.png" src="../_images/sqs_alarmsetting-1.png" /></p>
@@ -1116,18 +1198,18 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <p>メッセージを送信した際も、正しくメトリクスが増加しているのを確認</p>
 <p><img alt="../_images/sqs_alarm_10.png" src="../_images/sqs_alarm_10.png" /></p>
 </section>
-<section id="id31">
-<h4><span class="section-number">5.8.1.2. </span>オートスケーリング設定確認<a class="headerlink" href="#id31" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id36">
+<h4><span class="section-number">6.3.1.2. </span>オートスケーリング設定確認<a class="headerlink" href="#id36" title="この見出しへのパーマリンク">¶</a></h4>
 <p>タスクの最大数を10に設定し、アラームの設定や追加のアクションとしても1台の常時起動に加えて、9台追加起動の設定をしている</p>
 <p><img alt="../_images/sqs_autoscaling-setting.png" src="../_images/sqs_autoscaling-setting.png" /></p>
 </section>
-<section id="id32">
-<h4><span class="section-number">5.8.1.3. </span>10台の実行確認<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id37">
+<h4><span class="section-number">6.3.1.3. </span>10台の実行確認<a class="headerlink" href="#id37" title="この見出しへのパーマリンク">¶</a></h4>
 <p>やはり、8台起動となってしまう。</p>
 <p><img alt="../_images/sqs_scaleout_10.png" src="../_images/sqs_scaleout_10.png" /></p>
 </section>
-<section id="id33">
-<h4><span class="section-number">5.8.1.4. </span>分析<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id38">
+<h4><span class="section-number">6.3.1.4. </span>分析<a class="headerlink" href="#id38" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ヘルスチェックがうまくいっていないのでは？と思い、TGを確認したが8台は全てOKで、残りの２台はNGと出ていないので、立ち上がってすらいない。
 この表を見てIPが怪しいのでは？と思い始める。</p>
 <p><img alt="../_images/sqs_scaleout_10_tg.png" src="../_images/sqs_scaleout_10_tg.png" /></p>
@@ -1160,7 +1242,7 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <p><img alt="../_images/sqs_autoscaling_9.png" src="../_images/sqs_autoscaling_9.png" /></p>
 </section>
 <section id="aws">
-<h4><span class="section-number">5.8.1.5. </span>AWSの不具合？あんまり好ましくない挙動発見<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h4>
+<h4><span class="section-number">6.3.1.5. </span>AWSの不具合？あんまり好ましくない挙動発見<a class="headerlink" href="#aws" title="この見出しへのパーマリンク">¶</a></h4>
 <p>上記のIPの問題で、10台のスケールアウトを設定していて、8台しか立ち上がらない状態になっている場合、残りの２台を立ち続けようとして、スケールアウトのアラートが停止し、スケールインのアラートが発砲されても、スケールインが作動しない。</p>
 <ol class="simple">
 <li><p>スケールアウトルール起動</p></li>
@@ -1261,21 +1343,35 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
 <li><a class="reference internal" href="#id20">5.1. 基本方針</a></li>
 <li><a class="reference internal" href="#id21">5.2. 監視設定</a></li>
 <li><a class="reference internal" href="#id22">5.3. オートスケール設定</a></li>
-<li><a class="reference internal" href="#id23">5.4. 検証結果</a><ul>
+<li><a class="reference internal" href="#id23">5.4. 動作確認</a><ul>
 <li><a class="reference internal" href="#id24">5.4.1. オートスケールの挙動</a></li>
 <li><a class="reference internal" href="#id25">5.4.2. ログの分析</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id26">5.5. FIFOキューでの検証</a></li>
-<li><a class="reference internal" href="#id">5.6. メッセージグループIDをすべて異なるものにした場合</a></li>
-<li><a class="reference internal" href="#id27">5.7. メッセージグループIDを同じものにした場合</a></li>
-<li><a class="reference internal" href="#id28">5.8. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#id29">5.8.1. オートスケールが8台しか起動しない問題の確認</a><ul>
-<li><a class="reference internal" href="#id30">5.8.1.1. アラート確認</a></li>
-<li><a class="reference internal" href="#id31">5.8.1.2. オートスケーリング設定確認</a></li>
-<li><a class="reference internal" href="#id32">5.8.1.3. 10台の実行確認</a></li>
-<li><a class="reference internal" href="#id33">5.8.1.4. 分析</a></li>
-<li><a class="reference internal" href="#aws">5.8.1.5. AWSの不具合？あんまり好ましくない挙動発見</a></li>
+<li><a class="reference internal" href="#id26">5.5. 標準キューでの検証</a><ul>
+<li><a class="reference internal" href="#id27">5.5.1. 時系列</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id28">5.6. FIFOキューでの検証</a><ul>
+<li><a class="reference internal" href="#id">5.6.1. メッセージグループIDを同じものにした場合</a></li>
+<li><a class="reference internal" href="#id29">5.6.2. メッセージグループIDをすべて異なるものにした場合</a><ul>
+<li><a class="reference internal" href="#id30">5.6.2.1. 時系列</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id31">6. メトリクスについて</a><ul>
+<li><a class="reference internal" href="#autoscaling">6.1. AutoScaling無し</a></li>
+<li><a class="reference internal" href="#id32">6.2. AutoScaling有り</a></li>
+<li><a class="reference internal" href="#id33">6.3. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id34">6.3.1. オートスケールが8台しか起動しない問題の確認</a><ul>
+<li><a class="reference internal" href="#id35">6.3.1.1. アラート確認</a></li>
+<li><a class="reference internal" href="#id36">6.3.1.2. オートスケーリング設定確認</a></li>
+<li><a class="reference internal" href="#id37">6.3.1.3. 10台の実行確認</a></li>
+<li><a class="reference internal" href="#id38">6.3.1.4. 分析</a></li>
+<li><a class="reference internal" href="#aws">6.3.1.5. AWSの不具合？あんまり好ましくない挙動発見</a></li>
 </ul>
 </li>
 </ul>
@@ -1293,7 +1389,7 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
   <div>
     <h4>次のトピックへ</h4>
     <p class="topless"><a href="MSK.html"
-                          title="次の章へ"><span class="section-number">6. </span>MSKのチュートリアル実装(CLI編)</a></p>
+                          title="次の章へ"><span class="section-number">7. </span>MSKのチュートリアル実装(CLI編)</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
@@ -1323,7 +1419,7 @@ Consumeするキューを変更したい場合は、DocokerFIleを変更して�
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="MSK.html" title="6. MSKのチュートリアル実装(CLI編)"
+          <a href="MSK.html" title="7. MSKのチュートリアル実装(CLI編)"
              >次へ</a> |</li>
         <li class="right" >
           <a href="cloudformaiton_CICD.html" title="1. CodePipelineを利用してCFNのCICD環境を作成する"

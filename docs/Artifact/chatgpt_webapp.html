@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>4. ChatGPTとstleamlitでwebappの作成 &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. マイクロサービアーキテクチャとは" href="../microservice/microservice_archi.html" />
+    <link rel="prev" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン" href="cognito.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>ChatGPTとstleamlitでwebappの作成</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="chatgptstleamlitwebapp">
+<h1><span class="section-number">4. </span>ChatGPTとstleamlitでwebappの作成<a class="headerlink" href="#chatgptstleamlitwebapp" title="この見出しへのパーマリンク">¶</a></h1>
+<p><a class="reference external" href="https://github.com/yukinaga/chatgpt_api">udemy</a>を利用してchatgptAPIとstrealitでwebappを作成する</p>
+<section id="openaiapi">
+<h2><span class="section-number">4.1. </span>OpenAIでAPIを取得<a class="headerlink" href="#openaiapi" title="この見出しへのパーマリンク">¶</a></h2>
+<p><a class="reference external" href="https://platform.openai.com/">openAI</a>のAPIのページから払い出し、API keyを取得</p>
+</section>
+<section id="pythonapi">
+<h2><span class="section-number">4.2. </span>PythonでAPIへ問い合わせ<a class="headerlink" href="#pythonapi" title="この見出しへのパーマリンク">¶</a></h2>
+<p>openaiのライブラリをインストール</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!pip install openai
+</pre></div>
+</div>
+<p>openaiライブラリを利用して、keyを設定したら、設定の記述と質問の記述を設定</p>
+<ul class="simple">
+<li><p>model</p>
+<ul>
+<li><p>gpt-3.5-turbo</p></li>
+<li><p>gpt-4</p></li>
+</ul>
+</li>
+<li><p>設定の記述：ChatGPTにどのような設定で回答させるか</p></li>
+<li><p>質問の記述：ChatGPTへの質問</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">openai</span>
+
+<span class="n">openai</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;Your API key&quot;</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;---設定の記述---&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span><span class="s2">&quot;---質問の記述---&quot;</span><span class="p">}</span>
+        <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># レスポンスの表示</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;choices&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="webapp">
+<h2><span class="section-number">4.3. </span>webappの作成<a class="headerlink" href="#webapp" title="この見出しへのパーマリンク">¶</a></h2>
+<p>今回のHandsonでは、GoogleColab上でstreamlitを利用して、webappを作成して実行。
+ngrokを利用して、このアプリを外部公開している。</p>
+<section id="ngrok">
+<h3><span class="section-number">4.3.1. </span>ngrok<a class="headerlink" href="#ngrok" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ngrok(エングロック)・・・ローカルサーバーを外部公開するツール</p>
+</section>
+<section id="streamlit">
+<h3><span class="section-number">4.3.2. </span>Streamlit<a class="headerlink" href="#streamlit" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Webアプリのフレームワークで、pythonのみで簡単にアプリ構築ができる</p>
+<p><a class="reference external" href="https://streamlit.io/gallery">ギャラリー</a>に公開されているようなwebappを簡単に作成できる。</p>
+</section>
+</section>
+<section id="id1">
+<h2><span class="section-number">4.4. </span>OpenAIのAPIとやり取りするコード<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>以下のコードをapp.pyとして設定。ポイントは以下</p>
+<ul class="simple">
+<li><p>messagesにユーザーメッセージと返り値を全て保存する</p>
+<ul>
+<li><p>openaiのapiはリスト形式でメッセージを送れる</p></li>
+<li><p>リストの中身はroleとcontentの辞書型にしておく</p></li>
+</ul>
+</li>
+<li><p>このmessagesを毎回openaiに送っている</p>
+<ul>
+<li><p>systemのRoleは初期で設定している</p></li>
+<li><p>全部送信しているので、文章が長くなりすぎるとエラーになるor前半切り捨て</p></li>
+<li><p>web版は多分このapiを利用していて、やり取りの最新部分を送っているだけだと思う。</p></li>
+</ul>
+</li>
+</ul>
+<p>ちなみに、openai.createの返り値は</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="p">{</span>
+     <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;assistant&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="s1">&#39;これがモデルの応答です。&#39;</span>
+      <span class="p">},</span>
+</pre></div>
+</div>
+<p>のような形式になっているので、messagesはこの形式を踏襲している</p>
+<p>messagesの設定でsystemを追加。今後このmessagesにやり取りが追加される</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># st.session_stateを使いメッセージのやりとりを保存</span>
+<span class="k">if</span> <span class="s2">&quot;messages&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;あなたは優秀なアシスタントAIです。&quot;</span><span class="p">}</span>
+        <span class="p">]</span>
+</pre></div>
+</div>
+<p>ユーザーからのインプットをmessagesに追加</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># チャットボットとやりとりする関数</span>
+<span class="k">def</span> <span class="nf">communicate</span><span class="p">():</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+
+    <span class="n">user_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;user_input&quot;</span><span class="p">]}</span>
+    <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user_message</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>openaiの返り値をmessagesに追加</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">response</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="o">=</span><span class="mf">1.0</span>
+    <span class="p">)</span>  
+    <span class="n">bot_message</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;choices&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;message&quot;</span><span class="p">]</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;user_input&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># 入力欄を消去</span>
+</pre></div>
+</div>
+<p>以下はsteamlitを利用して、画面を作成</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="c1"># ユーザーインターフェイスの構築</span>
+<span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;My AI Assistant&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ChatGPT APIを使ったチャットボットです。&quot;</span><span class="p">)</span>
+
+<span class="n">user_input</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;メッセージを入力してください。&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;user_input&quot;</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">communicate</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>  <span class="c1"># 直近のメッセージを上に</span>
+        <span class="n">speaker</span> <span class="o">=</span> <span class="s2">&quot;🙂&quot;</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;assistant&quot;</span><span class="p">:</span>
+            <span class="n">speaker</span><span class="o">=</span><span class="s2">&quot;🤖&quot;</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">speaker</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2><span class="section-number">4.5. </span>webappの公開<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="streamlit-community-cloud">
+<h3><span class="section-number">4.5.1. </span>Streamlit community cloud登録<a class="headerlink" href="#streamlit-community-cloud" title="この見出しへのパーマリンク">¶</a></h3>
+<p><a class="reference external" href="https://streamlit.io/">streamlit</a>にアクセスしてサインアップ。
+githubアカウントで登録する。</p>
+</section>
+<section id="id3">
+<h3><span class="section-number">4.5.2. </span>チャットボットコードコード<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>api keyなどはStreamlitのSecretsKeyを利用して参照するので、githubを利用する際も安心</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">openai</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">OpenAIAPI</span><span class="o">.</span><span class="n">openai_api_key</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://github.com/MisakiFujishiro/openai_chatbot">リポジトリ</a>を作成して、webappのソースコードとrequirementを設定する</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">4.5.3. </span>streamlitの設定<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>New app &gt; appのデプロイ &gt; repository、branch、app の設定を行う</p>
+<p>Deployが失敗したら、apikeyなどのSecretsの設定を行う。
+設定から、Secretsを開いて、API_keyの情報を書く</p>
+<p><img alt="../_images/chatgpt_streamlit_secret.png" src="../_images/chatgpt_streamlit_secret.png" /></p>
+<p><a class="reference external" href="https://openaichatbot-5hfs1ifdsqk.streamlit.app/">作成されたwebappはこちら</a></p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">4. ChatGPTとstleamlitでwebappの作成</a><ul>
+<li><a class="reference internal" href="#openaiapi">4.1. OpenAIでAPIを取得</a></li>
+<li><a class="reference internal" href="#pythonapi">4.2. PythonでAPIへ問い合わせ</a></li>
+<li><a class="reference internal" href="#webapp">4.3. webappの作成</a><ul>
+<li><a class="reference internal" href="#ngrok">4.3.1. ngrok</a></li>
+<li><a class="reference internal" href="#streamlit">4.3.2. Streamlit</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id1">4.4. OpenAIのAPIとやり取りするコード</a></li>
+<li><a class="reference internal" href="#id2">4.5. webappの公開</a><ul>
+<li><a class="reference internal" href="#streamlit-community-cloud">4.5.1. Streamlit community cloud登録</a></li>
+<li><a class="reference internal" href="#id3">4.5.2. チャットボットコードコード</a></li>
+<li><a class="reference internal" href="#id4">4.5.3. streamlitの設定</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="cognito.html"
+                          title="前の章へ"><span class="section-number">3. </span>Amazon CognitoとSpring Securityを利用したOAuth2ログイン</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../microservice/microservice_archi.html"
+                          title="次の章へ"><span class="section-number">1. </span>マイクロサービアーキテクチャとは</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Artifact/chatgpt_webapp.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../microservice/microservice_archi.html" title="1. マイクロサービアーキテクチャとは"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="cognito.html" title="3. Amazon CognitoとSpring Securityを利用したOAuth2ログイン"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">4. </span>ChatGPTとstleamlitでwebappの作成</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

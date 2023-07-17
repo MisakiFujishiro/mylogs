@@ -74,7 +74,7 @@ Hands On（実装方法の整理）
    Artifact/ecs
    Artifact/cicd
    Artifact/cognito
-
+   Artifact/chatgpt_webapp
 
 Microservice
 ==================
