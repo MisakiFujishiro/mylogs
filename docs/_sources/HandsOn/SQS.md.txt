@@ -1264,7 +1264,7 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 
 ![](img/sqs_alart_stop_start.png)
 
-- 処理が完了して、メトリクスも計測され、再度0件になった
+- 処理が完了して、メトリクスも計測され、再度0件になった。（ECSも0件になった）
 
 ![](img/sqs_alart_restart_alart.png)
 
