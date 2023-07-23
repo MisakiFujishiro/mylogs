@@ -390,6 +390,7 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <h3><span class="section-number">9.1.5. </span>MessageSender<a class="headerlink" href="#messagesender" title="この見出しへのパーマリンク">¶</a></h3>
 <p>メッセージを送るMessageSenderを作成する</p>
 <p>spring-kafkaで提供されているKafkaTemplateを利用して、kafkaへの送信をおこなっている</p>
+<p>なぜか、デフォルトで送信すると、一つのpartitionに集中して、メッセージを送ってしまう形になっていたので、明示的にkeyを生成して、送信時に利用している。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
 <span class="nd">@Component</span>
 <span class="n">public</span> <span class="k">class</span> <span class="nc">MessageSender</span> <span class="p">{</span>
@@ -399,11 +400,12 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
     <span class="nd">@Autowired</span>
     <span class="n">public</span> <span class="n">MessageSender</span><span class="p">(</span><span class="n">KafkaTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">kafkaTemplate</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">this</span><span class="o">.</span><span class="n">kafkaTemplate</span> <span class="o">=</span> <span class="n">kafkaTemplate</span><span class="p">;</span>
-        <span class="n">this</span><span class="o">.</span><span class="n">topic</span> <span class="o">=</span> <span class="s2">&quot;Topic_from_java&quot;</span><span class="p">;</span> <span class="o">//</span> <span class="n">送信先のトピック名</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">topic</span> <span class="o">=</span> <span class="s2">&quot;Topic_P5&quot;</span><span class="p">;</span> <span class="o">//</span> <span class="n">送信先のトピック名</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">sendMessage</span><span class="p">(</span><span class="n">String</span> <span class="n">message</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">kafkaTemplate</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+        <span class="n">String</span> <span class="n">randomKey</span> <span class="o">=</span> <span class="n">UUID</span><span class="o">.</span><span class="n">randomUUID</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">();</span>
+        <span class="n">kafkaTemplate</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">randomKey</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">sendRandomMessages</span><span class="p">(</span><span class="nb">int</span> <span class="n">num</span><span class="p">)</span> <span class="p">{</span>
@@ -412,7 +414,8 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
         <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
             <span class="nb">int</span> <span class="n">randomNum</span> <span class="o">=</span> <span class="n">rand</span><span class="o">.</span><span class="n">nextInt</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span>
             <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">randomNum</span><span class="p">);</span>
-            <span class="n">kafkaTemplate</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">String</span><span class="o">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">randomNum</span><span class="p">));</span>
+            <span class="n">String</span> <span class="n">randomKey</span> <span class="o">=</span> <span class="n">UUID</span><span class="o">.</span><span class="n">randomUUID</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">();</span>
+            <span class="n">kafkaTemplate</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">randomKey</span><span class="p">,</span> <span class="n">String</span><span class="o">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">randomNum</span><span class="p">));</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -453,7 +456,7 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
   <span class="n">kafka</span><span class="p">:</span>
     <span class="n">consumer</span><span class="p">:</span>
-      <span class="n">bootstrap</span><span class="o">-</span><span class="n">servers</span><span class="p">:</span> <span class="n">b</span><span class="o">-</span><span class="mf">2.</span><span class="n">mafujishiromsmsk</span><span class="mf">.2</span><span class="n">mkkld</span><span class="o">.</span><span class="n">c2</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">ap</span><span class="o">-</span><span class="n">northeast</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">9098</span>
+      <span class="n">bootstrap</span><span class="o">-</span><span class="n">servers</span><span class="p">:</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span>
       <span class="n">key</span><span class="o">-</span><span class="n">deserializer</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">serialization</span><span class="o">.</span><span class="n">StringDeserializer</span>
       <span class="n">value</span><span class="o">-</span><span class="n">deserializer</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">serialization</span><span class="o">.</span><span class="n">StringDeserializer</span>
       <span class="n">group</span><span class="o">-</span><span class="nb">id</span><span class="p">:</span> <span class="n">group_id</span>
@@ -567,22 +570,265 @@ CloudWatchで<code class="docutils literal notranslate"><span class="pre">Sumoff
 <p><img alt="../_images/msk_scalein_policy.png" src="../_images/msk_scalein_policy.png" /></p>
 </section>
 <section id="id13">
-<h2><span class="section-number">10.4. </span>検証結果<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
-<p>あんまりうまくいかなくなってしまった。要調査</p>
-<section id="partition1scaleout">
-<h3><span class="section-number">10.4.1. </span>partitionが1でscaleoutする場合<a class="headerlink" href="#partition1scaleout" title="この見出しへのパーマリンク">¶</a></h3>
-<p>100件データを送信したところ、アラームが検知</p>
-<p><img alt="../_images/msk_alarm.png" src="../_images/msk_alarm.png" /></p>
-<p>Consumerも8台起動（IPの関係で7台起動）</p>
-<p><img alt="../_images/msk_scaleout_num.png" src="../_images/msk_scaleout_num.png" /></p>
-<p>ただし、parttiionが1で作成されているため、分散されないで時間がかかる。<br />ログを確認してみても、partitionが0になっている</p>
-<p><img alt="../_images/msk_partition1_consumer_7_log.png" src="../_images/msk_partition1_consumer_7_log.png" /></p>
+<h2><span class="section-number">10.4. </span>検証計画<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<p>いくつかの観点で検証を行う</p>
+<section id="latest">
+<h3><span class="section-number">10.4.1. </span>latest<a class="headerlink" href="#latest" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>partitionの数が異なる場合の挙動4パターンに1000件投入</p>
+<ul>
+<li><p>partition1</p></li>
+<li><p>partition5</p></li>
+<li><p>partition10</p></li>
+<li><p>partition100</p></li>
+</ul>
+</li>
+<li><p>partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入</p>
+<ul>
+<li><p>partition1</p></li>
+<li><p>partition5</p></li>
+<li><p>partition10</p></li>
+<li><p>partition100</p></li>
+</ul>
+</li>
+<li><p>Partitionの数が5に対して、処理させずに2週間放置して100件入れる<br />全てのPartitionに対して、うまく処理できないのではないかという期待がある。</p></li>
+<li><p>Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる<br />処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。</p></li>
+<li><p>partition5に対して、0件処理で、1日に一度consumerを起動したもの
+Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。</p></li>
+</ul>
 </section>
-<section id="partitionscaleout">
-<h3><span class="section-number">10.4.2. </span>partitionがscaleout台数と同じ場合<a class="headerlink" href="#partitionscaleout" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="eariest">
+<h3><span class="section-number">10.4.2. </span>eariest<a class="headerlink" href="#eariest" title="この見出しへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li><p>partitionの数が異なる場合の挙動4パターンに1000件投入</p>
+<ul>
+<li><p>partition1</p></li>
+<li><p>partition5</p></li>
+<li><p>partition10</p></li>
+<li><p>partition100</p></li>
+</ul>
+</li>
+<li><p>partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入</p>
+<ul>
+<li><p>partition1</p></li>
+<li><p>partition5</p></li>
+<li><p>partition10</p></li>
+<li><p>partition100</p></li>
+</ul>
+</li>
+<li><p>Partitionの数が5に対して、処理させずに2週間放置して100件入れる<br />全てのPartitionに対して、うまく処理できないのではないかという期待がある。</p></li>
+<li><p>Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる<br />処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。</p></li>
+<li><p>partition5に対して、0件処理で、1日に一度consumerを起動したもの
+Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。</p></li>
+</ul>
+</section>
 </section>
 <section id="id14">
-<h3><span class="section-number">10.4.3. </span>partitionがscaleout台数より多い場合<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h3>
+<h2><span class="section-number">10.5. </span>コマンド準備<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<p>EC2上から実効するコマンドは以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Topicの一覧表示</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span>
+
+<span class="n">Topicの作成</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">2</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">1</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
+
+<span class="n">Topicの削除</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">delete</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
+
+<span class="n">TopicのPartition数など確認</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
+
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
+
+
+<span class="n">TopicのLagなど確認</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">consumer</span><span class="o">-</span><span class="n">groups</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span>  <span class="o">--</span><span class="n">group</span> <span class="n">group_id</span> <span class="o">--</span><span class="n">describe</span>
+</pre></div>
+</div>
+<section id="topiclag">
+<h3><span class="section-number">10.5.1. </span>TopicのLagについて<a class="headerlink" href="#topiclag" title="この見出しへのパーマリンク">¶</a></h3>
+<p>TopicのLagは時系列で取得できないので、自分で以下のshellを作成して、実行させる</p>
+<p>monitor_consumer_group.sh</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+#!/bin/bash
+
+# Check if no arguments were passed
+if [ $# -lt 1 ]; then
+  echo &quot;Insufficient arguments supplied. Please pass a consumer group id and output file name as arguments.&quot;
+  exit 1
+fi
+
+# Kafkaの接続情報を設定します
+BOOTSTRAP_SERVER=&quot;b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098&quot;
+GROUP_ID=$1 # 受け取った引数（コンシューマーグループID）を使用
+COMMAND_CONFIG_PATH=&quot;kafka_2.12-2.8.1/bin/client.properties&quot;
+
+# 出力するログファイルを設定します
+OUTPUT_FILE=&quot;$1_consumer_group_offset.log&quot; # 受け取った引数（ファイル名）を使用
+while true
+do
+  # タイムスタンプを取得します
+  TIMESTAMP=$(date +&quot;%Y-%m-%d %T&quot;)
+
+  # コマンドを実行し、出力を取得します
+  OUTPUT=$(kafka_2.12-2.8.1/bin/kafka-consumer-groups.sh --bootstrap-server $BOOTSTRAP_SERVER --command-config $COMMAND_CONFIG_PATH --group $GROUP_ID --describe)
+
+  # タイムスタンプとコマンドの出力をログファイルに書き込みます
+  echo -e &quot;$TIMESTAMP\n$OUTPUT\n&quot; &gt;&gt; $OUTPUT_FILE
+
+  # 10秒待機します
+  sleep 10
+done
+</pre></div>
+</div>
+<p>実行権限付与</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">monitor_consumer_group</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>以下を実行</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">monitor_consumer_group</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>内容は以下を確認</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">less</span> <span class="n">consumer_group_offset</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+</section>
+<section id="ec2iamrole">
+<h3><span class="section-number">10.5.2. </span>EC2には以下のIAMRoleを付与した<a class="headerlink" href="#ec2iamrole" title="この見出しへのパーマリンク">¶</a></h3>
+<p>コマンドを実行するためには、EC2に適切な権限を付与する必要がある。</p>
+<p>MSKに対する基本的な操作の権限</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="s2">&quot;kafka-cluster:*&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:topic/YOUR_MSK_SERVER/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>ConsumerGroup対する権限</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;kafka-cluster:*&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;kafka-cluster:*Group*&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:group/YOUR_MSK_SERVER/*&quot;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id15">
+<h3><span class="section-number">10.5.3. </span>トピック作成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Topicは以下の6つを作成</p>
+<ul class="simple">
+<li><p>Topic_from_java<br />Partitionの数が1つ</p></li>
+<li><p>Topic_P5<br />Partitionの数が5でConsumerの数と同じ</p></li>
+<li><p>Topic_P10<br />Partitionの数が10でConsumerの数より多い</p></li>
+<li><p>Topic_P100<br />Partitionの数が100でConsumerの数より大分多い</p></li>
+<li><p>Topic_P5_zero<br />Partitionの数が5に対して、処理させずに2週間放置して100件入れる</p></li>
+<li><p>Topic_P5_one
+Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる</p></li>
+<li><p>Topic_P5_up<br />Partitionの数が5に対して、1日一度Consumerが起動する</p></li>
+</ul>
+</section>
+</section>
+<section id="partition41000">
+<h2><span class="section-number">10.6. </span>partitionの数が異なる場合の挙動4パターンに1000件投入<a class="headerlink" href="#partition41000" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="partition1scaleout">
+<h3><span class="section-number">10.6.1. </span>partitionが1でscaleoutする場合<a class="headerlink" href="#partition1scaleout" title="この見出しへのパーマリンク">¶</a></h3>
+<p>この場合は、処理が適切に行われなかった。そのため、一旦検証対象から除く。</p>
+<p>問題概要</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>consumer-Aはメッセージをまとめて全部受け取り、処理をしている。
+しかし、MSK側へのコミットへの返却はある程度まとめて行っている。
+結果として１３件目まではコミットできている。
+ただし、14件目移行をconsumer-Aが処理している間に、consumer-Bも14件目以降を取得してしまい、どちらも正しくMSKにコミットすることができていないか。
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>consumer-Aは常時起動のconsumer</p></li>
+<li><p>producerから100件のメッセージを送信</p></li>
+<li><p>consumer-Aのログを見ていると、順調に処理</p></li>
+<li><p>consumer-Aは100件全ての処理を完了したログが出る</p></li>
+<li><p>consumer-Aが13件目を処理したあたりで、ECSがオートスケールを開始</p></li>
+<li><p>13件目以降もconsume-Aはcommit successのログを出力し、100件しょり</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_autoscaling_error_2.png" src="../_images/sqs_fifo_autoscaling_error_2.png" /></p>
+<ul class="simple">
+<li><p>しかし、13件目以降はmsk側でコミットを受け取れていないらしく、sumoffsetlagは87のまま</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_autoscaling_error_1.png" src="../_images/sqs_fifo_autoscaling_error_1.png" /></p>
+<ul class="simple">
+<li><p>またオートスケーリングで起動したconsumer-Bが14件目からのメッセージを処理するようになっている</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_autoscaling_error_3.png" src="../_images/sqs_fifo_autoscaling_error_3.png" /></p>
+<ul class="simple">
+<li><p>結果として、ログにはconsumer-Aとconsumer-B両方のcommit successのログが出るが、MSK側では認識されない</p></li>
+</ul>
+</section>
+<section id="partition5scaleout">
+<h3><span class="section-number">10.6.2. </span>partitionが5でscaleout台数と同じ場合<a class="headerlink" href="#partition5scaleout" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="partition10scaleout">
+<h3><span class="section-number">10.6.3. </span>partitionが10でscaleout台数より多い場合<a class="headerlink" href="#partition10scaleout" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="partition100scaleout">
+<h3><span class="section-number">10.6.4. </span>partitionが100でscaleout台数よりとても多い場合<a class="headerlink" href="#partition100scaleout" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+<section id="partitionconsumer021000">
+<h2><span class="section-number">10.7. </span>partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入<a class="headerlink" href="#partitionconsumer021000" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id16">
+<h3><span class="section-number">10.7.1. </span>partitionが5でscaleout台数と同じ場合<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="id17">
+<h3><span class="section-number">10.7.2. </span>partitionが10でscaleout台数より多い場合<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="id18">
+<h3><span class="section-number">10.7.3. </span>partitionが100でscaleout台数よりとても多い場合<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+</section>
+<section id="partition51consumer10">
+<h2><span class="section-number">10.8. </span>1000件投入したpartition5に対して1日に一度consumerを起動し、10分後に停止したもの<a class="headerlink" href="#partition51consumer10" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="partition1001021000">
+<h2><span class="section-number">10.9. </span>partition100に対して、10件投入したものに2週間後に1000を投入<a class="headerlink" href="#partition1001021000" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id19">
+<h2><span class="section-number">10.10. </span>トラブルシューティング<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id20">
+<h3><span class="section-number">10.10.1. </span>オートスケールすると、処理がループする<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<p>コミットがされないので、処理がループしてしまっている。
+同じ処理が終わったのに、別のConsumerでまた処理されている。</p>
+<p>以下のように、partition一つに対して二つのconsumerが紐づいていたりする。
+<img alt="../_images/msk_consumer_roop_1.png" src="../_images/msk_consumer_roop_1.png" /></p>
+<p>関連性があるかはわかないが、Consumerが追加されたタイミングでリバランス（partitionとconsumerの割り振り）している間にcommitをしようとしてエラーになっている。
+これの影響で、offsetがおかしくなっているのでは？</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2023</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">22</span> <span class="mi">09</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mf">30.444</span><span class="p">,</span><span class="n">Caused</span> <span class="n">by</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">CommitFailedException</span><span class="p">:</span> <span class="n">Offset</span> <span class="n">commit</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">completed</span> <span class="n">since</span> <span class="n">the</span> <span class="n">consumer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">part</span> <span class="n">of</span> <span class="n">an</span> <span class="n">active</span> <span class="n">group</span> <span class="k">for</span> <span class="n">auto</span> <span class="n">partition</span> <span class="n">assignment</span><span class="p">;</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">likely</span> <span class="n">that</span> <span class="n">the</span> <span class="n">consumer</span> <span class="n">was</span> <span class="n">kicked</span> <span class="n">out</span> <span class="n">of</span> <span class="n">the</span> <span class="n">group</span><span class="o">.</span><span class="p">,</span><span class="n">ecs</span><span class="o">/</span><span class="n">MA</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">msk</span><span class="o">-</span><span class="n">consumer</span><span class="o">/</span><span class="mi">7</span><span class="n">ea6c17e42934381bd5c59d52e0fc2e2</span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
@@ -636,10 +882,34 @@ CloudWatchで<code class="docutils literal notranslate"><span class="pre">Sumoff
 <li><a class="reference internal" href="#id10">10.1. 基本方針</a></li>
 <li><a class="reference internal" href="#id11">10.2. 監視設定</a></li>
 <li><a class="reference internal" href="#id12">10.3. オートスケール設定</a></li>
-<li><a class="reference internal" href="#id13">10.4. 検証結果</a><ul>
-<li><a class="reference internal" href="#partition1scaleout">10.4.1. partitionが1でscaleoutする場合</a></li>
-<li><a class="reference internal" href="#partitionscaleout">10.4.2. partitionがscaleout台数と同じ場合</a></li>
-<li><a class="reference internal" href="#id14">10.4.3. partitionがscaleout台数より多い場合</a></li>
+<li><a class="reference internal" href="#id13">10.4. 検証計画</a><ul>
+<li><a class="reference internal" href="#latest">10.4.1. latest</a></li>
+<li><a class="reference internal" href="#eariest">10.4.2. eariest</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">10.5. コマンド準備</a><ul>
+<li><a class="reference internal" href="#topiclag">10.5.1. TopicのLagについて</a></li>
+<li><a class="reference internal" href="#ec2iamrole">10.5.2. EC2には以下のIAMRoleを付与した</a></li>
+<li><a class="reference internal" href="#id15">10.5.3. トピック作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#partition41000">10.6. partitionの数が異なる場合の挙動4パターンに1000件投入</a><ul>
+<li><a class="reference internal" href="#partition1scaleout">10.6.1. partitionが1でscaleoutする場合</a></li>
+<li><a class="reference internal" href="#partition5scaleout">10.6.2. partitionが5でscaleout台数と同じ場合</a></li>
+<li><a class="reference internal" href="#partition10scaleout">10.6.3. partitionが10でscaleout台数より多い場合</a></li>
+<li><a class="reference internal" href="#partition100scaleout">10.6.4. partitionが100でscaleout台数よりとても多い場合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#partitionconsumer021000">10.7. partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入</a><ul>
+<li><a class="reference internal" href="#id16">10.7.1. partitionが5でscaleout台数と同じ場合</a></li>
+<li><a class="reference internal" href="#id17">10.7.2. partitionが10でscaleout台数より多い場合</a></li>
+<li><a class="reference internal" href="#id18">10.7.3. partitionが100でscaleout台数よりとても多い場合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#partition51consumer10">10.8. 1000件投入したpartition5に対して1日に一度consumerを起動し、10分後に停止したもの</a></li>
+<li><a class="reference internal" href="#partition1001021000">10.9. partition100に対して、10件投入したものに2週間後に1000を投入</a></li>
+<li><a class="reference internal" href="#id19">10.10. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id20">10.10.1. オートスケールすると、処理がループする</a></li>
 </ul>
 </li>
 </ul>

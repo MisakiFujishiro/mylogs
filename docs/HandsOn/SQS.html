@@ -1159,6 +1159,8 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 <p>しかし、consumerを停止させてから7.5hほどして確認したら、データが取得できていなかった。これらを分析した。</p>
 <section id="autoscaling">
 <h2><span class="section-number">6.1. </span>AutoScaling有り<a class="headerlink" href="#autoscaling" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id32">
+<h3><span class="section-number">6.1.1. </span>1回目<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h3>
 <ul class="simple">
 <li><p>SQS FIFOキューにメッセージを投入して動作していることを確認(7/17 11:30)</p></li>
 </ul>
@@ -1181,16 +1183,29 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 <p><img alt="../_images/sqs_alart_stop_in_data.png" src="../_images/sqs_alart_stop_in_data.png" /></p>
 <ul class="simple">
 <li><p>しばらく、データなし状態が続いた</p></li>
-<li><p>19:33メトリクスが取得できたらしくオートスケールして、処理が始まった。</p></li>
+<li><p>8分後の19:33メトリクスが取得できたらしくオートスケールして、処理が始まった。</p></li>
 </ul>
 <p><img alt="../_images/sqs_alart_stop_start.png" src="../_images/sqs_alart_stop_start.png" /></p>
 <ul class="simple">
 <li><p>処理が完了して、メトリクスも計測され、再度0件になった。（ECSも0件になった）</p></li>
 </ul>
 <p><img alt="../_images/sqs_alart_restart_alart.png" src="../_images/sqs_alart_restart_alart.png" /></p>
+<ul class="simple">
+<li><p>処理完了が19:52に対して、6h後の2:14には再度データなしとなっていた。</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_alart_stop_2.png" src="../_images/sqs_fifo_alart_stop_2.png" /></p>
+<ul class="simple">
+<li><p>7/18 2:14から4日後の7/22 9:47に再度データを1000件投入したところ、すぐにはオートスケールせず、メッセージは溜まった</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_alart_stop_sqs.png" src="../_images/sqs_fifo_alart_stop_sqs.png" /></p>
+<ul class="simple">
+<li><p>7/22 7分後の9:54分からアラームが検知をして、スケールアウトして処理が実行された</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_fukkatu.png" src="../_images/sqs_fifo_fukkatu.png" /></p>
 </section>
-<section id="id32">
-<h2><span class="section-number">6.2. </span>AutoScaling無し<a class="headerlink" href="#id32" title="この見出しへのパーマリンク">¶</a></h2>
+</section>
+<section id="id33">
+<h2><span class="section-number">6.2. </span>AutoScaling無し<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p>SQS Standardキューにメッセージを投入して動作していることを確認(7/17 10:50)</p></li>
 </ul>
@@ -1213,33 +1228,131 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 <li><p>19:33 fifoキューの方のメトリクスを取得し始めたらstandardキューのメトリクスも取得されていた。</p></li>
 </ul>
 <p><img alt="../_images/sqs_alart_restart.png" src="../_images/sqs_alart_restart.png" /></p>
-<section id="id33">
-<h3><span class="section-number">6.2.1. </span>公式ドキュメントの見解<a class="headerlink" href="#id33" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id34">
+<h3><span class="section-number">6.2.1. </span>公式ドキュメントの見解<a class="headerlink" href="#id34" title="この見出しへのパーマリンク">¶</a></h3>
 <p><a class="reference external" href="https://docs.aws.amazon.com/ja_jp/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-monitoring-using-cloudwatch.html">公式ドキュメント</a>を確認する以下が記載されていた</p>
 <blockquote>
 <div><p>Amazon SQS キューが 6 時間以上非アクティブになると、Amazon SQS サービスはスリープ状態と見なされ、 CloudWatch サービスへのメトリックスの配信を停止します。欠落しているデータ、つまりゼロを表すデータは、Amazon SQS キューが非アクティブだった期間の Amazon SQS CloudWatch のメトリックスで視覚化できません。</p>
 </div></blockquote>
 </section>
-<section id="id34">
-<h3><span class="section-number">6.2.2. </span>対策<a class="headerlink" href="#id34" title="この見出しへのパーマリンク">¶</a></h3>
-<p>5時間に一度Consumerを1台起動させて、10分後に停止するEventを追加してみた。</p>
-<p>この状態で、100件投入。6時間後にメトリクスが取得されているか、100件投入して、即時処理されるかを確認する。</p>
-<ul class="simple">
-<li><p>1台常時起動</p></li>
-<li><p>100件処理（オートスケール）</p></li>
-<li><p>1台にスケールイン</p></li>
-<li><p>0台に手動変更</p></li>
-<li><p>5時間後EVで1台数起動</p></li>
-<li><p>6時間後100件投入</p></li>
-</ul>
-</section>
-</section>
 <section id="id35">
-<h2><span class="section-number">6.3. </span>トラブルシューティング<a class="headerlink" href="#id35" title="この見出しへのパーマリンク">¶</a></h2>
+<h3><span class="section-number">6.2.2. </span>対策<a class="headerlink" href="#id35" title="この見出しへのパーマリンク">¶</a></h3>
+<p>以前Consumerを1台起動させ続けていた時は、メトリクスを取得し続けていた。そのためConsumerが1台起動していれば、問題ないはず。ただし、Fargate常時起動は費用が多くなるのであまりしたくない。</p>
+<p><img alt="../_images/sqs_fifo_joujikidou.png" src="../_images/sqs_fifo_joujikidou.png" /></p>
+<p>対策として4時間に一度Consumerを1台起動させて、10分後に停止する処理をEventBridgeとLambdaで作成してみる。</p>
+<section id="lambda">
+<h4><span class="section-number">6.2.2.1. </span>Lambdaの作成<a class="headerlink" href="#lambda" title="この見出しへのパーマリンク">¶</a></h4>
+<p>pythonを指定</p>
+<p><img alt="../_images/sqs_make_lambda.png" src="../_images/sqs_make_lambda.png" /></p>
+<p>コードは以下を利用する。ECSのオートスケールの最低起動数を変更する。
+EventBrdigeから変更数を受け取る設定により、増加のEventと減少のEventを受けることができるので、Lambdaは一つで済む。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="n">capacity</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span>
+    
+    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;application-autoscaling&#39;</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">register_scalable_target</span><span class="p">(</span>
+        <span class="n">ServiceNamespace</span><span class="o">=</span><span class="s1">&#39;ecs&#39;</span><span class="p">,</span>
+        <span class="n">ResourceId</span><span class="o">=</span><span class="s1">&#39;service/MA-fujishiroms-queuing-clients/MA-fujishiroms-service-sqs-consumer&#39;</span><span class="p">,</span>
+        <span class="n">ScalableDimension</span><span class="o">=</span><span class="s1">&#39;ecs:service:DesiredCount&#39;</span><span class="p">,</span>
+        <span class="n">MinCapacity</span><span class="o">=</span><span class="n">capacity</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;statusCode&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+        <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="n">response</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>ECSへアクセスするので、Lambdaのロールに以下のポリシーを追加するを修正する。<br />※Resurceは正しい範囲に限定。（ECSの部分を対象のECSのみにする）</p>
+<p><img alt="../_images/sqs_fifo_lambda_role.png" src="../_images/sqs_fifo_lambda_role.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;ecs:DescribeServices&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ecs:UpdateService&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;application-autoscaling:RegisterScalableTarget&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;application-autoscaling:DeregisterScalableTarget&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;application-autoscaling:DescribeScalableTargets&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;application-autoscaling:DescribeScalingPolicies&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;application-autoscaling:PutScalingPolicy&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;application-autoscaling:DeleteScalingPolicy&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Lambdaのトリガー部分を選択して、EventBridgeを作成していく</p>
+</section>
+<section id="eventbridge">
+<h4><span class="section-number">6.2.2.2. </span>EventBridgeの設定<a class="headerlink" href="#eventbridge" title="この見出しへのパーマリンク">¶</a></h4>
+<p>イベントBridgeでは、クーロン式を利用して、ルール設定を行う。</p>
+<p><img alt="../_images/sqs_fifo_lambda_eventbridge.png" src="../_images/sqs_fifo_lambda_eventbridge.png" /></p>
+<p>クーロン式は以下の6つのフィールドで構成されいる。<br /><code class="docutils literal notranslate"><span class="pre">*</span></code>は全ての数字を表す。<br />&quot;週の日&quot;と&quot;月の日&quot;のフィールドは排他的であり、どちらか一方だけを指定することができる。</p>
+<ul class="simple">
+<li><p>分（0 - 59）</p></li>
+<li><p>時間（0 - 23）</p></li>
+<li><p>月の日（1 - 31）</p></li>
+<li><p>月（1 - 12）</p></li>
+<li><p>週の日（1 - 7、1が月曜日で7が日曜日）</p></li>
+<li><p>年（1970 - 2199）</p></li>
+</ul>
+<p>今回は、1日の4時間ごとに増加と現象を実行したいので、UTCの0時から4時間ごとに増加するEventを実行し、UTCの0時から4時間10分ごとに減少するEventを実行するようなクーロン式を設定した</p>
+<p><img alt="../_images/sqs_fifo_increace_rule.png" src="../_images/sqs_fifo_increace_rule.png" /></p>
+<p><img alt="../_images/sqs_fifo_decreace_rule.png" src="../_images/sqs_fifo_decreace_rule.png" /></p>
+<p>また、変数を渡して処理をさせるので、ターゲットから定数を渡すようにする。</p>
+<p><img alt="../_images/sqs_fifo_eventbridge_const.png" src="../_images/sqs_fifo_eventbridge_const.png" /></p>
+</section>
+</section>
 <section id="id36">
-<h3><span class="section-number">6.3.1. </span>オートスケールが8台しか起動しない問題の確認<a class="headerlink" href="#id36" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">6.2.3. </span>対策結果<a class="headerlink" href="#id36" title="この見出しへのパーマリンク">¶</a></h3>
+<p>処理の終了時間は、10:15であり、その後Eventのテストをして、起動と停止をしたのが10:45分である。
+それらの6h後の17時ごろにはにはメトリクスが取れなくなっているはずである。
+今回は、Eventにより13時に一度起動されているので、メトリクスが取得されているはずか確認する。</p>
+<ul class="simple">
+<li><p>処理の終了時間(10:15)</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_restart_processing_end.png" src="../_images/sqs_fifo_restart_processing_end.png" /></p>
+<ul class="simple">
+<li><p>ECS停止時間(10:45)</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_ecs_stop.png" src="../_images/sqs_fifo_ecs_stop.png" /></p>
+<ul class="simple">
+<li><p>Eventによる起動確認(13:00)</p></li>
+<li><p>Eventによる停止確認(13:10)</p></li>
+<li><p>Eventによる起動確認(17:00)</p></li>
+<li><p>Eventによる停止確認(17:10)</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_auto_increase_decrease.png" src="../_images/sqs_fifo_auto_increase_decrease.png" /></p>
+<ul class="simple">
+<li><p>処理後の9h後のメトリクス確認
+9h経っているにもかかわらず、メトリクスを取得し続けている！
+<img alt="../_images/sqs_fifo_9h_after.png" src="../_images/sqs_fifo_9h_after.png" /></p></li>
+<li><p>処理後の24h後のメトリクス確認
+9h経っているにもかかわらず、メトリクスを取得し続けている！</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_24h_after.png" src="../_images/sqs_fifo_24h_after.png" /></p>
+<ul class="simple">
+<li><p>1000件実行
+1000件投入すると、前のように10分のギャップなく、処理を行うことができている。</p></li>
+</ul>
+<p><img alt="../_images/sqs_fifo_24h_after_produce.png" src="../_images/sqs_fifo_24h_after_produce.png" /></p>
+<p><img alt="../_images/sqs_fifo_24h_after_consume.png" src="../_images/sqs_fifo_24h_after_consume.png" /></p>
+</section>
+</section>
 <section id="id37">
-<h4><span class="section-number">6.3.1.1. </span>アラート確認<a class="headerlink" href="#id37" title="この見出しへのパーマリンク">¶</a></h4>
+<h2><span class="section-number">6.3. </span>トラブルシューティング<a class="headerlink" href="#id37" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id38">
+<h3><span class="section-number">6.3.1. </span>オートスケールが8台しか起動しない問題の確認<a class="headerlink" href="#id38" title="この見出しへのパーマリンク">¶</a></h3>
+<section id="id39">
+<h4><span class="section-number">6.3.1.1. </span>アラート確認<a class="headerlink" href="#id39" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ApproximateNumerOfMessageVisibleを正しく設定できている。
 統計情報も期間も正しい。</p>
 <p><img alt="../_images/sqs_alarmsetting-1.png" src="../_images/sqs_alarmsetting-1.png" /></p>
@@ -1248,18 +1361,18 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 <p>メッセージを送信した際も、正しくメトリクスが増加しているのを確認</p>
 <p><img alt="../_images/sqs_alarm_10.png" src="../_images/sqs_alarm_10.png" /></p>
 </section>
-<section id="id38">
-<h4><span class="section-number">6.3.1.2. </span>オートスケーリング設定確認<a class="headerlink" href="#id38" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id40">
+<h4><span class="section-number">6.3.1.2. </span>オートスケーリング設定確認<a class="headerlink" href="#id40" title="この見出しへのパーマリンク">¶</a></h4>
 <p>タスクの最大数を10に設定し、アラームの設定や追加のアクションとしても1台の常時起動に加えて、9台追加起動の設定をしている</p>
 <p><img alt="../_images/sqs_autoscaling-setting.png" src="../_images/sqs_autoscaling-setting.png" /></p>
 </section>
-<section id="id39">
-<h4><span class="section-number">6.3.1.3. </span>10台の実行確認<a class="headerlink" href="#id39" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id41">
+<h4><span class="section-number">6.3.1.3. </span>10台の実行確認<a class="headerlink" href="#id41" title="この見出しへのパーマリンク">¶</a></h4>
 <p>やはり、8台起動となってしまう。</p>
 <p><img alt="../_images/sqs_scaleout_10.png" src="../_images/sqs_scaleout_10.png" /></p>
 </section>
-<section id="id40">
-<h4><span class="section-number">6.3.1.4. </span>分析<a class="headerlink" href="#id40" title="この見出しへのパーマリンク">¶</a></h4>
+<section id="id42">
+<h4><span class="section-number">6.3.1.4. </span>分析<a class="headerlink" href="#id42" title="この見出しへのパーマリンク">¶</a></h4>
 <p>ヘルスチェックがうまくいっていないのでは？と思い、TGを確認したが8台は全てOKで、残りの２台はNGと出ていないので、立ち上がってすらいない。
 この表を見てIPが怪しいのでは？と思い始める。</p>
 <p><img alt="../_images/sqs_scaleout_10_tg.png" src="../_images/sqs_scaleout_10_tg.png" /></p>
@@ -1413,18 +1526,26 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 </ul>
 </li>
 <li><a class="reference internal" href="#id31">6. メトリクスについて</a><ul>
-<li><a class="reference internal" href="#autoscaling">6.1. AutoScaling有り</a></li>
-<li><a class="reference internal" href="#id32">6.2. AutoScaling無し</a><ul>
-<li><a class="reference internal" href="#id33">6.2.1. 公式ドキュメントの見解</a></li>
-<li><a class="reference internal" href="#id34">6.2.2. 対策</a></li>
+<li><a class="reference internal" href="#autoscaling">6.1. AutoScaling有り</a><ul>
+<li><a class="reference internal" href="#id32">6.1.1. 1回目</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id35">6.3. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#id36">6.3.1. オートスケールが8台しか起動しない問題の確認</a><ul>
-<li><a class="reference internal" href="#id37">6.3.1.1. アラート確認</a></li>
-<li><a class="reference internal" href="#id38">6.3.1.2. オートスケーリング設定確認</a></li>
-<li><a class="reference internal" href="#id39">6.3.1.3. 10台の実行確認</a></li>
-<li><a class="reference internal" href="#id40">6.3.1.4. 分析</a></li>
+<li><a class="reference internal" href="#id33">6.2. AutoScaling無し</a><ul>
+<li><a class="reference internal" href="#id34">6.2.1. 公式ドキュメントの見解</a></li>
+<li><a class="reference internal" href="#id35">6.2.2. 対策</a><ul>
+<li><a class="reference internal" href="#lambda">6.2.2.1. Lambdaの作成</a></li>
+<li><a class="reference internal" href="#eventbridge">6.2.2.2. EventBridgeの設定</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id36">6.2.3. 対策結果</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id37">6.3. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id38">6.3.1. オートスケールが8台しか起動しない問題の確認</a><ul>
+<li><a class="reference internal" href="#id39">6.3.1.1. アラート確認</a></li>
+<li><a class="reference internal" href="#id40">6.3.1.2. オートスケーリング設定確認</a></li>
+<li><a class="reference internal" href="#id41">6.3.1.3. 10台の実行確認</a></li>
+<li><a class="reference internal" href="#id42">6.3.1.4. 分析</a></li>
 <li><a class="reference internal" href="#aws">6.3.1.5. AWSの不具合？あんまり好ましくない挙動発見</a></li>
 </ul>
 </li>

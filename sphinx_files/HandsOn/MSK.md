@@ -375,6 +375,8 @@ public class FrontendController {
 メッセージを送るMessageSenderを作成する
 
 spring-kafkaで提供されているKafkaTemplateを利用して、kafkaへの送信をおこなっている
+
+なぜか、デフォルトで送信すると、一つのpartitionに集中して、メッセージを送ってしまう形になっていたので、明示的にkeyを生成して、送信時に利用している。
 ```
 
 @Component
@@ -385,11 +387,12 @@ public class MessageSender {
     @Autowired
     public MessageSender(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
-        this.topic = "Topic_from_java"; // 送信先のトピック名
+        this.topic = "Topic_P5"; // 送信先のトピック名
     }
 
     public void sendMessage(String message) {
-        kafkaTemplate.send(topic, message);
+        String randomKey = UUID.randomUUID().toString();
+        kafkaTemplate.send(topic, randomKey, message);
     }
 
     public void sendRandomMessages(int num) {
@@ -398,7 +401,8 @@ public class MessageSender {
         for (int i = 0; i < num; i++) {
             int randomNum = rand.nextInt(11);
             System.out.print(randomNum);
-            kafkaTemplate.send(topic, String.valueOf(randomNum));
+            String randomKey = UUID.randomUUID().toString();
+            kafkaTemplate.send(topic, randomKey, String.valueOf(randomNum));
         }
     }
 }
@@ -432,7 +436,7 @@ kafkaを利用するためにapplication.yamlで以下の設定を行う。こ�
 spring:
   kafka:
     consumer:
-      bootstrap-servers: b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098
+      bootstrap-servers: YOUR_BOOTSTRAP_SERVER
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: group_id
@@ -546,25 +550,271 @@ ALB_URL/msk-producerにアクセスすると以下画面が表示される。
 ![](img/msk_scalein_policy.png)
 
 
-## 検証結果
-あんまりうまくいかなくなってしまった。要調査
+
+
+
+## 検証計画
+いくつかの観点で検証を行う
+### latest
+- partitionの数が異なる場合の挙動4パターンに1000件投入
+    - partition1
+    - partition5
+    - partition10
+    - partition100
+- partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入
+    - partition1
+    - partition5
+    - partition10
+    - partition100
+- Partitionの数が5に対して、処理させずに2週間放置して100件入れる  
+    全てのPartitionに対して、うまく処理できないのではないかという期待がある。
+- Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる  
+    処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。
+- partition5に対して、0件処理で、1日に一度consumerを起動したもの
+        Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。
+
+### eariest
+- partitionの数が異なる場合の挙動4パターンに1000件投入
+    - partition1
+    - partition5
+    - partition10
+    - partition100
+- partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入
+    - partition1
+    - partition5
+    - partition10
+    - partition100
+- Partitionの数が5に対して、処理させずに2週間放置して100件入れる  
+    全てのPartitionに対して、うまく処理できないのではないかという期待がある。
+- Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる  
+    処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。
+- partition5に対して、0件処理で、1日に一度consumerを起動したもの
+        Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。
+
+
+
+## コマンド準備
+EC2上から実効するコマンドは以下
+
+```
+Topicの一覧表示
+kafka_2.12-2.8.1/bin/kafka-topics.sh --list --zookeeper YOUR_ZOOKEEPER_SERVER
+
+Topicの作成
+kafka_2.12-2.8.1/bin/kafka-topics.sh --create --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties --replication-factor 2 --partitions 1 --topic Topic_from_java
+
+Topicの削除
+kafka_2.12-2.8.1/bin/kafka-topics.sh --delete --zookeeper YOUR_ZOOKEEPER_SERVER --topic Topic_from_java
+
+TopicのPartition数など確認
+kafka_2.12-2.8.1/bin/kafka-topics.sh --describe --zookeeper YOUR_ZOOKEEPER_SERVER --topic Topic_from_java
+
+kafka_2.12-2.8.1/bin/kafka-topics.sh --describe --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties --topic Topic_from_java
+
+
+TopicのLagなど確認
+kafka_2.12-2.8.1/bin/kafka-consumer-groups.sh --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties  --group group_id --describe
+```
+
+### TopicのLagについて
+TopicのLagは時系列で取得できないので、自分で以下のshellを作成して、実行させる
+
+monitor_consumer_group.sh
+```
+
+#!/bin/bash
+
+# Check if no arguments were passed
+if [ $# -lt 1 ]; then
+  echo "Insufficient arguments supplied. Please pass a consumer group id and output file name as arguments."
+  exit 1
+fi
+
+# Kafkaの接続情報を設定します
+BOOTSTRAP_SERVER="b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098"
+GROUP_ID=$1 # 受け取った引数（コンシューマーグループID）を使用
+COMMAND_CONFIG_PATH="kafka_2.12-2.8.1/bin/client.properties"
+
+# 出力するログファイルを設定します
+OUTPUT_FILE="$1_consumer_group_offset.log" # 受け取った引数（ファイル名）を使用
+while true
+do
+  # タイムスタンプを取得します
+  TIMESTAMP=$(date +"%Y-%m-%d %T")
+
+  # コマンドを実行し、出力を取得します
+  OUTPUT=$(kafka_2.12-2.8.1/bin/kafka-consumer-groups.sh --bootstrap-server $BOOTSTRAP_SERVER --command-config $COMMAND_CONFIG_PATH --group $GROUP_ID --describe)
+
+  # タイムスタンプとコマンドの出力をログファイルに書き込みます
+  echo -e "$TIMESTAMP\n$OUTPUT\n" >> $OUTPUT_FILE
+
+  # 10秒待機します
+  sleep 10
+done
+```
+
+実行権限付与
+```
+chmod +x monitor_consumer_group.sh
+```
+
+以下を実行
+```
+./monitor_consumer_group.sh
+```
+
+内容は以下を確認
+```
+less consumer_group_offset.log
+```
+
+
+
+### EC2には以下のIAMRoleを付与した
+コマンドを実行するためには、EC2に適切な権限を付与する必要がある。
+
+MSKに対する基本的な操作の権限
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "kafka-cluster:*",
+            "Resource": [
+                "arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*",
+                "arn:aws:kafka:ap-northeast-1:123456789012:topic/YOUR_MSK_SERVER/*"
+            ]
+        }
+    ]
+}
+```
+
+ConsumerGroup対する権限
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kafka-cluster:*"
+            ],
+            "Resource": [
+                "arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kafka-cluster:*Group*"
+            ],
+            "Resource": [
+                "arn:aws:kafka:ap-northeast-1:123456789012:group/YOUR_MSK_SERVER/*"
+            ]
+        }
+    ]
+}
+```
+
+
+
+
+### トピック作成
+Topicは以下の6つを作成
+- Topic_from_java  
+    Partitionの数が1つ
+- Topic_P5  
+    Partitionの数が5でConsumerの数と同じ
+- Topic_P10  
+    Partitionの数が10でConsumerの数より多い
+- Topic_P100  
+    Partitionの数が100でConsumerの数より大分多い
+- Topic_P5_zero  
+    Partitionの数が5に対して、処理させずに2週間放置して100件入れる  
+- Topic_P5_one
+    Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる  
+- Topic_P5_up  
+    Partitionの数が5に対して、1日一度Consumerが起動する
+
+
+
+
+
+
+## partitionの数が異なる場合の挙動4パターンに1000件投入
 ### partitionが1でscaleoutする場合
-100件データを送信したところ、アラームが検知
+この場合は、処理が適切に行われなかった。そのため、一旦検証対象から除く。
 
-![](img/msk_alarm.png)
-
-
-Consumerも8台起動（IPの関係で7台起動）
-
-![](img/msk_scaleout_num.png)
-
-ただし、parttiionが1で作成されているため、分散されないで時間がかかる。  
-ログを確認してみても、partitionが0になっている
-
-![](img/msk_partition1_consumer_7_log.png)
-
-
-### partitionがscaleout台数と同じ場合
+問題概要  
+```
+consumer-Aはメッセージをまとめて全部受け取り、処理をしている。
+しかし、MSK側へのコミットへの返却はある程度まとめて行っている。
+結果として１３件目まではコミットできている。
+ただし、14件目移行をconsumer-Aが処理している間に、consumer-Bも14件目以降を取得してしまい、どちらも正しくMSKにコミットすることができていないか。
+```
+- consumer-Aは常時起動のconsumer
+- producerから100件のメッセージを送信
+- consumer-Aのログを見ていると、順調に処理
+- consumer-Aは100件全ての処理を完了したログが出る
 
 
-### partitionがscaleout台数より多い場合
+- consumer-Aが13件目を処理したあたりで、ECSがオートスケールを開始
+
+- 13件目以降もconsume-Aはcommit successのログを出力し、100件しょり
+
+![](img/sqs_fifo_autoscaling_error_2.png)
+
+- しかし、13件目以降はmsk側でコミットを受け取れていないらしく、sumoffsetlagは87のまま
+
+![](img/sqs_fifo_autoscaling_error_1.png)
+
+- またオートスケーリングで起動したconsumer-Bが14件目からのメッセージを処理するようになっている
+
+![](img/sqs_fifo_autoscaling_error_3.png)
+
+- 結果として、ログにはconsumer-Aとconsumer-B両方のcommit successのログが出るが、MSK側では認識されない
+
+
+
+### partitionが5でscaleout台数と同じ場合
+
+
+### partitionが10でscaleout台数より多い場合
+
+
+### partitionが100でscaleout台数よりとても多い場合
+
+
+
+
+## partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入
+
+### partitionが5でscaleout台数と同じ場合
+
+### partitionが10でscaleout台数より多い場合
+
+### partitionが100でscaleout台数よりとても多い場合
+
+
+## 1000件投入したpartition5に対して1日に一度consumerを起動し、10分後に停止したもの
+
+## partition100に対して、10件投入したものに2週間後に1000を投入
+
+
+
+## トラブルシューティング
+### オートスケールすると、処理がループする
+コミットがされないので、処理がループしてしまっている。
+同じ処理が終わったのに、別のConsumerでまた処理されている。
+
+以下のように、partition一つに対して二つのconsumerが紐づいていたりする。
+![](img/msk_consumer_roop_1.png)
+
+
+関連性があるかはわかないが、Consumerが追加されたタイミングでリバランス（partitionとconsumerの割り振り）している間にcommitをしようとしてエラーになっている。
+これの影響で、offsetがおかしくなっているのでは？
+
+```
+2023-07-22 09:52:30.444,Caused by: org.apache.kafka.clients.consumer.CommitFailedException: Offset commit cannot be completed since the consumer is not part of an active group for auto partition assignment; it is likely that the consumer was kicked out of the group.,ecs/MA-fujishiroms-container-msk-consumer/7ea6c17e42934381bd5c59d52e0fc2e2
+```

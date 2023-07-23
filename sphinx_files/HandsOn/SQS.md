@@ -1238,6 +1238,7 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 
 
 ## AutoScaling有り
+### 1回目
 - SQS FIFOキューにメッセージを投入して動作していることを確認(7/17 11:30)
 
 ![](img/sqs_fifo_alart_check_1.png)
@@ -1260,13 +1261,25 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 
 - しばらく、データなし状態が続いた
 
-- 19:33メトリクスが取得できたらしくオートスケールして、処理が始まった。
+- 8分後の19:33メトリクスが取得できたらしくオートスケールして、処理が始まった。
 
 ![](img/sqs_alart_stop_start.png)
 
 - 処理が完了して、メトリクスも計測され、再度0件になった。（ECSも0件になった）
 
 ![](img/sqs_alart_restart_alart.png)
+
+- 処理完了が19:52に対して、6h後の2:14には再度データなしとなっていた。
+
+![](img/sqs_fifo_alart_stop_2.png)
+
+- 7/18 2:14から4日後の7/22 9:47に再度データを1000件投入したところ、すぐにはオートスケールせず、メッセージは溜まった
+
+![](img/sqs_fifo_alart_stop_sqs.png)
+
+- 7/22 7分後の9:54分からアラームが検知をして、スケールアウトして処理が実行された
+
+![](img/sqs_fifo_fukkatu.png)
 
 
 
@@ -1303,22 +1316,136 @@ consumerを0台として、2週間放置後、1000件を投入して正しく処
 > Amazon SQS キューが 6 時間以上非アクティブになると、Amazon SQS サービスはスリープ状態と見なされ、 CloudWatch サービスへのメトリックスの配信を停止します。欠落しているデータ、つまりゼロを表すデータは、Amazon SQS キューが非アクティブだった期間の Amazon SQS CloudWatch のメトリックスで視覚化できません。
 
 ### 対策
-5時間に一度Consumerを1台起動させて、10分後に停止するEventを追加してみた。
+以前Consumerを1台起動させ続けていた時は、メトリクスを取得し続けていた。そのためConsumerが1台起動していれば、問題ないはず。ただし、Fargate常時起動は費用が多くなるのであまりしたくない。
 
-この状態で、100件投入。6時間後にメトリクスが取得されているか、100件投入して、即時処理されるかを確認する。
+![](img/sqs_fifo_joujikidou.png)
 
-- 1台常時起動
+対策として4時間に一度Consumerを1台起動させて、10分後に停止する処理をEventBridgeとLambdaで作成してみる。
 
-- 100件処理（オートスケール）
+#### Lambdaの作成
+pythonを指定
 
-- 1台にスケールイン
+![](img/sqs_make_lambda.png)
 
-- 0台に手動変更
+コードは以下を利用する。ECSのオートスケールの最低起動数を変更する。
+EventBrdigeから変更数を受け取る設定により、増加のEventと減少のEventを受けることができるので、Lambdaは一つで済む。
+```
+import boto3
 
-- 5時間後EVで1台数起動
+def lambda_handler(event, context):
+    capacity = event['capacity']
+    
+    client = boto3.client('application-autoscaling')
 
-- 6時間後100件投入
+    response = client.register_scalable_target(
+        ServiceNamespace='ecs',
+        ResourceId='service/MA-fujishiroms-queuing-clients/MA-fujishiroms-service-sqs-consumer',
+        ScalableDimension='ecs:service:DesiredCount',
+        MinCapacity=capacity
+    )
 
+    return {
+        'statusCode': 200,
+        'body': response
+    }
+```
+
+ECSへアクセスするので、Lambdaのロールに以下のポリシーを追加するを修正する。  
+※Resurceは正しい範囲に限定。（ECSの部分を対象のECSのみにする）
+
+![](img/sqs_fifo_lambda_role.png)
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecs:DescribeServices",
+                "ecs:UpdateService",
+                "application-autoscaling:RegisterScalableTarget",
+                "application-autoscaling:DeregisterScalableTarget",
+                "application-autoscaling:DescribeScalableTargets",
+                "application-autoscaling:DescribeScalingPolicies",
+                "application-autoscaling:PutScalingPolicy",
+                "application-autoscaling:DeleteScalingPolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+Lambdaのトリガー部分を選択して、EventBridgeを作成していく
+
+
+#### EventBridgeの設定
+イベントBridgeでは、クーロン式を利用して、ルール設定を行う。
+
+![](img/sqs_fifo_lambda_eventbridge.png)
+
+
+クーロン式は以下の6つのフィールドで構成されいる。  
+`*`は全ての数字を表す。  
+"週の日"と"月の日"のフィールドは排他的であり、どちらか一方だけを指定することができる。  
+
+- 分（0 - 59）
+- 時間（0 - 23）
+- 月の日（1 - 31）
+- 月（1 - 12）
+- 週の日（1 - 7、1が月曜日で7が日曜日）
+- 年（1970 - 2199）
+
+
+今回は、1日の4時間ごとに増加と現象を実行したいので、UTCの0時から4時間ごとに増加するEventを実行し、UTCの0時から4時間10分ごとに減少するEventを実行するようなクーロン式を設定した
+
+![](img/sqs_fifo_increace_rule.png)
+
+![](img/sqs_fifo_decreace_rule.png)
+
+また、変数を渡して処理をさせるので、ターゲットから定数を渡すようにする。
+
+![](img/sqs_fifo_eventbridge_const.png)
+
+
+
+### 対策結果
+処理の終了時間は、10:15であり、その後Eventのテストをして、起動と停止をしたのが10:45分である。
+それらの6h後の17時ごろにはにはメトリクスが取れなくなっているはずである。
+今回は、Eventにより13時に一度起動されているので、メトリクスが取得されているはずか確認する。
+
+
+- 処理の終了時間(10:15)
+
+![](img/sqs_fifo_restart_processing_end.png)
+
+- ECS停止時間(10:45)
+
+![](img/sqs_fifo_ecs_stop.png)
+
+- Eventによる起動確認(13:00)
+- Eventによる停止確認(13:10)
+- Eventによる起動確認(17:00)
+- Eventによる停止確認(17:10)
+
+![](img/sqs_fifo_auto_increase_decrease.png)
+
+
+- 処理後の9h後のメトリクス確認
+9h経っているにもかかわらず、メトリクスを取得し続けている！
+![](img/sqs_fifo_9h_after.png)
+
+- 処理後の24h後のメトリクス確認
+9h経っているにもかかわらず、メトリクスを取得し続けている！
+
+![](img/sqs_fifo_24h_after.png)
+
+- 1000件実行
+1000件投入すると、前のように10分のギャップなく、処理を行うことができている。
+
+![](img/sqs_fifo_24h_after_produce.png)
+
+![](img/sqs_fifo_24h_after_consume.png)
 
 
 ## トラブルシューティング
