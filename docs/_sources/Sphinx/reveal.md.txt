@@ -91,6 +91,8 @@ hello_reveal
 まずはリポジトリを作成  
 今回は`hello_reveal`というリポジトリを作成
 
+Readmeは作らなくてOK
+
 ローカルのリポジトリで、gitの設定を行う
 ```
 cd ~~/hello_reveal

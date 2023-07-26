@@ -431,6 +431,11 @@ export AWS_SECURITY_TOKEN
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">sts</span> <span class="n">get</span><span class="o">-</span><span class="n">caller</span><span class="o">-</span><span class="n">identity</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><p>Access Key ID: これはユーザーを一意に識別するためのIDで、プログラムからAWSサービスにアクセスする際に使用します。これは公開情報として扱われ、AWSにリクエストを送信する際には常に送信する必要があります。</p></li>
+<li><p>Secret Access Key: これはAccess Key IDと組み合わせて使用される秘密の鍵で、AWSにリクエストを送信する際の署名作成に使用されます。これは秘密情報として扱われ、絶対に他人に公開してはならない情報です。この秘密鍵を使用することで、リクエストが改ざんされていないことと、リクエストの送信者が正当なユーザーであることが確認されます。</p></li>
+<li><p>Security Token: これは一時的なクレデンシャルで、IAMロールを使用してAWSサービスにアクセスする場合や、AWS STS(Security Token Service)を使用して一時的なクレデンシャルを発行する場合などに使用されます。セキュリティトークンは有効期限があり、期限が切れるとそれを使用したAPIの呼び出しは拒否されます。これを利用することで、長期的なクレデンシャル（Access Key IDとSecret Access Key）を直接使用するリスクを軽減できます。</p></li>
+</ul>
 </section>
 </section>
 <section id="id8">

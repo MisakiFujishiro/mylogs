@@ -204,6 +204,17 @@ __consumer_offsetsには、すべてのConsumer Group、トピック、パーテ
 
 メッセージの消化がなかったとしても、Consumerが最新のオフセットを取得するような挙動をすれば情報が保持される可能性がある。
 
+[公式ドキュメント](https://kafka.apache.org/documentation/)この説明を見ると、consumerの処理がずっとなかったとしても、定期的にサブスクライブをしていれば大丈夫そう
+```
+offsets.retention.minutes
+For subscribed consumers, committed offset of a specific partition will be expired and discarded when 
+1) this retention period has elapsed after the consumer group loses all its consumers (i.e. becomes empty); 
+2) this retention period has elapsed since the last time an offset is committed for the partition and the group is no longer subscribed to the corresponding topic. 
+
+For standalone consumers (using manual assignment), offsets will be expired after this retention period has elapsed since the time of last commit. 
+Note that when a group is deleted via the delete-group request, its committed offsets will also be deleted without extra retention period; 
+also when a topic is deleted via the delete-topic request, upon propagated metadata update any group's committed offsets for that topic will also be deleted without extra retention period.
+```
 
 
 ## MSKの価値
