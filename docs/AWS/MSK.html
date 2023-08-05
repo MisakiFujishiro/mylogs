@@ -192,7 +192,17 @@ ProducerはTopicに対してメッセージを送信するだけでよいが、C
 </section>
 <section id="auto-offset-rest">
 <h3><span class="section-number">17.2.2. </span>auto-offset-rest<a class="headerlink" href="#auto-offset-rest" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Consumerが起動した際に、読み込むべき最初のオフセットをどのように指定するかの設定。以下の3つの選択肢がある</p>
+<p>Consumerが起動した際に、読み込むべき最初のオフセットをどのように指定するかの設定。</p>
+<p>この設定が、反映されるのは以下の２パターン</p>
+<ul class="simple">
+<li><p>consumerが初めて起動した時（初めてTopicをSubscribeした時)</p>
+<ul>
+<li><p>挙動を見ていると、仮にmessageが0だったとしても__consumer_offsetsにoffset0として設定しているように見受けられる</p></li>
+</ul>
+</li>
+<li><p>consumerが以前のoffset情報を失っているとき（offsets.retention.minutesを超えた時）</p></li>
+</ul>
+<p>以下の3つの選択肢がある</p>
 <ul class="simple">
 <li><p>earliest<br />最も古いオフセットから読み込むので、全メッセージを消費することになる<br />普段は、前回のオフセットから実行されるがもし前回のオフセット情報などがない場合に関しては、一番最初から実行される</p></li>
 <li><p>latest<br />最新のオフセットを読み込む。すなわち、消費者が起動してから、追加されたメッセージを消化する</p></li>
@@ -234,6 +244,15 @@ ProducerはTopicに対してメッセージを送信するだけでよいが、C
 <span class="n">For</span> <span class="n">standalone</span> <span class="n">consumers</span> <span class="p">(</span><span class="n">using</span> <span class="n">manual</span> <span class="n">assignment</span><span class="p">),</span> <span class="n">offsets</span> <span class="n">will</span> <span class="n">be</span> <span class="n">expired</span> <span class="n">after</span> <span class="n">this</span> <span class="n">retention</span> <span class="n">period</span> <span class="n">has</span> <span class="n">elapsed</span> <span class="n">since</span> <span class="n">the</span> <span class="n">time</span> <span class="n">of</span> <span class="n">last</span> <span class="n">commit</span><span class="o">.</span> 
 <span class="n">Note</span> <span class="n">that</span> <span class="n">when</span> <span class="n">a</span> <span class="n">group</span> <span class="ow">is</span> <span class="n">deleted</span> <span class="n">via</span> <span class="n">the</span> <span class="n">delete</span><span class="o">-</span><span class="n">group</span> <span class="n">request</span><span class="p">,</span> <span class="n">its</span> <span class="n">committed</span> <span class="n">offsets</span> <span class="n">will</span> <span class="n">also</span> <span class="n">be</span> <span class="n">deleted</span> <span class="n">without</span> <span class="n">extra</span> <span class="n">retention</span> <span class="n">period</span><span class="p">;</span> 
 <span class="n">also</span> <span class="n">when</span> <span class="n">a</span> <span class="n">topic</span> <span class="ow">is</span> <span class="n">deleted</span> <span class="n">via</span> <span class="n">the</span> <span class="n">delete</span><span class="o">-</span><span class="n">topic</span> <span class="n">request</span><span class="p">,</span> <span class="n">upon</span> <span class="n">propagated</span> <span class="n">metadata</span> <span class="n">update</span> <span class="nb">any</span> <span class="n">group</span><span class="s1">&#39;s committed offsets for that topic will also be deleted without extra retention period.</span>
+</pre></div>
+</div>
+<p>また、起動すると、subscribeしているっぽいlogがある</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@timestamp</span><span class="p">,</span><span class="nd">@message</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">28</span> <span class="mi">16</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mf">32.512</span><span class="p">,</span><span class="s2">&quot;2023-07-29 01:02:32.511  </span>
+<span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span>           <span class="n">main</span><span class="p">]</span> <span class="n">o</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">KafkaConsumer</span>     <span class="p">:</span> <span class="p">[</span>
+    <span class="n">Consumer</span> <span class="n">clientId</span><span class="o">=</span><span class="n">consumer</span><span class="o">-</span><span class="n">CG</span><span class="o">-</span><span class="n">P5_1_1week_latest_wakeup</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> 
+    <span class="n">groupId</span><span class="o">=</span><span class="n">CG</span><span class="o">-</span><span class="n">P5_1_1week_latest_wakeup</span><span class="p">]</span> 
+    <span class="n">Subscribed</span> <span class="n">to</span> <span class="n">topic</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">Topic_P5_1_1week_latest_wakeup</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 </section>

@@ -166,7 +166,15 @@ ProducerはTopicに対してメッセージを送信するだけでよいが、C
 - groupidが異なるConsumer同士は、互いに独立してメッセージを処理する（同じメッセージが異なるグループで2回処理される）
 
 ### auto-offset-rest
-Consumerが起動した際に、読み込むべき最初のオフセットをどのように指定するかの設定。以下の3つの選択肢がある
+Consumerが起動した際に、読み込むべき最初のオフセットをどのように指定するかの設定。
+
+この設定が、反映されるのは以下の２パターン
+- consumerが初めて起動した時（初めてTopicをSubscribeした時)
+    - 挙動を見ていると、仮にmessageが0だったとしても__consumer_offsetsにoffset0として設定しているように見受けられる
+- consumerが以前のoffset情報を失っているとき（offsets.retention.minutesを超えた時）
+
+以下の3つの選択肢がある
+
 - earliest   
     最も古いオフセットから読み込むので、全メッセージを消費することになる  
     普段は、前回のオフセットから実行されるがもし前回のオフセット情報などがない場合に関しては、一番最初から実行される
@@ -215,6 +223,20 @@ For standalone consumers (using manual assignment), offsets will be expired afte
 Note that when a group is deleted via the delete-group request, its committed offsets will also be deleted without extra retention period; 
 also when a topic is deleted via the delete-topic request, upon propagated metadata update any group's committed offsets for that topic will also be deleted without extra retention period.
 ```
+
+また、起動すると、subscribeしているっぽいlogがある
+```
+@timestamp,@message
+2023-07-28 16:02:32.512,"2023-07-29 01:02:32.511  
+INFO 7 --- [           main] o.a.k.clients.consumer.KafkaConsumer     : [
+    Consumer clientId=consumer-CG-P5_1_1week_latest_wakeup-1, 
+    groupId=CG-P5_1_1week_latest_wakeup] 
+    Subscribed to topic(s): Topic_P5_1_1week_latest_wakeup"
+```
+
+
+
+
 
 
 ## MSKの価値

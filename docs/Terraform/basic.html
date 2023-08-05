@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>1. Terraformとは &#8212; my_sphinx  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="1. 開発" href="../knowledge/basic.html" />
+    <link rel="prev" title="1. Agileの基本" href="../Agile/agile.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../knowledge/basic.html" title="1. 開発"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="../Agile/agile.html" title="1. Agileの基本"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Terraformとは</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="terraform">
+<h1><span class="section-number">1. </span>Terraformとは<a class="headerlink" href="#terraform" title="この見出しへのパーマリンク">¶</a></h1>
+<p>IaCのためのツールであり、AWS/Azure/GCPなどで利用することができる。</p>
+<section id="id1">
+<h2><span class="section-number">1.1. </span>公式ドキュメントの読み方<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://developer.hashicorp.com/terraform/language">HCL2</a><br />基本的な記述方法</p></li>
+<li><p><a class="reference external" href="https://developer.hashicorp.com/terraform/cli">CLI</a><br />terraformのコマンドの記述方法</p></li>
+<li><p><a class="reference external" href="https://registry.terraform.io/browse/providers">provider</a><br />awsなどのproviderごとのリソースの記述方法</p>
+<ul>
+<li><p>Example: 例</p></li>
+<li><p>Argument: 引数</p></li>
+<li><p>Attribute: 出力値</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2><span class="section-number">1.2. </span>Terraformの利用方法<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id3">
+<h3><span class="section-number">1.2.1. </span>Terraformのインストールを行う<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h3>
+<p>Terraform用のIAM Roleを作成し、profileに設定をしておく</p>
+</section>
+<section id="plan">
+<h3><span class="section-number">1.2.2. </span>plan<a class="headerlink" href="#plan" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ソースコードをもとにどのような変更が行われるかを確認することができる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">terraform</span> <span class="n">plan</span>
+</pre></div>
+</div>
+</section>
+<section id="apply">
+<h3><span class="section-number">1.2.3. </span>apply<a class="headerlink" href="#apply" title="この見出しへのパーマリンク">¶</a></h3>
+<p>tfファイルを作成して実行する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">terraform</span> <span class="n">apply</span>
+</pre></div>
+</div>
+<p>でtfファイルを実行する</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">1.2.4. </span>変更した場合(再作成なし)<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>変更を加えて、applyするだけで、<code class="docutils literal notranslate"><span class="pre">update</span></code>という確認がされて、更新がされる
+これはtfstateという、terraformaを実行して、作成した状態を保存しているファイルがあるおかげである。</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.2.5. </span>変更した場合(再作成あり)<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
+<p>EC2に対して、user_dataを追加するといった、EC2の再実行が必要な変更を加えてapplyする。
+そうすると<code class="docutils literal notranslate"><span class="pre">replaced</span></code>という確認がされて、再作成がされる</p>
+</section>
+<section id="destory">
+<h3><span class="section-number">1.2.6. </span>destory<a class="headerlink" href="#destory" title="この見出しへのパーマリンク">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">terraform</span> <span class="n">destory</span>
+</pre></div>
+</div>
+<p>で作成したものが削除される</p>
+</section>
+<section id="fmt">
+<h3><span class="section-number">1.2.7. </span>fmt<a class="headerlink" href="#fmt" title="この見出しへのパーマリンク">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">terraform</span> <span class="n">fmt</span>
+</pre></div>
+</div>
+<p>を実行すると.tfファイルを整形してくれる</p>
+</section>
+</section>
+<section id="id6">
+<h2><span class="section-number">1.3. </span>基本構文<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<p>HCL2(HashiCorpLanguage2)という独自言語を利用している</p>
+<p>記述方法はjsonに似ているが以下が違う。</p>
+<ul class="simple">
+<li><p>コメント記述可能</p></li>
+<li><p>: ではなくて = でつなぐ</p></li>
+<li><p>変数や関数を指定可能</p></li>
+<li><p>ブロックという単位でリソースを記述する</p></li>
+</ul>
+<p>ブロックタイプと何を記述するかを学習していけばterraformを書いていくことができる</p>
+<section id="locals-variables">
+<h3><span class="section-number">1.3.1. </span>locals,variablesブロック<a class="headerlink" href="#locals-variables" title="この見出しへのパーマリンク">¶</a></h3>
+<p>ブロックとして、localsとvariablesがある</p>
+<ul class="simple">
+<li><p>locals: 外部から指定不可能</p></li>
+<li><p>variables:外部からデフォルトを上学ことができる</p></li>
+</ul>
+<p>これらのブロックで指定した変数はコードないで参照される</p>
+</section>
+<section id="id7">
+<h3><span class="section-number">1.3.2. </span>terraformブロック<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h3>
+<p>terraform全体に関わる設定</p>
+<p>terraformのバージョンとprovider(AWS/Azure/GCP)のバージョンを固定する</p>
+</section>
+<section id="profile">
+<h3><span class="section-number">1.3.3. </span>profileブロック<a class="headerlink" href="#profile" title="この見出しへのパーマリンク">¶</a></h3>
+<p>AWSへアクセスするプロファイルやリージョンなどを設定することができる</p>
+</section>
+<section id="data">
+<h3><span class="section-number">1.3.4. </span>dataブロック<a class="headerlink" href="#data" title="この見出しへのパーマリンク">¶</a></h3>
+<p>管理対象外のリソースや既存のリソースを読み込ませることができる。</p>
+<p>対象のリソースによって、記載が異なる</p>
+</section>
+<section id="output">
+<h3><span class="section-number">1.3.5. </span>outputブロック<a class="headerlink" href="#output" title="この見出しへのパーマリンク">¶</a></h3>
+<p>作成したリソースを外部参照させる。
+このoutputリソースをdataブロックで読み込ませることができる。</p>
+</section>
+<section id="id8">
+<h3><span class="section-number">1.3.6. </span>リソースブロック<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
+<p>作成するリソースを記述する。</p>
+<p>ラベルを.でつなぐことで、作成しているリソース間を参照することができる</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ---------------------------------------------</span>
+<span class="c1"># Terraform configuration</span>
+<span class="c1"># ---------------------------------------------</span>
+<span class="n">terraform</span> <span class="p">{</span>
+  <span class="n">required_version</span> <span class="o">=</span> <span class="s2">&quot;&gt;=0.13&quot;</span> <span class="c1"># terraformのバージョン</span>
+  <span class="n">required_providers</span> <span class="p">{</span> <span class="c1"># awsのバージョン</span>
+    <span class="n">aws</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="n">source</span>  <span class="o">=</span> <span class="s2">&quot;hashicorp/aws&quot;</span>
+      <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;~&gt; 3.0&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># ---------------------------------------------</span>
+<span class="c1"># Provider</span>
+<span class="c1"># ---------------------------------------------</span>
+<span class="c1"># awsの基本設定</span>
+<span class="n">provider</span> <span class="s2">&quot;aws&quot;</span> <span class="p">{</span>
+  <span class="n">profile</span> <span class="o">=</span> <span class="s2">&quot;terraform&quot;</span>
+  <span class="n">region</span>  <span class="o">=</span> <span class="s2">&quot;ap-northeast-1&quot;</span>
+<span class="p">}</span>
+
+<span class="c1"># ---------------------------------------------</span>
+<span class="c1"># Variables</span>
+<span class="c1"># ---------------------------------------------</span>
+<span class="c1"># 外から設定できる変数</span>
+<span class="n">variable</span> <span class="s2">&quot;project&quot;</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="n">string</span>
+<span class="p">}</span>
+
+<span class="n">variable</span> <span class="s2">&quot;environment&quot;</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="n">string</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h3><span class="section-number">1.3.7. </span>データ型<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h3>
+<p>HCL2では大きく3種類小さく8種類</p>
+<ul class="simple">
+<li><p>プリミティブ</p>
+<ul>
+<li><p>str</p></li>
+<li><p>num</p></li>
+<li><p>bool</p></li>
+</ul>
+</li>
+<li><p>構造体</p>
+<ul>
+<li><p>key-val</p></li>
+<li><p>tuple: 順番と型がきまっている</p></li>
+</ul>
+</li>
+<li><p>コレクション</p>
+<ul>
+<li><p>list</p></li>
+<li><p>配列</p></li>
+<li><p>set</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id10">
+<h3><span class="section-number">1.3.8. </span>組み込み関数<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h3>
+<p>かなりたくさんの組み込み関数がある。</p>
+<p>文字列操作や数字の切り捨てなど基本的な操作が可能</p>
+<p><img alt="公式ドキュメント" src="https://developer.hashicorp.com/terraform/language/functions" /></p>
+</section>
+</section>
+<section id="file">
+<h2><span class="section-number">1.4. </span>file分割<a class="headerlink" href="#file" title="この見出しへのパーマリンク">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">terraform</span> <span class="n">apply</span>
+</pre></div>
+</div>
+<p>については、カレントディレクトリないの.tfファイル全てを読み込んで実行する。
+注意点としては、サブディレクトリは読み込まない点に注意</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">1. Terraformとは</a><ul>
+<li><a class="reference internal" href="#id1">1.1. 公式ドキュメントの読み方</a></li>
+<li><a class="reference internal" href="#id2">1.2. Terraformの利用方法</a><ul>
+<li><a class="reference internal" href="#id3">1.2.1. Terraformのインストールを行う</a></li>
+<li><a class="reference internal" href="#plan">1.2.2. plan</a></li>
+<li><a class="reference internal" href="#apply">1.2.3. apply</a></li>
+<li><a class="reference internal" href="#id4">1.2.4. 変更した場合(再作成なし)</a></li>
+<li><a class="reference internal" href="#id5">1.2.5. 変更した場合(再作成あり)</a></li>
+<li><a class="reference internal" href="#destory">1.2.6. destory</a></li>
+<li><a class="reference internal" href="#fmt">1.2.7. fmt</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id6">1.3. 基本構文</a><ul>
+<li><a class="reference internal" href="#locals-variables">1.3.1. locals,variablesブロック</a></li>
+<li><a class="reference internal" href="#id7">1.3.2. terraformブロック</a></li>
+<li><a class="reference internal" href="#profile">1.3.3. profileブロック</a></li>
+<li><a class="reference internal" href="#data">1.3.4. dataブロック</a></li>
+<li><a class="reference internal" href="#output">1.3.5. outputブロック</a></li>
+<li><a class="reference internal" href="#id8">1.3.6. リソースブロック</a></li>
+<li><a class="reference internal" href="#id9">1.3.7. データ型</a></li>
+<li><a class="reference internal" href="#id10">1.3.8. 組み込み関数</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#file">1.4. file分割</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="../Agile/agile.html"
+                          title="前の章へ"><span class="section-number">1. </span>Agileの基本</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="../knowledge/basic.html"
+                          title="次の章へ"><span class="section-number">1. </span>開発</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Terraform/basic.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../knowledge/basic.html" title="1. 開発"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="../Agile/agile.html" title="1. Agileの基本"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">my_sphinx  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Terraformとは</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, sphinx_user.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+    </div>
+  </body>
+</html>

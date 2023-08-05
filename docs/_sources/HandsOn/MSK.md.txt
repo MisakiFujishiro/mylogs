@@ -152,13 +152,31 @@ sasl.client.callback.handler.class=software.amazon.msk.auth.iam.IAMClientCallbac
     Callbackに関する設定
 
 
-以下を実行するとTopicが作成される
+
+### コマンド一覧
+EC2上から実効するコマンドは以下
+
 ```
-bin/kafka-topics.sh --create --bootstrap-server BootstrapServerString --command-config bin/client.properties --replication-factor 2 --partitions 1 --topic MSKTutorialTopic
-```
+Topicの一覧表示
+kafka_2.12-2.8.1/bin/kafka-topics.sh --list --zookeeper YOUR_ZOOKEEPER_SERVER
+
+Topicの作成
+kafka_2.12-2.8.1/bin/kafka-topics.sh --create --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties --replication-factor 2 --partitions 1 --topic YOUR_TOPIC
+
+Topicの削除
+kafka_2.12-2.8.1/bin/kafka-topics.sh --delete --zookeeper YOUR_ZOOKEEPER_SERVER --topic YOUR_TOPIC
+
+TopicのPartition数など確認
+kafka_2.12-2.8.1/bin/kafka-topics.sh --describe --zookeeper YOUR_ZOOKEEPER_SERVER --topic YOUR_TOPIC
+
+kafka_2.12-2.8.1/bin/kafka-topics.sh --describe --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties --topic YOUR_TOPIC
 
 
-## メッセージの送信
+TopicのLagなど確認
+kafka_2.12-2.8.1/bin/kafka-consumer-groups.sh --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties  --group group_id --describe
+```
+
+### メッセージの送信
 ```
 <path-to-your-kafka-installation>/bin/kafka-console-producer.sh --broker-list BootstrapServerString --producer.config bin/client.properties --topic MSKTutorialTopic
 ```
@@ -166,7 +184,7 @@ bin/kafka-topics.sh --create --bootstrap-server BootstrapServerString --command-
 
 ![](img/msk_producer.png)
 
-## メッセージの受信
+### メッセージの受信
 別のEC2を起動し、javaやkafkaのインストールをする。
 
 以下のコマンドを実行すると、producerで送信されたメッセージが受信できる。
@@ -176,16 +194,6 @@ bin/kafka-topics.sh --create --bootstrap-server BootstrapServerString --command-
 
 ![](img/msk_consumer.png)
 
-## その他操作
-Topic一覧表示
-```
-bin/kafka-topics.sh --list --zookeeper [ZookeeperServerString]
-```
-
-Topicの削除
-```
-bin/kafka-topics.sh --delete --zookeeper [ZookeeperServerString] --topic [TopicName]
-```
 
 
 # MSKの開発環境の構築
@@ -251,15 +259,11 @@ MSKは依存関係などが重くなることが見込まれるので、ECS上�
 </dependency>
 ```
 
+
+
 ### application.yml
-msk-producerは8082のポートを利用するため、application.yamlで以下を設定する
-```
-server:
-  port: 8082
-```
-
-
-kafkaを利用するためにapplication.yamlで以下の設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの
+- server  
+    - msk-producerは8082のポートを利用
 - producer
     - bootstarap-servers: ブートストラップのエンドポイントを指定する（MSKクラスタより取得）
     - key-serializer: producerがキーを送信する際にバイトに変換するための設定
@@ -270,6 +274,9 @@ kafkaを利用するためにapplication.yamlで以下の設定を行う。こ�
     - sasl.jaas.config: JAASの設定で、MSKのIAMログインモジュールを利用
     - sasl.client.callback.handler.class: SASLのコールバックを指定する
 ```
+server:
+  port: 8082
+
 spring:
   kafka:
     producer:
@@ -294,7 +301,7 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 
 以下2つのフロントエンドの実装を行う。  
 - ヘルスチェック用のフロント
-- 画面を表示して、メッセージをMSKに送信するフロント
+- メッセージ送信用のフロント
 
 
 ■ヘルスチェック用  
@@ -312,8 +319,11 @@ public class HealthCheckController {
 ![](img/msk_tg.png)
 
 
-■表示する画面のhtml  
+■メッセージ送信用  
 src/main/java/resourcesの配下にmsk-producer-index.htmlを作成する
+- partition_numは利用しなかった
+- number of messageで送信するメッセージ数を指定する
+- topicで、送信するTopicを指定する
 ```
 <!DOCTYPE html>
 
@@ -323,16 +333,23 @@ src/main/java/resourcesの配下にmsk-producer-index.htmlを作成する
 </head>
 <body>
 <form action="/msk-producer-send" method="post">
-    <label for="message">Message:</label><br>
-    <input type="text" id="message" name="message"><br>
-    <input type="submit" value="Submit">
-</form>
+    <label for="partition_num">partition_num:</label><br>
+    <input type="number" id="partition_num" name="partition_num"><br>
+    <label for="num">Number of Messages:</label><br>
+    <input type="number" id="num" name="num" min="1"><br>
+    <label for="topic">Topic:</label><br>
+    <input type="text" id="topic" name="topic"><br>
+    <input type="submit" value="Submit"></form>
 </body>
 </html>
 ```
 
 msk-producerへのアクセスをindex.htmlにリダイレクトするためにWebConfig.javaを実装する
 ```
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
@@ -346,7 +363,30 @@ public class WebConfig implements WebMvcConfigurer {
 ### Controller
 フロントエンドで受け取ったメッセージをmsk-producer-sendにpostするためのControllerクラスを作成する。
 
+■Health Check用   
+アクセスが来たらhealthyを返すだけ
 ```
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+@RestController
+public class HealthCheckController {
+    @GetMapping("/msk-producer-healthCheck")
+        public ResponseEntity<String> healthCheck() {
+            return ResponseEntity.ok("Healthy");
+    }
+}
+```
+
+■メッセージ送信用  
+別で実装するMessageSenderを利用して、メッセージ送信するFrontend Controller
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 public class FrontendController {
@@ -358,26 +398,30 @@ public class FrontendController {
     }
 
     @PostMapping("/msk-producer-send")
-    public ResponseEntity<String> sendMessage(@RequestParam("message") int message) {
-        if (message <= 0) {
-            return ResponseEntity.badRequest().body("Invalid message value. Only positive integers are allowed.");
+    public ResponseEntity<String> sendMessage(@RequestParam("num") int num, @RequestParam("topic") String topic, @RequestParam("partition_num") int partition_num) {
+        if (num <= 0 || partition_num <= 0) {
+            return ResponseEntity.badRequest().body("Invalid number of messages or partition number. Only positive integers are allowed.");
         }
 
-        messageSender.sendRandomMessages(message);
-        return ResponseEntity.ok("Messages sent: " + message);
+        messageSender.sendRandomMessagesToTopic(topic, num, partition_num);
+        return ResponseEntity.ok("Messages sent: " + num);
     }
 }
-
 ```
 
 
 ### MessageSender
 メッセージを送るMessageSenderを作成する
+- spring-kafkaで提供されているKafkaTemplateを利用して、インスタンスを作成
+- インスタンスに必要情報を詰めて、送信している
 
-spring-kafkaで提供されているKafkaTemplateを利用して、kafkaへの送信をおこなっている
-
-なぜか、デフォルトで送信すると、一つのpartitionに集中して、メッセージを送ってしまう形になっていたので、明示的にkeyを生成して、送信時に利用している。
 ```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+
+import java.util.Random;
+import java.util.UUID;
 
 @Component
 public class MessageSender {
@@ -387,15 +431,13 @@ public class MessageSender {
     @Autowired
     public MessageSender(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
-        this.topic = "Topic_P5"; // 送信先のトピック名
     }
 
     public void sendMessage(String message) {
         String randomKey = UUID.randomUUID().toString();
         kafkaTemplate.send(topic, randomKey, message);
     }
-
-    public void sendRandomMessages(int num) {
+    public void sendRandomMessagesToTopic(String topic, int num, int partition_num) {
         Random rand = new Random();
         System.out.print(num);
         for (int i = 0; i < num; i++) {
@@ -409,16 +451,13 @@ public class MessageSender {
 ```
 
 
+
+
+
 ## Consumerの設定
 ### application.yaml
-msk-consumerは8081のポートを利用するため、application.yamlで以下を設定する
-```
-server:
-  port: 8081
-```
-
-kafkaを利用するためにapplication.yamlで以下の設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの
-- producer
+- msk-consumerは8081のポートを利用
+- consumer
     - group-id  
         これはConsumer側で自身が所属するグループを指定するための値。  
         この値を利用することで、Pub-Subモデルのメッセージキューにすることができる。
@@ -429,40 +468,60 @@ kafkaを利用するためにapplication.yamlで以下の設定を行う。こ�
         - earliest: 最も古いオフセットから読み込むので、全メッセージを消費することになる
         - latest: 最新のオフセットから読み込む、Consumerが起動した時点からTopicに追加されたメッセージを消費する
         - none: Consumerが前回消費した最後のオフセットの次から読み込むが、そのオフセットが存在しない場合、例外がスローされる
-
-- propertiesはProducerと同様
-
+    - enable-auto-commit  
+        コミットをkafka側が一定間隔で自動的に実施するか、ソースコード側で明示的に実施するか  
+        今回は、手動コミットを行うのでfalseを背彫ってい
+    - max-poll-records  
+        一度のpollで取得するメッセージ数  
+        オートスケーリングすることを考えると、1にしておくほうが良い  
+        オートスケーリングしてリバランスしたにも関わらず、メッセージを抱えているconsumerがいると処理が終わらなくなった
 ```
+server:
+  port: 8081
 spring:
   kafka:
+    listener:
+      ack-mode: manual
     consumer:
-      bootstrap-servers: YOUR_BOOTSTRAP_SERVER
+      bootstrap-servers: b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      group-id: group_id
-      auto-offset-reset: earliest
+      group-id: CG-XXXXX
+      auto-offset-reset: latest
+      enable-auto-commit: false # コミットの自動実行を有効にする
+      max-poll-records: 1  # 一度のpollで取得するレコードの最大数を1に設定
+    #      auto-commit-interval: 5000 # コミットの間隔（ミリ秒）
     properties:
       security.protocol: SASL_SSL
       sasl.mechanism: AWS_MSK_IAM
       sasl.jaas.config: software.amazon.msk.auth.iam.IAMLoginModule required;
-      sasl.client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+      sasl.client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler```
 ```
+
 
 ### MessageReceiver
 以下のMessageReciverクラスを作成する
 - @Component  
     Springのコンポーネントスキャンにより、自動的にコンポーネントとして検出され、springによりインスタンスが生成される
 - @KafkaLister  
-    このメソッドはTopicからのメッセージ受信するためのリスナーメソッドになる
-- ConsumerRecord  
-    kafkaから受信したメッセージ
+    このメソッドはTopicからのメッセージ受信するためのリスナーメソッドになる  
+    トピックを指定する
+- acknowledgment.acknowledge(); // コミットを実行  
+    このコマンドでkafkaに対して手動でコミットする
+    
 ```
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class MessageReceiver {
 
-    @KafkaListener(topics="Topic_from_java")
-    public void receiveMessage(ConsumerRecord<String, String> record){
+    @KafkaListener(topics="Topic_consume_week")
+    public void receiveMessage(ConsumerRecord<String, String> record, Acknowledgment acknowledgment){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         System.out.println("PROCESSING START =======================================================" );
@@ -477,12 +536,18 @@ public class MessageReceiver {
         int waitTime = Integer.parseInt(record.value()) * 1000;
         System.out.println("wait time: " + waitTime);
         waitInMilliseconds(waitTime);
-
+        try {
+            acknowledgment.acknowledge(); // コミットを実行
+            System.out.println("Commit Success");
+        } catch (Exception e) {
+            // エラーが発生したらここでスロー
+            throw new RuntimeException("Unexpected error while committing record: " + record, e);
+        }
         //処理完了時間の表示
         LocalDateTime now_af = LocalDateTime.now();
         System.out.println("END TIME： " + formatter.format(now_af) +" & MESSAGE ID： "+record.key());
         System.out.println("PROCESSING END =======================================================" );
-
+        System.out.println("ALL_INFO======= & MESSAGE Offset： "+record.offset()+ " & MESSAGE partition： "+record.partition()+ " & START_TIME:" + formatter.format(now_bf)+" & MESSAGE Value： "+record.value()+" & END TIME： " + formatter.format(now_af) +" & =======ALL_INFO");
     }
     //数字を受け取って、その時間待機するためのメソッド
     private void waitInMilliseconds(int milliseconds) {
@@ -498,8 +563,6 @@ public class MessageReceiver {
 
 ```
 
-これだけで、メッセージを送信すると、Consumerで受信することができる。
-
 
 ### 結果
 ALB_URL/msk-producerにアクセスすると以下画面が表示される。
@@ -509,6 +572,17 @@ ALB_URL/msk-producerにアクセスすると以下画面が表示される。
 画面から数字を入力すると、Consumer側でその数だけメッセージを受け取ってシリアルに待機することを確認
 
 ![](img/msk_consumer_log.png)
+
+
+
+
+
+
+
+
+
+
+
 
 # MSKのオートスケーリング設定
 ## 基本方針
@@ -553,253 +627,229 @@ ALB_URL/msk-producerにアクセスすると以下画面が表示される。
 
 
 
+
+
+
+
 ## 検証計画
 いくつかの観点で検証を行う
-### latest
-- partitionの数が異なる場合の挙動4パターンに1000件投入
-    - partition1
-    - partition5
-    - partition10
-    - partition100
-- partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入
-    - partition1
-    - partition5
-    - partition10
-    - partition100
-- Partitionの数が5に対して、処理させずに2週間放置して100件入れる  
-    全てのPartitionに対して、うまく処理できないのではないかという期待がある。
-- Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる  
-    処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。
-- partition5に対して、0件処理で、1日に一度consumerを起動したもの
-        Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。
+- partition数の比較
+- latestとearliestの比較
+- offsets.retention.minutesの検証(60min)
+- offsets.retention.minutesの検証(7days)
 
-### eariest
-- partitionの数が異なる場合の挙動4パターンに1000件投入
-    - partition1
-    - partition5
-    - partition10
-    - partition100
-- partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入
-    - partition1
-    - partition5
-    - partition10
-    - partition100
-- Partitionの数が5に対して、処理させずに2週間放置して100件入れる  
-    全てのPartitionに対して、うまく処理できないのではないかという期待がある。
-- Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる  
-    処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。
-- partition5に対して、0件処理で、1日に一度consumerを起動したもの
-        Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。
+### partition数の比較
+メッセージを送信したときに、格納されるpartitionに偏りが出てしまう問題に対して、parititionを増やすことで対応できるかを調査。  
+結果として、2倍にすると50%程度、分散が減るという効果があったが、それ以上はpartitionを増やしても効果がなかった
+
+また、それとは別にして、メッセージ自体の処理の差分で処理が詰まってしまう問題は解決しなかった
+
+partition5の際は標準偏差:27
+
+![](img/msk_partition5_dev.png)
+
+partition10の際は標準偏差:13
+
+![](img/msk_partition10_dev.png)
+
+
+partition100の際は標準偏差:15
+
+![](img/msk_partition100_dev.png)
 
 
 
-## コマンド準備
-EC2上から実効するコマンドは以下
+### latestとearliestの比較
+auto.offsets.resetの挙動を確認するために、topicを作成して、consumerを起動させる前に、メッセージを投入。
+- earliestの場合、全てのメッセージが処理されるはず
+- latestの場合、メッセージ処理はされず、その後に格納されたメッセージは処理されるはず
 
+結果として予想通りの挙動をした
+
+
+#### earliest
+- TopicName:Topic_P5_timing_check_earliest
+- consumerのreset=earliestにしておく
+- Topicを作成
+- Topicにメッセージを投入
+- consumerが立ち上がったのことないので、CloudWatch アラームも無反応
+- オートスケーリングで5台立ち上がらない
+- 手動で１台立ち上げる
+- 起動後に5件追加で投げる
+
+結果として、105件処理した
+
+#### latest
+- TopicName:Topic_P5_timing_check_latest
+- consumerのreset=latestにしておく
+- Topicを作成
+- Topicにメッセージを100件投入
+- オートスケーリングで5台立ち上がらない
+- 手動で１台立ち上げる
+- 起動後に5件追加で投げる
+
+結果として、5件だけ処理した
+
+
+
+
+### offsets.retention.minutesの検証(60min)
+MSKのクラスター構成で以下を設定
 ```
-Topicの一覧表示
-kafka_2.12-2.8.1/bin/kafka-topics.sh --list --zookeeper YOUR_ZOOKEEPER_SERVER
-
-Topicの作成
-kafka_2.12-2.8.1/bin/kafka-topics.sh --create --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties --replication-factor 2 --partitions 1 --topic Topic_from_java
-
-Topicの削除
-kafka_2.12-2.8.1/bin/kafka-topics.sh --delete --zookeeper YOUR_ZOOKEEPER_SERVER --topic Topic_from_java
-
-TopicのPartition数など確認
-kafka_2.12-2.8.1/bin/kafka-topics.sh --describe --zookeeper YOUR_ZOOKEEPER_SERVER --topic Topic_from_java
-
-kafka_2.12-2.8.1/bin/kafka-topics.sh --describe --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties --topic Topic_from_java
-
-
-TopicのLagなど確認
-kafka_2.12-2.8.1/bin/kafka-consumer-groups.sh --bootstrap-server YOUR_BOOTSTRAP_SERVER --command-config kafka_2.12-2.8.1/bin/client.properties  --group group_id --describe
+offsets.retention.minutes=60
 ```
+対象のクラスタ-にこの構成を設定  
+これにより、60分consumerGroupが0の場合、__consumer_offsetsが破棄される。
 
-### TopicのLagについて
-TopicのLagは時系列で取得できないので、自分で以下のshellを作成して、実行させる
+以下を検証
+- consumerの起動のみによる更新
+- consumerのメッセージ処理による更新
+- 定期的な起動設定による長期更新
 
-monitor_consumer_group.sh
+
+
+
+
+#### ログの解説
+consumerを追加したり、再起動したり、長期間起動がなくoffsetが破棄された際のログは以下
+
+
+- consumer起動時consumerのログ  
+    - TopicをSubscribeし始めたログと、その際に、offsetsをどこに設定したログが出力される
 ```
-
-#!/bin/bash
-
-# Check if no arguments were passed
-if [ $# -lt 1 ]; then
-  echo "Insufficient arguments supplied. Please pass a consumer group id and output file name as arguments."
-  exit 1
-fi
-
-# Kafkaの接続情報を設定します
-BOOTSTRAP_SERVER="b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098"
-GROUP_ID=$1 # 受け取った引数（コンシューマーグループID）を使用
-COMMAND_CONFIG_PATH="kafka_2.12-2.8.1/bin/client.properties"
-
-# 出力するログファイルを設定します
-OUTPUT_FILE="$1_consumer_group_offset.log" # 受け取った引数（ファイル名）を使用
-while true
-do
-  # タイムスタンプを取得します
-  TIMESTAMP=$(date +"%Y-%m-%d %T")
-
-  # コマンドを実行し、出力を取得します
-  OUTPUT=$(kafka_2.12-2.8.1/bin/kafka-consumer-groups.sh --bootstrap-server $BOOTSTRAP_SERVER --command-config $COMMAND_CONFIG_PATH --group $GROUP_ID --describe)
-
-  # タイムスタンプとコマンドの出力をログファイルに書き込みます
-  echo -e "$TIMESTAMP\n$OUTPUT\n" >> $OUTPUT_FILE
-
-  # 10秒待機します
-  sleep 10
-done
+2023-08-01 14:17:39.442  INFO 7 --- [           main] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Subscribed to topic(s): Topic_wakeup_once
+2023-08-01 14:17:45.289  INFO 7 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-1 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}}.,2023-08-01 05:17:45.289
+2023-08-01 14:17:45.290  INFO 7 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-3 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}}.,2023-08-01 05:17:45.290
+2023-08-01 14:17:45.677  INFO 7 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-2 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}}.,2023-08-01 05:17:45.678
+2023-08-01 14:17:45.678  INFO 7 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}}.,2023-08-01 05:17:45.678
+2023-08-01 14:17:45.678  INFO 7 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-4 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}}.,2023-08-01 05:17:45.678
 ```
 
-実行権限付与
+- consumer起動時kafka側のログ
+    - consumerが起動してConsumerGruoupのメンバーが追加されたことを確認できる
 ```
-chmod +x monitor_consumer_group.sh
-```
-
-以下を実行
-```
-./monitor_consumer_group.sh
+[2023-08-01 05:17:42,047] INFO [GroupCoordinator 2]: Preparing to rebalance group CG-Topic_wakeup_once in state PreparingRebalance with old generation 0 (__consumer_offsets-36) (reason: Adding new member consumer-CG-Topic_wakeup_once-1-f5abca3b-115d-48b2-b7f4-cbe3a9f14403 with group instance id None) (kafka.coordinator.group.GroupCoordinator),2023-08-01 05:17:42.000
+[2023-08-01 05:17:45,047] INFO [GroupCoordinator 2]: Stabilized group CG-Topic_wakeup_once generation 1 (__consumer_offsets-36) with 1 members (kafka.coordinator.group.GroupCoordinator),2023-08-01 05:17:46.000
+[2023-08-01 05:17:45,063] INFO [GroupCoordinator 2]: Assignment received from leader for group CG-Topic_wakeup_once for generation 1. The group has 1 members, 0 of which are static. (kafka.coordinator.group.GroupCoordinator),2023-08-01 05:17:46.000
 ```
 
-内容は以下を確認
+- consumer停止時consumerのログ
+    - ConsumerGroupからdisconnectしたログ
 ```
-less consumer_group_offset.log
-```
-
-
-
-### EC2には以下のIAMRoleを付与した
-コマンドを実行するためには、EC2に適切な権限を付与する必要がある。
-
-MSKに対する基本的な操作の権限
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "kafka-cluster:*",
-            "Resource": [
-                "arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*",
-                "arn:aws:kafka:ap-northeast-1:123456789012:topic/YOUR_MSK_SERVER/*"
-            ]
-        }
-    ]
-}
+2023-08-01 14:26:42.036  INFO 7 --- [ntainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Node -1 disconnected.,2023-08-01 05:26:42.036
 ```
 
-ConsumerGroup対する権限
+- consumer停止時kafkaのログ
+    - ConsumerGroupがemptyになったというログが出力される
 ```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "kafka-cluster:*"
-            ],
-            "Resource": [
-                "arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "kafka-cluster:*Group*"
-            ],
-            "Resource": [
-                "arn:aws:kafka:ap-northeast-1:123456789012:group/YOUR_MSK_SERVER/*"
-            ]
-        }
-    ]
-}
+[2023-08-01 05:27:45,090] INFO [GroupCoordinator 2]: Member consumer-CG-Topic_wakeup_once-1-f5abca3b-115d-48b2-b7f4-cbe3a9f14403 in group CG-Topic_wakeup_once has failed, removing it from the group (kafka.coordinator.group.GroupCoordinator),2023-08-01 05:27:46.000
+[2023-08-01 05:27:45,090] INFO [GroupCoordinator 2]: Preparing to rebalance group CG-Topic_wakeup_once in state PreparingRebalance with old generation 1 (__consumer_offsets-36) (reason: removing member consumer-CG-Topic_wakeup_once-1-f5abca3b-115d-48b2-b7f4-cbe3a9f14403 on heartbeat expiration) (kafka.coordinator.group.GroupCoordinator),2023-08-01 05:27:46.000
+[2023-08-01 05:27:45,090] INFO [GroupCoordinator 2]: Group CG-Topic_wakeup_once with generation 2 is now empty (__consumer_offsets-36) (kafka.coordinator.group.GroupCoordinator),2023-08-01 05:27:46.000
+```
+
+- consumer再起動時のconsumerのログ
+    - Subscribedのログは再度出る
+    - offsetの情報が残っている場合はResettingではなくてSettingでログが出力される
+```
+2023-08-01 15:00:20.359  INFO 6 --- [           main] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Subscribed to topic(s): Topic_wakeup_once
+2023-08-01 15:00:23.303  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Request joining group due to: need to re-join with the given member-id,2023-08-01 06:00:23.303
+2023-08-01 15:00:23.303  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] (Re-)joining group,2023-08-01 06:00:23.303
+2023-08-01 15:00:26.306  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Successfully joined group with generation Generation{generationId=3, memberId='consumer-CG-Topic_wakeup_once-1-b0717656-578f-4e85-b1de-22994cb0643a', protocol='range'},2023-08-01 06:00:26.306
+2023-08-01 15:00:26.308  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Finished assignment for group at generation 3: {consumer-CG-Topic_wakeup_once-1-b0717656-578f-4e85-b1de-22994cb0643a=Assignment(partitions=[Topic_wakeup_once-0, Topic_wakeup_once-1, Topic_wakeup_once-2, Topic_wakeup_once-3, Topic_wakeup_once-4])},2023-08-01 06:00:26.309
+2023-08-01 15:00:26.323  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Successfully synced group in generation Generation{generationId=3, memberId='consumer-CG-Topic_wakeup_once-1-b0717656-578f-4e85-b1de-22994cb0643a', protocol='range'},2023-08-01 06:00:26.324
+2023-08-01 15:00:26.324  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Notifying assignor about the new Assignment(partitions=[Topic_wakeup_once-0, Topic_wakeup_once-1, Topic_wakeup_once-2, Topic_wakeup_once-3, Topic_wakeup_once-4]),2023-08-01 06:00:26.324
+2023-08-01 15:00:26.327  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Adding newly assigned partitions: Topic_wakeup_once-2, Topic_wakeup_once-1, Topic_wakeup_once-0, Topic_wakeup_once-4, Topic_wakeup_once-3,2023-08-01 06:00:26.327
+2023-08-01 15:00:26.345  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-4 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}},2023-08-01 06:00:26.346
+2023-08-01 15:00:26.346  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-3 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}},2023-08-01 06:00:26.346
+2023-08-01 15:00:26.346  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-2 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}},2023-08-01 06:00:26.346
+2023-08-01 15:00:26.346  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-1 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}},2023-08-01 06:00:26.346
+2023-08-01 15:00:26.346  INFO 6 --- [ntainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-0 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}},2023-08-01 06:00:26.346
+2023-08-01 15:00:26.347  INFO 6 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : CG-Topic_wakeup_once: partitions assigned: [Topic_wakeup_once-2, Topic_wakeup_once-1, Topic_wakeup_once-0, Topic_wakeup_once-4, Topic_wakeup_once-3],2023-08-01 06:00:26.347
+```
+
+- offsets.retention.minutesを超えた際のkafka側のログ
+    expired offsetsというログが出る
+```
+[2023-08-01 07:15:50,724] INFO [GroupMetadataManager brokerId=2] Group CG-Topic_wakeup_once transitioned to Dead in generation 4 (kafka.coordinator.group.GroupMetadataManager),2023-08-01 07:15:52.000
+[2023-08-01 07:15:50,725] INFO [GroupMetadataManager brokerId=2] Removed 5 expired offsets in 2 milliseconds. (kafka.coordinator.group.GroupMetadataManager),2023-08-01 07:15:52.000
 ```
 
 
+この後、再度メッセージを投入すると、NotFountが出力して、Resettingのログが出力される
+- earliestの場合：offset0が設定される
+- latestの場合：それまでに格納されているoffsetが設定される
+
+![](img/msk_retension_2.png)
 
 
-### トピック作成
-Topicは以下の6つを作成
-- Topic_from_java  
-    Partitionの数が1つ
-- Topic_P5  
-    Partitionの数が5でConsumerの数と同じ
-- Topic_P10  
-    Partitionの数が10でConsumerの数より多い
-- Topic_P100  
-    Partitionの数が100でConsumerの数より大分多い
-- Topic_P5_zero  
-    Partitionの数が5に対して、処理させずに2週間放置して100件入れる  
-- Topic_P5_one
-    Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる  
-- Topic_P5_up  
-    Partitionの数が5に対して、1日一度Consumerが起動する
+#### consumerのメッセージ処理による更新
+consumeすることで、retentionされないようになるか確認。以下の①と②どちらの60分後にExpiredするかを確認したところ②の60min後にexpiredした
+
+- Topicの作成：Topic_consume_once
+- Consumer起動
+- Consumer停止・・・①
+- 30分待機
+- メッセージ送信
+- Consumer起動してconsume
+- Consumer停止・・・②
+- 60分待機
+
+![](img/Topic_consume_once.png)
+
+
+#### consumerの起動のみによる更新
+consumerを起動させるだけで、retentionされないようになるか確認。以下の①と②どちらの60分後にExpiredするかを確認したところ②の60min後にexpiredした
+
+- Topicの作成：Topic_wakeup_once
+- Consumer起動
+- Consumer停止・・・①
+- 30分待機
+- Consumer起動
+- Consumer停止・・・②
+- 60分待機
+
+
+![](img/Topic_wakeup_once.png)
 
 
 
+#### 定期的な起動設定による長期更新
+consumerを起動させるだけで、retentionされないようになるかを長期スパンで確認。
+- 作成時に1件処理
+- 60minに一度起動し、10分後に停止するようにeventbridgeを設定
+- 3日間放置
+- 3日後でもメトリクスは取得され続けた
+- 100件投入してもオートスケーリングして処理された
+
+![](img/msk_retension_wakeup.png)
+
+![](img/msk_retension_wakeup2.png)
 
 
 
-## partitionの数が異なる場合の挙動4パターンに1000件投入
-### partitionが1でscaleoutする場合
-この場合は、処理が適切に行われなかった。そのため、一旦検証対象から除く。
-
-問題概要  
+### offsets.retention.minutesの検証(7days)
+MSKのクラスター構成で以下を設定（デフォルト）
 ```
-consumer-Aはメッセージをまとめて全部受け取り、処理をしている。
-しかし、MSK側へのコミットへの返却はある程度まとめて行っている。
-結果として１３件目まではコミットできている。
-ただし、14件目移行をconsumer-Aが処理している間に、consumer-Bも14件目以降を取得してしまい、どちらも正しくMSKにコミットすることができていないか。
+offsets.retention.minutes=10080
 ```
-- consumer-Aは常時起動のconsumer
-- producerから100件のメッセージを送信
-- consumer-Aのログを見ていると、順調に処理
-- consumer-Aは100件全ての処理を完了したログが出る
+対象のクラスタ-にこの構成を設定
 
+以下を検証
+- 定期的な起動設定による長期更新(1日1回10min)
 
-- consumer-Aが13件目を処理したあたりで、ECSがオートスケールを開始
-
-- 13件目以降もconsume-Aはcommit successのログを出力し、100件しょり
-
-![](img/sqs_fifo_autoscaling_error_2.png)
-
-- しかし、13件目以降はmsk側でコミットを受け取れていないらしく、sumoffsetlagは87のまま
-
-![](img/sqs_fifo_autoscaling_error_1.png)
-
-- またオートスケーリングで起動したconsumer-Bが14件目からのメッセージを処理するようになっている
-
-![](img/sqs_fifo_autoscaling_error_3.png)
-
-- 結果として、ログにはconsumer-Aとconsumer-B両方のcommit successのログが出るが、MSK側では認識されない
-
-
-
-### partitionが5でscaleout台数と同じ場合
-
-
-### partitionが10でscaleout台数より多い場合
-
-
-### partitionが100でscaleout台数よりとても多い場合
+#### 定期的な起動設定による長期更新
+consumerを起動させるだけで、retentionされないようになるかを長期スパンで確認。
+- 作成時のみで処理はさせない
+- 1日に1回起動し、10分後に停止するようにeventbridgeを設定
+- 10日間放置
+- 10日後でもメトリクスは取得され続けた
+- 100件投入してもオートスケーリングして処理された
 
 
 
 
-## partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入
-
-### partitionが5でscaleout台数と同じ場合
-
-### partitionが10でscaleout台数より多い場合
-
-### partitionが100でscaleout台数よりとても多い場合
 
 
-## 1000件投入したpartition5に対して1日に一度consumerを起動し、10分後に停止したもの
-
-## partition100に対して、10件投入したものに2週間後に1000を投入
 
 
 
@@ -809,6 +859,7 @@ consumer-Aはメッセージをまとめて全部受け取り、処理をして�
 同じ処理が終わったのに、別のConsumerでまた処理されている。
 
 以下のように、partition一つに対して二つのconsumerが紐づいていたりする。
+
 ![](img/msk_consumer_roop_1.png)
 
 
@@ -818,3 +869,34 @@ consumer-Aはメッセージをまとめて全部受け取り、処理をして�
 ```
 2023-07-22 09:52:30.444,Caused by: org.apache.kafka.clients.consumer.CommitFailedException: Offset commit cannot be completed since the consumer is not part of an active group for auto partition assignment; it is likely that the consumer was kicked out of the group.,ecs/MA-fujishiroms-container-msk-consumer/7ea6c17e42934381bd5c59d52e0fc2e2
 ```
+
+一度のconsumeでたくさんのメッセージをconsumeしており、ある程度溜まってからそれをcommitしているとすると、まとめて処理をしているので、commitが間に合っていないのではないかと思い調査してみると、以下のエラーも出ていた。  
+これは、`max.poll.interval.ms`というconsumerがconsumeする間隔の最大値なので、これを超えてcommitしているとkafkaからは死んだと思われてしまう。
+
+これの対策としては、`max.poll.interval.ms`を長くするが、まとめてメッセージをconsumeする数の設定`max.poll.records`を小さくする必要がある。
+```
+2023-07-22 19:14:27.530  WARN 7 --- [-thread | CG-P5] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-P5-1, groupId=CG-P5] consumer poll timeout has expired. This means the time between subsequent calls to poll() was longer than the configured max.poll.interval.ms, which typically implies that the poll loop is spending too much time processing messages. You can address this either by increasing max.poll.interval.ms or by reducing the maximum size of batches returned in poll() with max.poll.records.
+```
+
+設定を確認したところmax.poll.recordsが500になっていた。
+```
+max.poll.records = 500
+```
+
+max.poll.recordsを10にしたら、	java.lang.OutOfMemoryError: Java heap spaceというエラー
+
+Dockerファイルに以下を追加
+```
+CMD java -Xmx2g -jar msk_consumer/target/msk_consumer-0.0.1-SNAPSHOT.jar
+
+```
+
+
+最後に実行したやつ7/26/20:00は、多分consumerとしてdisconnectになっていないし、max.num=1になっているはず
+
+
+
+
+
+
+

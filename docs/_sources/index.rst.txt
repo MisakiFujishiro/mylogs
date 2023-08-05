@@ -97,6 +97,15 @@ Agile
 
    Agile/agile
 
+Terraform
+====================================
+
+.. toctree::
+   :maxdepth: 1
+   :numbered:
+
+   Terraform/basic
+
 
 ITの基本
 ==================

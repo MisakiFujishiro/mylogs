@@ -175,21 +175,39 @@
 <li><p>sasl.jaas.config=software.amazon.msk.auth.iam.IAMLoginModule required;<br />JAAS(Java Authentication and Authorization Service)の設定で、IAMを利用することを指定</p></li>
 <li><p>sasl.client.callback.handler.class=software.amazon.msk.auth.iam.IAMClientCallbackHandler<br />Callbackに関する設定</p></li>
 </ul>
-<p>以下を実行するとTopicが作成される</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">2</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">1</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span>
+<section id="id4">
+<h3><span class="section-number">7.3.1. </span>コマンド一覧<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h3>
+<p>EC2上から実効するコマンドは以下</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Topicの一覧表示</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span>
+
+<span class="n">Topicの作成</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">2</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">1</span> <span class="o">--</span><span class="n">topic</span> <span class="n">YOUR_TOPIC</span>
+
+<span class="n">Topicの削除</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">delete</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span> <span class="o">--</span><span class="n">topic</span> <span class="n">YOUR_TOPIC</span>
+
+<span class="n">TopicのPartition数など確認</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span> <span class="o">--</span><span class="n">topic</span> <span class="n">YOUR_TOPIC</span>
+
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">YOUR_TOPIC</span>
+
+
+<span class="n">TopicのLagなど確認</span>
+<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">consumer</span><span class="o">-</span><span class="n">groups</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span>  <span class="o">--</span><span class="n">group</span> <span class="n">group_id</span> <span class="o">--</span><span class="n">describe</span>
 </pre></div>
 </div>
 </section>
-<section id="id4">
-<h2><span class="section-number">7.4. </span>メッセージの送信<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id5">
+<h3><span class="section-number">7.3.2. </span>メッセージの送信<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">kafka</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">producer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">broker</span><span class="o">-</span><span class="nb">list</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">producer</span><span class="o">.</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span>
 </pre></div>
 </div>
 <p>コンソールが出力されるのでメッセージを記入</p>
 <p><img alt="../_images/msk_producer.png" src="../_images/msk_producer.png" /></p>
 </section>
-<section id="id5">
-<h2><span class="section-number">7.5. </span>メッセージの受信<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="id6">
+<h3><span class="section-number">7.3.3. </span>メッセージの受信<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h3>
 <p>別のEC2を起動し、javaやkafkaのインストールをする。</p>
 <p>以下のコマンドを実行すると、producerで送信されたメッセージが受信できる。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">kafka</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">consumer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">BootstrapServerString</span> <span class="o">--</span><span class="n">consumer</span><span class="o">.</span><span class="n">config</span> <span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">MSKTutorialTopic</span> <span class="o">--</span><span class="n">from</span><span class="o">-</span><span class="n">beginning</span>
@@ -197,16 +215,6 @@
 </div>
 <p><img alt="../_images/msk_consumer.png" src="../_images/msk_consumer.png" /></p>
 </section>
-<section id="id6">
-<h2><span class="section-number">7.6. </span>その他操作<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
-<p>Topic一覧表示</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="p">[</span><span class="n">ZookeeperServerString</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>Topicの削除</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">delete</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="p">[</span><span class="n">ZookeeperServerString</span><span class="p">]</span> <span class="o">--</span><span class="n">topic</span> <span class="p">[</span><span class="n">TopicName</span><span class="p">]</span>
-</pre></div>
-</div>
 </section>
 </section>
 <section id="msk">
@@ -273,13 +281,12 @@
 </section>
 <section id="application-yml">
 <h3><span class="section-number">9.1.2. </span>application.yml<a class="headerlink" href="#application-yml" title="この見出しへのパーマリンク">¶</a></h3>
-<p>msk-producerは8082のポートを利用するため、application.yamlで以下を設定する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">server</span><span class="p">:</span>
-  <span class="n">port</span><span class="p">:</span> <span class="mi">8082</span>
-</pre></div>
-</div>
-<p>kafkaを利用するためにapplication.yamlで以下の設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの</p>
 <ul class="simple">
+<li><p>server</p>
+<ul>
+<li><p>msk-producerは8082のポートを利用</p></li>
+</ul>
+</li>
 <li><p>producer</p>
 <ul>
 <li><p>bootstarap-servers: ブートストラップのエンドポイントを指定する（MSKクラスタより取得）</p></li>
@@ -296,7 +303,10 @@
 </ul>
 </li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">server</span><span class="p">:</span>
+  <span class="n">port</span><span class="p">:</span> <span class="mi">8082</span>
+
+<span class="n">spring</span><span class="p">:</span>
   <span class="n">kafka</span><span class="p">:</span>
     <span class="n">producer</span><span class="p">:</span>
       <span class="n">bootstrap</span><span class="o">-</span><span class="n">servers</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">YOUR_BOOTSTRAP</span><span class="o">&gt;</span>
@@ -318,7 +328,7 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <p>以下2つのフロントエンドの実装を行う。</p>
 <ul class="simple">
 <li><p>ヘルスチェック用のフロント</p></li>
-<li><p>画面を表示して、メッセージをMSKに送信するフロント</p></li>
+<li><p>メッセージ送信用のフロント</p></li>
 </ul>
 <p>■ヘルスチェック用<br />TGで設定するALBからのヘルスチェックのエンドポイントとして利用する。</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@RestController</span>
@@ -331,7 +341,12 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 </pre></div>
 </div>
 <p><img alt="../_images/msk_tg.png" src="../_images/msk_tg.png" /></p>
-<p>■表示する画面のhtml<br />src/main/java/resourcesの配下にmsk-producer-index.htmlを作成する</p>
+<p>■メッセージ送信用<br />src/main/java/resourcesの配下にmsk-producer-index.htmlを作成する</p>
+<ul class="simple">
+<li><p>partition_numは利用しなかった</p></li>
+<li><p>number of messageで送信するメッセージ数を指定する</p></li>
+<li><p>topicで、送信するTopicを指定する</p></li>
+</ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
 
 &lt;html lang=&quot;ja&quot;&gt;
@@ -340,16 +355,23 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 &lt;/head&gt;
 &lt;body&gt;
 &lt;form action=&quot;/msk-producer-send&quot; method=&quot;post&quot;&gt;
-    &lt;label for=&quot;message&quot;&gt;Message:&lt;/label&gt;&lt;br&gt;
-    &lt;input type=&quot;text&quot; id=&quot;message&quot; name=&quot;message&quot;&gt;&lt;br&gt;
-    &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
-&lt;/form&gt;
+    &lt;label for=&quot;partition_num&quot;&gt;partition_num:&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;number&quot; id=&quot;partition_num&quot; name=&quot;partition_num&quot;&gt;&lt;br&gt;
+    &lt;label for=&quot;num&quot;&gt;Number of Messages:&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;number&quot; id=&quot;num&quot; name=&quot;num&quot; min=&quot;1&quot;&gt;&lt;br&gt;
+    &lt;label for=&quot;topic&quot;&gt;Topic:&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; id=&quot;topic&quot; name=&quot;topic&quot;&gt;&lt;br&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;&lt;/form&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre></div>
 </div>
 <p>msk-producerへのアクセスをindex.htmlにリダイレクトするためにWebConfig.javaを実装する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Configuration</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.config.annotation.ViewControllerRegistry</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.config.annotation.WebMvcConfigurer</span><span class="p">;</span>
+
+<span class="nd">@Configuration</span>
 <span class="n">public</span> <span class="k">class</span> <span class="nc">WebConfig</span> <span class="n">implements</span> <span class="n">WebMvcConfigurer</span> <span class="p">{</span>
 
     <span class="nd">@Override</span>
@@ -363,7 +385,27 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <section id="controller">
 <h3><span class="section-number">9.1.4. </span>Controller<a class="headerlink" href="#controller" title="この見出しへのパーマリンク">¶</a></h3>
 <p>フロントエンドで受け取ったメッセージをmsk-producer-sendにpostするためのControllerクラスを作成する。</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<p>■Health Check用<br />アクセスが来たらhealthyを返すだけ</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">org.springframework.http.ResponseEntity</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="p">;</span>
+<span class="nd">@RestController</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">HealthCheckController</span> <span class="p">{</span>
+    <span class="nd">@GetMapping</span><span class="p">(</span><span class="s2">&quot;/msk-producer-healthCheck&quot;</span><span class="p">)</span>
+        <span class="n">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">healthCheck</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="s2">&quot;Healthy&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>■メッセージ送信用<br />別で実装するMessageSenderを利用して、メッセージ送信するFrontend Controller</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.http.ResponseEntity</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.PostMapping</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestParam</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="p">;</span>
+
+
 <span class="nd">@RestController</span>
 <span class="n">public</span> <span class="k">class</span> <span class="nc">FrontendController</span> <span class="p">{</span>
     <span class="n">private</span> <span class="n">final</span> <span class="n">MessageSender</span> <span class="n">messageSender</span><span class="p">;</span>
@@ -374,13 +416,13 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
     <span class="p">}</span>
 
     <span class="nd">@PostMapping</span><span class="p">(</span><span class="s2">&quot;/msk-producer-send&quot;</span><span class="p">)</span>
-    <span class="n">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">sendMessage</span><span class="p">(</span><span class="nd">@RequestParam</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">)</span> <span class="nb">int</span> <span class="n">message</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">message</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="n">badRequest</span><span class="p">()</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;Invalid message value. Only positive integers are allowed.&quot;</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">sendMessage</span><span class="p">(</span><span class="nd">@RequestParam</span><span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">)</span> <span class="nb">int</span> <span class="n">num</span><span class="p">,</span> <span class="nd">@RequestParam</span><span class="p">(</span><span class="s2">&quot;topic&quot;</span><span class="p">)</span> <span class="n">String</span> <span class="n">topic</span><span class="p">,</span> <span class="nd">@RequestParam</span><span class="p">(</span><span class="s2">&quot;partition_num&quot;</span><span class="p">)</span> <span class="nb">int</span> <span class="n">partition_num</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">num</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">partition_num</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="n">badRequest</span><span class="p">()</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;Invalid number of messages or partition number. Only positive integers are allowed.&quot;</span><span class="p">);</span>
         <span class="p">}</span>
 
-        <span class="n">messageSender</span><span class="o">.</span><span class="n">sendRandomMessages</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
-        <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="s2">&quot;Messages sent: &quot;</span> <span class="o">+</span> <span class="n">message</span><span class="p">);</span>
+        <span class="n">messageSender</span><span class="o">.</span><span class="n">sendRandomMessagesToTopic</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">partition_num</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="s2">&quot;Messages sent: &quot;</span> <span class="o">+</span> <span class="n">num</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -389,9 +431,17 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <section id="messagesender">
 <h3><span class="section-number">9.1.5. </span>MessageSender<a class="headerlink" href="#messagesender" title="この見出しへのパーマリンク">¶</a></h3>
 <p>メッセージを送るMessageSenderを作成する</p>
-<p>spring-kafkaで提供されているKafkaTemplateを利用して、kafkaへの送信をおこなっている</p>
-<p>なぜか、デフォルトで送信すると、一つのpartitionに集中して、メッセージを送ってしまう形になっていたので、明示的にkeyを生成して、送信時に利用している。</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<ul class="simple">
+<li><p>spring-kafkaで提供されているKafkaTemplateを利用して、インスタンスを作成</p></li>
+<li><p>インスタンスに必要情報を詰めて、送信している</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.kafka.core.KafkaTemplate</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Random</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.UUID</span><span class="p">;</span>
+
 <span class="nd">@Component</span>
 <span class="n">public</span> <span class="k">class</span> <span class="nc">MessageSender</span> <span class="p">{</span>
     <span class="n">private</span> <span class="n">final</span> <span class="n">KafkaTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">kafkaTemplate</span><span class="p">;</span>
@@ -400,15 +450,13 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
     <span class="nd">@Autowired</span>
     <span class="n">public</span> <span class="n">MessageSender</span><span class="p">(</span><span class="n">KafkaTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">kafkaTemplate</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">this</span><span class="o">.</span><span class="n">kafkaTemplate</span> <span class="o">=</span> <span class="n">kafkaTemplate</span><span class="p">;</span>
-        <span class="n">this</span><span class="o">.</span><span class="n">topic</span> <span class="o">=</span> <span class="s2">&quot;Topic_P5&quot;</span><span class="p">;</span> <span class="o">//</span> <span class="n">送信先のトピック名</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">sendMessage</span><span class="p">(</span><span class="n">String</span> <span class="n">message</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">String</span> <span class="n">randomKey</span> <span class="o">=</span> <span class="n">UUID</span><span class="o">.</span><span class="n">randomUUID</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">();</span>
         <span class="n">kafkaTemplate</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">randomKey</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
     <span class="p">}</span>
-
-    <span class="n">public</span> <span class="n">void</span> <span class="n">sendRandomMessages</span><span class="p">(</span><span class="nb">int</span> <span class="n">num</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">sendRandomMessagesToTopic</span><span class="p">(</span><span class="n">String</span> <span class="n">topic</span><span class="p">,</span> <span class="nb">int</span> <span class="n">num</span><span class="p">,</span> <span class="nb">int</span> <span class="n">partition_num</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">Random</span> <span class="n">rand</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Random</span><span class="p">();</span>
         <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">num</span><span class="p">);</span>
         <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
@@ -427,14 +475,9 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <h2><span class="section-number">9.2. </span>Consumerの設定<a class="headerlink" href="#consumer" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="application-yaml">
 <h3><span class="section-number">9.2.1. </span>application.yaml<a class="headerlink" href="#application-yaml" title="この見出しへのパーマリンク">¶</a></h3>
-<p>msk-consumerは8081のポートを利用するため、application.yamlで以下を設定する</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">server</span><span class="p">:</span>
-  <span class="n">port</span><span class="p">:</span> <span class="mi">8081</span>
-</pre></div>
-</div>
-<p>kafkaを利用するためにapplication.yamlで以下の設定を行う。これはcliから実行した時はclient.propertiesに設定してたもの</p>
 <ul class="simple">
-<li><p>producer</p>
+<li><p>msk-consumerは8081のポートを利用</p></li>
+<li><p>consumer</p>
 <ul>
 <li><p>group-id<br />これはConsumer側で自身が所属するグループを指定するための値。<br />この値を利用することで、Pub-Subモデルのメッセージキューにすることができる。</p>
 <ul>
@@ -449,23 +492,31 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <li><p>none: Consumerが前回消費した最後のオフセットの次から読み込むが、そのオフセットが存在しない場合、例外がスローされる</p></li>
 </ul>
 </li>
+<li><p>enable-auto-commit<br />コミットをkafka側が一定間隔で自動的に実施するか、ソースコード側で明示的に実施するか<br />今回は、手動コミットを行うのでfalseを背彫ってい</p></li>
+<li><p>max-poll-records<br />一度のpollで取得するメッセージ数<br />オートスケーリングすることを考えると、1にしておくほうが良い<br />オートスケーリングしてリバランスしたにも関わらず、メッセージを抱えているconsumerがいると処理が終わらなくなった</p></li>
 </ul>
 </li>
-<li><p>propertiesはProducerと同様</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spring</span><span class="p">:</span>
-  <span class="n">kafka</span><span class="p">:</span>
-    <span class="n">consumer</span><span class="p">:</span>
-      <span class="n">bootstrap</span><span class="o">-</span><span class="n">servers</span><span class="p">:</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span>
-      <span class="n">key</span><span class="o">-</span><span class="n">deserializer</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">serialization</span><span class="o">.</span><span class="n">StringDeserializer</span>
-      <span class="n">value</span><span class="o">-</span><span class="n">deserializer</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">serialization</span><span class="o">.</span><span class="n">StringDeserializer</span>
-      <span class="n">group</span><span class="o">-</span><span class="nb">id</span><span class="p">:</span> <span class="n">group_id</span>
-      <span class="n">auto</span><span class="o">-</span><span class="n">offset</span><span class="o">-</span><span class="n">reset</span><span class="p">:</span> <span class="n">earliest</span>
-    <span class="n">properties</span><span class="p">:</span>
-      <span class="n">security</span><span class="o">.</span><span class="n">protocol</span><span class="p">:</span> <span class="n">SASL_SSL</span>
-      <span class="n">sasl</span><span class="o">.</span><span class="n">mechanism</span><span class="p">:</span> <span class="n">AWS_MSK_IAM</span>
-      <span class="n">sasl</span><span class="o">.</span><span class="n">jaas</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="n">software</span><span class="o">.</span><span class="n">amazon</span><span class="o">.</span><span class="n">msk</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">iam</span><span class="o">.</span><span class="n">IAMLoginModule</span> <span class="n">required</span><span class="p">;</span>
-      <span class="n">sasl</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">class</span><span class="p">:</span> <span class="n">software</span><span class="o">.</span><span class="n">amazon</span><span class="o">.</span><span class="n">msk</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">iam</span><span class="o">.</span><span class="n">IAMClientCallbackHandler</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>server:
+  port: 8081
+spring:
+  kafka:
+    listener:
+      ack-mode: manual
+    consumer:
+      bootstrap-servers: b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: CG-XXXXX
+      auto-offset-reset: latest
+      enable-auto-commit: false # コミットの自動実行を有効にする
+      max-poll-records: 1  # 一度のpollで取得するレコードの最大数を1に設定
+    #      auto-commit-interval: 5000 # コミットの間隔（ミリ秒）
+    properties:
+      security.protocol: SASL_SSL
+      sasl.mechanism: AWS_MSK_IAM
+      sasl.jaas.config: software.amazon.msk.auth.iam.IAMLoginModule required;
+      sasl.client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler```
 </pre></div>
 </div>
 </section>
@@ -474,15 +525,21 @@ msk-producerにアクセスすると、index.htmlにリダイレクトしてinde
 <p>以下のMessageReciverクラスを作成する</p>
 <ul class="simple">
 <li><p>&#64;Component<br />Springのコンポーネントスキャンにより、自動的にコンポーネントとして検出され、springによりインスタンスが生成される</p></li>
-<li><p>&#64;KafkaLister<br />このメソッドはTopicからのメッセージ受信するためのリスナーメソッドになる</p></li>
-<li><p>ConsumerRecord<br />kafkaから受信したメッセージ</p></li>
+<li><p>&#64;KafkaLister<br />このメソッドはTopicからのメッセージ受信するためのリスナーメソッドになる<br />トピックを指定する</p></li>
+<li><p>acknowledgment.acknowledge(); // コミットを実行<br />このコマンドでkafkaに対して手動でコミットする</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class MessageReceiver {
 
-    @KafkaListener(topics=&quot;Topic_from_java&quot;)
-    public void receiveMessage(ConsumerRecord&lt;String, String&gt; record){
+    @KafkaListener(topics=&quot;Topic_consume_week&quot;)
+    public void receiveMessage(ConsumerRecord&lt;String, String&gt; record, Acknowledgment acknowledgment){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;);
 
         System.out.println(&quot;PROCESSING START =======================================================&quot; );
@@ -497,12 +554,18 @@ public class MessageReceiver {
         int waitTime = Integer.parseInt(record.value()) * 1000;
         System.out.println(&quot;wait time: &quot; + waitTime);
         waitInMilliseconds(waitTime);
-
+        try {
+            acknowledgment.acknowledge(); // コミットを実行
+            System.out.println(&quot;Commit Success&quot;);
+        } catch (Exception e) {
+            // エラーが発生したらここでスロー
+            throw new RuntimeException(&quot;Unexpected error while committing record: &quot; + record, e);
+        }
         //処理完了時間の表示
         LocalDateTime now_af = LocalDateTime.now();
         System.out.println(&quot;END TIME： &quot; + formatter.format(now_af) +&quot; &amp; MESSAGE ID： &quot;+record.key());
         System.out.println(&quot;PROCESSING END =======================================================&quot; );
-
+        System.out.println(&quot;ALL_INFO======= &amp; MESSAGE Offset： &quot;+record.offset()+ &quot; &amp; MESSAGE partition： &quot;+record.partition()+ &quot; &amp; START_TIME:&quot; + formatter.format(now_bf)+&quot; &amp; MESSAGE Value： &quot;+record.value()+&quot; &amp; END TIME： &quot; + formatter.format(now_af) +&quot; &amp; =======ALL_INFO&quot;);
     }
     //数字を受け取って、その時間待機するためのメソッド
     private void waitInMilliseconds(int milliseconds) {
@@ -517,7 +580,6 @@ public class MessageReceiver {
 }
 </pre></div>
 </div>
-<p>これだけで、メッセージを送信すると、Consumerで受信することができる。</p>
 </section>
 <section id="id8">
 <h3><span class="section-number">9.2.3. </span>結果<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h3>
@@ -572,263 +634,258 @@ CloudWatchで<code class="docutils literal notranslate"><span class="pre">Sumoff
 <section id="id13">
 <h2><span class="section-number">10.4. </span>検証計画<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
 <p>いくつかの観点で検証を行う</p>
+<ul class="simple">
+<li><p>partition数の比較</p></li>
+<li><p>latestとearliestの比較</p></li>
+<li><p>offsets.retention.minutesの検証(60min)</p></li>
+<li><p>offsets.retention.minutesの検証(7days)</p></li>
+</ul>
+<section id="partition">
+<h3><span class="section-number">10.4.1. </span>partition数の比較<a class="headerlink" href="#partition" title="この見出しへのパーマリンク">¶</a></h3>
+<p>メッセージを送信したときに、格納されるpartitionに偏りが出てしまう問題に対して、parititionを増やすことで対応できるかを調査。<br />結果として、2倍にすると50%程度、分散が減るという効果があったが、それ以上はpartitionを増やしても効果がなかった</p>
+<p>また、それとは別にして、メッセージ自体の処理の差分で処理が詰まってしまう問題は解決しなかった</p>
+<p>partition5の際は標準偏差:27</p>
+<p><img alt="../_images/msk_partition5_dev.png" src="../_images/msk_partition5_dev.png" /></p>
+<p>partition10の際は標準偏差:13</p>
+<p><img alt="../_images/msk_partition10_dev.png" src="../_images/msk_partition10_dev.png" /></p>
+<p>partition100の際は標準偏差:15</p>
+<p><img alt="../_images/msk_partition100_dev.png" src="../_images/msk_partition100_dev.png" /></p>
+</section>
+<section id="latestearliest">
+<h3><span class="section-number">10.4.2. </span>latestとearliestの比較<a class="headerlink" href="#latestearliest" title="この見出しへのパーマリンク">¶</a></h3>
+<p>auto.offsets.resetの挙動を確認するために、topicを作成して、consumerを起動させる前に、メッセージを投入。</p>
+<ul class="simple">
+<li><p>earliestの場合、全てのメッセージが処理されるはず</p></li>
+<li><p>latestの場合、メッセージ処理はされず、その後に格納されたメッセージは処理されるはず</p></li>
+</ul>
+<p>結果として予想通りの挙動をした</p>
+<section id="earliest">
+<h4><span class="section-number">10.4.2.1. </span>earliest<a class="headerlink" href="#earliest" title="この見出しへのパーマリンク">¶</a></h4>
+<ul class="simple">
+<li><p>TopicName:Topic_P5_timing_check_earliest</p></li>
+<li><p>consumerのreset=earliestにしておく</p></li>
+<li><p>Topicを作成</p></li>
+<li><p>Topicにメッセージを投入</p></li>
+<li><p>consumerが立ち上がったのことないので、CloudWatch アラームも無反応</p></li>
+<li><p>オートスケーリングで5台立ち上がらない</p></li>
+<li><p>手動で１台立ち上げる</p></li>
+<li><p>起動後に5件追加で投げる</p></li>
+</ul>
+<p>結果として、105件処理した</p>
+</section>
 <section id="latest">
-<h3><span class="section-number">10.4.1. </span>latest<a class="headerlink" href="#latest" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">10.4.2.2. </span>latest<a class="headerlink" href="#latest" title="この見出しへのパーマリンク">¶</a></h4>
 <ul class="simple">
-<li><p>partitionの数が異なる場合の挙動4パターンに1000件投入</p>
-<ul>
-<li><p>partition1</p></li>
-<li><p>partition5</p></li>
-<li><p>partition10</p></li>
-<li><p>partition100</p></li>
+<li><p>TopicName:Topic_P5_timing_check_latest</p></li>
+<li><p>consumerのreset=latestにしておく</p></li>
+<li><p>Topicを作成</p></li>
+<li><p>Topicにメッセージを100件投入</p></li>
+<li><p>オートスケーリングで5台立ち上がらない</p></li>
+<li><p>手動で１台立ち上げる</p></li>
+<li><p>起動後に5件追加で投げる</p></li>
 </ul>
-</li>
-<li><p>partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入</p>
-<ul>
-<li><p>partition1</p></li>
-<li><p>partition5</p></li>
-<li><p>partition10</p></li>
-<li><p>partition100</p></li>
-</ul>
-</li>
-<li><p>Partitionの数が5に対して、処理させずに2週間放置して100件入れる<br />全てのPartitionに対して、うまく処理できないのではないかという期待がある。</p></li>
-<li><p>Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる<br />処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。</p></li>
-<li><p>partition5に対して、0件処理で、1日に一度consumerを起動したもの
-Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。</p></li>
-</ul>
+<p>結果として、5件だけ処理した</p>
 </section>
-<section id="eariest">
-<h3><span class="section-number">10.4.2. </span>eariest<a class="headerlink" href="#eariest" title="この見出しへのパーマリンク">¶</a></h3>
+</section>
+<section id="offsets-retention-minutes-60min">
+<h3><span class="section-number">10.4.3. </span>offsets.retention.minutesの検証(60min)<a class="headerlink" href="#offsets-retention-minutes-60min" title="この見出しへのパーマリンク">¶</a></h3>
+<p>MSKのクラスター構成で以下を設定</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">offsets</span><span class="o">.</span><span class="n">retention</span><span class="o">.</span><span class="n">minutes</span><span class="o">=</span><span class="mi">60</span>
+</pre></div>
+</div>
+<p>対象のクラスタ-にこの構成を設定<br />これにより、60分consumerGroupが0の場合、__consumer_offsetsが破棄される。</p>
+<p>以下を検証</p>
 <ul class="simple">
-<li><p>partitionの数が異なる場合の挙動4パターンに1000件投入</p>
-<ul>
-<li><p>partition1</p></li>
-<li><p>partition5</p></li>
-<li><p>partition10</p></li>
-<li><p>partition100</p></li>
+<li><p>consumerの起動のみによる更新</p></li>
+<li><p>consumerのメッセージ処理による更新</p></li>
+<li><p>定期的な起動設定による長期更新</p></li>
 </ul>
-</li>
-<li><p>partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入</p>
-<ul>
-<li><p>partition1</p></li>
-<li><p>partition5</p></li>
-<li><p>partition10</p></li>
-<li><p>partition100</p></li>
-</ul>
-</li>
-<li><p>Partitionの数が5に対して、処理させずに2週間放置して100件入れる<br />全てのPartitionに対して、うまく処理できないのではないかという期待がある。</p></li>
-<li><p>Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる<br />処理したpartitionだけが、うまく処理して、他のParitionは処理しなくなるのではないかという期待がある。</p></li>
-<li><p>partition5に対して、0件処理で、1日に一度consumerを起動したもの
-Partition数5に対して、処理させずに、2週間放置するが、1日一度起動するので、2週間後も正しく処理できるのではないかという期待がある。</p></li>
-</ul>
-</section>
-</section>
 <section id="id14">
-<h2><span class="section-number">10.5. </span>コマンド準備<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
-<p>EC2上から実効するコマンドは以下</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Topicの一覧表示</span>
-<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span>
-
-<span class="n">Topicの作成</span>
-<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">2</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">1</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
-
-<span class="n">Topicの削除</span>
-<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">delete</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
-
-<span class="n">TopicのPartition数など確認</span>
-<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">YOUR_ZOOKEEPER_SERVER</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
-
-<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span> <span class="o">--</span><span class="n">topic</span> <span class="n">Topic_from_java</span>
-
-
-<span class="n">TopicのLagなど確認</span>
-<span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">consumer</span><span class="o">-</span><span class="n">groups</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">YOUR_BOOTSTRAP_SERVER</span> <span class="o">--</span><span class="n">command</span><span class="o">-</span><span class="n">config</span> <span class="n">kafka_2</span><span class="mf">.12</span><span class="o">-</span><span class="mf">2.8.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">properties</span>  <span class="o">--</span><span class="n">group</span> <span class="n">group_id</span> <span class="o">--</span><span class="n">describe</span>
+<h4><span class="section-number">10.4.3.1. </span>ログの解説<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h4>
+<p>consumerを追加したり、再起動したり、長期間起動がなくoffsetが破棄された際のログは以下</p>
+<ul class="simple">
+<li><p>consumer起動時consumerのログ</p>
+<ul>
+<li><p>TopicをSubscribeし始めたログと、その際に、offsetsをどこに設定したログが出力される</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">14</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">39.442</span>  <span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span>           <span class="n">main</span><span class="p">]</span> <span class="n">o</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">KafkaConsumer</span>     <span class="p">:</span> <span class="p">[</span><span class="n">Consumer</span> <span class="n">clientId</span><span class="o">=</span><span class="n">consumer</span><span class="o">-</span><span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">groupId</span><span class="o">=</span><span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span><span class="p">]</span> <span class="n">Subscribed</span> <span class="n">to</span> <span class="n">topic</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">Topic_wakeup_once</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">14</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">45.289</span>  <span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-1 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}}.,2023-08-01 05:17:45.289</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">14</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">45.290</span>  <span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-3 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}}.,2023-08-01 05:17:45.290</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">14</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">45.677</span>  <span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-2 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}}.,2023-08-01 05:17:45.678</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">14</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">45.678</span>  <span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}}.,2023-08-01 05:17:45.678</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">14</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">45.678</span>  <span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Resetting offset for partition Topic_wakeup_once-4 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}}.,2023-08-01 05:17:45.678</span>
 </pre></div>
 </div>
-<section id="topiclag">
-<h3><span class="section-number">10.5.1. </span>TopicのLagについて<a class="headerlink" href="#topiclag" title="この見出しへのパーマリンク">¶</a></h3>
-<p>TopicのLagは時系列で取得できないので、自分で以下のshellを作成して、実行させる</p>
-<p>monitor_consumer_group.sh</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-#!/bin/bash
-
-# Check if no arguments were passed
-if [ $# -lt 1 ]; then
-  echo &quot;Insufficient arguments supplied. Please pass a consumer group id and output file name as arguments.&quot;
-  exit 1
-fi
-
-# Kafkaの接続情報を設定します
-BOOTSTRAP_SERVER=&quot;b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098&quot;
-GROUP_ID=$1 # 受け取った引数（コンシューマーグループID）を使用
-COMMAND_CONFIG_PATH=&quot;kafka_2.12-2.8.1/bin/client.properties&quot;
-
-# 出力するログファイルを設定します
-OUTPUT_FILE=&quot;$1_consumer_group_offset.log&quot; # 受け取った引数（ファイル名）を使用
-while true
-do
-  # タイムスタンプを取得します
-  TIMESTAMP=$(date +&quot;%Y-%m-%d %T&quot;)
-
-  # コマンドを実行し、出力を取得します
-  OUTPUT=$(kafka_2.12-2.8.1/bin/kafka-consumer-groups.sh --bootstrap-server $BOOTSTRAP_SERVER --command-config $COMMAND_CONFIG_PATH --group $GROUP_ID --describe)
-
-  # タイムスタンプとコマンドの出力をログファイルに書き込みます
-  echo -e &quot;$TIMESTAMP\n$OUTPUT\n&quot; &gt;&gt; $OUTPUT_FILE
-
-  # 10秒待機します
-  sleep 10
-done
+<ul class="simple">
+<li><p>consumer起動時kafka側のログ</p>
+<ul>
+<li><p>consumerが起動してConsumerGruoupのメンバーが追加されたことを確認できる</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">42</span><span class="p">,</span><span class="mi">047</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupCoordinator</span> <span class="mi">2</span><span class="p">]:</span> <span class="n">Preparing</span> <span class="n">to</span> <span class="n">rebalance</span> <span class="n">group</span> <span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span> <span class="ow">in</span> <span class="n">state</span> <span class="n">PreparingRebalance</span> <span class="k">with</span> <span class="n">old</span> <span class="n">generation</span> <span class="mi">0</span> <span class="p">(</span><span class="n">__consumer_offsets</span><span class="o">-</span><span class="mi">36</span><span class="p">)</span> <span class="p">(</span><span class="n">reason</span><span class="p">:</span> <span class="n">Adding</span> <span class="n">new</span> <span class="n">member</span> <span class="n">consumer</span><span class="o">-</span><span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f5abca3b</span><span class="o">-</span><span class="mi">115</span><span class="n">d</span><span class="o">-</span><span class="mi">48</span><span class="n">b2</span><span class="o">-</span><span class="n">b7f4</span><span class="o">-</span><span class="n">cbe3a9f14403</span> <span class="k">with</span> <span class="n">group</span> <span class="n">instance</span> <span class="nb">id</span> <span class="kc">None</span><span class="p">)</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupCoordinator</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">42.000</span>
+<span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">047</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupCoordinator</span> <span class="mi">2</span><span class="p">]:</span> <span class="n">Stabilized</span> <span class="n">group</span> <span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span> <span class="n">generation</span> <span class="mi">1</span> <span class="p">(</span><span class="n">__consumer_offsets</span><span class="o">-</span><span class="mi">36</span><span class="p">)</span> <span class="k">with</span> <span class="mi">1</span> <span class="n">members</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupCoordinator</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">46.000</span>
+<span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">063</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupCoordinator</span> <span class="mi">2</span><span class="p">]:</span> <span class="n">Assignment</span> <span class="n">received</span> <span class="kn">from</span> <span class="nn">leader</span> <span class="k">for</span> <span class="n">group</span> <span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span> <span class="k">for</span> <span class="n">generation</span> <span class="mf">1.</span> <span class="n">The</span> <span class="n">group</span> <span class="n">has</span> <span class="mi">1</span> <span class="n">members</span><span class="p">,</span> <span class="mi">0</span> <span class="n">of</span> <span class="n">which</span> <span class="n">are</span> <span class="n">static</span><span class="o">.</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupCoordinator</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">46.000</span>
 </pre></div>
 </div>
-<p>実行権限付与</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">monitor_consumer_group</span><span class="o">.</span><span class="n">sh</span>
+<ul class="simple">
+<li><p>consumer停止時consumerのログ</p>
+<ul>
+<li><p>ConsumerGroupからdisconnectしたログ</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">14</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mf">42.036</span>  <span class="n">INFO</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Node -1 disconnected.,2023-08-01 05:26:42.036</span>
 </pre></div>
 </div>
-<p>以下を実行</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">monitor_consumer_group</span><span class="o">.</span><span class="n">sh</span>
+<ul class="simple">
+<li><p>consumer停止時kafkaのログ</p>
+<ul>
+<li><p>ConsumerGroupがemptyになったというログが出力される</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">090</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupCoordinator</span> <span class="mi">2</span><span class="p">]:</span> <span class="n">Member</span> <span class="n">consumer</span><span class="o">-</span><span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f5abca3b</span><span class="o">-</span><span class="mi">115</span><span class="n">d</span><span class="o">-</span><span class="mi">48</span><span class="n">b2</span><span class="o">-</span><span class="n">b7f4</span><span class="o">-</span><span class="n">cbe3a9f14403</span> <span class="ow">in</span> <span class="n">group</span> <span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span> <span class="n">has</span> <span class="n">failed</span><span class="p">,</span> <span class="n">removing</span> <span class="n">it</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">group</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupCoordinator</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mf">46.000</span>
+<span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">090</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupCoordinator</span> <span class="mi">2</span><span class="p">]:</span> <span class="n">Preparing</span> <span class="n">to</span> <span class="n">rebalance</span> <span class="n">group</span> <span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span> <span class="ow">in</span> <span class="n">state</span> <span class="n">PreparingRebalance</span> <span class="k">with</span> <span class="n">old</span> <span class="n">generation</span> <span class="mi">1</span> <span class="p">(</span><span class="n">__consumer_offsets</span><span class="o">-</span><span class="mi">36</span><span class="p">)</span> <span class="p">(</span><span class="n">reason</span><span class="p">:</span> <span class="n">removing</span> <span class="n">member</span> <span class="n">consumer</span><span class="o">-</span><span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f5abca3b</span><span class="o">-</span><span class="mi">115</span><span class="n">d</span><span class="o">-</span><span class="mi">48</span><span class="n">b2</span><span class="o">-</span><span class="n">b7f4</span><span class="o">-</span><span class="n">cbe3a9f14403</span> <span class="n">on</span> <span class="n">heartbeat</span> <span class="n">expiration</span><span class="p">)</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupCoordinator</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mf">46.000</span>
+<span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">090</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupCoordinator</span> <span class="mi">2</span><span class="p">]:</span> <span class="n">Group</span> <span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span> <span class="k">with</span> <span class="n">generation</span> <span class="mi">2</span> <span class="ow">is</span> <span class="n">now</span> <span class="n">empty</span> <span class="p">(</span><span class="n">__consumer_offsets</span><span class="o">-</span><span class="mi">36</span><span class="p">)</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupCoordinator</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">05</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mf">46.000</span>
 </pre></div>
 </div>
-<p>内容は以下を確認</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">less</span> <span class="n">consumer_group_offset</span><span class="o">.</span><span class="n">log</span>
+<ul class="simple">
+<li><p>consumer再起動時のconsumerのログ</p>
+<ul>
+<li><p>Subscribedのログは再度出る</p></li>
+<li><p>offsetの情報が残っている場合はResettingではなくてSettingでログが出力される</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">20.359</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span>           <span class="n">main</span><span class="p">]</span> <span class="n">o</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">KafkaConsumer</span>     <span class="p">:</span> <span class="p">[</span><span class="n">Consumer</span> <span class="n">clientId</span><span class="o">=</span><span class="n">consumer</span><span class="o">-</span><span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">groupId</span><span class="o">=</span><span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span><span class="p">]</span> <span class="n">Subscribed</span> <span class="n">to</span> <span class="n">topic</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">Topic_wakeup_once</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">23.303</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Request joining group due to: need to re-join with the given member-id,2023-08-01 06:00:23.303</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">23.303</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] (Re-)joining group,2023-08-01 06:00:23.303</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.306</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Successfully joined group with generation Generation{generationId=3, memberId=&#39;consumer-CG-Topic_wakeup_once-1-b0717656-578f-4e85-b1de-22994cb0643a&#39;, protocol=&#39;range&#39;},2023-08-01 06:00:26.306</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.308</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Finished assignment for group at generation 3: {consumer-CG-Topic_wakeup_once-1-b0717656-578f-4e85-b1de-22994cb0643a=Assignment(partitions=[Topic_wakeup_once-0, Topic_wakeup_once-1, Topic_wakeup_once-2, Topic_wakeup_once-3, Topic_wakeup_once-4])},2023-08-01 06:00:26.309</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.323</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Successfully synced group in generation Generation{generationId=3, memberId=&#39;consumer-CG-Topic_wakeup_once-1-b0717656-578f-4e85-b1de-22994cb0643a&#39;, protocol=&#39;range&#39;},2023-08-01 06:00:26.324</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.324</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Notifying assignor about the new Assignment(partitions=[Topic_wakeup_once-0, Topic_wakeup_once-1, Topic_wakeup_once-2, Topic_wakeup_once-3, Topic_wakeup_once-4]),2023-08-01 06:00:26.324</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.327</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Adding newly assigned partitions: Topic_wakeup_once-2, Topic_wakeup_once-1, Topic_wakeup_once-0, Topic_wakeup_once-4, Topic_wakeup_once-3,2023-08-01 06:00:26.327</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.345</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-4 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}},2023-08-01 06:00:26.346</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.346</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-3 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}},2023-08-01 06:00:26.346</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.346</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-2 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}},2023-08-01 06:00:26.346</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.346</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-1 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-2.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 2 rack: apne1-az4)], epoch=0}},2023-08-01 06:00:26.346</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.346</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-CG-Topic_wakeup_once-1, groupId=CG-Topic_wakeup_once] Setting offset for partition Topic_wakeup_once-0 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[b-1.mafujishiromsmsk.2mkkld.c2.kafka.ap-northeast-1.amazonaws.com:9098 (id: 1 rack: apne1-az1)], epoch=0}},2023-08-01 06:00:26.346</span>
+<span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">26.347</span>  <span class="n">INFO</span> <span class="mi">6</span> <span class="o">---</span> <span class="p">[</span><span class="n">ntainer</span><span class="c1">#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : CG-Topic_wakeup_once: partitions assigned: [Topic_wakeup_once-2, Topic_wakeup_once-1, Topic_wakeup_once-0, Topic_wakeup_once-4, Topic_wakeup_once-3],2023-08-01 06:00:26.347</span>
 </pre></div>
 </div>
-</section>
-<section id="ec2iamrole">
-<h3><span class="section-number">10.5.2. </span>EC2には以下のIAMRoleを付与した<a class="headerlink" href="#ec2iamrole" title="この見出しへのパーマリンク">¶</a></h3>
-<p>コマンドを実行するためには、EC2に適切な権限を付与する必要がある。</p>
-<p>MSKに対する基本的な操作の権限</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="s2">&quot;kafka-cluster:*&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:topic/YOUR_MSK_SERVER/*&quot;</span>
-            <span class="p">]</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p>offsets.retention.minutesを超えた際のkafka側のログ
+expired offsetsというログが出る</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">07</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">724</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupMetadataManager</span> <span class="n">brokerId</span><span class="o">=</span><span class="mi">2</span><span class="p">]</span> <span class="n">Group</span> <span class="n">CG</span><span class="o">-</span><span class="n">Topic_wakeup_once</span> <span class="n">transitioned</span> <span class="n">to</span> <span class="n">Dead</span> <span class="ow">in</span> <span class="n">generation</span> <span class="mi">4</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupMetadataManager</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">07</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mf">52.000</span>
+<span class="p">[</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">07</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">725</span><span class="p">]</span> <span class="n">INFO</span> <span class="p">[</span><span class="n">GroupMetadataManager</span> <span class="n">brokerId</span><span class="o">=</span><span class="mi">2</span><span class="p">]</span> <span class="n">Removed</span> <span class="mi">5</span> <span class="n">expired</span> <span class="n">offsets</span> <span class="ow">in</span> <span class="mi">2</span> <span class="n">milliseconds</span><span class="o">.</span> <span class="p">(</span><span class="n">kafka</span><span class="o">.</span><span class="n">coordinator</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">GroupMetadataManager</span><span class="p">),</span><span class="mi">2023</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">01</span> <span class="mi">07</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mf">52.000</span>
 </pre></div>
 </div>
-<p>ConsumerGroup対する権限</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="s2">&quot;kafka-cluster:*&quot;</span>
-            <span class="p">],</span>
-            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:cluster/YOUR_MSK_SERVER/*&quot;</span>
-            <span class="p">]</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="s2">&quot;kafka-cluster:*Group*&quot;</span>
-            <span class="p">],</span>
-            <span class="s2">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="s2">&quot;arn:aws:kafka:ap-northeast-1:123456789012:group/YOUR_MSK_SERVER/*&quot;</span>
-            <span class="p">]</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
+<p>この後、再度メッセージを投入すると、NotFountが出力して、Resettingのログが出力される</p>
+<ul class="simple">
+<li><p>earliestの場合：offset0が設定される</p></li>
+<li><p>latestの場合：それまでに格納されているoffsetが設定される</p></li>
+</ul>
+<p><img alt="../_images/msk_retension_2.png" src="../_images/msk_retension_2.png" /></p>
 </section>
 <section id="id15">
-<h3><span class="section-number">10.5.3. </span>トピック作成<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h3>
-<p>Topicは以下の6つを作成</p>
+<h4><span class="section-number">10.4.3.2. </span>consumerのメッセージ処理による更新<a class="headerlink" href="#id15" title="この見出しへのパーマリンク">¶</a></h4>
+<p>consumeすることで、retentionされないようになるか確認。以下の①と②どちらの60分後にExpiredするかを確認したところ②の60min後にexpiredした</p>
 <ul class="simple">
-<li><p>Topic_from_java<br />Partitionの数が1つ</p></li>
-<li><p>Topic_P5<br />Partitionの数が5でConsumerの数と同じ</p></li>
-<li><p>Topic_P10<br />Partitionの数が10でConsumerの数より多い</p></li>
-<li><p>Topic_P100<br />Partitionの数が100でConsumerの数より大分多い</p></li>
-<li><p>Topic_P5_zero<br />Partitionの数が5に対して、処理させずに2週間放置して100件入れる</p></li>
-<li><p>Topic_P5_one
-Partitionの数が5に対して、1件だけ処理させてから2週間放置して100件入れる</p></li>
-<li><p>Topic_P5_up<br />Partitionの数が5に対して、1日一度Consumerが起動する</p></li>
+<li><p>Topicの作成：Topic_consume_once</p></li>
+<li><p>Consumer起動</p></li>
+<li><p>Consumer停止・・・①</p></li>
+<li><p>30分待機</p></li>
+<li><p>メッセージ送信</p></li>
+<li><p>Consumer起動してconsume</p></li>
+<li><p>Consumer停止・・・②</p></li>
+<li><p>60分待機</p></li>
 </ul>
+<p><img alt="../_images/Topic_consume_once.png" src="../_images/Topic_consume_once.png" /></p>
 </section>
-</section>
-<section id="partition41000">
-<h2><span class="section-number">10.6. </span>partitionの数が異なる場合の挙動4パターンに1000件投入<a class="headerlink" href="#partition41000" title="この見出しへのパーマリンク">¶</a></h2>
-<section id="partition1scaleout">
-<h3><span class="section-number">10.6.1. </span>partitionが1でscaleoutする場合<a class="headerlink" href="#partition1scaleout" title="この見出しへのパーマリンク">¶</a></h3>
-<p>この場合は、処理が適切に行われなかった。そのため、一旦検証対象から除く。</p>
-<p>問題概要</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>consumer-Aはメッセージをまとめて全部受け取り、処理をしている。
-しかし、MSK側へのコミットへの返却はある程度まとめて行っている。
-結果として１３件目まではコミットできている。
-ただし、14件目移行をconsumer-Aが処理している間に、consumer-Bも14件目以降を取得してしまい、どちらも正しくMSKにコミットすることができていないか。
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>consumer-Aは常時起動のconsumer</p></li>
-<li><p>producerから100件のメッセージを送信</p></li>
-<li><p>consumer-Aのログを見ていると、順調に処理</p></li>
-<li><p>consumer-Aは100件全ての処理を完了したログが出る</p></li>
-<li><p>consumer-Aが13件目を処理したあたりで、ECSがオートスケールを開始</p></li>
-<li><p>13件目以降もconsume-Aはcommit successのログを出力し、100件しょり</p></li>
-</ul>
-<p><img alt="../_images/sqs_fifo_autoscaling_error_2.png" src="../_images/sqs_fifo_autoscaling_error_2.png" /></p>
-<ul class="simple">
-<li><p>しかし、13件目以降はmsk側でコミットを受け取れていないらしく、sumoffsetlagは87のまま</p></li>
-</ul>
-<p><img alt="../_images/sqs_fifo_autoscaling_error_1.png" src="../_images/sqs_fifo_autoscaling_error_1.png" /></p>
-<ul class="simple">
-<li><p>またオートスケーリングで起動したconsumer-Bが14件目からのメッセージを処理するようになっている</p></li>
-</ul>
-<p><img alt="../_images/sqs_fifo_autoscaling_error_3.png" src="../_images/sqs_fifo_autoscaling_error_3.png" /></p>
-<ul class="simple">
-<li><p>結果として、ログにはconsumer-Aとconsumer-B両方のcommit successのログが出るが、MSK側では認識されない</p></li>
-</ul>
-</section>
-<section id="partition5scaleout">
-<h3><span class="section-number">10.6.2. </span>partitionが5でscaleout台数と同じ場合<a class="headerlink" href="#partition5scaleout" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-<section id="partition10scaleout">
-<h3><span class="section-number">10.6.3. </span>partitionが10でscaleout台数より多い場合<a class="headerlink" href="#partition10scaleout" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-<section id="partition100scaleout">
-<h3><span class="section-number">10.6.4. </span>partitionが100でscaleout台数よりとても多い場合<a class="headerlink" href="#partition100scaleout" title="この見出しへのパーマリンク">¶</a></h3>
-</section>
-</section>
-<section id="partitionconsumer021000">
-<h2><span class="section-number">10.7. </span>partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入<a class="headerlink" href="#partitionconsumer021000" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id16">
-<h3><span class="section-number">10.7.1. </span>partitionが5でscaleout台数と同じ場合<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">10.4.3.3. </span>consumerの起動のみによる更新<a class="headerlink" href="#id16" title="この見出しへのパーマリンク">¶</a></h4>
+<p>consumerを起動させるだけで、retentionされないようになるか確認。以下の①と②どちらの60分後にExpiredするかを確認したところ②の60min後にexpiredした</p>
+<ul class="simple">
+<li><p>Topicの作成：Topic_wakeup_once</p></li>
+<li><p>Consumer起動</p></li>
+<li><p>Consumer停止・・・①</p></li>
+<li><p>30分待機</p></li>
+<li><p>Consumer起動</p></li>
+<li><p>Consumer停止・・・②</p></li>
+<li><p>60分待機</p></li>
+</ul>
+<p><img alt="../_images/Topic_wakeup_once.png" src="../_images/Topic_wakeup_once.png" /></p>
 </section>
 <section id="id17">
-<h3><span class="section-number">10.7.2. </span>partitionが10でscaleout台数より多い場合<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">10.4.3.4. </span>定期的な起動設定による長期更新<a class="headerlink" href="#id17" title="この見出しへのパーマリンク">¶</a></h4>
+<p>consumerを起動させるだけで、retentionされないようになるかを長期スパンで確認。</p>
+<ul class="simple">
+<li><p>作成時に1件処理</p></li>
+<li><p>60minに一度起動し、10分後に停止するようにeventbridgeを設定</p></li>
+<li><p>3日間放置</p></li>
+<li><p>3日後でもメトリクスは取得され続けた</p></li>
+<li><p>100件投入してもオートスケーリングして処理された</p></li>
+</ul>
+<p><img alt="../_images/msk_retension_wakeup.png" src="../_images/msk_retension_wakeup.png" /></p>
+<p><img alt="../_images/msk_retension_wakeup2.png" src="../_images/msk_retension_wakeup2.png" /></p>
 </section>
+</section>
+<section id="offsets-retention-minutes-7days">
+<h3><span class="section-number">10.4.4. </span>offsets.retention.minutesの検証(7days)<a class="headerlink" href="#offsets-retention-minutes-7days" title="この見出しへのパーマリンク">¶</a></h3>
+<p>MSKのクラスター構成で以下を設定（デフォルト）</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">offsets</span><span class="o">.</span><span class="n">retention</span><span class="o">.</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10080</span>
+</pre></div>
+</div>
+<p>対象のクラスタ-にこの構成を設定</p>
+<p>以下を検証</p>
+<ul class="simple">
+<li><p>定期的な起動設定による長期更新(1日1回10min)</p></li>
+</ul>
 <section id="id18">
-<h3><span class="section-number">10.7.3. </span>partitionが100でscaleout台数よりとても多い場合<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h3>
+<h4><span class="section-number">10.4.4.1. </span>定期的な起動設定による長期更新<a class="headerlink" href="#id18" title="この見出しへのパーマリンク">¶</a></h4>
+<p>consumerを起動させるだけで、retentionされないようになるかを長期スパンで確認。</p>
+<ul class="simple">
+<li><p>作成時のみで処理はさせない</p></li>
+<li><p>1日に1回起動し、10分後に停止するようにeventbridgeを設定</p></li>
+<li><p>10日間放置</p></li>
+<li><p>10日後でもメトリクスは取得され続けた</p></li>
+<li><p>100件投入してもオートスケーリングして処理された</p></li>
+</ul>
 </section>
 </section>
-<section id="partition51consumer10">
-<h2><span class="section-number">10.8. </span>1000件投入したpartition5に対して1日に一度consumerを起動し、10分後に停止したもの<a class="headerlink" href="#partition51consumer10" title="この見出しへのパーマリンク">¶</a></h2>
-</section>
-<section id="partition1001021000">
-<h2><span class="section-number">10.9. </span>partition100に対して、10件投入したものに2週間後に1000を投入<a class="headerlink" href="#partition1001021000" title="この見出しへのパーマリンク">¶</a></h2>
 </section>
 <section id="id19">
-<h2><span class="section-number">10.10. </span>トラブルシューティング<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><span class="section-number">10.5. </span>トラブルシューティング<a class="headerlink" href="#id19" title="この見出しへのパーマリンク">¶</a></h2>
 <section id="id20">
-<h3><span class="section-number">10.10.1. </span>オートスケールすると、処理がループする<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
+<h3><span class="section-number">10.5.1. </span>オートスケールすると、処理がループする<a class="headerlink" href="#id20" title="この見出しへのパーマリンク">¶</a></h3>
 <p>コミットがされないので、処理がループしてしまっている。
 同じ処理が終わったのに、別のConsumerでまた処理されている。</p>
-<p>以下のように、partition一つに対して二つのconsumerが紐づいていたりする。
-<img alt="../_images/msk_consumer_roop_1.png" src="../_images/msk_consumer_roop_1.png" /></p>
+<p>以下のように、partition一つに対して二つのconsumerが紐づいていたりする。</p>
+<p><img alt="../_images/msk_consumer_roop_1.png" src="../_images/msk_consumer_roop_1.png" /></p>
 <p>関連性があるかはわかないが、Consumerが追加されたタイミングでリバランス（partitionとconsumerの割り振り）している間にcommitをしようとしてエラーになっている。
 これの影響で、offsetがおかしくなっているのでは？</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2023</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">22</span> <span class="mi">09</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mf">30.444</span><span class="p">,</span><span class="n">Caused</span> <span class="n">by</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">kafka</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">CommitFailedException</span><span class="p">:</span> <span class="n">Offset</span> <span class="n">commit</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">completed</span> <span class="n">since</span> <span class="n">the</span> <span class="n">consumer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">part</span> <span class="n">of</span> <span class="n">an</span> <span class="n">active</span> <span class="n">group</span> <span class="k">for</span> <span class="n">auto</span> <span class="n">partition</span> <span class="n">assignment</span><span class="p">;</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">likely</span> <span class="n">that</span> <span class="n">the</span> <span class="n">consumer</span> <span class="n">was</span> <span class="n">kicked</span> <span class="n">out</span> <span class="n">of</span> <span class="n">the</span> <span class="n">group</span><span class="o">.</span><span class="p">,</span><span class="n">ecs</span><span class="o">/</span><span class="n">MA</span><span class="o">-</span><span class="n">fujishiroms</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">msk</span><span class="o">-</span><span class="n">consumer</span><span class="o">/</span><span class="mi">7</span><span class="n">ea6c17e42934381bd5c59d52e0fc2e2</span>
 </pre></div>
 </div>
+<p>一度のconsumeでたくさんのメッセージをconsumeしており、ある程度溜まってからそれをcommitしているとすると、まとめて処理をしているので、commitが間に合っていないのではないかと思い調査してみると、以下のエラーも出ていた。<br />これは、<code class="docutils literal notranslate"><span class="pre">max.poll.interval.ms</span></code>というconsumerがconsumeする間隔の最大値なので、これを超えてcommitしているとkafkaからは死んだと思われてしまう。</p>
+<p>これの対策としては、<code class="docutils literal notranslate"><span class="pre">max.poll.interval.ms</span></code>を長くするが、まとめてメッセージをconsumeする数の設定<code class="docutils literal notranslate"><span class="pre">max.poll.records</span></code>を小さくする必要がある。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2023</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">22</span> <span class="mi">19</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mf">27.530</span>  <span class="n">WARN</span> <span class="mi">7</span> <span class="o">---</span> <span class="p">[</span><span class="o">-</span><span class="n">thread</span> <span class="o">|</span> <span class="n">CG</span><span class="o">-</span><span class="n">P5</span><span class="p">]</span> <span class="n">o</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">internals</span><span class="o">.</span><span class="n">ConsumerCoordinator</span>  <span class="p">:</span> <span class="p">[</span><span class="n">Consumer</span> <span class="n">clientId</span><span class="o">=</span><span class="n">consumer</span><span class="o">-</span><span class="n">CG</span><span class="o">-</span><span class="n">P5</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">groupId</span><span class="o">=</span><span class="n">CG</span><span class="o">-</span><span class="n">P5</span><span class="p">]</span> <span class="n">consumer</span> <span class="n">poll</span> <span class="n">timeout</span> <span class="n">has</span> <span class="n">expired</span><span class="o">.</span> <span class="n">This</span> <span class="n">means</span> <span class="n">the</span> <span class="n">time</span> <span class="n">between</span> <span class="n">subsequent</span> <span class="n">calls</span> <span class="n">to</span> <span class="n">poll</span><span class="p">()</span> <span class="n">was</span> <span class="n">longer</span> <span class="n">than</span> <span class="n">the</span> <span class="n">configured</span> <span class="nb">max</span><span class="o">.</span><span class="n">poll</span><span class="o">.</span><span class="n">interval</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">which</span> <span class="n">typically</span> <span class="n">implies</span> <span class="n">that</span> <span class="n">the</span> <span class="n">poll</span> <span class="n">loop</span> <span class="ow">is</span> <span class="n">spending</span> <span class="n">too</span> <span class="n">much</span> <span class="n">time</span> <span class="n">processing</span> <span class="n">messages</span><span class="o">.</span> <span class="n">You</span> <span class="n">can</span> <span class="n">address</span> <span class="n">this</span> <span class="n">either</span> <span class="n">by</span> <span class="n">increasing</span> <span class="nb">max</span><span class="o">.</span><span class="n">poll</span><span class="o">.</span><span class="n">interval</span><span class="o">.</span><span class="n">ms</span> <span class="ow">or</span> <span class="n">by</span> <span class="n">reducing</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">size</span> <span class="n">of</span> <span class="n">batches</span> <span class="n">returned</span> <span class="ow">in</span> <span class="n">poll</span><span class="p">()</span> <span class="k">with</span> <span class="nb">max</span><span class="o">.</span><span class="n">poll</span><span class="o">.</span><span class="n">records</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>設定を確認したところmax.poll.recordsが500になっていた。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">max</span><span class="o">.</span><span class="n">poll</span><span class="o">.</span><span class="n">records</span> <span class="o">=</span> <span class="mi">500</span>
+</pre></div>
+</div>
+<p>max.poll.recordsを10にしたら、	java.lang.OutOfMemoryError: Java heap spaceというエラー</p>
+<p>Dockerファイルに以下を追加</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CMD</span> <span class="n">java</span> <span class="o">-</span><span class="n">Xmx2g</span> <span class="o">-</span><span class="n">jar</span> <span class="n">msk_consumer</span><span class="o">/</span><span class="n">target</span><span class="o">/</span><span class="n">msk_consumer</span><span class="o">-</span><span class="mf">0.0.1</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+</div>
+<p>最後に実行したやつ7/26/20:00は、多分consumerとしてdisconnectになっていないし、max.num=1になっているはず</p>
 </section>
 </section>
 </section>
@@ -850,10 +907,12 @@ Partitionの数が5に対して、1件だけ処理させてから2週間放置�
 <li><a class="reference internal" href="#id2">7.2.2. EC2インスタンスの作成</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id3">7.3. トピックの作り方</a></li>
-<li><a class="reference internal" href="#id4">7.4. メッセージの送信</a></li>
-<li><a class="reference internal" href="#id5">7.5. メッセージの受信</a></li>
-<li><a class="reference internal" href="#id6">7.6. その他操作</a></li>
+<li><a class="reference internal" href="#id3">7.3. トピックの作り方</a><ul>
+<li><a class="reference internal" href="#id4">7.3.1. コマンド一覧</a></li>
+<li><a class="reference internal" href="#id5">7.3.2. メッセージの送信</a></li>
+<li><a class="reference internal" href="#id6">7.3.3. メッセージの受信</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#msk">8. MSKの開発環境の構築</a><ul>
@@ -883,33 +942,27 @@ Partitionの数が5に対して、1件だけ処理させてから2週間放置�
 <li><a class="reference internal" href="#id11">10.2. 監視設定</a></li>
 <li><a class="reference internal" href="#id12">10.3. オートスケール設定</a></li>
 <li><a class="reference internal" href="#id13">10.4. 検証計画</a><ul>
-<li><a class="reference internal" href="#latest">10.4.1. latest</a></li>
-<li><a class="reference internal" href="#eariest">10.4.2. eariest</a></li>
+<li><a class="reference internal" href="#partition">10.4.1. partition数の比較</a></li>
+<li><a class="reference internal" href="#latestearliest">10.4.2. latestとearliestの比較</a><ul>
+<li><a class="reference internal" href="#earliest">10.4.2.1. earliest</a></li>
+<li><a class="reference internal" href="#latest">10.4.2.2. latest</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">10.5. コマンド準備</a><ul>
-<li><a class="reference internal" href="#topiclag">10.5.1. TopicのLagについて</a></li>
-<li><a class="reference internal" href="#ec2iamrole">10.5.2. EC2には以下のIAMRoleを付与した</a></li>
-<li><a class="reference internal" href="#id15">10.5.3. トピック作成</a></li>
+<li><a class="reference internal" href="#offsets-retention-minutes-60min">10.4.3. offsets.retention.minutesの検証(60min)</a><ul>
+<li><a class="reference internal" href="#id14">10.4.3.1. ログの解説</a></li>
+<li><a class="reference internal" href="#id15">10.4.3.2. consumerのメッセージ処理による更新</a></li>
+<li><a class="reference internal" href="#id16">10.4.3.3. consumerの起動のみによる更新</a></li>
+<li><a class="reference internal" href="#id17">10.4.3.4. 定期的な起動設定による長期更新</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#partition41000">10.6. partitionの数が異なる場合の挙動4パターンに1000件投入</a><ul>
-<li><a class="reference internal" href="#partition1scaleout">10.6.1. partitionが1でscaleoutする場合</a></li>
-<li><a class="reference internal" href="#partition5scaleout">10.6.2. partitionが5でscaleout台数と同じ場合</a></li>
-<li><a class="reference internal" href="#partition10scaleout">10.6.3. partitionが10でscaleout台数より多い場合</a></li>
-<li><a class="reference internal" href="#partition100scaleout">10.6.4. partitionが100でscaleout台数よりとても多い場合</a></li>
+<li><a class="reference internal" href="#offsets-retention-minutes-7days">10.4.4. offsets.retention.minutesの検証(7days)</a><ul>
+<li><a class="reference internal" href="#id18">10.4.4.1. 定期的な起動設定による長期更新</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#partitionconsumer021000">10.7. partitionの数が異なる場合のものをconsumer0台で2週間放置したものに1000件投入</a><ul>
-<li><a class="reference internal" href="#id16">10.7.1. partitionが5でscaleout台数と同じ場合</a></li>
-<li><a class="reference internal" href="#id17">10.7.2. partitionが10でscaleout台数より多い場合</a></li>
-<li><a class="reference internal" href="#id18">10.7.3. partitionが100でscaleout台数よりとても多い場合</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#partition51consumer10">10.8. 1000件投入したpartition5に対して1日に一度consumerを起動し、10分後に停止したもの</a></li>
-<li><a class="reference internal" href="#partition1001021000">10.9. partition100に対して、10件投入したものに2週間後に1000を投入</a></li>
-<li><a class="reference internal" href="#id19">10.10. トラブルシューティング</a><ul>
-<li><a class="reference internal" href="#id20">10.10.1. オートスケールすると、処理がループする</a></li>
+<li><a class="reference internal" href="#id19">10.5. トラブルシューティング</a><ul>
+<li><a class="reference internal" href="#id20">10.5.1. オートスケールすると、処理がループする</a></li>
 </ul>
 </li>
 </ul>
