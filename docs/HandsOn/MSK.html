@@ -851,10 +851,18 @@ expired offsetsというログが出る</p></li>
 <ul class="simple">
 <li><p>作成時のみで処理はさせない</p></li>
 <li><p>1日に1回起動し、10分後に停止するようにeventbridgeを設定</p></li>
-<li><p>10日間放置</p></li>
-<li><p>10日後でもメトリクスは取得され続けた</p></li>
-<li><p>100件投入してもオートスケーリングして処理された</p></li>
+<li><p>9日間放置</p>
+<ul>
+<li><p>8/4 21:00に読み込み</p></li>
+<li><p>8/13 13:00時点でメトリクスを取得</p></li>
 </ul>
+</li>
+<li><p>100件投入オートスケーリングして処理された</p></li>
+</ul>
+<p>9日ごとのメトリクス</p>
+<p><img alt="../_images/msk_week_metrix.png" src="../_images/msk_week_metrix.png" /></p>
+<p>100件処理時</p>
+<p><img alt="../_images/mks_week_consumer_all.png" src="../_images/mks_week_consumer_all.png" /></p>
 </section>
 </section>
 </section>
