@@ -143,12 +143,20 @@
 <section id="github-pages">
 <h2><span class="section-number">1.7. </span>github pagesの公開<a class="headerlink" href="#github-pages" title="この見出しへのパーマリンク">¶</a></h2>
 <p>github pagesでは、docs配下のindex.htmlを参照しにいくので、出力先をbuildから変更する必要がある。</p>
-<p>MakefileのBUILDDIRをdocsに変更</p>
-<blockquote>
-<div><p>SOURCEDIR     = source
-BUILDDIR      = docs</p>
-</div></blockquote>
+<p>docsの配下に以下を追加する。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>html: Makefile
+	@$(SPHINXBUILD) -b html &quot;$(SOURCEDIR)&quot; &quot;docs&quot; $(SPHINXOPTS) $(O)
+</pre></div>
+</div>
 <p>対象のPJでgit initをして、リポジトリにpushし、公開設定する。</p>
+<section id="css">
+<h3><span class="section-number">1.7.1. </span>CSS設定<a class="headerlink" href="#css" title="この見出しへのパーマリンク">¶</a></h3>
+<p>github pagesでは以下を設定しないとCSSを読み込んでくれない
+docsで.nojekyllファイルを作成</p>
+<blockquote>
+<div><p>touch .nojekyll</p>
+</div></blockquote>
+</section>
 </section>
 </section>
 
@@ -176,7 +184,10 @@ BUILDDIR      = docs</p>
 <li><a class="reference internal" href="#build">1.6.1. buildの簡略化</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#github-pages">1.7. github pagesの公開</a></li>
+<li><a class="reference internal" href="#github-pages">1.7. github pagesの公開</a><ul>
+<li><a class="reference internal" href="#css">1.7.1. CSS設定</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

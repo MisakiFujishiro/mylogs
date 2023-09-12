@@ -94,10 +94,17 @@ make htmlを実行することで、更新される
 ## github pagesの公開
 github pagesでは、docs配下のindex.htmlを参照しにいくので、出力先をbuildから変更する必要がある。
 
-MakefileのBUILDDIRをdocsに変更
-> SOURCEDIR     = source
-> BUILDDIR      = docs
+docsの配下に以下を追加する。
+```
+html: Makefile
+	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "docs" $(SPHINXOPTS) $(O)
+```
 
 対象のPJでgit initをして、リポジトリにpushし、公開設定する。
 
 
+### CSS設定
+github pagesでは以下を設定しないとCSSを読み込んでくれない
+docsで.nojekyllファイルを作成
+
+> touch .nojekyll 
