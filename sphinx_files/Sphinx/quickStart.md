@@ -43,10 +43,11 @@ source_suffix = {
 
 ## テーマ変更
 conf.pyの`html_theme`を変更することで、テーマを変えることができる。
-以下のサイトが参考になる。
+以下のサイトが参考になる。2つ目のreadthedocsのテーマがカッコよくておすすめ。
 
 - [テーマパターンと変更方法](https://sphinx-users.jp/cookbook/changetheme/index.html)
 - [その他のパターン](https://planset-study-sphinx.readthedocs.io/ja/latest/06.html)
+
 
 
 ## ファイルの作成
@@ -81,4 +82,22 @@ Sphinx
 
 ## 実行手順
 make htmlを実行することで、更新される
+
+### buildの簡略化
+毎回make htmlを実行するのは大変なのでsphinx-autobuildを利用する
+
+> pip install sphinx-autobuild     
+
+以下を実行すると修正が自動反映される
+> sphinx-autobuild -b html source build/html
+
+## github pagesの公開
+github pagesでは、docs配下のindex.htmlを参照しにいくので、出力先をbuildから変更する必要がある。
+
+MakefileのBUILDDIRをdocsに変更
+> SOURCEDIR     = source
+> BUILDDIR      = docs
+
+対象のPJでgit initをして、リポジトリにpushし、公開設定する。
+
 
